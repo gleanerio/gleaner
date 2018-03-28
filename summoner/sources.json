@@ -1,0 +1,62 @@
+[
+   {
+        "url": "http://opencoredata.org/sitemap.xml",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "http://get.iedadata.org/doi/xml-sitemap.php",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "https://www.bco-dmo.org/sitemap.xml?page=1",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "https://www.bco-dmo.org/sitemap.xml?page=2",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "http://data.neotomadb.org/sitemap.xml",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "http://wiki.linked.earth/sitemap.xml",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "http://opentopography.org/sitemap.xml",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "http://balto.opendap.org/opendap/site_map.txt",
+        "headless": false,
+        "sitemapformat": "text",
+	"active": false
+   },
+   {
+        "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
+        "headless": true,
+        "sitemapformat": "xml",
+	"active": false
+   },
+   {
+        "url": "https://www.unavco.org/data/demos/doi/sitemap.xml",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": true
+   }
+]

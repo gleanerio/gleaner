@@ -1,0 +1,8 @@
+{
+    "minio": {
+        "endpoint": "localhost:9000",
+        "accessKeyID": "AKIAIOSFODNN7EXAMPLE",
+        "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+ },
+    "source": "./sources.json"
+}
