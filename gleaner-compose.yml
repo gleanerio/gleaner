@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  traefik:
+    image: traefik:1.4
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    ports:
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/fils/P418/dataVolumes/traefik/traefik.toml:/traefik.toml
+      - /home/fils/P418/dataVolumes/traefik/acme:/acme
+      - /home/fils/P418/dataVolumes/traefik/logs:/logs
+    networks:
+      - traefik_default
+
+  s3system:
+    image: minio/minio:latest
+    labels:
+      - "traefik.backend=s3system"
+      - "traefik.port=9000"
+    ports:
+      - "9000:9000"
+    volumes:
+      - /home/fils/Data/P418/dataVolumes/s3/data:/data
+      - /home/fils/Data/P418/dataVolumes/s3/config:/root/.minio
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    networks:
+      - traefik_default
+    command: ["server", "/data"]
+
+  headless:
+    image: knqz/chrome-headless
+    labels:
+      - "traefik.backend=headlesschrome"
+      - "traefik.port=9222"
+    ports:
+      - "9222:9222"
+    networks:
+      - traefik_default
+
+  tile38:
+    image: tile38/tile38
+    labels:
+      - "traefik.backend=tile38"
+      - "traefik.port=9851"
+    restart: on-failure
+    volumes:
+      - /home/fils/P418/dataVolumes/spatialindex:/data
+    networks:
+      - traefik_default
+
+#  ipfs:
+#    image: ipfs/go-ipfs:latest
+#    labels:
+#      - "traefik.backend=ipfs"
+#      - "traefik.frontend.rule=Host:ipfs.geodex.org"
+#      - "traefik.port=4001"
+#      - "traefik.port=5001"
+#      - "traefik.port=8080"
+#    volumes:
+#      - /dataVolumes/ipfs/data:/data/ipfs
+#      - /dataVolumes/ipfs/staging:/export
+#    networks:
+#      - traefik_default
+
+networks:
+  traefik_default:

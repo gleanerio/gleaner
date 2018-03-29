@@ -51,12 +51,12 @@
         "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
         "headless": true,
         "sitemapformat": "xml",
-	"active": false
+	"active": true
    },
    {
         "url": "https://www.unavco.org/data/demos/doi/sitemap.xml",
         "headless": false,
         "sitemapformat": "xml",
-	"active": true
+	"active": false
    }
 ]
