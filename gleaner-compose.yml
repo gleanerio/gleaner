@@ -11,9 +11,9 @@ services:
     restart: on-failure
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/fils/P418/dataVolumes/traefik/traefik.toml:/traefik.toml
-      - /home/fils/P418/dataVolumes/traefik/acme:/acme
-      - /home/fils/P418/dataVolumes/traefik/logs:/logs
+      - /home/fils/Data/P418/dataVolumes/traefik/traefik.toml:/traefik.toml
+      - /home/fils/Data/P418/dataVolumes/traefik/acme:/acme
+      - /home/fils/Data/P418/dataVolumes/traefik/logs:/logs
     networks:
       - traefik_default
 
@@ -51,7 +51,7 @@ services:
       - "traefik.port=9851"
     restart: on-failure
     volumes:
-      - /home/fils/P418/dataVolumes/spatialindex:/data
+      - /home/fils/Data/P418/dataVolumes/spatialindex:/data
     networks:
       - traefik_default
 
