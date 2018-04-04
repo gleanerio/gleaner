@@ -49,6 +49,8 @@ services:
     labels:
       - "traefik.backend=tile38"
       - "traefik.port=9851"
+    ports:
+            - "9851:9851"
     restart: on-failure
     volumes:
       - /home/fils/Data/P418/dataVolumes/spatialindex:/data

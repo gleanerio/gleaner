@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"earthcube.org/Project418/gleaner/millers/millersgraph"
+	"earthcube.org/Project418/gleaner/millers/millerbleve"
 	"github.com/minio/minio-go"
 )
 
@@ -30,31 +30,37 @@ func main() {
 	// millersmock.MockObjects(mc, "getiedadataorg")
 
 	// ----- GRAPH calls (stores to file for each domain)
-	millersgraph.GraphMillObjects(mc, "baltoopendaporg")
-	millersgraph.GraphMillObjects(mc, "dataneotomadborg")
-	millersgraph.GraphMillObjects(mc, "earthreforg")
-	millersgraph.GraphMillObjects(mc, "getiedadataorg")
-	millersgraph.GraphMillObjects(mc, "opencoredataorg")
-	millersgraph.GraphMillObjects(mc, "opentopographyorg")
-	millersgraph.GraphMillObjects(mc, "wikilinkedearth")
-	millersgraph.GraphMillObjects(mc, "wwwbco-dmoorg")
-	millersgraph.GraphMillObjects(mc, "wwwunavcoorg")
+	// millersgraph.GraphMillObjects(mc, "baltoopendaporg")
+	// millersgraph.GraphMillObjects(mc, "dataneotomadborg")
+	// millersgraph.GraphMillObjects(mc, "earthreforg")
+	// millersgraph.GraphMillObjects(mc, "getiedadataorg")
+	// millersgraph.GraphMillObjects(mc, "opencoredataorg")
+	// millersgraph.GraphMillObjects(mc, "opentopographyorg")
+	// millersgraph.GraphMillObjects(mc, "wikilinkedearth")
+	// millersgraph.GraphMillObjects(mc, "wwwbco-dmoorg")
+	// millersgraph.GraphMillObjects(mc, "wwwunavcoorg")
 
 	// ----- SPATIAL calls (stores to tile38)
-	// millerspatial.ProcessBucketObjects(mc, "opentopographyorg")
+	// millerspatial.ProcessBucketObjects(mc, "baltoopendaporg")
 	// millerspatial.ProcessBucketObjects(mc, "dataneotomadborg")
+	// millerspatial.ProcessBucketObjects(mc, "earthreforg")
 	// millerspatial.ProcessBucketObjects(mc, "getiedadataorg")
 	// millerspatial.ProcessBucketObjects(mc, "opencoredataorg")
-	// millerspatial.ProcessBucketObjects(mc, "wwwbco-dmoorg")
+	// millerspatial.ProcessBucketObjects(mc, "opentopographyorg")
 	// millerspatial.ProcessBucketObjects(mc, "wikilinkedearth")
+	// millerspatial.ProcessBucketObjects(mc, "wwwbco-dmoorg")
+	// millerspatial.ProcessBucketObjects(mc, "wwwunavcoorg")
 
 	// ----- ORGANIC index calls
-	// millerbleve.GetObjects(mc, "opentopographyorg")
-	// millerbleve.GetObjects(mc, "dataneotomadborg")
-	// millerbleve.GetObjects(mc, "getiedadataorg")
-	// millerbleve.GetObjects(mc, "opencoredataorg")
-	// millerbleve.GetObjects(mc, "wwwbco-dmoorg")
-	// millerbleve.GetObjects(mc, "wikilinkedearth")
+	millerbleve.GetObjects(mc, "baltoopendaporg")
+	millerbleve.GetObjects(mc, "dataneotomadborg")
+	millerbleve.GetObjects(mc, "earthreforg")
+	millerbleve.GetObjects(mc, "getiedadataorg")
+	millerbleve.GetObjects(mc, "opencoredataorg")
+	millerbleve.GetObjects(mc, "opentopographyorg")
+	millerbleve.GetObjects(mc, "wikilinkedearth")
+	millerbleve.GetObjects(mc, "wwwbco-dmoorg")
+	millerbleve.GetObjects(mc, "wwwunavcoorg")
 
 	et := time.Now()
 	diff := et.Sub(st)
