@@ -26,7 +26,7 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 	useSSL := false
 	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln(err) // fatal is fine..  we can't find minio..  no need to keep going...
 	}
 	buildBuckets(minioClient, m) // TODO needs error obviously
 
@@ -35,11 +35,11 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 	defer cancel()
 	c, err := chromedp.New(ctxt, chromedp.WithTargets(client.New().WatchPageTargets(ctxt)), chromedp.WithLog(log.Printf))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err) // we need headless..  :)   or what is the point of being here..  get out with fatal..
 	}
 
 	// Set up some concurrency support
-	semaphoreChan := make(chan struct{}, 1) // a blocking channel to keep concurrency under control
+	semaphoreChan := make(chan struct{}, 1) // this HEADLESS is NOT thread safe yet!   a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
@@ -53,29 +53,16 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 			wg.Add(1)
 
 			urlloc := m[k].URL[i].Loc
-
 			fmt.Println(urlloc)
 
 			go func(i int, k string) {
-				// block until the semaphore channel has room
-				// this could also be moved out of the goroutine
-				// which would make sense if the list is huge
 				semaphoreChan <- struct{}{}
 
-				// ru := urls[i].Loc
 				var jsonld string
 				err = c.Run(ctxt, domprocess(urlloc, &jsonld))
 				if err != nil {
-					log.Fatal(err)
+					log.Println(err)
 				}
-
-				// if jsonld != "" {
-				// 	u, o, loaderror := LoadToMinio(jsonld, k, ru, minioClient, i)
-				// 	if loaderror != nil {
-				// 		log.Printf("Error loading to bucket: %s", ru)
-				// 	}
-				// 	fmt.Printf("Status: %v \n URL: %s \n ObjectName: %s \n schema.org --> \n", loaderror, u, o)
-				// }
 
 				if jsonld != "" { // traps out the root domain...   should do this different
 					// get sha1 of the JSONLD..  it's a nice ID
@@ -98,7 +85,7 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 					n, err := minioClient.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 					if err != nil {
 						log.Printf("%s", objectName)
-						log.Fatalln(err)
+						log.Println(err)
 					}
 					log.Printf("#%d Uploaded Bucket:%s File:%s Size %d \n", i, bucketName, objectName, n)
 					fmt.Printf("#%d Uploaded Bucket:%s File:%s Size %d \n", i, bucketName, objectName, n)
@@ -121,7 +108,6 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 func domprocess(targeturl string, res *string) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.Navigate(targeturl),
-		// chromedp.Sleep(1 * time.Second),
 		chromedp.Text(`#schemaorg`, res, chromedp.ByID),
 	}
 }

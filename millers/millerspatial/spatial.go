@@ -33,7 +33,7 @@ func spatialMultiCall(e []utils.Entry) {
 
 	for k := range e {
 		wg.Add(1)
-		fmt.Printf("About to run #%d in a goroutine\n", k)
+		log.Printf("About to run #%d in a goroutine\n", k)
 		go func(k int) {
 			semaphoreChan <- struct{}{}
 
@@ -69,19 +69,23 @@ func SpatialIndexer(url, jsonld string) string {
 
 	featureCollection := geojson.NewFeatureCollection()
 
+	// bleve indexes on the URL of the landing page
+	// spatial  indexes on the URL -> schema:URL  -> schema:ID   (which ever it finds last...)
+	// graph  indexes on  @ID  if not present..  it's a blank node...
+
 	for _, frame := range sfr {
-		fmt.Printf("\nFRAME: %+v\n", frame)
+		log.Printf("\nFRAME: %+v\n", frame)
 		// check that URL and ID are URLs and use ID preferred over URL
 		// TODO..  clean up this bit-o-crap(tm) code block....
 		if isValidURL(url) {
 			idToUse = url
 		}
-		if isValidURL(frame.URL) {
-			idToUse = frame.URL
-		}
-		if isValidURL(frame.ID) {
-			idToUse = frame.ID
-		}
+		// if isValidURL(frame.URL) {
+		// 	idToUse = frame.URL
+		// }
+		// if isValidURL(frame.ID) {
+		// 	idToUse = frame.ID
+		// }
 
 		if idToUse == "" {
 			log.Printf("ERROR:  we have no ID in spatial indexer to use")
@@ -90,7 +94,7 @@ func SpatialIndexer(url, jsonld string) string {
 
 	SpatialCoverages:
 		for _, coverage := range frame.SpatialCoverages {
-			//fmt.Printf("\nCOVERAGE: %+v\n", coverage)
+			//log.Printf("\nCOVERAGE: %+v\n", coverage)
 
 			// if GeoJSON was provided in spatial frame, index that.
 			for _, subjectOf := range coverage.SubjectOf {

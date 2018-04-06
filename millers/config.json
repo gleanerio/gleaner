@@ -1,0 +1,45 @@
+{
+    "millers": {
+        "graph": false,
+        "spatial": false,
+        "organic": false,
+        "mock": true
+    },
+    "sources": [{
+            "name": "baltoopendaporg",
+            "active": true
+        },
+        {
+            "name": "dataneotomadborg",
+            "active": true
+        },
+        {
+            "name": "earthreforg",
+            "active": true
+        },
+        {
+            "name": "getiedadataorg",
+            "active": true
+        },
+        {
+            "name": "opencoredataorg",
+            "active": true
+        },
+        {
+            "name": "opentopographyorg",
+            "active": true
+        },
+        {
+            "name": "wikilinkedearth",
+            "active": true
+        },
+        {
+            "name": "wwwbco-dmoorg",
+            "active": true
+        },
+        {
+            "name": "wwwunavcoorg",
+            "active": true
+        }
+    ]
+}

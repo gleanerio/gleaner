@@ -32,7 +32,7 @@ func multiCall(e []utils.Entry, bucketname string) {
 
 	for k := range e {
 		wg.Add(1)
-		fmt.Printf("About to run #%d in a goroutine\n", k)
+		log.Printf("About to run #%d in a goroutine\n", k)
 		go func(k int) {
 			semaphoreChan <- struct{}{}
 			status := jsl2graph(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
@@ -44,7 +44,7 @@ func multiCall(e []utils.Entry, bucketname string) {
 	}
 	wg.Wait()
 
-	fmt.Println(gb.Len())
+	log.Println(gb.Len())
 	fl, err := writeRDF(gb.String(), bucketname)
 	if err != nil {
 		log.Println("RDF file could not be written")
@@ -76,19 +76,50 @@ func writeRDF(rdf string, bucketname string) (int, error) {
 
 // Mock is a simple function to use as a stub for talking about millers
 func jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *utils.Buffer) int {
-	fmt.Printf("%s:  %s %s   %s =? %s \n", bucketname, key, urlval, sha1val, "foo")
+	log.Printf("%s:  %s %s   %s =? %s \n", bucketname, key, urlval, sha1val, "foo")
 
 	nq, _ := jsonLDToNQ(jsonld) // TODO replace with NQ from isValid function..  saving time..
 	rdf := globalUniqueBNodes(nq)
 
-	len, err := gb.Write([]byte(rdf))
+	lpt := lptriples(rdf, urlval)
+
+	nt := fmt.Sprintf("\n" + rdf + "\n" + lpt)
+
+	len, err := gb.Write([]byte(nt))
 	if err != nil {
 		log.Printf("error in the buffer write... %v\n", err)
 	}
 
-	// At this point we should have a pointer to a thread safe butter and call the Write function on it...
-
 	return len //  we will return the bytes count we write...
+}
+
+func lptriples(t, urlval string) string {
+	scanner := bufio.NewScanner(strings.NewReader(t))
+
+	us := []string{}
+	for scanner.Scan() {
+		split := strings.Split(scanner.Text(), " ")
+		us = appendIfMissing(us, split[0])
+	}
+
+	nt := []string{}
+	for i := range us {
+		t := fmt.Sprintf("%s <http://www.w3.org/2000/01/rdf-schema#seeAlso> <%s> .", us[i], urlval)
+		nt = append(nt, t)
+	}
+
+	lpt := strings.Join(nt, "\n")
+
+	return lpt
+}
+
+func appendIfMissing(slice []string, i string) []string {
+	for _, ele := range slice {
+		if ele == i {
+			return slice
+		}
+	}
+	return append(slice, i)
 }
 
 func jsonLDToNQ(jsonld string) (string, error) {

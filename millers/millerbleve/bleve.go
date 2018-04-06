@@ -44,7 +44,7 @@ func multiCall(e []utils.Entry, indexname string) {
 
 	for k := range e {
 		wg.Add(1)
-		fmt.Printf("About to run #%d in a goroutine\n", k)
+		log.Printf("About to run #%d in a goroutine\n", k)
 		go func(k int) {
 			semaphoreChan <- struct{}{}
 
