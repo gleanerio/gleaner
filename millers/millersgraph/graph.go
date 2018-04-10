@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 
+	"earthcube.org/Project418/gleaner/millers/hacks"
 	"earthcube.org/Project418/gleaner/millers/utils"
 	minio "github.com/minio/minio-go"
 	"github.com/piprate/json-gold/ld"
@@ -76,14 +77,13 @@ func writeRDF(rdf string, bucketname string) (int, error) {
 
 // Mock is a simple function to use as a stub for talking about millers
 func jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *utils.Buffer) int {
-	log.Printf("%s:  %s %s   %s =? %s \n", bucketname, key, urlval, sha1val, "foo")
+	nq, _ := jsonLDToNQ(jsonld)          // TODO replace with NQ from isValid function..  saving time..
+	nqprime1 := hacks.IEDA1(nq)          // test hack for IEDA on crossref
+	nqprime2 := hacks.Neotoma1(nqprime1) // test hack for Neotoma triples
+	rdf := globalUniqueBNodes(nqprime2)  // unique bnodes
+	lpt := lptriples(rdf, urlval)        // associate landing page URL with all unique subject URIs and subject bnodes in graph
 
-	nq, _ := jsonLDToNQ(jsonld) // TODO replace with NQ from isValid function..  saving time..
-	rdf := globalUniqueBNodes(nq)
-
-	lpt := lptriples(rdf, urlval)
-
-	nt := fmt.Sprintf("\n" + rdf + "\n" + lpt)
+	nt := fmt.Sprint("\n" + rdf + "\n" + lpt)
 
 	len, err := gb.Write([]byte(nt))
 	if err != nil {
