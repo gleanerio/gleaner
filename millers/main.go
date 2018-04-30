@@ -12,6 +12,7 @@ import (
 	"earthcube.org/Project418/gleaner/millers/millersgraph"
 	"earthcube.org/Project418/gleaner/millers/millersmock"
 	"earthcube.org/Project418/gleaner/millers/millerspatial"
+	"earthcube.org/Project418/gleaner/millers/millertika"
 	"earthcube.org/Project418/gleaner/millers/utils"
 
 	"github.com/minio/minio-go"
@@ -59,6 +60,12 @@ func main() {
 	if cs.Millers.Mock {
 		for d := range as {
 			millersmock.MockObjects(mc, as[d])
+		}
+	}
+
+	if cs.Millers.Tika {
+		for d := range as {
+			millertika.TikaObjects(mc, as[d])
 		}
 	}
 

@@ -6,6 +6,7 @@ type Config struct {
 		Spatial bool `json:"spatial"`
 		Organic bool `json:"organic"`
 		Mock    bool `json:"mock"`
+		Tika    bool `json:"tika"`
 	} `json:"millers"`
 	Sources []struct {
 		Name   string `json:"name"`

@@ -1,5 +1,11 @@
 [
    {
+        "url": "http://ds.iris.edu/files/sitemap.xml",
+        "headless": false,
+        "sitemapformat": "xml",
+	"active": true
+   },
+   {
         "url": "http://opencoredata.org/sitemap.xml",
         "headless": false,
         "sitemapformat": "xml",
@@ -49,7 +55,7 @@
    },
    {
         "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
-        "headless": true,
+        "headless": false,
         "sitemapformat": "xml",
 	"active": false
    },
@@ -63,6 +69,6 @@
         "url": "http://00a984b2.ngrok.io/sitemap.xml",
         "headless": false,
         "sitemapformat": "xml",
-	"active": true
+	"active": false
    }
 ]

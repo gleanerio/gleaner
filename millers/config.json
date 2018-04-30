@@ -1,9 +1,10 @@
 {
     "millers": {
-        "graph": true,
+        "graph": false,
         "spatial": false,
         "organic": false,
-        "mock": false
+        "mock": false,
+        "tika": true
     },
     "sources": [{
             "name": "baltoopendaporg",
@@ -11,7 +12,7 @@
         },
         {
             "name": "dataneotomadborg",
-            "active": true
+            "active": false
         },
         {
             "name": "earthreforg",
@@ -23,7 +24,7 @@
         },
         {
             "name": "opencoredataorg",
-            "active": false
+            "active": true
         },
         {
             "name": "opentopographyorg",
@@ -40,6 +41,11 @@
         {
             "name": "wwwunavcoorg",
             "active": false
+        },
+        {
+            "name": "dsirisedu",
+            "active": false
         }
+
     ]
 }
