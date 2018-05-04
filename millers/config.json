@@ -1,14 +1,14 @@
 {
     "millers": {
-        "graph": false,
+        "graph": true,
         "spatial": false,
-        "organic": false,
+        "organic": true,
         "mock": false,
-        "tika": true
+        "tika": false
     },
     "sources": [{
             "name": "baltoopendaporg",
-            "active": false
+            "active": true
         },
         {
             "name": "dataneotomadborg",
@@ -24,7 +24,7 @@
         },
         {
             "name": "opencoredataorg",
-            "active": true
+            "active": false
         },
         {
             "name": "opentopographyorg",

@@ -3,7 +3,7 @@
         "url": "http://ds.iris.edu/files/sitemap.xml",
         "headless": false,
         "sitemapformat": "xml",
-	"active": true
+	"active": false
    },
    {
         "url": "http://opencoredata.org/sitemap.xml",
@@ -51,11 +51,11 @@
         "url": "http://balto.opendap.org/opendap/site_map.txt",
         "headless": false,
         "sitemapformat": "text",
-	"active": false
+	"active": true
    },
    {
         "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
-        "headless": false,
+        "headless": true,
         "sitemapformat": "xml",
 	"active": false
    },
