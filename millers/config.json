@@ -1,14 +1,14 @@
 {
     "millers": {
-        "graph": true,
+        "graph": false,
         "spatial": false,
-        "organic": true,
+        "organic": false,
         "mock": false,
-        "tika": false
+        "tika": true
     },
     "sources": [{
             "name": "baltoopendaporg",
-            "active": true
+            "active": false
         },
         {
             "name": "dataneotomadborg",
@@ -36,7 +36,7 @@
         },
         {
             "name": "wwwbco-dmoorg",
-            "active": false
+            "active": true
         },
         {
             "name": "wwwunavcoorg",

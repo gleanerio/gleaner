@@ -33,7 +33,7 @@
         "url": "http://data.neotomadb.org/sitemap.xml",
         "headless": false,
         "sitemapformat": "xml",
-	"active": false
+	"active": true
    },
    {
         "url": "http://wiki.linked.earth/sitemap.xml",
@@ -51,7 +51,7 @@
         "url": "http://balto.opendap.org/opendap/site_map.txt",
         "headless": false,
         "sitemapformat": "text",
-	"active": true
+	"active": false
    },
    {
         "url": "https://earthref.org/MagIC/contributions.sitemap.xml",

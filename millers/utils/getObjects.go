@@ -59,5 +59,4 @@ func GetMillObjects(mc *minio.Client, bucketname string) []Entry {
 	// multiCall(entries)
 
 	return entries
-
 }

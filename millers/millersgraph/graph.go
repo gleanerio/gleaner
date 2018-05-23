@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/millers/hacks"
+
 	"earthcube.org/Project418/gleaner/millers/utils"
 	minio "github.com/minio/minio-go"
 	"github.com/piprate/json-gold/ld"
@@ -77,11 +78,20 @@ func writeRDF(rdf string, bucketname string) (int, error) {
 
 // Mock is a simple function to use as a stub for talking about millers
 func jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *utils.Buffer) int {
-	nq, _ := jsonLDToNQ(jsonld)          // TODO replace with NQ from isValid function..  saving time..
-	nqprime1 := hacks.IEDA1(nq)          // test hack for IEDA on crossref
-	nqprime2 := hacks.Neotoma1(nqprime1) // test hack for Neotoma triples
-	rdf := globalUniqueBNodes(nqprime2)  // unique bnodes
-	lpt := lptriples(rdf, urlval)        // associate landing page URL with all unique subject URIs and subject bnodes in graph
+	nq, err := jsonLDToNQ(jsonld, urlval) // TODO replace with NQ from isValid function..  saving time..
+	if err != nil {
+		log.Printf("error in the jsonld write... %v\n", err)
+	}
+	// IEDA hack call  (hope to remove)
+	if bucketname == "getiedadataorg" {
+		nq = hacks.IEDA1(nq)
+	}
+	// Neotoma hack call (hope to remove)
+	if bucketname == "dataneotomadborg" {
+		nq = hacks.Neotoma1(nq)
+	}
+	rdf := globalUniqueBNodes(nq) // unique bnodes
+	lpt := lptriples(rdf, urlval) // associate landing page URL with all unique subject URIs and subject bnodes in graph
 
 	nt := fmt.Sprint("\n" + rdf + "\n" + lpt)
 
@@ -93,6 +103,7 @@ func jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *utils.Buffer
 	return len //  we will return the bytes count we write...
 }
 
+// TODO look for <s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Dataset> .
 func lptriples(t, urlval string) string {
 	scanner := bufio.NewScanner(strings.NewReader(t))
 
@@ -122,7 +133,7 @@ func appendIfMissing(slice []string, i string) []string {
 	return append(slice, i)
 }
 
-func jsonLDToNQ(jsonld string) (string, error) {
+func jsonLDToNQ(jsonld, urlval string) (string, error) {
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
 	options.Format = "application/nquads"
@@ -130,13 +141,13 @@ func jsonLDToNQ(jsonld string) (string, error) {
 	var myInterface interface{}
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
 	if err != nil {
-		log.Println("Error when transforming JSON-LD document to interface:", err)
+		log.Println("Error when transforming %s JSON-LD document to interface:", urlval, err)
 		return "", err
 	}
 
 	nq, err := proc.ToRDF(myInterface, options) // returns triples but toss them, we just want to see if this processes with no err
 	if err != nil {
-		log.Println("Error when transforming JSON-LD document to RDF:", err)
+		log.Println("Error when transforming %s  JSON-LD document to RDF:", urlval, err)
 		return "", err
 	}
 

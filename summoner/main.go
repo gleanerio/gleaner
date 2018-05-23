@@ -36,7 +36,7 @@ func main() {
 	fmt.Println(domains)
 	fmt.Println(headlessdomains)
 
-	// TODO  the following two loops could be donen concurrently
+	// TODO  the following two loops could be done concurrently
 	ru := acquire.ResourceURLsJSON(domains) // map by domain name and []string of landing page URLs
 	if len(ru) > 0 {
 		acquire.ResRetrieve(ru, cs)

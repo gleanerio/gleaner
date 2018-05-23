@@ -33,9 +33,9 @@ func Neotoma1(input string) string {
 				for i := range urls {
 					buffer.WriteString(fmt.Sprintf("%s %s <%s> .\n", ot[0], ot[1], strings.TrimSpace(urls[i])))
 				}
-			} else {
-				buffer.WriteString(scanner.Text())
 			}
+		} else {
+			buffer.WriteString(scanner.Text() + "\n")
 		}
 	}
 	return buffer.String()

@@ -12,17 +12,37 @@ import (
 
 	"earthcube.org/Project418/gleaner/millers/utils"
 	"github.com/bbalet/stopwords"
+	"github.com/blevesearch/bleve"
 	"github.com/buger/jsonparser"
 	minio "github.com/minio/minio-go"
 )
 
 // MockObjects test a concurrent version of calling mock
 func TikaObjects(mc *minio.Client, bucketname string) {
+	indexname := fmt.Sprintf("./output/bleve/%s_data", bucketname)
+	initBleve(indexname)
 	entries := utils.GetMillObjects(mc, bucketname)
-	multiCall(entries)
+	multiCall(entries, indexname)
 }
 
-func multiCall(e []utils.Entry) {
+// Initialize the text index  // this function needs some attention (of course they all do)
+func initBleve(filename string) {
+	mapping := bleve.NewIndexMapping()
+	index, berr := bleve.New(filename, mapping)
+	if berr != nil {
+		log.Printf("Bleve error making index %v \n", berr)
+	}
+	index.Close()
+}
+
+func multiCall(e []utils.Entry, indexname string) {
+	// TODO..   open the bleve index here once and pass by reference to text
+	index, berr := bleve.Open(indexname)
+	if berr != nil {
+		// should panic here?..  no index..  no reason to keep living  :(
+		log.Printf("Bleve error making index %v \n", berr)
+	}
+
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 1) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -33,7 +53,8 @@ func multiCall(e []utils.Entry) {
 		log.Printf("About to run #%d in a goroutine\n", k)
 		go func(k int) {
 			semaphoreChan <- struct{}{}
-			status := simplePrint(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld)
+
+			status := simplePrint(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, index)
 
 			wg.Done() // tell the wait group that we be done
 			log.Printf("#%d done with %s with %s", k, status, e[k].Urlval)
@@ -41,18 +62,31 @@ func multiCall(e []utils.Entry) {
 		}(k)
 	}
 	wg.Wait()
+
+	index.Close()
 }
 
 // Mock is a simple function to use as a stub for talking about millers
-func simplePrint(bucketname, key, urlval, sha1val, jsonld string) string {
-	//	fmt.Printf("%s:  %s %s   %s =? %s \n", bucketname, key, urlval, sha1val, getsha(jsonld))
-
+func simplePrint(bucketname, key, urlval, sha1val, jsonld string, index bleve.Index) string {
 	// Pull The file download URLs from the jsonld
-	dl, _ := jsonparser.GetString([]byte(jsonld), "distribution", "contentUrl")
+	// dl, err := jsonparser.GetString([]byte(jsonld), "distribution", "contentUrl")
+	dl, err := jsonparser.GetString([]byte(jsonld), "url")
+	if err != nil {
+		log.Println(err)
+		return "bad"
+	}
+
+	// TODO
+	// get the mimetype too..   then only process the file is they map a type if we want
+	// or pass the mimetype along to the process.
+	// mt, err := jsonparser.GetString([]byte(jsonld), "distribution", "fileType??")
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return "bad"
+	// }
 
 	rd, err := http.Get(dl)
 	if err != nil {
-		log.Println("Can not get the file to download")
 		log.Println(err)
 		return "bad"
 	}
@@ -62,6 +96,7 @@ func simplePrint(bucketname, key, urlval, sha1val, jsonld string) string {
 	r, _ := ioutil.ReadAll(rd.Body)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(r))
 	req.Header.Set("Accept", "text/plain")
+	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -77,9 +112,16 @@ func simplePrint(bucketname, key, urlval, sha1val, jsonld string) string {
 	}
 	sw := stopwords.CleanString(string(body), "en", true)
 
-	fmt.Println(urlval)
-	fmt.Println(dl)
-	fmt.Println(sw)
+	// fmt.Println(urlval)
+	// fmt.Println(dl)
+	// fmt.Println(sw)
+
+	// index some data
+	berr := index.Index(urlval, sw)
+	log.Printf("Blevel Indexed item with ID %s\n", urlval)
+	if berr != nil {
+		log.Printf("Bleve error indexing %v \n", berr)
+	}
 
 	// load the cleanstring into KV store for later belve indexing in stage 2.
 
@@ -88,12 +130,4 @@ func simplePrint(bucketname, key, urlval, sha1val, jsonld string) string {
 	// results to a KV store to later sequentially index via belve.
 
 	return "ok"
-}
-
-func getsha(jsonld string) string {
-	h := sha1.New()
-	h.Write([]byte(jsonld))
-	bs := h.Sum(nil)
-	bss := fmt.Sprintf("%x", bs)
-	return bss
 }

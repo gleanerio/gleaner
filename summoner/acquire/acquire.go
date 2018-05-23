@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 
 	"earthcube.org/Project418/gleaner/summoner/sitemaps"
@@ -29,7 +30,7 @@ func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
 	buildBuckets(minioClient, m) // TODO needs error obviously
 
 	// set up some concurrency support
-	semaphoreChan := make(chan struct{}, 15) // a blocking channel to keep concurrency under control
+	semaphoreChan := make(chan struct{}, 5) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
@@ -84,6 +85,11 @@ func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
 					})
 				}
 
+				// TODO  Neotoma hack....
+				// if X == neotoma {
+				jsonld = strings.Replace(jsonld, "\"@context\": \"http://schema.org\",", "\"@context\": { \"@vocab\": \"http://schema.org/\"},", 1)
+				// }
+
 				// if jsonld != "" {
 				// 	u, o, err := LoadToMinio(jsonld, k, urlloc, minioClient, i)
 				// 	if err != nil {
@@ -110,7 +116,7 @@ func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
 					usermeta["sha1"] = bss
 					bucketName := k
 
-					// Upload the zip file with FPutObject
+					// Upload the file with FPutObject
 					n, err := minioClient.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 					if err != nil {
 						log.Printf("%s", objectName)
