@@ -1,0 +1,109 @@
+{
+    "minio": {
+        "endpoint": "localhost:9000",
+        "accessKeyID": "AKIAIOSFODNN7EXAMPLE",
+        "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    },
+    "millers": {
+        "mock": false,
+        "graph": true,
+        "spatial": true,
+        "organic": true,
+        "tika": false,
+        "fdptika": false,
+        "fdpgraph": false,
+        "prov": true
+    },
+    "sources": [{
+            "name": "baltoopendaporg",
+            "url": "http://balto.opendap.org/opendap/site_map.txt",
+            "headless": false,
+            "sitemapformat": "text",
+            "active": false
+        },
+        {
+            "name": "wwwhydroshareorg",
+            "url": "https://www.hydroshare.org/sitemap-resources.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": true
+        },
+        {
+            "name": "cdfregistry",
+            "url": "http://scientificdrillingdata.org/cdfsitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "dataneotomadborg",
+            "url": "http://data.neotomadb.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "earthreforg",
+            "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
+            "headless": true,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "getiedadataorg",
+            "url": "http://get.iedadata.org/doi/xml-sitemap.php",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "opencoredataorg",
+            "url": "http://opencoredata.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "csdco",
+            "url": "http://opencoredata.org/sitemapCSDCO.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "opentopographyorg",
+            "url": "http://opentopography.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "wikilinkedearth",
+            "url": "http://wiki.linked.earth/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "wwwbco-dmoorg",
+            "url": "https://www.bco-dmo.org/sitemap.xml?page=1",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "wwwunavcoorg",
+            "url": "https://www.unavco.org/data/demos/doi/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "dsirisedu",
+            "url": "http://ds.iris.edu/files/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        }
+    ]
+}

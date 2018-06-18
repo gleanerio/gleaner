@@ -17,7 +17,7 @@ import (
 	minio "github.com/minio/minio-go"
 	geojson "github.com/paulmach/go.geojson"
 
-	"earthcube.org/Project418/gleaner/millers/utils"
+	"earthcube.org/Project418/gleaner/utils"
 )
 
 func ProcessBucketObjects(mc *minio.Client, bucketname string) {
@@ -107,7 +107,8 @@ func SpatialIndexer(url, jsonld string) string {
 							// Skip to the next
 							continue SpatialCoverages
 						} else {
-							log.Println("Could not index the GeoJSON:", err)
+							// log.Println("Could not index the GeoJSON:", err)
+							log.Printf("ERROR: id:%s  on the geojson: %v", idToUse, err)
 						}
 					}
 				}
@@ -126,7 +127,8 @@ func SpatialIndexer(url, jsonld string) string {
 							// Skip to the next
 							continue SpatialCoverageGeo
 						} else {
-							log.Println("Could not index the Point:", err)
+							// log.Println("Could not index the Point:", err)
+							log.Printf("ERROR: id:%s  on geom POINT: %v", idToUse, err)
 						}
 					}
 					break
@@ -142,7 +144,8 @@ func SpatialIndexer(url, jsonld string) string {
 								// Skip to the next
 								continue SpatialCoverageGeo
 							} else {
-								log.Println("Could not index the Polygon:", err)
+								// log.Println("Could not index the Polygon:", err)
+								log.Printf("ERROR: id:%s  on geom POLYGON: %v", idToUse, err)
 							}
 						}
 					}
@@ -157,7 +160,8 @@ func SpatialIndexer(url, jsonld string) string {
 								// Skip to the next
 								continue SpatialCoverageGeo
 							} else {
-								log.Println("Could not index the Line:", err)
+								// log.Println("Could not index the Line:", err)
+								log.Printf("ERROR: id:%s  on geom LINE: %v", idToUse, err)
 							}
 						}
 					}
@@ -171,7 +175,8 @@ func SpatialIndexer(url, jsonld string) string {
 								// Skip to the next
 								continue SpatialCoverageGeo
 							} else {
-								log.Println("Could not index the Circle:", err)
+								// log.Println("Could not index the Circle:", err)
+								log.Printf("ERROR: id:%s  on geom CIRCLE: %v", idToUse, err)
 							}
 						}
 					}
@@ -186,7 +191,8 @@ func SpatialIndexer(url, jsonld string) string {
 								// Skip to the next
 								continue SpatialCoverageGeo
 							} else {
-								log.Println("Could not index the Box:", err)
+								// log.Println("Could not index the Box:", err)
+								log.Printf("ERROR: id:%s  on geom BOX: %v", idToUse, err)
 							}
 						}
 					}

@@ -5,29 +5,31 @@ import (
 	"log"
 	"sync"
 
-	"earthcube.org/Project418/gleaner/millers/utils"
+	"earthcube.org/Project418/gleaner/millers/millerutils"
+
+	"earthcube.org/Project418/gleaner/utils"
 	"github.com/blevesearch/bleve"
 	minio "github.com/minio/minio-go"
 )
 
 // GetObjects test a concurrent version of calling mock
 func GetObjects(mc *minio.Client, bucketname string) {
-	indexname := fmt.Sprintf("./output/bleve/%s", bucketname)
-	initBleve(indexname)
+	indexname := fmt.Sprintf("%s", bucketname)
+	fp := millerutils.NewinitBleve(indexname) //  initBleve(indexname)
 	entries := utils.GetMillObjects(mc, bucketname)
-	multiCall(entries, indexname)
+	multiCall(entries, fp)
 
 }
 
-// Initialize the text index  // this function needs some attention (of course they all do)
-func initBleve(filename string) {
-	mapping := bleve.NewIndexMapping()
-	index, berr := bleve.New(filename, mapping)
-	if berr != nil {
-		log.Printf("Bleve error making index %v \n", berr)
-	}
-	index.Close()
-}
+// // Initialize the text index  // this function needs some attention (of course they all do)
+// func initBleve(filename string) {
+// 	mapping := bleve.NewIndexMapping()
+// 	index, berr := bleve.New(filename, mapping)
+// 	if berr != nil {
+// 		log.Printf("Bleve error making index %v \n", berr)
+// 	}
+// 	index.Close()
+// }
 
 func multiCall(e []utils.Entry, indexname string) {
 	// TODO..   open the bleve index here once and pass by reference to text
@@ -60,14 +62,8 @@ func multiCall(e []utils.Entry, indexname string) {
 	index.Close()
 }
 
+// index some jsonld with an ID
 func textIndexer(ID string, jsonld string, index bleve.Index) string {
-	// index, berr := bleve.New(textindex, mapping)
-	// index, berr := bleve.Open(textindex)
-	// if berr != nil {
-	// 	log.Printf("Bleve error making index %v \n", berr)
-	// }
-
-	// index some data
 	berr := index.Index(ID, jsonld)
 	log.Printf("Blevel Indexed item with ID %s\n", ID)
 	if berr != nil {

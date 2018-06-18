@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/summoner/sitemaps"
-	"earthcube.org/Project418/gleaner/summoner/utils"
+	"earthcube.org/Project418/gleaner/utils"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/client"
 	minio "github.com/minio/minio-go"

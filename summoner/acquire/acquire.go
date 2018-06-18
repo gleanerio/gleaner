@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/summoner/sitemaps"
-	"earthcube.org/Project418/gleaner/summoner/utils"
+	"earthcube.org/Project418/gleaner/utils"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go"
 )

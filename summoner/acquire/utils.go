@@ -10,13 +10,14 @@ import (
 	"os"
 
 	"earthcube.org/Project418/gleaner/summoner/sitemaps"
-	"earthcube.org/Project418/gleaner/summoner/utils"
+	"earthcube.org/Project418/gleaner/utils"
 	"github.com/kazarena/json-gold/ld"
 	minio "github.com/minio/minio-go"
 )
 
 // Sources is a struct holding the metadata associated with the sites to harvest
 type Sources struct {
+	Name          string
 	URL           string
 	Headless      bool
 	SitemapFormat string
@@ -74,19 +75,18 @@ func isValid(jsonld string) error {
 	return err
 }
 
-func DomainListJSON(f string) ([]Sources, []Sources, error) {
-	log.Printf("Opening source list file: %s \n", f)
+func DomainListJSON(cs utils.Config) ([]Sources, []Sources, error) {
+	// log.Printf("Opening source list file: %s \n", f)
 
 	var domains []Sources
 
-	file, err := os.Open(f)
-	if err != nil {
-		log.Fatal(err)
+	for _, v := range cs.Sources {
+		source := Sources{Name: v.Name, URL: v.URL, Headless: v.Headless,
+			SitemapFormat: v.Sitemapformat, Active: v.Active}
+		domains = append(domains, source)
 	}
-	defer file.Close()
 
-	jp := json.NewDecoder(file)
-	jp.Decode(&domains)
+	// domains = cs.Sources
 
 	hd := make([]Sources, len(domains))
 	copy(hd, domains) // make sure to make with len to have "len" to copy into
@@ -98,7 +98,7 @@ func DomainListJSON(f string) ([]Sources, []Sources, error) {
 		}
 	}
 
-	// NOTE use downward loop to avoid removing and altering sliec index in the process
+	// NOTE use downward loop to avoid removing and altering slice index in the process
 	for i := len(domains) - 1; i >= 0; i-- {
 		haveToDelete := domains[i].Headless
 		if haveToDelete {

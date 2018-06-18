@@ -1,0 +1,16 @@
+2018/05/11 12:05:49 Error when transforming JSON-LD document to interface: invalid character ',' looking for beginning of value
+2018/05/11 12:05:49 ERROR: At http://balto.opendap.org/opendap/data/ff/1998-6-avhrr.dat.ifh JSON-LD is NOT valid: invalid character ',' looking for beginning of value
+2018/05/11 12:05:49 Error when transforming JSON-LD document to interface: invalid character ',' looking for beginning of value
+2018/05/11 12:05:49 ERROR: At http://balto.opendap.org/opendap/data/ff/avhrr.dat.ifh JSON-LD is NOT valid: invalid character ',' looking for beginning of value
+2018/05/11 12:05:49 Error when transforming JSON-LD document to interface: invalid character ',' looking for beginning of value
+2018/05/11 12:05:49 ERROR: At http://balto.opendap.org/opendap/data/ff/gsodock.dat.ifh JSON-LD is NOT valid: invalid character ',' looking for beginning of value
+2018/05/11 12:05:59 Error when transforming JSON-LD document to interface: invalid character '\n' in string literal
+2018/05/11 12:05:59 ERROR: At http://balto.opendap.org/opendap/data/ncml/agg/grids/f97182183448.hdf.ifh JSON-LD is NOT valid: invalid character '\n' in string literal
+2018/05/11 12:06:00 Error when transforming JSON-LD document to interface: invalid character '\n' in string literal
+2018/05/11 12:06:00 ERROR: At http://balto.opendap.org/opendap/data/ncml/agg/grids/f97183065853.hdf.ifh JSON-LD is NOT valid: invalid character '\n' in string literal
+2018/05/11 12:06:01 Error when transforming JSON-LD document to interface: invalid character '\n' in string literal
+2018/05/11 12:06:01 ERROR: At http://balto.opendap.org/opendap/data/ncml/agg/joinNew_grid.ncml.ifh JSON-LD is NOT valid: invalid character '\n' in string literal
+2018/05/11 12:06:01 Error when transforming JSON-LD document to interface: invalid character '\n' in string literal
+2018/05/11 12:06:01 ERROR: At http://balto.opendap.org/opendap/data/ncml/agg/joinNew_scan.ncml.ifh JSON-LD is NOT valid: invalid character '\n' in string literal
+2018/05/11 12:06:01 Error when transforming JSON-LD document to interface: invalid character '\n' in string literal
+2018/05/11 12:06:01 ERROR: At http://balto.opendap.org/opendap/data/ncml/agg/grids/f97182070958.hdf.ifh JSON-LD is NOT valid: invalid character '\n' in string literal

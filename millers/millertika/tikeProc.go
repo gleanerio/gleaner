@@ -2,7 +2,6 @@ package millertika
 
 import (
 	"bytes"
-	"crypto/sha1"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -10,7 +9,8 @@ import (
 	"sync"
 	//	"log"
 
-	"earthcube.org/Project418/gleaner/millers/utils"
+	"earthcube.org/Project418/gleaner/millers/millerutils"
+	"earthcube.org/Project418/gleaner/utils"
 	"github.com/bbalet/stopwords"
 	"github.com/blevesearch/bleve"
 	"github.com/buger/jsonparser"
@@ -19,21 +19,26 @@ import (
 
 // MockObjects test a concurrent version of calling mock
 func TikaObjects(mc *minio.Client, bucketname string) {
-	indexname := fmt.Sprintf("./output/bleve/%s_data", bucketname)
-	initBleve(indexname)
+	// indexname := fmt.Sprintf("./output/bleve/%s_data", bucketname)
+	// initBleve(indexname)
+	// entries := utils.GetMillObjects(mc, bucketname)
+	// multiCall(entries, indexname)
+
+	indexname := fmt.Sprintf("%s_data", bucketname)
+	fp := millerutils.NewinitBleve(indexname) //  initBleve(indexname)
 	entries := utils.GetMillObjects(mc, bucketname)
-	multiCall(entries, indexname)
+	multiCall(entries, fp)
 }
 
 // Initialize the text index  // this function needs some attention (of course they all do)
-func initBleve(filename string) {
-	mapping := bleve.NewIndexMapping()
-	index, berr := bleve.New(filename, mapping)
-	if berr != nil {
-		log.Printf("Bleve error making index %v \n", berr)
-	}
-	index.Close()
-}
+// func initBleve(filename string) {
+// 	mapping := bleve.NewIndexMapping()
+// 	index, berr := bleve.New(filename, mapping)
+// 	if berr != nil {
+// 		log.Printf("Bleve error making index %v \n", berr)
+// 	}
+// 	index.Close()
+// }
 
 func multiCall(e []utils.Entry, indexname string) {
 	// TODO..   open the bleve index here once and pass by reference to text
@@ -54,7 +59,7 @@ func multiCall(e []utils.Entry, indexname string) {
 		go func(k int) {
 			semaphoreChan <- struct{}{}
 
-			status := simplePrint(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, index)
+			status := tikaIndex(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Jld, index)
 
 			wg.Done() // tell the wait group that we be done
 			log.Printf("#%d done with %s with %s", k, status, e[k].Urlval)
@@ -67,7 +72,7 @@ func multiCall(e []utils.Entry, indexname string) {
 }
 
 // Mock is a simple function to use as a stub for talking about millers
-func simplePrint(bucketname, key, urlval, sha1val, jsonld string, index bleve.Index) string {
+func tikaIndex(bucketname, key, urlval, jsonld string, index bleve.Index) string {
 	// Pull The file download URLs from the jsonld
 	// dl, err := jsonparser.GetString([]byte(jsonld), "distribution", "contentUrl")
 	dl, err := jsonparser.GetString([]byte(jsonld), "url")
@@ -75,6 +80,12 @@ func simplePrint(bucketname, key, urlval, sha1val, jsonld string, index bleve.In
 		log.Println(err)
 		return "bad"
 	}
+
+	// BCO-DMO filter for urls with only
+	// if strings.Contains(dl, "/dataset/") != true {
+	// 	log.Println("Skipping non-data URL")
+	// 	return "skipped"
+	// }
 
 	// TODO
 	// get the mimetype too..   then only process the file is they map a type if we want
@@ -84,6 +95,12 @@ func simplePrint(bucketname, key, urlval, sha1val, jsonld string, index bleve.In
 	// 	log.Println(err)
 	// 	return "bad"
 	// }
+
+	// TODO
+	// Given the URL..   get the datapackage file
+	// convert to a struct..
+	// loop on entries....
+	// index them one by one with URL to download...
 
 	rd, err := http.Get(dl)
 	if err != nil {

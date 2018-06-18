@@ -9,7 +9,7 @@ import (
 	"sync"
 	//	"log"
 
-	"earthcube.org/Project418/gleaner/millers/utils"
+	"earthcube.org/Project418/gleaner/utils"
 	minio "github.com/minio/minio-go"
 )
 

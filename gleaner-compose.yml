@@ -67,19 +67,5 @@ services:
     networks:
       - traefik_default
 
-#  ipfs:
-#    image: ipfs/go-ipfs:latest
-#    labels:
-#      - "traefik.backend=ipfs"
-#      - "traefik.frontend.rule=Host:ipfs.geodex.org"
-#      - "traefik.port=4001"
-#      - "traefik.port=5001"
-#      - "traefik.port=8080"
-#    volumes:
-#      - /dataVolumes/ipfs/data:/data/ipfs
-#      - /dataVolumes/ipfs/staging:/export
-#    networks:
-#      - traefik_default
-
 networks:
   traefik_default:

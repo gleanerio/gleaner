@@ -1,0 +1,64 @@
+{
+    "millers": {
+        "mock": false,
+        "graph": true,
+        "spatial": false,
+        "organic": true,
+        "tika": false,
+        "fdptika": false,
+        "prov": false
+    },
+    "sources": [{
+            "name": "baltoopendaporg",
+            "active": false
+        },
+	{
+	    "name": "wwwhydroshareorg",
+	    "active": false
+	},
+        {
+            "name": "cdfregistry",
+            "active": false
+        },
+        {
+            "name": "dataneotomadborg",
+            "active": false
+        },
+        {
+            "name": "earthreforg",
+            "active": false
+        },
+        {
+            "name": "getiedadataorg",
+            "active": false
+        },
+        {
+            "name": "opencoredataorg",
+            "active": false
+        },
+        {
+            "name": "csdco",
+            "active": true
+        },
+        {
+            "name": "opentopographyorg",
+            "active": false
+        },
+        {
+            "name": "wikilinkedearth",
+            "active": false
+        },
+        {
+            "name": "wwwbco-dmoorg",
+            "active": false
+        },
+        {
+            "name": "wwwunavcoorg",
+            "active": false
+        },
+        {
+            "name": "dsirisedu",
+            "active": false
+        }
+    ]
+}
