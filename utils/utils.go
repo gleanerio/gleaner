@@ -25,6 +25,7 @@ type Config struct {
 	} `json:"millers"`
 	Sources []struct {
 		Name          string `json:"name"`
+		ShortName     string `json:"shortname"`
 		URL           string `json:"url"`
 		Headless      bool   `json:"headless"`
 		Sitemapformat string `json:"sitemapformat"`
