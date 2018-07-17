@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -38,7 +37,7 @@ func main() {
 	flag.Parse()
 
 	// load config file
-	cs := loadConfiguration(cfgFileLoc)
+	cs := utils.LoadConfiguration(cfgFileLoc)
 
 	// TODO check for output directory and make it if it doesn't exist
 	path := "./output" // put in config file????
@@ -183,18 +182,6 @@ func summoner(cs utils.Config) {
 	}
 
 	log.Printf("Summoner end time: %s \n", time.Now()) // Log end time
-}
-
-func loadConfiguration(file *string) utils.Config {
-	var config utils.Config
-	configFile, err := os.Open(*file)
-	defer configFile.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	jsonParser := json.NewDecoder(configFile)
-	jsonParser.Decode(&config)
-	return config
 }
 
 // Set up minio and initialize client

@@ -2,7 +2,10 @@ package utils
 
 import (
 	"crypto/sha1"
+	"encoding/json"
+	"fmt"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -31,6 +34,18 @@ type Config struct {
 		Sitemapformat string `json:"sitemapformat"`
 		Active        bool   `json:"active"`
 	} `json:"sources"`
+}
+
+func LoadConfiguration(file *string) Config {
+	var config Config
+	configFile, err := os.Open(*file)
+	defer configFile.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	jsonParser := json.NewDecoder(configFile)
+	jsonParser.Decode(&config)
+	return config
 }
 
 // DomainNameShort takes a URL, pulls them domain and removes the dots

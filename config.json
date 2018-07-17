@@ -6,9 +6,9 @@
     },
     "millers": {
         "mock": false,
-        "graph": true,
-        "spatial": true,
-        "organic": true,
+        "graph": false,
+        "spatial": false,
+        "organic": false,
         "tika": false,
         "fdptika": false,
         "fdpgraph": false,
@@ -26,7 +26,7 @@
         {
             "name": "wwwhydroshareorg",
             "shortname": "hydroshare",
-	    "logo": "http://geodex.org/images/logos/cuahsiHydroshare.png",
+            "logo": "http://geodex.org/images/logos/cuahsiHydroshare.png",
             "url": "https://www.hydroshare.org/sitemap-resources.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -35,7 +35,7 @@
         {
             "name": "cdfregistry",
             "shortname": "cdf",
-	    "logo": "http://geodex.org/images/logos/EarthCubeLogo.png",
+            "logo": "http://geodex.org/images/logos/EarthCubeLogo.png",
             "url": "http://scientificdrillingdata.org/cdfsitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -44,7 +44,7 @@
         {
             "name": "dataneotomadborg",
             "shortname": "neotoma",
-	    "logo": "http://geodex.org/images/logos/neotoma.png",
+            "logo": "http://geodex.org/images/logos/neotoma.png",
             "url": "http://data.neotomadb.org/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -53,7 +53,7 @@
         {
             "name": "earthreforg",
             "shortname": "magic",
-	    "logo": "http://geodex.org/images/logos/magic.png",
+            "logo": "http://geodex.org/images/logos/magic.png",
             "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
             "headless": true,
             "sitemapformat": "xml",
@@ -62,7 +62,7 @@
         {
             "name": "getiedadataorg",
             "shortname": "ieda",
-	    "logo": "http://geodex.org/images/logos/ieda_maplogo.png",
+            "logo": "http://geodex.org/images/logos/ieda_maplogo.png",
             "url": "http://get.iedadata.org/doi/xml-sitemap.php",
             "headless": false,
             "sitemapformat": "xml",
@@ -71,7 +71,7 @@
         {
             "name": "opencoredataorg",
             "shortname": "opencore",
-	    "logo": "http://geodex.org/images/logos/ocd_logo.jpg",
+            "logo": "http://geodex.org/images/logos/ocd_logo.jpg",
             "url": "http://opencoredata.org/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -80,7 +80,7 @@
         {
             "name": "csdco",
             "shortname": "csdco",
-	    "logo": "http://geodex.org/images/logos/csdco.png",
+            "logo": "http://geodex.org/images/logos/csdco.png",
             "url": "http://opencoredata.org/sitemapCSDCO.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -89,7 +89,7 @@
         {
             "name": "opentopographyorg",
             "shortname": "opentopo",
-	    "logo": "http://geodex.org/images/logos/opentopo.png",
+            "logo": "http://geodex.org/images/logos/opentopo.png",
             "url": "http://opentopography.org/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -98,7 +98,7 @@
         {
             "name": "wikilinkedearth",
             "shortname": "linkedearth",
-	    "logo": "http://geodex.org/images/logos/linkedEarth.jpeg",
+            "logo": "http://geodex.org/images/logos/linkedEarth.jpeg",
             "url": "http://wiki.linked.earth/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -107,7 +107,7 @@
         {
             "name": "wwwbco-dmoorg",
             "shortname": "bcodmo",
-	    "logo": "http://geodex.org/images/logos/bco-dmo-words-BLUE.jpg",
+            "logo": "http://geodex.org/images/logos/bco-dmo-words-BLUE.jpg",
             "url": "https://www.bco-dmo.org/sitemap.xml?page=1",
             "headless": false,
             "sitemapformat": "xml",
@@ -116,7 +116,7 @@
         {
             "name": "wwwunavcoorg",
             "shortname": "unavco",
-	    "logo": "http://geodex.org/images/logos/uv-logo.png",
+            "logo": "http://geodex.org/images/logos/uv-logo.png",
             "url": "https://www.unavco.org/data/demos/doi/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
@@ -125,7 +125,7 @@
         {
             "name": "dsirisedu",
             "shortname": "iris",
-	    "logo": "http://geodex.org/images/logos/iris_color_screen_lrg.png",
+            "logo": "http://geodex.org/images/logos/iris_color_screen_lrg.png",
             "url": "http://ds.iris.edu/files/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
