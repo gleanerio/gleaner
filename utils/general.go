@@ -4,13 +4,21 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/url"
 	"os"
 	"strings"
+
+	"github.com/minio/minio-go"
 )
 
 // Config struct
 type Config struct {
+	Gleaner struct {
+		Summon     bool   `json:"summon"`
+		Mill       bool   `json:"mill"`
+		Configfile string `json:"configfile"`
+	} `json:"gleaner"`
 	Minio struct {
 		Endpoint        string `json:"endpoint"`
 		AccessKeyID     string `json:"accessKeyID"`
@@ -36,9 +44,10 @@ type Config struct {
 	} `json:"sources"`
 }
 
-func LoadConfiguration(file *string) Config {
+//LoadConfiguration take a string name of a configuration file
+func LoadConfiguration(file string) Config {
 	var config Config
-	configFile, err := os.Open(*file)
+	configFile, err := os.Open(file)
 	defer configFile.Close()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -74,4 +83,26 @@ func GetSHA1(b []byte) string {
 	h.Write(b)
 	bs := h.Sum(nil)
 	return string(bs)
+}
+
+// Set up minio and initialize client
+func MinioConnection(cs Config) *minio.Client {
+	endpoint := cs.Minio.Endpoint
+	accessKeyID := cs.Minio.AccessKeyID
+	secretAccessKey := cs.Minio.SecretAccessKey
+	useSSL := false
+	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	return minioClient
+}
+
+func ListBuckets(mc *minio.Client) ([]minio.BucketInfo, error) {
+	buckets, err := mc.ListBuckets()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return buckets, err
 }

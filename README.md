@@ -1,46 +1,48 @@
-## Gleaner
+# Gleaner
 
-This is the new crawler for P418.  The old crawler is still around to address
-some unique use cases still not addressed.  
+## About
 
-The following two items were cultivated from the garden.  They are;
+Gleaner is the index builder for Project 418.  It is composed of two main 
+elements.  
+
+The Summoner, which uses sitemap files to access and parse facility 
+resources pages.  Summoner places the results of these calls into a S3 API 
+compliant storage.  
+
+The Miller, which takes the JSON-LD documents pulled and stored by 
+summoner and runs them through various millers.  These millers can do 
+various things.  The current millers are:
+
+* text:  build a text index in raw bleve
+* spatial: parse and build a spatial index using a geohash server
+* graph: convert the JSON-LD to RDF for SPARQL queries
+
+A set of other millers exist that are more experimental
+
+* tika: access the actual data files referneced by the JSON-LD and process
+    through Apache Tika.  The extracted text is then indexed in text system allowing 
+    full text search on the document contents.
+* blast: like text, but using the blast package built on bleve
+* fdptika: like tika, but using Frictionless Data Packages
+* ftpgraph: like graph, but pulling JSON-LD files from Frictionless Data Packages
+* prov: build a basic prov graph from the overall gleaner process
+* shacl: validate the facility resoruces against defined SHACL shape graphs 
 
 
-### Summoner
+## Next Steps
 
-Fill in description and futher information.
+Update:
 
-### Millers
+* fix handler for multi-sitemap sites (like BCO-DMO)
+* have a validator check for sitemaps for when the web ui allows them to be submitted
+* handle URL submissions that are sitemaps or resource URLs like for type: Organization
+* review existing spatial indexer for issues around resources with multiple types (like bbox and points)
 
-Fill in description and futher information.
+Add a new web ui to the system that:
 
-### S3 commands
+* allows editing the config JSON
+* allows index runs to be started and indexes to be built
+* front the config JSON (or the go struct) to a UI for CRUD operations...  it's possible
+    that we want to use JSON scheme here and some of the various Javascript libs for
+    JSON schema to forms
 
-We use the minio s3 system.  To address listing and removing entries from the s3 system
-use commands like
-
-```
-mc rm -r local/earthreforg/*
-mc rm -r --force local/earthreforg
-
-
-ls       List files and folders.
-mb       Make a bucket or a folder.
-cat      Display file and object contents.
-pipe     Redirect STDIN to an object or file or STDOUT.
-share    Generate URL for sharing.
-cp       Copy files and objects.
-mirror   Mirror buckets and folders.
-find     Finds files which match the given set of parameters.
-stat     Stat contents of objects and folders.
-diff     List objects with size difference or missing between two folders or buckets.
-rm       Remove files and objects.
-events   Manage object notifications.
-watch    Watch for file and object events.
-policy   Manage anonymous access to objects.
-session  Manage saved sessions for cp command.
-config   Manage mc configuration file.
-update   Check for a new software update.
-version  Print version info.
-
-```

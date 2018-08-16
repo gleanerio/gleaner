@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/millers/millerutils"
-
 	"earthcube.org/Project418/gleaner/utils"
 	"github.com/blevesearch/bleve"
 	minio "github.com/minio/minio-go"

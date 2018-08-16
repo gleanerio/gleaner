@@ -1,4 +1,9 @@
 {
+    "gleaner":  {
+        "summon": true,
+        "mill" : true,
+        "configfile" : "config.json"
+    },
     "minio": {
         "endpoint": "localhost:9000",
         "accessKeyID": "AKIAIOSFODNN7EXAMPLE",
@@ -6,7 +11,7 @@
     },
     "millers": {
         "mock": false,
-        "graph": false,
+        "graph": true,
         "spatial": false,
         "organic": false,
         "tika": false,

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"earthcube.org/Project418/crawler/framing"
+	"earthcube.org/Project418/gleaner/millers/framing"
 	redis "gopkg.in/redis.v5"
 
 	"github.com/coyove/jsonbuilder"
