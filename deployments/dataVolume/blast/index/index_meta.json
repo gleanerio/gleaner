@@ -1,0 +1,1 @@
+{"storage":"boltdb","index_type":"upside_down","config":{"create_if_missing":true,"error_if_exists":false}}

@@ -1,0 +1,97 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:1.4
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${DATAVOL}/traefik/traefik.toml:/traefik.toml
+      - ${DATAVOL}/traefik/acme:/acme
+      - ${DATAVOL}/traefik/logs:/logs
+    networks:
+      - traefik_default
+
+  s3system:
+    image: minio/minio:latest
+    labels:
+      - "traefik.backend=s3system"
+      - "traefik.port=9000"
+    ports:
+      - "9000:9000"
+    volumes:
+      - ${DATAVOL}/s3/data:/data
+      - ${DATAVOL}/s3/config:/root/.minio
+    environment:
+      - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+      - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    networks:
+      - traefik_default
+      - dockernet
+    command: ["server", "/data"]
+
+  tika:
+    image: logicalspark/docker-tikaserver
+    labels:
+      - "traefik.backend=tika"
+      - "traefik.port=9998"
+    ports:
+      - "9998:9998"
+    networks:
+      - traefik_default
+
+  headless:
+    image: knqz/chrome-headless
+    labels:
+      - "traefik.backend=headlesschrome"
+      - "traefik.port=9222"
+    ports:
+      - "9222:9222"
+    networks:
+      - traefik_default
+
+  tile38:
+    image: tile38/tile38
+    #image: earthcube/tile38:0.4
+    labels:
+      - "traefik.backend=tile38"
+      - "traefik.port=9851"
+    ports:
+      - "9851:9851"
+    restart: on-failure
+    volumes:
+      - ${DATAVOL}/spatialindex:/data
+    networks:
+      - traefik_default
+
+        
+#      - /dataVolumes/blast:/data
+  blast:
+    image: mosuka/blast:v0.3.0
+    labels:
+      - "traefik.backend=blast"
+      - "traefik.frontend.rule=Host:geodex.org"
+      - "traefik.port=10000"
+      - "traefik.port=10001"
+      - "traefik.port=10002"
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    restart: on-failure
+    volumes:
+      - ${DATAVOL}/blast:/data
+    networks:
+      - traefik_default
+    command: ["start", "--bind-addr=:10000", "--grpc-addr=:10001", "--http-addr=:10002", "--node-id=node1"]
+
+
+
+networks:
+  traefik_default:
+  dockernet:
+      external: true          
