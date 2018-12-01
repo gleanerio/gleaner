@@ -1,4 +1,1 @@
-output/**
-millers/output/**
-summoner/logfile.txt
-millers/logfile.txt
+./deployments/output/**

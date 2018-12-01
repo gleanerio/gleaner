@@ -29,6 +29,16 @@ A set of other millers exist that are more experimental
 * shacl: validate the facility resoruces against defined SHACL shape graphs 
 
 
+## Running
+
+* make output (code will check) and datavol to pass as arg to docker-compose
+* export DATAVOL=full path to dv to use
+* docker-compose -f gleaner-compose.yml up -d
+* get mc for use with minio
+* edit config 
+* mc copy to minio
+* run
+
 ## Next Steps
 
 Update:
@@ -46,3 +56,8 @@ Add a new web ui to the system that:
     that we want to use JSON scheme here and some of the various Javascript libs for
     JSON schema to forms
 
+## Running notes
+
+
+docker-compose -f gleaner-compose.yml up -d
+mc cp config.json local/gleaner
