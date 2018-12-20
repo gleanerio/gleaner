@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  tika:
+    image: logicalspark/docker-tikaserver
+    build: .
+    ports:
+      - 9998
+
+  lb:
+    image: dockercloud/haproxy
+    ports:
+      - 80:80
+    links:
+      - tika
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

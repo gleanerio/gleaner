@@ -32,7 +32,7 @@ func main() {
 	cs := utils.LoadConfigurationS3(minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, sslVal)
 
 	// Check for output directory and make it if it doesn't exist
-	path := "./output"
+	path := "./deployments/output"
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		os.Mkdir(path, os.ModePerm)
 	}
@@ -47,13 +47,13 @@ func main() {
 	}
 
 	// Set up our log file for runs...
-	//logfile := fmt.Sprintf("%s/logfile.txt", rundir)
-	//f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	//if err != nil {
-	//	log.Fatalf("error opening file: %v", err)
-	//}
-	//defer f.Close()
-	//log.SetOutput(f)
+	logfile := fmt.Sprintf("%s/logfile.txt", rundir)
+	f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
 
 	log.Println("Gleaner setup complete, starting summoner and millers")
 

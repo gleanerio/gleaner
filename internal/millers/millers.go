@@ -8,6 +8,7 @@ import (
 	"earthcube.org/Project418/gleaner/internal/millers/millerbleve"
 	"earthcube.org/Project418/gleaner/internal/millers/millerfdpgraph"
 	"earthcube.org/Project418/gleaner/internal/millers/millerfdptika"
+	"earthcube.org/Project418/gleaner/internal/millers/millerfdptikajena"
 	"earthcube.org/Project418/gleaner/internal/millers/millerprov"
 	"earthcube.org/Project418/gleaner/internal/millers/millersgraph"
 	"earthcube.org/Project418/gleaner/internal/millers/millershacl"
@@ -95,6 +96,12 @@ func Millers(cs utils.Config, rundir string) {
 	if cs.Millers.FDPTika {
 		for d := range as {
 			millerfdptika.TikaObjects(mc, as[d])
+		}
+	}
+
+	if cs.Millers.FDPTikaJena {
+		for d := range as {
+			millerfdptikajena.TikaObjects(mc, as[d])
 		}
 	}
 

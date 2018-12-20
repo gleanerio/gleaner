@@ -26,15 +26,16 @@ type Config struct {
 		SecretAccessKey string `json:"secretAccessKey"`
 	} `json:"minio"`
 	Millers struct {
-		Mock     bool `json:"mock"`
-		Graph    bool `json:"graph"`
-		Spatial  bool `json:"spatial"`
-		Shacl    bool `json:"shacl"`
-		Organic  bool `json:"organic"`
-		Tika     bool `json:"tika"`
-		FDPTika  bool `json:"fdptika"`
-		FDPGraph bool `json:"fdpgraph"`
-		Prov     bool `json:"prov"`
+		Mock        bool `json:"mock"`
+		Graph       bool `json:"graph"`
+		Spatial     bool `json:"spatial"`
+		Shacl       bool `json:"shacl"`
+		Organic     bool `json:"organic"`
+		Tika        bool `json:"tika"`
+		FDPTika     bool `json:"fdptika"`
+		FDPTikaJena bool `json:"fdptikajena"`
+		FDPGraph    bool `json:"fdpgraph"`
+		Prov        bool `json:"prov"`
 	} `json:"millers"`
 	Sources []struct {
 		Name          string `json:"name"`
@@ -68,7 +69,7 @@ func LoadConfigurationS3(endpoint, port, accessKeyID, secretAccessKey, bucket, f
 		log.Fatalln(err)
 	}
 
-	log.Println(minioClient.ListBuckets())
+	// log.Println(minioClient.ListBuckets())
 
 	fo, err := minioClient.GetObject(bucket, file, minio.GetObjectOptions{})
 	if err != nil {

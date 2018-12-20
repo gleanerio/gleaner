@@ -112,7 +112,7 @@ func tikaIndex(bucketname, key, urlval, jsonld string, index bleve.Index) string
 			}
 			sw := stopwords.CleanString(string(body), "en", true) // remove stop words..   no reason for them in the search
 
-			// index some data
+			// make resource URL to refenence with
 			resurl := fmt.Sprintf("%s/%s", urlval, v.Path)
 
 			berr := index.Index(resurl, sw)

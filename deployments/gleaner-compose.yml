@@ -90,7 +90,6 @@ services:
     command: ["start", "--bind-addr=:10000", "--grpc-addr=:10001", "--http-addr=:10002", "--node-id=node1"]
 
 
-
 networks:
   traefik_default:
   dockernet:

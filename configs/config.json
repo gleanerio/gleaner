@@ -17,6 +17,7 @@
         "organic": true,
         "tika": false,
         "fdptika": false,
+        "fdptikajena": true,
         "fdpgraph": false,
         "prov": true
     },
@@ -30,10 +31,10 @@
             "active": false
         },
         {
-            "name": "ssdbpro2betaiodporg",
+            "name": "ssdbiodporg",
             "shortname": "sitesurvey",
-            "logo": "http://geodex.org/images/logos/cuahsiHydroshare.png",
-            "url": "http://ssdbpro2beta.iodp.org/dataset/sitemap.xml",
+            "logo": "https://ssdb.iodp.org/images/head_logo_PRO.gif",
+            "url": "https://ssdb.iodp.org/dataset/sitemap.xml",
             "headless": false,
             "sitemapformat": "xml",
             "active": true
@@ -93,10 +94,10 @@
             "active": false
         },
         {
-            "name": "csdco",
+            "name": "ocdtest",
             "shortname": "csdco",
             "logo": "http://geodex.org/images/logos/csdco.png",
-            "url": "http://opencoredata.org/sitemapCSDCO.xml",
+            "url": "http://opencoredata.org/sitemapCSDCOData.xml",
             "headless": false,
             "sitemapformat": "xml",
             "active": false

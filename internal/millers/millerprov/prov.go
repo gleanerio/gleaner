@@ -30,7 +30,7 @@ func MockObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	// 	log.Println(err)
 	// }
 
-	log.Printf("Write prov record for %s with len %d\n", bucketname, i)
+	log.Printf("Wrote prov record for %s with len %d\n", bucketname, i)
 }
 
 func buildGraph(pi []utils.Entry, bucketname string, cs utils.Config) string {
