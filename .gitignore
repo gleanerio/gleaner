@@ -1,3 +1,3 @@
-./secret/**
-./deployments/output/**
-./deployments/dataVolume/**
+secret/
+deployments/output/**
+deployments/dataVolume/**
