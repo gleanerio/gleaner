@@ -5,8 +5,8 @@ import (
 	"log"
 	"sync"
 
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/internal/utils"
 	"github.com/blevesearch/bleve"
 	minio "github.com/minio/minio-go"
 )
@@ -15,7 +15,7 @@ import (
 func GetObjects(mc *minio.Client, bucketname string) {
 	indexname := fmt.Sprintf("%s", bucketname)
 	fp := millerutils.NewinitBleve(indexname) //  initBleve(indexname)
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	multiCall(entries, fp)
 
 }
@@ -30,7 +30,7 @@ func GetObjects(mc *minio.Client, bucketname string) {
 // 	index.Close()
 // }
 
-func multiCall(e []utils.Entry, indexname string) {
+func multiCall(e []common.Entry, indexname string) {
 	// TODO..   open the bleve index here once and pass by reference to text
 	index, berr := bleve.Open(indexname)
 	if berr != nil {

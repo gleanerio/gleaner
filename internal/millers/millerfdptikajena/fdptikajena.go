@@ -11,8 +11,8 @@ import (
 	"strings"
 	"sync"
 
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/internal/utils"
 
 	// "github.com/bbalet/stopwords"
 	"github.com/deiu/rdf2go"
@@ -35,17 +35,17 @@ type Manifest struct {
 // TikaObjects test a concurrent version of calling mock
 func TikaObjects(mc *minio.Client, bucketname string) {
 	graphname := fmt.Sprintf("%s", bucketname)
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	multiCall(mc, entries, graphname)
 }
 
-func multiCall(mc *minio.Client, e []utils.Entry, graphname string) {
+func multiCall(mc *minio.Client, e []common.Entry, graphname string) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 4) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
-	var gb utils.Buffer // use later to allow a mutex locked []byte
+	var gb common.Buffer // use later to allow a mutex locked []byte
 
 	for k := range e {
 		wg.Add(1)
@@ -78,7 +78,7 @@ func multiCall(mc *minio.Client, e []utils.Entry, graphname string) {
 	}
 }
 
-func tikaIndex(bucketname, key, urlval, jsonld, graphname string, gb *utils.Buffer) string {
+func tikaIndex(bucketname, key, urlval, jsonld, graphname string, gb *common.Buffer) string {
 	_, m := getBytes(urlval, "datapackage.json")
 
 	// Set up the the semaphore and conccurancey
@@ -86,7 +86,7 @@ func tikaIndex(bucketname, key, urlval, jsonld, graphname string, gb *utils.Buff
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
-	var lb utils.Buffer // use later to allow a mutex locked []byte
+	var lb common.Buffer // use later to allow a mutex locked []byte
 
 	ms := parsePackage(string(m))
 	for k := range ms.Resources {
@@ -115,7 +115,7 @@ func tikaIndex(bucketname, key, urlval, jsonld, graphname string, gb *utils.Buff
 	return "ok"
 }
 
-func callTika(lb *utils.Buffer, urlval, path string) string {
+func callTika(lb *common.Buffer, urlval, path string) string {
 	url := "http://localhost:9998/tika" // default  is 9998  (I use 80 with ha proxy)
 
 	// convert _ to s (status and use !=200 to return "false")

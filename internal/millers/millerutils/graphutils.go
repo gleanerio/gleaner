@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/hacks"
-	"earthcube.org/Project418/gleaner/internal/utils"
 	"github.com/blevesearch/bleve"
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
@@ -40,7 +40,7 @@ func NewinitBleve(filename string) string {
 }
 
 // Jsl2graph is a simple function to do stuff  :)
-func Jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *utils.Buffer) int {
+func Jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *common.Buffer) int {
 	nq, err := JSONLDToNQ(jsonld, urlval) // TODO replace with NQ from isValid function..  saving time..
 	if err != nil {
 		log.Printf("error in the jsonld write... %v\n", err)

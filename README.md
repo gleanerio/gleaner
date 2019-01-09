@@ -30,6 +30,13 @@ A set of other millers exist that are more experimental
 
 
 ## Running
+This section is in development.  We are working to make Gleaner a tool
+that is easy to depoy and use.  
+
+```
+docker run -it earthcube/gleaner:2.0.1 gleaner
+```
+
 
 * make output (code will check) and datavol to pass as arg to docker-compose
 * export DATAVOL=full path to dv to use
@@ -38,6 +45,8 @@ A set of other millers exist that are more experimental
 * edit config 
 * mc copy to minio
 * run
+
+
 
 ## Next Steps
 

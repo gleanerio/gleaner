@@ -1,0 +1,43 @@
+{
+    "gleaner":  {
+        "summon": true,
+        "mill" : true,
+        "configfile" : "config.json"
+    },
+    "minio": {
+        "endpoint": "localhost:9000",
+        "accessKeyID": "AKIAIOSFODNN7EXAMPLE",
+        "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    },
+    "millers": {
+        "mock": false,
+        "graph": true,
+        "spatial": true,
+        "shacl" : false,
+        "organic": true,
+        "tika": false,
+        "fdptika": false,
+        "fdptikajena": true,
+        "fdpgraph": false,
+        "prov": true
+    },
+    "sources": [{
+            "name": "baltoopendaporg",
+            "shortname": "balto",
+            "logo": "http://geodex.org/images/logos/EarthCubeLogo.png",
+            "url": "http://balto.opendap.org/opendap/site_map.txt",
+            "headless": false,
+            "sitemapformat": "text",
+            "active": false
+        },
+        {
+            "name": "portaledirepositoryorg",
+            "shortname": "edi",
+            "logo": "https://portal.edirepository.org/nis/images/EDI-logo-300DPI_5.png",
+            "url": "https://portal.edirepository.org/sitemap_index.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        }
+    ]     
+}

@@ -16,7 +16,7 @@ import (
 	"earthcube.org/Project418/gleaner/internal/millers/millerspatial"
 	"earthcube.org/Project418/gleaner/internal/millers/millertika"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/internal/utils"
+	"earthcube.org/Project418/gleaner/pkg/utils"
 )
 
 func Millers(cs utils.Config, rundir string) {

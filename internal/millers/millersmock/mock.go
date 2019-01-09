@@ -10,17 +10,17 @@ import (
 
 	//	"log"
 
-	"earthcube.org/Project418/gleaner/internal/utils"
+	"earthcube.org/Project418/gleaner/internal/common"
 	minio "github.com/minio/minio-go"
 )
 
 // MockObjects test a concurrent version of calling mock
 func MockObjects(mc *minio.Client, bucketname string) {
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	multiCall(entries)
 }
 
-func multiCall(e []utils.Entry) {
+func multiCall(e []common.Entry) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)

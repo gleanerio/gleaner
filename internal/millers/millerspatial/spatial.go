@@ -17,15 +17,15 @@ import (
 	minio "github.com/minio/minio-go"
 	geojson "github.com/paulmach/go.geojson"
 
-	"earthcube.org/Project418/gleaner/internal/utils"
+	"earthcube.org/Project418/gleaner/internal/common"
 )
 
 func ProcessBucketObjects(mc *minio.Client, bucketname string) {
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	spatialMultiCall(entries)
 }
 
-func spatialMultiCall(e []utils.Entry) {
+func spatialMultiCall(e []common.Entry) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)

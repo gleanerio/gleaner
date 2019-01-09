@@ -13,4 +13,4 @@ ADD ./cmd/gleaner/gleaner /
 # from the ignore file... we mount the volume via compose from the local FS
 
 # Add our binary
-CMD ["/gleaner"]
+ENTRYPOINT ["/gleaner"]

@@ -1,13 +1,23 @@
 BINARY := gleaner
-DOCKERVER :=`cat VERSION`
-.DEFAULT_GOAL := linux
+VERSION :=`cat VERSION`
+.DEFAULT_GOAL := gleaner
 
-linux:
+gleaner:
 	cd cmd/$(BINARY) ; \
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o $(BINARY)
 
-docker:
-	docker build  --tag="earthcube/gleaner:$(DOCKERVER)"  --file=./build/Dockerfile .
+glcon:
+	cd cmd/glcon ; \
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o glcon
 
-dockerlatest:
-	docker build  --tag="earthcube/gleaner:latest"  --file=./build/Dockerfile .
+docker:
+	docker build  --tag="earthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile . ; \
+	docker tag earthcube/gleaner:$(VERSION) earthcube/gleaner:latest
+
+removeimage:
+	docker rmi --force earthcube/gleaner:$(VERSION)
+	docker rmi --force earthcube/gleaner:latest
+
+publish: docker
+	docker push earthcube/gleaner:$(VERSION) ; \
+	docker push earthcube/gleaner:latest

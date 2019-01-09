@@ -8,8 +8,8 @@ import (
 	"log"
 	"sync"
 
-	"earthcube.org/Project418/gleaner/internal/summoner/sitemaps"
-	"earthcube.org/Project418/gleaner/internal/utils"
+	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
+	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/client"
 	minio "github.com/minio/minio-go"

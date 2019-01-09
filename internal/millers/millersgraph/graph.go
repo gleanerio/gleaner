@@ -5,25 +5,25 @@ import (
 	"log"
 	"sync"
 
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/internal/utils"
 
 	minio "github.com/minio/minio-go"
 )
 
 // GraphMillObjects test a concurrent version of calling mock
 func GraphMillObjects(mc *minio.Client, bucketname string) {
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	multiCall(entries, bucketname, mc)
 }
 
-func multiCall(e []utils.Entry, bucketname string, mc *minio.Client) {
+func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
-	var gb utils.Buffer
+	var gb common.Buffer
 
 	for k := range e {
 		wg.Add(1)

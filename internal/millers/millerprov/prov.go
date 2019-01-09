@@ -5,8 +5,10 @@ import (
 	"log"
 	"strings"
 
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/internal/utils"
+	"earthcube.org/Project418/gleaner/pkg/utils"
+
 	"github.com/deiu/rdf2go"
 	minio "github.com/minio/minio-go"
 	"github.com/tidwall/gjson"
@@ -15,7 +17,7 @@ import (
 
 // MockObjects test a concurrent version of calling mock
 func MockObjects(mc *minio.Client, bucketname string, cs utils.Config) {
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	gd := buildGraph(entries, bucketname, cs)
 
 	// write to S3
@@ -33,7 +35,7 @@ func MockObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	log.Printf("Wrote prov record for %s with len %d\n", bucketname, i)
 }
 
-func buildGraph(pi []utils.Entry, bucketname string, cs utils.Config) string {
+func buildGraph(pi []common.Entry, bucketname string, cs utils.Config) string {
 	// make UUID here to make the baseuri unique
 	u := uuid.NewV4()
 

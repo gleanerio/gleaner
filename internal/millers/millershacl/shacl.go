@@ -11,25 +11,25 @@ import (
 	"strings"
 	"sync"
 
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/internal/utils"
 	minio "github.com/minio/minio-go"
 )
 
 // SHACLMillObjects test a concurrent version of calling mock
 func SHACLMillObjects(mc *minio.Client, bucketname string) {
-	entries := utils.GetMillObjects(mc, bucketname)
+	entries := common.GetMillObjects(mc, bucketname)
 	multiCall(entries, bucketname, mc)
 }
 
-func multiCall(e []utils.Entry, bucketname string, mc *minio.Client) {
+func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 1) // a blocking channel to keep concurrency under control (1 == single thread)
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
-	var gb utils.Buffer
-	m := utils.GetMillObjects(mc, "gleaner-shacl") // todo: beware static bucket lists..
+	var gb common.Buffer
+	m := common.GetMillObjects(mc, "gleaner-shacl") // todo: beware static bucket lists..
 
 	for j := range m {
 		for k := range e {
@@ -61,7 +61,7 @@ func multiCall(e []utils.Entry, bucketname string, mc *minio.Client) {
 	}
 }
 
-func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *utils.Buffer) int {
+func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
 	if err != nil {
 		log.Printf("Error in the jsonld write... %v\n", err)

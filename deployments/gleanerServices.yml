@@ -1,5 +1,8 @@
 version: '3'
 
+env_file: ../secret/prod.env
+
+
 services:
   # tika:
   #  image: logicalspark/docker-tikaserver
@@ -25,8 +28,8 @@ services:
      - 9000:9000
     environment:
      - SERVICE_PORTS=9000
-     - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
-     - MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     volumes:
      - ${DATAVOL}/s3/data:/data
      - ${DATAVOL}/s3/config:/root/.minio
