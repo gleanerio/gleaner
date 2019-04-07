@@ -25,7 +25,7 @@ func init() {
 	flag.StringVar(&accessVal, "access", akey, "Access Key ID")
 	flag.StringVar(&secretVal, "secret", skey, "Secret access key")
 	flag.StringVar(&bucketVal, "bucket", "gleaner", "The configuration bucket")
-	flag.StringVar(&cfgVal, "config", "config.json", "Configuration file")
+	flag.StringVar(&cfgVal, "config", "", "Configuration file")
 	flag.StringVar(&modeVal, "mode", "cli", "The mode to run in, one of cli or webui")
 	flag.BoolVar(&sslVal, "ssl", false, "Use SSL boolean")
 }
@@ -36,36 +36,41 @@ func main() {
 	// Load configurations
 	flag.Parse()
 
+	if !strings.EqualFold(modeVal, "cli") && !strings.EqualFold(modeVal, "webui") {
+		fmt.Println("Mode needs to be set to one of cli or webui")
+		log.Fatal("Mode not set")
+	}
+
 	// Look for web..   if seen, go there...
-	if strings.EqualFold(modeWal, "webui") {
-		webui(cs)
+	if strings.EqualFold(modeVal, "webui") {
+		// web ui will need to know the S3 info....
+		webui()
 	}
 
 	// Look for cli
 	if strings.EqualFold(modeVal, "cli") {
+		cs := utils.Config{}
 
-		// Need to look here for cfgVal (file to read) or build from other flag values
-		cs := utils.LoadConfigurationS3(minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, sslVal)
-
-		// if called with a config then validate and load and run
-		// if not, walk through a builder (or read all items from command line)
+		// Either provide at command line, or look for it in S3/Minio
+		if !strings.EqualFold(cfgVal, "") {
+			cs = utils.LoadConfiguration(cfgVal)
+		} else {
+			cs = utils.LoadConfigurationS3(minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, sslVal)
+		}
 		cli(cs)
 	}
-
 }
 
-func webui(cs utils.Config) {
-
+func webui() {
 	// If called in "web" mode then
 	// Expose a main UI page
 	// Expose a service endpoint that validate a utils.Config and loads it
 	// Expose a service endpoint that runs gleaner.Summon and gleaner.Mill
 	// Expose a status endpoint (easy status from minio calls)
-
+	fmt.Println("Future home of the webui mode")
 }
 
 func cli(cs utils.Config) {
-
 	// REMOVE once full minio support in...
 	// Check for output directory and make it if it doesn't exist
 	path := "./deployments/output"
@@ -92,16 +97,16 @@ func cli(cs utils.Config) {
 	// 	defer f.Close()
 	// 	log.SetOutput(f)
 
-	if cs.Gleaner.Summon {
-		summoner.Summoner(cs)
-	}
-
 	// could I call these two functions as go func args?
 	// NOTE:  summon must run before Mill  !!!!!!!!!
 	//	go func() {
 	//		time.Sleep(time.Second)
 	//		fmt.Println("Go 1")
 	//	}()
+
+	if cs.Gleaner.Summon {
+		summoner.Summoner(cs)
+	}
 
 	if cs.Gleaner.Mill {
 		millers.Millers(cs, rundir) // need to remove rundir and then fix the compile
