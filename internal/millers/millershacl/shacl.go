@@ -34,13 +34,13 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	for j := range m {
 		for k := range e {
 			wg.Add(1)
-			log.Printf("About to run loop #%d #%d in a goroutine\n", j, k)
+			log.Printf("Ready JSON-LD package  #%d #%s \n", j, e[k].Urlval)
 			go func(j, k int) {
 				semaphoreChan <- struct{}{}
 				status := shaclTest(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
 
 				wg.Done() // tell the wait group that we be done
-				log.Printf("#%d #%d wrote %d bytes", j, k, status)
+				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status)
 				<-semaphoreChan
 			}(j, k)
 		}
@@ -50,15 +50,18 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	log.Println(gb.Len())
 
 	// write to S3
-	_, err := millerutils.LoadToMinio(gb.String(), "gleaner", fmt.Sprintf("%s_shacl.n3", bucketname), mc)
+	_, err := millerutils.LoadToMinio(gb.String(), "gleaner", fmt.Sprintf("%s_shacl.ttl", bucketname), mc)
+	if err != nil {
+		log.Println(err)
+	}
 
 	// write to file
-	fl, err := millerutils.WriteRDF(gb.String(), bucketname)
-	if err != nil {
-		log.Println("RDF file could not be written")
-	} else {
-		log.Printf("RDF file written len:%d\n", fl)
-	}
+	//	fl, err := millerutils.WriteRDF(gb.String(), bucketname)
+	//	if err != nil {
+	//		log.Println("RDF file could not be written")
+	//	} else {
+	//		log.Printf("RDF file written len:%d\n", fl)
+	//	}
 }
 
 func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer) int {
@@ -69,7 +72,11 @@ func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer)
 		return 0
 	}
 
-	// fmt.Printf("\n\n %s \n\n", datagraph)
+	fmt.Println("---------------------------------------------")
+	fmt.Printf("\n\n %s \n\n", datagraph)
+	fmt.Println("checked with --------------------------------")
+	fmt.Printf("\n\n %s \n\n", sg)
+	fmt.Println("---------------------------------------------")
 
 	url := "http://localhost:7000"
 	body := &bytes.Buffer{}

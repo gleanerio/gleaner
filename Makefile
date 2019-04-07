@@ -11,13 +11,13 @@ glcon:
 	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o glcon
 
 docker:
-	docker build  --tag="earthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile . ; \
-	docker tag earthcube/gleaner:$(VERSION) earthcube/gleaner:latest
+	docker build  --tag="nsfearthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile . ; \
+	docker tag nsfearthcube/gleaner:$(VERSION) nsfearthcube/gleaner:latest
 
 removeimage:
-	docker rmi --force earthcube/gleaner:$(VERSION)
-	docker rmi --force earthcube/gleaner:latest
+	docker rmi --force nsfearthcube/gleaner:$(VERSION)
+	docker rmi --force nsfearthcube/gleaner:latest
 
 publish: docker
-	docker push earthcube/gleaner:$(VERSION) ; \
-	docker push earthcube/gleaner:latest
+	docker push nsfearthcube/gleaner:$(VERSION) ; \
+	docker push nsfearthcube/gleaner:latest

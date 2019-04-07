@@ -62,7 +62,7 @@ func LoadConfiguration(file string) Config {
 
 // LoadConfigurationS3 loads config file from S3(minio)
 func LoadConfigurationS3(endpoint, port, accessKeyID, secretAccessKey, bucket, file string, useSSL bool) Config {
-	ep := fmt.Sprintf("Load config S3:  %s:%s", endpoint, port)
+	ep := fmt.Sprintf("%s:%s", endpoint, port)
 	minioClient, err := minio.New(ep, accessKeyID, secretAccessKey, useSSL)
 	if err != nil {
 		log.Fatalln(err)

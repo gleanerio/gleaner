@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 	"sync"
 
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
@@ -97,7 +96,7 @@ func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
 
 				// TODO  Neotoma hack....
 				// if X == neotoma {
-				jsonld = strings.Replace(jsonld, "\"@context\": \"http://schema.org\",", "\"@context\": { \"@vocab\": \"http://schema.org/\"},", 1)
+				// 				jsonld = strings.Replace(jsonld, "\"@context\": \"http://schema.org\",", "\"@context\": { \"@vocab\": \"http://schema.org/\"},", 1)
 				// }
 
 				// if jsonld != "" {

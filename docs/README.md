@@ -1,6 +1,11 @@
-Summoner
+# Gleaner
+
+> An EarthCube Product
+
+## About
+Working to build better docs via https://docsify.js.org/#/more-pages
 
 
-...   Let's make crawling great again  ...
+## Running
 
-CGO_ENABLED=0 env GOOS=linux go build .
+

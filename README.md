@@ -2,6 +2,11 @@
 
 ## About
 
+> Based on RDA P13 interest and EarthCube follow on work 
+> I am currently working on the UI and run time patterns
+> for Gleaner.  (April 2019)
+
+
 Gleaner is the index builder for Project 418.  It is composed of two main 
 elements.  
 
@@ -31,7 +36,7 @@ A set of other millers exist that are more experimental
 
 ## Running
 This section is in development.  We are working to make Gleaner a tool
-that is easy to depoy and use.  
+that is easy to deploy and use.  
 
 ```
 docker run -it earthcube/gleaner:2.0.1 gleaner
@@ -66,7 +71,6 @@ Add a new web ui to the system that:
     JSON schema to forms
 
 ## Running notes
-
 
 docker-compose -f gleaner-compose.yml up -d
 mc cp config.json local/gleaner

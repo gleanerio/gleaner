@@ -71,7 +71,6 @@ func main() {
 			fmt.Println(err)
 		}
 	}
-
 }
 
 func initCfg() error {
@@ -90,7 +89,6 @@ func loadCfg() error {
 }
 
 func initBucket() error {
-
 	// Set up minio and initialize client
 	endpoint := "192.168.2.131:9000"
 	accessKeyID := "AKIAIOSFODNN7EXAMPLE"
@@ -144,5 +142,5 @@ func setNotification(minioClient *minio.Client) error {
 		return nil
 	}
 
-	return nil
+	return err
 }
