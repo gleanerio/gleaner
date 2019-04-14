@@ -3,23 +3,23 @@ version: '3.3'
 #env_file: ../secret/prod.env
 
 services:
-  # tika:
-  #  image: logicalspark/docker-tikaserver
-  #  ports:
-  #    - 9998
-  #  environment:
-  #    - SERVICE_PORTS=9998
-  #  deploy:
-  #    replicas: 6
-  #    update_config:
-  #      parallelism: 5
-  #      delay: 10s
-  #    restart_policy:
-  #      condition: on-failure
-  #      max_attempts: 3
-  #      window: 120s
-  #  networks:
-  #    - web
+  tika:
+    image: logicalspark/docker-tikaserver
+    ports:
+     - 9998:9998
+    environment:
+      - SERVICE_PORTS=9998
+    deploy:
+      replicas: 6
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+    networks:
+      - web
 
   minio:
     image: minio/minio:latest
@@ -64,42 +64,26 @@ services:
     ports:
       - 9851
     environment:
-     - SERVICE_PORTS=9851  
+     - SERVICE_PORTS=9851
     volumes:
       - ${DATAVOL}/spatialindex:/data
     networks:
       - web
 
 #      - /dataVolumes/blast:/data
-  # blast:
-  #   image: mosuka/blast:v0.3.0
-  #   ports:
-  #     - 10000
-  #     - 10001
-  #     - 10002
-  #   environment:
-  #    - SERVICE_PORTS=10000, 10001, 10002  
-  #   volumes:
-  #     - ${DATAVOL}/blast:/data
-  #   networks:
-  #     - web
-  #   command: ["start", "--bind-addr=:10000", "--grpc-addr=:10001", "--http-addr=:10002", "--node-id=node1"]
-
-  # proxy:
-  #   image: dockercloud/haproxy
-  #   depends_on:
-  #     - tika
-  #   environment:
-  #     - BALANCE=leastconn
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   ports:
-  #     - 9998:9998
-  #   networks:
-  #     - web
-  #   deploy:
-  #     placement:
-  #       constraints: [node.role == manager]
+  blast:
+     image: mosuka/blast:v0.3.0
+     ports:
+       - 10000
+       - 10001
+       - 10002
+     environment:
+      - SERVICE_PORTS=10000, 10001, 10002
+     volumes:
+       - ${DATAVOL}/blast:/data
+     networks:
+       - web
+     command: ["start", "--bind-addr=:10000", "--grpc-addr=:10001", "--http-addr=:10002", "--node-id=node1"]
 
 networks:
   web:

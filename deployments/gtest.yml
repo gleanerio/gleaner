@@ -1,0 +1,101 @@
+version: '3.3'
+
+#env_file: ../secret/prod.env
+
+services:
+  tika:
+    image: logicalspark/docker-tikaserver
+    ports:
+      - 9998
+    environment:
+      - SERVICE_PORTS=9998
+    deploy:
+      replicas: 6
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+        window: 120s
+    networks:
+      - web
+
+  gleaner:
+    image: nsfearthcube/gleaner:2.0.2
+    labels:
+      - "traefik.backend=gleaner"
+      - "traefik.port=12345"
+    ports:
+        - 12345:12345
+    networks:
+      - web
+
+  minio:
+    image: minio/minio:latest
+    ports:
+     - 9000:9000
+    environment:
+     - SERVICE_PORTS=9000
+     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+    volumes:
+     - ${DATAVOL}/s3/data:/data
+     - ${DATAVOL}/s3/config:/root/.minio
+    networks:
+      - web
+    command: ["server", "/data"]
+
+  shacl:
+    image: earthcube/shaclservice:0.1.3
+    labels:
+      - "traefik.backend=shacl"
+      - "traefik.port=7000"
+    ports:
+      - 7000:7000
+    networks:
+      - web
+
+  headless:
+    image: knqz/chrome-headless
+    labels:
+      - "traefik.backend=headlesschrome"
+      - "traefik.port=9222"
+    ports:
+      - 9222
+    environment:
+     - SERVICE_PORTS=9222
+    networks:
+      - web
+
+  tile38:
+    image: tile38/tile38
+    ports:
+      - 9851
+    environment:
+     - SERVICE_PORTS=9851
+    volumes:
+      - ${DATAVOL}/spatialindex:/data
+    networks:
+      - web
+
+#      - /dataVolumes/blast:/data
+  blast:
+     image: mosuka/blast:v0.3.0
+     ports:
+       - 10000
+       - 10001
+       - 10002
+     environment:
+      - SERVICE_PORTS=10000, 10001, 10002  
+     volumes:
+       - ${DATAVOL}/blast:/data
+     networks:
+       - web
+     command: ["start", "--bind-addr=:10000", "--grpc-addr=:10001", "--http-addr=:10002", "--node-id=node1"]
+
+networks:
+  web:
+    driver: overlay
+
+

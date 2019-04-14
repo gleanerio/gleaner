@@ -1,0 +1,20 @@
+
+
+It's time to remove Bleve?
+It's integration is hard and I have Jena with Lucene
+and other potential packages down range.  
+
+Plus..   3rd party indexes like that should likely
+be made by a tool reading the object store.
+
+A possible exception is Tika to RDF for indexing.  
+IE, TikaGraph
+
+Convert fdptikajena into DO-Tika-graph
+
+Work up a script or something to validate setup prior to run.
+
+Scripts to validate the RDF afterwards
+
+
+

@@ -19,6 +19,7 @@ type Config struct {
 		Summon     bool   `json:"summon"`
 		Mill       bool   `json:"mill"`
 		Configfile string `json:"configfile"`
+		RunID      string `json:"runid"`
 	} `json:"gleaner"`
 	Minio struct {
 		Endpoint        string `json:"endpoint"`
@@ -61,13 +62,8 @@ func LoadConfiguration(file string) Config {
 }
 
 // LoadConfigurationS3 loads config file from S3(minio)
-func LoadConfigurationS3(endpoint, port, accessKeyID, secretAccessKey, bucket, file string, useSSL bool) Config {
-	ep := fmt.Sprintf("%s:%s", endpoint, port)
-	minioClient, err := minio.New(ep, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
+// func LoadConfigurationS3(endpoint, port, accessKeyID, secretAccessKey, bucket, file string, useSSL bool) Config {
+func LoadConfigurationS3(minioClient *minio.Client, bucket, file string) Config {
 	fo, err := minioClient.GetObject(bucket, file, minio.GetObjectOptions{})
 	if err != nil {
 		log.Println(err)

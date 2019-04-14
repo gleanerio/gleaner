@@ -20,16 +20,6 @@ func GetObjects(mc *minio.Client, bucketname string) {
 
 }
 
-// // Initialize the text index  // this function needs some attention (of course they all do)
-// func initBleve(filename string) {
-// 	mapping := bleve.NewIndexMapping()
-// 	index, berr := bleve.New(filename, mapping)
-// 	if berr != nil {
-// 		log.Printf("Bleve error making index %v \n", berr)
-// 	}
-// 	index.Close()
-// }
-
 func multiCall(e []common.Entry, indexname string) {
 	// TODO..   open the bleve index here once and pass by reference to text
 	index, berr := bleve.Open(indexname)
@@ -64,7 +54,7 @@ func multiCall(e []common.Entry, indexname string) {
 // index some jsonld with an ID
 func textIndexer(ID string, jsonld string, index bleve.Index) string {
 	berr := index.Index(ID, jsonld)
-	log.Printf("Blevel Indexed item with ID %s\n", ID)
+	log.Printf("Bleve Indexed item with ID %s\n", ID)
 	if berr != nil {
 		log.Printf("Bleve error indexing %v \n", berr)
 	}

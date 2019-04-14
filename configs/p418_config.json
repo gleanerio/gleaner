@@ -1,0 +1,160 @@
+{
+    "gleaner":  {
+        "summon": true,
+        "mill" : true,
+        "configfile" : "config.json"
+    },
+    "minio": {
+        "endpoint": "localhost:9000",
+        "accessKeyID": "AKIAIOSFODNN7EXAMPLE",
+        "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+    },
+    "millers": {
+        "mock": false,
+        "graph": true,
+        "spatial": true,
+        "shacl" : false,
+        "organic": true,
+        "tika": false,
+        "fdptika": false,
+        "fdptikajena": true,
+        "fdpgraph": false,
+        "prov": true
+    },
+    "sources": [{
+            "name": "baltoopendaporg",
+            "shortname": "balto",
+            "logo": "http://geodex.org/images/logos/EarthCubeLogo.png",
+            "url": "http://balto.opendap.org/opendap/site_map.txt",
+            "headless": false,
+            "sitemapformat": "text",
+            "active": false
+        },
+        {
+            "name": "ssdbiodporg",
+            "shortname": "sitesurvey",
+            "logo": "https://ssdb.iodp.org/images/head_logo_PRO.gif",
+            "url": "https://ssdb.iodp.org/dataset/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": true
+        },
+        {
+            "name": "wwwhydroshareorg",
+            "shortname": "hydroshare",
+            "logo": "http://geodex.org/images/logos/cuahsiHydroshare.png",
+            "url": "https://www.hydroshare.org/sitemap-resources.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "cdfregistry",
+            "shortname": "cdf",
+            "logo": "http://geodex.org/images/logos/EarthCubeLogo.png",
+            "url": "s3://local/gleaner/cdfsitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "dataneotomadborg",
+            "shortname": "neotoma",
+            "logo": "http://geodex.org/images/logos/neotoma.png",
+            "url": "http://data.neotomadb.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "earthreforg",
+            "shortname": "magic",
+            "logo": "http://geodex.org/images/logos/magic.png",
+            "url": "https://earthref.org/MagIC/contributions.sitemap.xml",
+            "headless": true,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "getiedadataorg",
+            "shortname": "ieda",
+            "logo": "http://geodex.org/images/logos/ieda_maplogo.png",
+            "url": "http://get.iedadata.org/doi/xml-sitemap.php",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "opencoredataorg",
+            "shortname": "opencore",
+            "logo": "http://geodex.org/images/logos/ocd_logo.jpg",
+            "url": "http://opencoredata.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "ocdtest",
+            "shortname": "csdco",
+            "logo": "http://geodex.org/images/logos/csdco.png",
+            "url": "http://opencoredata.org/sitemapCSDCOData.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "opentopographyorg",
+            "shortname": "opentopo",
+            "logo": "http://geodex.org/images/logos/opentopo.png",
+            "url": "http://opentopography.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "wikilinkedearth",
+            "shortname": "linkedearth",
+            "logo": "http://geodex.org/images/logos/linkedEarth.jpeg",
+            "url": "http://wiki.linked.earth/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "wwwbco-dmoorg",
+            "shortname": "bcodmo",
+            "logo": "http://geodex.org/images/logos/bco-dmo-words-BLUE.jpg",
+            "url": "https://www.bco-dmo.org/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "wwwunavcoorg",
+            "shortname": "unavco",
+            "logo": "http://geodex.org/images/logos/uv-logo.png",
+            "url": "https://www.unavco.org/data/demos/doi/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "dsirisedu",
+            "shortname": "iris",
+            "logo": "http://geodex.org/images/logos/iris_color_screen_lrg.png",
+            "url": "http://ds.iris.edu/files/sitemap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        },
+        {
+            "name": "portaledirepositoryorg",
+            "shortname": "edi",
+            "logo": "https://portal.edirepository.org/nis/images/EDI-logo-300DPI_5.png",
+            "url": "https://portal.edirepository.org/sitemap_index.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": false
+        }
+    ]     
+}

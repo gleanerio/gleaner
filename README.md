@@ -1,5 +1,14 @@
 # Gleaner
 
+## Quick run
+
+* Download the compose file from Github
+* docker-compose -f gleanerServices.yml up -d
+* docker pull nsfearthcube/gleaner:latest
+* docker run --rm -ti nsfearthcube/gleaner:latest
+* docker run --rm -ti -e MINIO_SECRET_KEY -e MINIO_ACCESS_KEY  nsfearthcube/gleaner:2.0.2
+* docker run --rm -ti --env-file ./secret/kv.env nsfearthcube/gleaner:2.0.2
+
 ## About
 
 > Based on RDA P13 interest and EarthCube follow on work 
@@ -50,8 +59,6 @@ docker run -it earthcube/gleaner:2.0.1 gleaner
 * edit config 
 * mc copy to minio
 * run
-
-
 
 ## Next Steps
 

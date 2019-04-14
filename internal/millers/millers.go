@@ -15,19 +15,20 @@ import (
 	"earthcube.org/Project418/gleaner/internal/millers/millersmock"
 	"earthcube.org/Project418/gleaner/internal/millers/millerspatial"
 	"earthcube.org/Project418/gleaner/internal/millers/millertika"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
 	"earthcube.org/Project418/gleaner/pkg/utils"
+	"github.com/minio/minio-go"
 )
 
-func Millers(cs utils.Config, rundir string) {
+// func Millers(cs utils.Config, rundir string) {
+func Millers(mc *minio.Client, cs utils.Config) {
 
-	millerutils.RunDir = rundir // set output dir for graph, fdpgraph and prov
+	// millerutils.RunDir = rundir // set output dir for graph, fdpgraph and prov
 	// set output for bleve and fdptika and tika
 
 	st := time.Now()
 	log.Printf("Miller start time: %s \n", st) // Log the time at start for the record
 
-	mc := utils.MinioConnection(cs) // minio connection
+	// mc := utils.MinioConnection(cs) // minio connection
 
 	// Get and print the bucket list for no reason what so ever.....
 	buckets, err := utils.ListBuckets(mc)
@@ -47,6 +48,9 @@ func Millers(cs utils.Config, rundir string) {
 			as = append(as, cs.Sources[i].Name)
 		}
 	}
+
+	// TODO easy concurency hidden here!!!!
+	// Start calling the millers
 
 	// Mock is just a template miller..  prints resource entries only...
 	if cs.Millers.Mock {

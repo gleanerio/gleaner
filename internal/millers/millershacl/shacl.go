@@ -13,6 +13,7 @@ import (
 
 	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
+	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
 )
 
@@ -49,8 +50,14 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 
 	log.Println(gb.Len())
 
+	// TODO   gb is type turtle here..   need to convert to ntriples to store
+	nt, err := rdf2rdf(gb.String())
+	if err != nil {
+		log.Println(err)
+	}
+
 	// write to S3
-	_, err := millerutils.LoadToMinio(gb.String(), "gleaner", fmt.Sprintf("%s_shacl.ttl", bucketname), mc)
+	_, err = millerutils.LoadToMinio(nt, "gleaner-milled", fmt.Sprintf("%s_shacl.ttl", bucketname), mc)
 	if err != nil {
 		log.Println(err)
 	}
@@ -62,6 +69,26 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	//	} else {
 	//		log.Printf("RDF file written len:%d\n", fl)
 	//	}
+}
+
+func rdf2rdf(r string) (string, error) {
+	// Decode the existing triples
+	var inFormat rdf.Format
+	inFormat = rdf.Turtle
+
+	var outFormat rdf.Format
+	inFormat = rdf.NTriples
+	var s string
+	buf := bytes.NewBufferString(s)
+
+	dec := rdf.NewTripleDecoder(strings.NewReader(r), inFormat)
+	tr, err := dec.DecodeAll()
+
+	// Write triples to a file
+	enc := rdf.NewTripleEncoder(buf, outFormat)
+	err = enc.EncodeAll(tr)
+
+	return buf.String(), err
 }
 
 func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer) int {

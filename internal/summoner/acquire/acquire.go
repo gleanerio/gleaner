@@ -15,18 +15,19 @@ import (
 )
 
 // ResRetrieve
-func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
+func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config) {
 
 	// Set up minio and initialize client
-	endpoint := cs.Minio.Endpoint
-	accessKeyID := cs.Minio.AccessKeyID
-	secretAccessKey := cs.Minio.SecretAccessKey
-	useSSL := false
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	buildBuckets(minioClient, m) // TODO needs error obviously
+	// endpoint := cs.Minio.Endpoint
+	// accessKeyID := cs.Minio.AccessKeyID
+	// secretAccessKey := cs.Minio.SecretAccessKey
+	// useSSL := false
+	// mc, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	buildBuckets(mc, m) // TODO needs error obviously
 
 	// set up some concurrency support
 	semaphoreChan := make(chan struct{}, 5) // a blocking channel to keep concurrency under control
@@ -100,7 +101,7 @@ func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
 				// }
 
 				// if jsonld != "" {
-				// 	u, o, err := LoadToMinio(jsonld, k, urlloc, minioClient, i)
+				// 	u, o, err := LoadToMinio(jsonld, k, urlloc, mc, i)
 				// 	if err != nil {
 				// 		log.Printf("Error loading to bucket: %s", urlloc)
 				// 	}
@@ -126,7 +127,7 @@ func ResRetrieve(m map[string]sitemaps.URLSet, cs utils.Config) {
 					bucketName := k
 
 					// Upload the file with FPutObject
-					n, err := minioClient.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+					n, err := mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 					if err != nil {
 						log.Printf("%s", objectName)
 						log.Fatalln(err)

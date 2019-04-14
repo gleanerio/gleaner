@@ -54,10 +54,9 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	log.Println(gb.Len())
 
 	// write to S3
-	_, err := millerutils.LoadToMinio(gb.String(), "gleaner", fmt.Sprintf("%s_fdp.n3", bucketname), mc)
-
-	// write to file
-	fl, err := millerutils.WriteRDF(gb.String(), fmt.Sprintf("%s_fdp", bucketname))
+	fl, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s_fdp.n3", bucketname), mc)
+	// deprecated write to file
+	// fl, err := millerutils.WriteRDF(gb.String(), fmt.Sprintf("%s_fdp", bucketname))
 	if err != nil {
 		log.Println("RDF file could not be written")
 	} else {

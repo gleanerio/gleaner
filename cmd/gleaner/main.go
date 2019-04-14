@@ -6,17 +6,22 @@ import (
 	"log"
 	"os"
 	"strings"
-	"time"
 
 	"earthcube.org/Project418/gleaner/internal/millers"
 	"earthcube.org/Project418/gleaner/internal/summoner"
 	"earthcube.org/Project418/gleaner/pkg/utils"
+	"github.com/minio/minio-go"
 )
+
+// TODO
+// make a struct for cs and mc and pass it around to things as a simple pointer
 
 var minioVal, portVal, accessVal, secretVal, bucketVal, modeVal, cfgVal string
 var sslVal bool
 
 func init() {
+	log.SetFlags(log.Lshortfile)
+
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
 
@@ -41,6 +46,13 @@ func main() {
 		log.Fatal("Mode not set")
 	}
 
+	// Get a connection to our minio
+	ep := fmt.Sprintf("%s:%s", minioVal, portVal)
+	mc, err := minio.New(ep, accessVal, secretVal, sslVal)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	// Look for web..   if seen, go there...
 	if strings.EqualFold(modeVal, "webui") {
 		// web ui will need to know the S3 info....
@@ -51,42 +63,38 @@ func main() {
 	if strings.EqualFold(modeVal, "cli") {
 		cs := utils.Config{}
 
-		// Either provide at command line, or look for it in S3/Minio
-		if !strings.EqualFold(cfgVal, "") {
+		// Config file is either provided at command line, or we look for it in S3/Minio
+		if !strings.EqualFold(cfgVal, "") { // this is stupid..  do this better
 			cs = utils.LoadConfiguration(cfgVal)
 		} else {
-			cs = utils.LoadConfigurationS3(minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, sslVal)
+			// cs = utils.LoadConfigurationS3(minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, sslVal)
+			cs = utils.LoadConfigurationS3(mc, "gleaner-config", "config.json")
 		}
-		cli(cs)
+		cli(mc, cs)
 	}
 }
 
 func webui() {
-	// If called in "web" mode then
-	// Expose a main UI page
-	// Expose a service endpoint that validate a utils.Config and loads it
-	// Expose a service endpoint that runs gleaner.Summon and gleaner.Mill
-	// Expose a status endpoint (easy status from minio calls)
-	fmt.Println("Future home of the webui mode")
+	fmt.Println("In development...")
 }
 
-func cli(cs utils.Config) {
+func cli(mc *minio.Client, cs utils.Config) {
 	// REMOVE once full minio support in...
 	// Check for output directory and make it if it doesn't exist
-	path := "./deployments/output"
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Mkdir(path, os.ModePerm)
-	}
+	// path := "./deployments/output"
+	// if _, err := os.Stat(path); os.IsNotExist(err) {
+	// 	os.Mkdir(path, os.ModePerm)
+	// }
 
 	// REMOVE once full minio support in....
 	// Set up an output run directory for each run in output (date)
-	t := time.Now()
-	year, month, day := t.Date()
-	hour, min, sec := t.Clock()
-	rundir := fmt.Sprintf("%s/%d%d%d_%d%d%d", path, year, month, day, hour, min, sec)
-	if _, err := os.Stat(rundir); os.IsNotExist(err) {
-		os.Mkdir(rundir, os.ModePerm)
-	}
+	// t := time.Now()
+	// year, month, day := t.Date()
+	// hour, min, sec := t.Clock()
+	// rundir := fmt.Sprintf("%s/%d%d%d_%d%d%d", path, year, month, day, hour, min, sec)
+	// if _, err := os.Stat(rundir); os.IsNotExist(err) {
+	// 	os.Mkdir(rundir, os.ModePerm)
+	// }
 
 	// Set up our log file for runs...
 	// logfile := fmt.Sprintf("%s/logfile.txt", rundir)
@@ -98,17 +106,15 @@ func cli(cs utils.Config) {
 	// 	log.SetOutput(f)
 
 	// could I call these two functions as go func args?
-	// NOTE:  summon must run before Mill  !!!!!!!!!
-	//	go func() {
-	//		time.Sleep(time.Second)
-	//		fmt.Println("Go 1")
-	//	}()
+	// https://abronan.com/introduction-to-goroutines-and-go-channels/
+	// NOTE:  summon must run before mill
 
 	if cs.Gleaner.Summon {
-		summoner.Summoner(cs)
+		summoner.Summoner(mc, cs)
 	}
 
 	if cs.Gleaner.Mill {
-		millers.Millers(cs, rundir) // need to remove rundir and then fix the compile
+		// millers.Millers(cs, rundir) // need to remove rundir and then fix the compile
+		millers.Millers(mc, cs) // need to remove rundir and then fix the compile
 	}
 }
