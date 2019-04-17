@@ -46,7 +46,6 @@ services:
     networks:
       - web
 
-
   headless:
     image: knqz/chrome-headless
     labels:
@@ -62,7 +61,7 @@ services:
   tile38:
     image: tile38/tile38
     ports:
-      - 9851
+     - 9851:9851
     environment:
      - SERVICE_PORTS=9851
     volumes:
@@ -88,5 +87,4 @@ services:
 networks:
   web:
     driver: overlay
-
 

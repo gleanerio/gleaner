@@ -41,7 +41,7 @@ func main() {
 	// Load configurations
 	flag.Parse()
 
-	if !strings.EqualFold(modeVal, "cli") && !strings.EqualFold(modeVal, "webui") {
+	if !strings.EqualFold(modeVal, "cli") && !strings.EqualFold(modeVal, "webui") && !strings.EqualFold(modeVal, "syscheck") {
 		fmt.Println("Mode needs to be set to one of cli or webui")
 		log.Fatal("Mode not set")
 	}
@@ -51,6 +51,12 @@ func main() {
 	mc, err := minio.New(ep, accessVal, secretVal, sslVal)
 	if err != nil {
 		log.Fatalln(err)
+	}
+
+	// Look for checksetup and check connections and buckets...
+	if strings.EqualFold(modeVal, "syscheck") {
+		// web ui will need to know the S3 info....
+		syscheck()
 	}
 
 	// Look for web..   if seen, go there...
@@ -72,6 +78,19 @@ func main() {
 		}
 		cli(mc, cs)
 	}
+}
+
+func syscheck(mc *minio.Client) {
+	fmt.Println("System setup check ")
+	s := "valid"
+
+	// Check I can contact the various containers
+
+	// Check minio is there
+
+	// check the buckets...  try and to make the ones we need
+
+	fmt.Printf("System check results: %s\n", s)
 }
 
 func webui() {
