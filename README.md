@@ -1,14 +1,5 @@
 # Gleaner
 
-## Quick run
-
-* Download the compose file from Github
-* docker-compose -f gleanerServices.yml up -d
-* docker pull nsfearthcube/gleaner:latest
-* docker run --rm -ti nsfearthcube/gleaner:latest
-* docker run --rm -ti -e MINIO_SECRET_KEY -e MINIO_ACCESS_KEY  nsfearthcube/gleaner:2.0.2
-* docker run --rm -ti --env-file ./secret/kv.env nsfearthcube/gleaner:2.0.2
-
 ## About
 
 > Based on RDA P13 interest and EarthCube follow on work 
@@ -19,11 +10,11 @@
 Gleaner is the index builder for Project 418.  It is composed of two main 
 elements.  
 
-The Summoner, which uses sitemap files to access and parse facility 
+*The Summoner*, which uses site map files to access and parse facility 
 resources pages.  Summoner places the results of these calls into a S3 API 
-compliant storage.  
+compliant storage. 
 
-The Miller, which takes the JSON-LD documents pulled and stored by 
+*The Miller*, which takes the JSON-LD documents pulled and stored by 
 summoner and runs them through various millers.  These millers can do 
 various things.  The current millers are:
 
@@ -42,23 +33,53 @@ A set of other millers exist that are more experimental
 * prov: build a basic prov graph from the overall gleaner process
 * shacl: validate the facility resoruces against defined SHACL shape graphs 
 
+## How to run (or at least try..., this is still a work in progress)
 
-## Running
-This section is in development.  We are working to make Gleaner a tool
-that is easy to deploy and use.  
+1) Get the compose file via curl, wget, httpie or your favorite method.
+curl https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployments/gleanerServices.yml -o gleanerService.yml
 
+2) Set up your environment variables, (I have no clue how this is done in Windows...   ).  One path is to make env file the following.  
+
+```bash
+# Set environments
+export MINIO_ACCESS_KEY="KEYHERE"
+export MINIO_SECRET_KEY="SECRETHERE"
+export DATAVOL="/home/nemo/dataVolumes/gleaner"
 ```
-docker run -it earthcube/gleaner:2.0.1 gleaner
-```
 
+Source this or set your environment variables in the manner you wish.
 
-* make output (code will check) and datavol to pass as arg to docker-compose
-* export DATAVOL=full path to dv to use
-* docker-compose -f gleaner-compose.yml up -d
-* get mc for use with minio
-* edit config 
-* mc copy to minio
-* run
+3) Pull the containers (or just let that happen when you invoke them)
+
+4) If you use docker-compose then try
+
+`docker-compose -f gleanerService.yml up -d`
+
+or for swarm
+
+`docker stack deploy --compose-file gleanerService.yml gleaner`
+
+5) Grab the binary from the release page or pull the gleaner container.  At this 
+point best to grab the release binary unless you are comfortable running command line apps from containers.  I'll document the later but likely always provide both.
+
+- Docker hub: https://cloud.docker.com/u/nsfearthcube/repository/docker/nsfearthcube/gleaner with
+   ```docker pull nsfearthcube/gleaner:latest```
+- Gleaner release page at <https://github.com/earthcubearchitecture-project418/gleaner/releases>
+
+5.5) Run the gleaner -checksetup command to validate connections and make the requiredminio buckets if they are missing  (this is NOT working yet)
+
+6) Make a config file.  Pull the example one and edit it.   This is the worst part 
+mostly likely and I am going to switch from JSON to YAML for configs.   (I should never have used JSON for config, sorry about that).  Reference: <https://github.com/earthcubearchitecture-project418/gleaner/blob/master/configs/basic_config.json> 
+
+7) Copy your config file into the minio object store in the correct bucket with 
+the correct object name.  The easiest way if you don't have a local s3 API 
+compatible client is to pull the minio mc client from https://hub.docker.com/r/minio/mc/
+
+8) Copy the config file in...   make sure to do this each time you edit it.
+```mc cp my_config.json local/gleaner-config/config.json```
+
+9) Ok, finally ready at step 8 to see if this even works.  
+```go run cmd/gleaner/main.go```
 
 ## Next Steps
 
@@ -77,7 +98,4 @@ Add a new web ui to the system that:
     that we want to use JSON scheme here and some of the various Javascript libs for
     JSON schema to forms
 
-## Running notes
 
-docker-compose -f gleaner-compose.yml up -d
-mc cp config.json local/gleaner

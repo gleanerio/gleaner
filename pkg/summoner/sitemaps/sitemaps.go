@@ -85,27 +85,7 @@ func IngestSitemapXML(url string, cs utils.Config) URLSet {
 	return us
 }
 
-// IngestSiteMapText takes the URL and pulls the the URL from it
-// using concept of type sitemap
-func IngestSiteMapText(url string, cs utils.Config) URLSet {
-	bodyBytes, _ := getBody(url) // TODO handle this error
-	var sitemap URLSet
-
-	sc := bufio.NewScanner(strings.NewReader(string(bodyBytes)))
-	for sc.Scan() {
-		u := sc.Text()
-		un := URLNode{Loc: u}
-		sitemap.URL = append(sitemap.URL, un)
-	}
-	if err := sc.Err(); err != nil {
-		log.Fatalf("scan file error: %v", err)
-	}
-
-	return sitemap
-}
-
 func getS3Body(url string, cs utils.Config) ([]byte, error) {
-
 	// split s3://bucket/object
 
 	mc := utils.MinioConnection(cs)
@@ -139,6 +119,25 @@ func isSiteMapIndex(url string) (bool, []string) {
 	}
 
 	return true, sma
+}
+
+// IngestSiteMapText takes the URL and pulls the the URL from it
+// using concept of type sitemap
+func IngestSiteMapText(url string, cs utils.Config) URLSet {
+	bodyBytes, _ := getBody(url) // TODO handle this error
+	var sitemap URLSet
+
+	sc := bufio.NewScanner(strings.NewReader(string(bodyBytes)))
+	for sc.Scan() {
+		u := sc.Text()
+		un := URLNode{Loc: u}
+		sitemap.URL = append(sitemap.URL, un)
+	}
+	if err := sc.Err(); err != nil {
+		log.Fatalf("scan file error: %v", err)
+	}
+
+	return sitemap
 }
 
 func getBody(url string) ([]byte, error) {
