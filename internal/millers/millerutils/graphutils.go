@@ -76,6 +76,7 @@ func LoadToMinio(jsonld, bucketName, objectName string, mc *minio.Client) (int64
 	// usermeta["url"] = urlloc
 	// usermeta["sha1"] = bss
 
+	fmt.Println(bucketName)
 	// Upload the zip file with FPutObject
 	n, err := mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {

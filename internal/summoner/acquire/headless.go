@@ -11,32 +11,18 @@ import (
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
 	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/chromedp/chromedp"
-	"github.com/chromedp/chromedp/client"
 	minio "github.com/minio/minio-go"
 )
 
 // Headless gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
-	// Set up minio and initialize client
-	endpoint := cs.Minio.Endpoint
-	accessKeyID := cs.Minio.AccessKeyID
-	secretAccessKey := cs.Minio.SecretAccessKey
-	useSSL := false
-	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	if err != nil {
-		log.Fatalln(err) // fatal is fine..  we can't find minio..  no need to keep going...
-	}
+func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config) {
 	buildBuckets(minioClient, m) // TODO needs error obviously
 
 	// Create context and headless chrome instances
-	ctxt, cancel := context.WithCancel(context.Background())
+	ctxt, cancel := chromedp.NewContext(context.Background())
 	defer cancel()
-	c, err := chromedp.New(ctxt, chromedp.WithTargets(client.New().WatchPageTargets(ctxt)), chromedp.WithLog(log.Printf))
-	if err != nil {
-		log.Fatal(err) // we need headless..  :)   or what is the point of being here..  get out with fatal..
-	}
 
 	// Set up some concurrency support
 	semaphoreChan := make(chan struct{}, 1) // this HEADLESS is NOT thread safe yet!   a blocking channel to keep concurrency under control
@@ -51,7 +37,6 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 		for i := range m[k].URL {
 
 			wg.Add(1)
-
 			urlloc := m[k].URL[i].Loc
 			fmt.Println(urlloc)
 
@@ -59,7 +44,7 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 				semaphoreChan <- struct{}{}
 
 				var jsonld string
-				err = c.Run(ctxt, domprocess(urlloc, &jsonld))
+				err := chromedp.Run(ctxt, domprocess(urlloc, &jsonld))
 				if err != nil {
 					log.Println(err)
 				}
@@ -89,13 +74,12 @@ func Headless(m map[string]sitemaps.URLSet, cs utils.Config) {
 					}
 					log.Printf("#%d Uploaded Bucket:%s File:%s Size %d \n", i, bucketName, objectName, n)
 					fmt.Printf("#%d Uploaded Bucket:%s File:%s Size %d \n", i, bucketName, objectName, n)
-
 				}
 
 				wg.Done() // tell the wait group that we be done
 
-				fmt.Printf("#%d  got %s ", i, urlloc) // print an message containing the index (won't keep order)
-				<-semaphoreChan                       // clear a spot in the semaphore channel
+				fmt.Printf("#%d got %s ", i, urlloc) // print an message containing the index (won't keep order)
+				<-semaphoreChan                      // clear a spot in the semaphore channel
 			}(i, k)
 
 		}

@@ -7,17 +7,18 @@ import (
 
 	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
+	"earthcube.org/Project418/gleaner/pkg/utils"
 
 	minio "github.com/minio/minio-go"
 )
 
 // GraphMillObjects test a concurrent version of calling mock
-func GraphMillObjects(mc *minio.Client, bucketname string) {
+func GraphMillObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(entries, bucketname, mc)
+	multiCall(entries, bucketname, mc, cs)
 }
 
-func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
+func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.Config) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -42,7 +43,9 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client) {
 	log.Println(gb.Len())
 
 	// write to S3
-	fl, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s.n3", bucketname), mc)
+	// fl, err := millerutils.LoadToMinio(gb.String(), fmt.Sprintf("gleaner-milled/%s", cs.Gleaner.RunID), fmt.Sprintf("%s.n3", bucketname), mc)
+	fl, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s.n3", cs.Gleaner.RunID, bucketname), mc)
+
 	// deprecated write to file
 	// fl, err := millerutils.WriteRDF(gb.String(), bucketname)
 	if err != nil {

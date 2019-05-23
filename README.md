@@ -79,7 +79,9 @@ compatible client is to pull the minio mc client from https://hub.docker.com/r/m
 ```mc cp my_config.json local/gleaner-config/config.json```
 
 9) Ok, finally ready at step 8 to see if this even works.  
+
 ```go run cmd/gleaner/main.go```
+```go run cmd/gleaner/main.go -configfile ./configs/unidata_config.yaml```
 
 ## Next Steps
 
@@ -97,5 +99,3 @@ Add a new web ui to the system that:
 * front the config JSON (or the go struct) to a UI for CRUD operations...  it's possible
     that we want to use JSON scheme here and some of the various Javascript libs for
     JSON schema to forms
-
-

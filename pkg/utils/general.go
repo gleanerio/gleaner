@@ -5,12 +5,14 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/url"
 	"os"
 	"strings"
 
 	"github.com/minio/minio-go"
+	"gopkg.in/yaml.v2"
 )
 
 // Config struct
@@ -48,7 +50,45 @@ type Config struct {
 	} `json:"sources"`
 }
 
-//LoadConfiguration take a string name of a configuration file
+// ConfigYAML take a string name of a configuration file
+func ConfigYAML(file string) Config {
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	config := Config{}
+	err = yaml.Unmarshal([]byte(data), &config)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	fmt.Printf("--- t:\n%v\n\n", config)
+
+	return config
+}
+
+// S3ConfigYAML loads config file from S3(minio)
+// func S3ConfigYAML(endpoint, port, accessKeyID, secretAccessKey, bucket, file string, useSSL bool) Config {
+func S3ConfigYAML(minioClient *minio.Client, bucket, file string) Config {
+	fo, err := minioClient.GetObject(bucket, file, minio.GetObjectOptions{})
+	if err != nil {
+		log.Println(err)
+	}
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(fo)
+
+	config := Config{}
+	err = yaml.Unmarshal(buf.Bytes(), &config)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	fmt.Printf("--- t:\n%v\n\n", config)
+
+	return config
+}
+
+// LoadConfiguration take a string name of a configuration file
 func LoadConfiguration(file string) Config {
 	var config Config
 	configFile, err := os.Open(file)
@@ -86,16 +126,6 @@ func DomainNameShort(dn string) (string, string, error) {
 		panic(err)
 	}
 
-	// do we need to deal with port numbers from the host?
-	// host, port, err := net.SplitHostPort(u.Host)
-	// if err != nil {
-	// 	log.Printf("Error parsing the domain name %v", err)
-	// }
-
-	// return host, port, u.Scheme, err
-
-	// rewrite the host
-
 	return strings.Replace(u.Host, ".", "", -1), u.Scheme, err
 }
 
@@ -107,7 +137,7 @@ func GetSHA1(b []byte) string {
 	return string(bs)
 }
 
-// Set up minio and initialize client
+// MinioConnection Set up minio and initialize client
 func MinioConnection(cs Config) *minio.Client {
 	endpoint := cs.Minio.Endpoint
 	accessKeyID := cs.Minio.AccessKeyID
@@ -120,6 +150,7 @@ func MinioConnection(cs Config) *minio.Client {
 	return minioClient
 }
 
+// ListBuckets list bucket at a minio server
 func ListBuckets(mc *minio.Client) ([]minio.BucketInfo, error) {
 	buckets, err := mc.ListBuckets()
 	if err != nil {

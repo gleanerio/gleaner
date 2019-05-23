@@ -1,0 +1,29 @@
+{
+    "gleaner":  {
+        "summon": true,
+        "mill" : true,
+        "runid" : "dev1"
+    },
+    "millers": {
+        "mock": true,
+        "graph": true,
+        "spatial": true,
+        "shacl" : true,
+        "organic": false,
+        "tika": false,
+        "fdptika": false,
+        "fdptikajena": false,
+        "fdpgraph": false,
+        "prov": true
+    },
+    "sources": [{
+            "name": "thredds-testunidataucaredu",
+            "shortname": "unidata",
+            "logo": "http://geodex.org/images/logos/EarthCubeLogo.png",
+            "url": "https://thredds-test.unidata.ucar.edu/geocodesmap.xml",
+            "headless": false,
+            "sitemapformat": "xml",
+            "active": true
+        }
+    ]     
+}

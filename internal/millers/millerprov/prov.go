@@ -21,7 +21,7 @@ func MockObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	gd := buildGraph(entries, bucketname, cs)
 
 	// write to S3
-	i, err := millerutils.LoadToMinio(gd, "gleaner-milled", fmt.Sprintf("%s_prov.n3", bucketname), mc)
+	i, err := millerutils.LoadToMinio(gd, "gleaner-milled", fmt.Sprintf("%s/%s_prov.n3", cs.Gleaner.RunID, bucketname), mc)
 	if err != nil {
 		log.Println(err)
 	}

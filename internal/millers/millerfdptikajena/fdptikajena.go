@@ -13,6 +13,7 @@ import (
 
 	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
+	"earthcube.org/Project418/gleaner/pkg/utils"
 
 	// "github.com/bbalet/stopwords"
 	"github.com/deiu/rdf2go"
@@ -33,13 +34,13 @@ type Manifest struct {
 }
 
 // TikaObjects test a concurrent version of calling mock
-func TikaObjects(mc *minio.Client, bucketname string) {
+func TikaObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	graphname := fmt.Sprintf("%s", bucketname)
 	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(mc, entries, graphname)
+	multiCall(mc, entries, graphname, cs)
 }
 
-func multiCall(mc *minio.Client, e []common.Entry, graphname string) {
+func multiCall(mc *minio.Client, e []common.Entry, graphname string, cs utils.Config) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 4) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -67,7 +68,7 @@ func multiCall(mc *minio.Client, e []common.Entry, graphname string) {
 	log.Println(gb.Len())
 
 	// write to S3
-	fl, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s_fdpjena.n3", graphname), mc)
+	fl, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s_fdpjena.n3", cs.Gleaner.RunID, graphname), mc)
 	// deprecated write to file
 	// fl, err := millerutils.WriteRDF(gb.String(), fmt.Sprintf("%s_fdpjena", graphname))
 	if err != nil {

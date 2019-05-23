@@ -61,7 +61,7 @@ func Millers(mc *minio.Client, cs utils.Config) {
 
 	if cs.Millers.Graph {
 		for d := range as {
-			millersgraph.GraphMillObjects(mc, as[d])
+			millersgraph.GraphMillObjects(mc, as[d], cs)
 		}
 	}
 
@@ -74,7 +74,7 @@ func Millers(mc *minio.Client, cs utils.Config) {
 
 	if cs.Millers.Shacl {
 		for d := range as {
-			millershacl.SHACLMillObjects(mc, as[d])
+			millershacl.SHACLMillObjects(mc, as[d], cs)
 		}
 		// TODO add in saving the AOF file to the output directory
 	}
@@ -99,19 +99,19 @@ func Millers(mc *minio.Client, cs utils.Config) {
 
 	if cs.Millers.FDPTika {
 		for d := range as {
-			millerfdptika.TikaObjects(mc, as[d])
+			millerfdptika.TikaObjects(mc, as[d], cs)
 		}
 	}
 
 	if cs.Millers.FDPTikaJena {
 		for d := range as {
-			millerfdptikajena.TikaObjects(mc, as[d])
+			millerfdptikajena.TikaObjects(mc, as[d], cs)
 		}
 	}
 
 	if cs.Millers.FDPGraph {
 		for d := range as {
-			millerfdpgraph.TikaObjects(mc, as[d])
+			millerfdpgraph.TikaObjects(mc, as[d], cs)
 		}
 	}
 

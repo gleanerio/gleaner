@@ -5,19 +5,17 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
 
+	"earthcube.org/Project418/gleaner/internal/check"
 	"earthcube.org/Project418/gleaner/internal/millers"
 	"earthcube.org/Project418/gleaner/internal/summoner"
 	"earthcube.org/Project418/gleaner/pkg/utils"
+
 	"github.com/minio/minio-go"
 )
 
-// TODO
-// make a struct for cs and mc and pass it around to things as a simple pointer
-
-var minioVal, portVal, accessVal, secretVal, bucketVal, modeVal, cfgVal string
-var sslVal bool
+var minioVal, portVal, accessVal, secretVal, bucketVal, cfgValObj, cfgValFile string
+var sslVal, checkVal bool
 
 func init() {
 	log.SetFlags(log.Lshortfile)
@@ -27,113 +25,68 @@ func init() {
 
 	flag.StringVar(&minioVal, "address", "localhost", "FQDN for server")
 	flag.StringVar(&portVal, "port", "9000", "Port for minio server, default 9000")
-	flag.StringVar(&accessVal, "access", akey, "Access Key ID")
-	flag.StringVar(&secretVal, "secret", skey, "Secret access key")
-	flag.StringVar(&bucketVal, "bucket", "gleaner", "The configuration bucket")
-	flag.StringVar(&cfgVal, "config", "", "Configuration file")
-	flag.StringVar(&modeVal, "mode", "cli", "The mode to run in, one of cli or webui")
-	flag.BoolVar(&sslVal, "ssl", false, "Use SSL boolean")
+	flag.StringVar(&accessVal, "access", akey, "Access key - read from environment variable if set")
+	flag.StringVar(&secretVal, "secret", skey, "Secret key - read from environment variable if set")
+	flag.StringVar(&bucketVal, "bucket", "gleaner", "The default bucket namepace")
+	flag.StringVar(&cfgValObj, "configobj", "config.json", "Configuration object in object store bucket: [bucket]-config")
+	flag.StringVar(&cfgValFile, "configfile", "config.json", "Configuration file")
+	flag.BoolVar(&checkVal, "check", false, "Run Gleaner configuration check and exit")
+	flag.BoolVar(&sslVal, "ssl", false, "Use SSL true/false")
 }
 
 func main() {
 	log.Println("EarthCube Gleaner")
+	flag.Parse() // parse any command line flags...
 
-	// Load configurations
-	flag.Parse()
-
-	if !strings.EqualFold(modeVal, "cli") && !strings.EqualFold(modeVal, "webui") && !strings.EqualFold(modeVal, "syscheck") {
-		fmt.Println("Mode needs to be set to one of cli or webui")
-		log.Fatal("Mode not set")
-	}
+	flagset := make(map[string]bool)
+	flag.Visit(func(f *flag.Flag) { flagset[f.Name] = true })
 
 	// Get a connection to our minio
 	ep := fmt.Sprintf("%s:%s", minioVal, portVal)
 	mc, err := minio.New(ep, accessVal, secretVal, sslVal)
 	if err != nil {
+		log.Println("Can not make connection to required object store.")
 		log.Fatalln(err)
 	}
 
 	// Look for checksetup and check connections and buckets...
-	if strings.EqualFold(modeVal, "syscheck") {
-		// web ui will need to know the S3 info....
-		syscheck()
+	if checkVal {
+		check.GleanerCheck(mc)
+		os.Exit(0)
 	}
 
-	// Look for web..   if seen, go there...
-	if strings.EqualFold(modeVal, "webui") {
-		// web ui will need to know the S3 info....
-		webui()
+	// if setupVal {
+	// set up the buckets
+	// os.Exit(0)
+	// }
+
+	cs := utils.Config{}
+
+	if flagset["configfile"] {
+		log.Printf("Loading config file: %s \n", cfgValFile)
+		// cs = utils.LoadConfiguration(cfgValFile)
+		cs = utils.ConfigYAML(cfgValFile)
 	}
 
-	// Look for cli
-	if strings.EqualFold(modeVal, "cli") {
-		cs := utils.Config{}
-
-		// Config file is either provided at command line, or we look for it in S3/Minio
-		if !strings.EqualFold(cfgVal, "") { // this is stupid..  do this better
-			cs = utils.LoadConfiguration(cfgVal)
-		} else {
-			// cs = utils.LoadConfigurationS3(minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, sslVal)
-			cs = utils.LoadConfigurationS3(mc, "gleaner-config", "config.json")
-		}
-		cli(mc, cs)
+	if flagset["configobj"] {
+		log.Printf("Loading config object: %s \n", cfgValObj)
+		cs = utils.LoadConfigurationS3(mc, "gleaner-config", cfgValObj)
 	}
-}
 
-func syscheck(mc *minio.Client) {
-	fmt.Println("System setup check ")
-	s := "valid"
+	if !flagset["configfile"] && !flagset["configobj"] {
+		fmt.Println("No configuration file provided")
+		os.Exit(0)
+	}
 
-	// Check I can contact the various containers
-
-	// Check minio is there
-
-	// check the buckets...  try and to make the ones we need
-
-	fmt.Printf("System check results: %s\n", s)
-}
-
-func webui() {
-	fmt.Println("In development...")
+	cli(mc, cs)
 }
 
 func cli(mc *minio.Client, cs utils.Config) {
-	// REMOVE once full minio support in...
-	// Check for output directory and make it if it doesn't exist
-	// path := "./deployments/output"
-	// if _, err := os.Stat(path); os.IsNotExist(err) {
-	// 	os.Mkdir(path, os.ModePerm)
-	// }
-
-	// REMOVE once full minio support in....
-	// Set up an output run directory for each run in output (date)
-	// t := time.Now()
-	// year, month, day := t.Date()
-	// hour, min, sec := t.Clock()
-	// rundir := fmt.Sprintf("%s/%d%d%d_%d%d%d", path, year, month, day, hour, min, sec)
-	// if _, err := os.Stat(rundir); os.IsNotExist(err) {
-	// 	os.Mkdir(rundir, os.ModePerm)
-	// }
-
-	// Set up our log file for runs...
-	// logfile := fmt.Sprintf("%s/logfile.txt", rundir)
-	// f, err := os.OpenFile(logfile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	// if err != nil {
-	// 		log.Fatalf("error opening file: %v", err)
-	// 	}
-	// 	defer f.Close()
-	// 	log.SetOutput(f)
-
-	// could I call these two functions as go func args?
-	// https://abronan.com/introduction-to-goroutines-and-go-channels/
-	// NOTE:  summon must run before mill
-
 	if cs.Gleaner.Summon {
 		summoner.Summoner(mc, cs)
 	}
 
 	if cs.Gleaner.Mill {
-		// millers.Millers(cs, rundir) // need to remove rundir and then fix the compile
 		millers.Millers(mc, cs) // need to remove rundir and then fix the compile
 	}
 }

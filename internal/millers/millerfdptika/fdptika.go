@@ -13,6 +13,7 @@ import (
 
 	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
+	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/bbalet/stopwords"
 	"github.com/blevesearch/bleve"
 	"github.com/go-resty/resty"
@@ -32,13 +33,13 @@ type Manifest struct {
 }
 
 // TikaObjects test a concurrent version of calling mock
-func TikaObjects(mc *minio.Client, bucketname string) {
+func TikaObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	// indexname := fmt.Sprintf("./output/bleve/%s_packages", bucketname)
 	// initBleve(indexname)
 	indexname := fmt.Sprintf("%s_packages", bucketname)
 	fp := millerutils.NewinitBleve(indexname) //  initBleve(indexname)
 	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(entries, fp)
+	multiCall(entries, fp, cs)
 }
 
 // Initialize the text index  // this function needs some attention (of course they all do)
@@ -51,7 +52,7 @@ func TikaObjects(mc *minio.Client, bucketname string) {
 // 	index.Close()
 // }
 
-func multiCall(e []common.Entry, indexname string) {
+func multiCall(e []common.Entry, indexname string, cs utils.Config) {
 	// TODO..   open the bleve index here once and pass by reference to text
 	index, berr := bleve.Open(indexname)
 	if berr != nil {

@@ -28,7 +28,7 @@ func Summoner(mc *minio.Client, cs utils.Config) {
 
 	hru := acquire.ResourceURLs(headlessdomains, cs) // TODO..  pass mc and get this working again
 	if len(hru) > 0 {
-		acquire.Headless(hru, cs)
+		acquire.Headless(mc, hru, cs)
 	}
 
 	log.Printf("Summoner end time: %s \n", time.Now())
