@@ -12,29 +12,38 @@ import (
 
 // GleanerCheck checks the setup
 func GleanerCheck(mc *minio.Client) (bool, error) {
+	var err error
 	syscheck(mc)
 
-	// look for the buckets
-	// todo make a loop on all the needed buckets
-	found, err := mc.BucketExists("gleaner")
-	if err != nil {
-		log.Fatalln(err)
-	}
+	bl := []string{"gleaner", "gleaner-config", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
 
-	if found {
-		log.Println("Gleaner Bucket found.")
-	} else {
-		log.Println("Gleaner Bucket not found.")
+	for i := range bl {
+		found, err := mc.BucketExists(bl[i])
+		if err != nil {
+			log.Printf("Existing bucket %s check:%v\n", bl[i], err)
+		}
+
+		if found {
+			log.Printf("Gleaner Bucket %s found.\n", bl[i])
+		} else {
+			log.Printf("Gleaner Bucket %s not found, generating\n", bl[i])
+			err = mc.MakeBucket(bl[i], "us-east-1") // location is kinda meaningless here
+			if err != nil {
+				log.Printf("Make bucket:%v\n", err)
+			}
+		}
 	}
 
 	// look for the docker containers like tika, shacl
-
-	fmt.Println(urlCheck())
+	fmt.Printf("Checking for needed services in docker.\n (Not finished..  ignore results): %t \n", urlCheck())
 
 	return true, err
 }
 
 // need to check, tika, shacl, headless
+// this is just a place holder for that work now
+// TODO this is just a placeholder not function..  needs to be finished
+// to loop on the services I need in place for gleaner
 func urlCheck() bool {
 	s := false
 
@@ -52,6 +61,6 @@ func urlCheck() bool {
 // syscheck is a place holder function for work to be done....
 func syscheck(mc *minio.Client) {
 	fmt.Println("System setup check placeholder")
-	s := "valid"
+	s := "NA"
 	fmt.Printf("System check results: %s\n", s)
 }

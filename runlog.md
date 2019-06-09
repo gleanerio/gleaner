@@ -8,8 +8,14 @@ Config file(s):  p419_summon.yaml, p419_mill.yaml
 
 Bucket:  local/gleaner-milled/p419run1
 
-Summon Errors:
+### Summon Errors:
 
-Milling Errors:
+Some malformed JSON-LD spotted on ingest.  These will show up later.  Also, an 
+http cert issue on Open Topography
+
+### Milling Errors:
+
+Moslty RDF errors better exposed in the Rapper call.
 
 
+### Rapper (RDF) Errors:

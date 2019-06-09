@@ -50,7 +50,7 @@ func multiCall(e []common.Entry, indexname string) {
 	}
 
 	// Set up the the semaphore and conccurancey
-	semaphoreChan := make(chan struct{}, 1) // a blocking channel to keep concurrency under control
+	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 

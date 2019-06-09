@@ -1,11 +1,11 @@
 ---
 gleaner:
-  summon: false  # do we want to visit the web sites and pull down the files
+  summon: true # do we want to visit the web sites and pull down the files
   mill: true
-  runid: runtwo  # this will be the bucket the output is placed in...
+  runid: unidataT2  # this will be the bucket the output is placed in...
 millers:
   mock: false
-  graph: false
+  graph: true
   spatial: false
   shacl: true
   organic: false

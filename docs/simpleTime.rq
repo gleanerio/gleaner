@@ -1,0 +1,15 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+PREFIX  :       <.>
+
+SELECT *
+{
+    GRAPH ?g 
+      {     
+ ?s <http://geoschemas.org/contexts/temporal.jsonldtemporalCoverage>/<http://www.w3.org/2006/time#hasEnd>/<http://www.w3.org/2006/time#inXSDDateTimeStamp> ?end .
+  ?s <http://geoschemas.org/contexts/temporal.jsonldtemporalCoverage>/<http://www.w3.org/2006/time#hasBeginning>/<http://www.w3.org/2006/time#inXSDDateTimeStamp> ?begin .
+
+  } 
+  
+}
+

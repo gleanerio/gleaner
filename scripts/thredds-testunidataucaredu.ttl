@@ -1,0 +1,1107 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 301 by 331 points, resolution 10 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Regional US East Coast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-1.0982155799865723E-4 -100.0 55.0 -49.99990016222" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC WW3 Europe Model : Global Lat/Lon grid. Model runs are made at 0, and 12Z, with analysis and forecasts every 6 hours out 72 hours. Horizontal= 188 by 301 points, resolution .2 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC WW3 Europe Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "29.000001907348633 -15.000000953674316 66.40000246465206 44.999999940395355" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-30T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 401 by 187 points, resolution 10 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Regional Alaska Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "43.9999381005764 140.0 75.0 -120.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model: AWIPS 242 (S) Grid over Alaska. Model runs are made at 0, 6, 12, 18Z with analysis and forecasts every 3 hours out to 84 hours (3.5 days). Horizontal = 553 by 425 points, resolution 11.25 km, Polar Stereographic projection. Vertical = 1000 to 100 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM Alaska 11km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "30.00000000000001 -172.99999999999994 70.11139202708944 -62.85040019582402" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Ensemble Forecasting System (GEFS) Global one degree Lat/Lon grid. Model runs are made at 0, 6, 12, 18 ... hours out to 378 hours (16 days). Horizontal = 181 by 360 points, resolution 1 degree, Lat/Lon projection. Vertical = 2000 to 1000 hPa mandatory pressure levels (7 levels); pressure, height above ground, pressure_difference_layers. Ensemble derived products: mean, spread, and probabilities." ;
+    <http://schema.org/name> "Best GEFS Derived Forecast Products Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-12T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Rapid Refresh (RR / RAP)) Model: frequently updated short-range weather forecasts. Replaced the Rapid Update Cycle (RUC/RUC2) on 05 May 2012 12Z. Model runs are made hourly, with analysis and hourly forecasts out to 3 hours; on the 0, 3, 6, 9, 12, 15, 18, and 21Z runs, the hourly forecasts go out to 12 hours Horizontal = 151 by 113 points, resolution 40.63 km, LambertConformal projection." ;
+    <http://schema.org/name> "Best Rapid Refresh CONUS 40km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "16.28100013732909 -139.85612174361665 55.48131078640182 -57.38107451090991" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-27T04:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition NCEP High Resolution Rapid Refresh NCEP HRRR Model : AWIPS 184 (C) Grid. 2.5 km NDFD grid over CONUS (Lambert Conformal). Model runs are made hourly. Horizontal = 2145 by 1377 points, resolution 2.5 km, Lambert Conformal projection. Vertical = 1000 to 500 hPa mandatory pressure levels (5 levels); surface, height above ground, pressure layers. This collection contains analysis grids only." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.1919994354248 -130.1033862772356 50.10547177729705 -60.88591254248189" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-23T00:00:00Z/2019-04-26T10:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 213 (H) Grid. National - CONUS - Double Resolution (polar stereographic). Model runs are made at 0, 6, 12, and 18Z, with analysis and forecasts every 6 hours out 4 days. Horizontal = 129 by 85 points, resolution 95.25 km, Polar Stereographic projection. Vertical = 1000 to 100 hPa mandatory pressure levels (10 levels); surface, height above ground, pressure layers." ;
+    <http://schema.org/name> "Best GFS CONUS 95km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "7.8379998207092205 -141.02799987792966 35.61744720606792 -18.576283151533914" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-06T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC COAMPS Equatorial America Model : Global Lat/Lon grid. Model runs are made at 0 and 12Z, with analysis and forecasts every 3 hours out 48 hours. Horizontal= 298 by 461 points, resolution 0.15 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC COAMPS Equatorial America Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-12.000000953674316 -122.00000762939453 32.55000081658363 -53.00000488758087" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-30T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 230 (G) Grid. Global Lat/Lon grid. Model runs at 0, 6, 12, and 18Z. Horizontal= 721 by 14400 points, resolution 0.25 degree, Lat/Lon projection. Vertical= 1000 to 100 hPa mandatory pressure levels (26 levels); surface, height above ground, pressure layers. Forecasts grids starting from the 0 hour forecast every 3 hours out to 10 days, then 12 hour forecasts for days 10-16." ;
+    <http://schema.org/name> "Best GFS Quarter Degree Forecast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-23T00:00:00Z/2019-05-12T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition FNMOC NCODA Model : Global Lat/Lon grid. Model runs are made at 12Z, with analysis and forecasts at 0Z. Horizontal= 721 by 1440 points, resolution .25 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. Model runs are made at 00Z, and 12Z with analysis and forecasts every 3 hours out to 60 hours; and at 06Z, and 18Z with analysis and forecasts every 3 hours out to 48 hours. Vertical = surface, height above ground, and 1000 to 30 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM CONUS 20km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.190000534057615 -152.87269071350659 57.30033656605528 -49.31226623770094" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-28T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 211 (Q) Regional - CONUS (Lambert Conformal). Model runs are made at 12Z and 00Z, with analysis and forecasts every 6 hours out to 60 hours. Horizontal = 93 by 65 points, resolution 81.27 km, LambertConformal projection. Vertical = 1000 to 100 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM CONUS 80km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.190000534057615 -152.87231995943296 57.300109844026004 -49.31373619179368" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-28T12:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Ensemble Forecasting System (GEFS) Global one degree Lat/Lon grid. Model runs are made at 0, 6, 12, 18 ... hours out to 378 hours (16 days). Horizontal = 181 by 360 points, resolution 1 degree, Lat/Lon projection. Vertical = 2000 to 1000 hPa mandatory pressure levels (7 levels); pressure, height above ground, pressure_difference_layers. Ensemble members." ;
+    <http://schema.org/name> "Best GEFS Members - Forecasts Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-12T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time" ;
+    <http://schema.org/name> "Best GSD HRRR CONUS 3km surface Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "21.138124465942376 -134.09548029305594 47.84219632282758 -60.91719159461894" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-23T00:00:00Z/2019-04-27T03:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 720 by 336 points, resolution 30 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Global Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-77.5 0.0 90.0 -0.5" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory MRMS Radar fields" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:31Z/2019-04-26T10:58:36Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory MRMS Model-derived fields" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00499971397221 -129.9940185546875 54.994998931884766 -60.00402011908591" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T10:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 229 (F) Grid. Global Lat/Lon grid. Model runs are made at 0, 6, 12, and 18Z. Horizontal = 181 by 360 points, resolution 1 degree, Lat/Lon projection. Vertical = 1000 to 100 hPa mandatory pressure levels (10 levels); surface, height above ground, pressure layers. Analysis grids only." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 216 (V) grid over Alaska. Model runs are made at 00Z, 06Z, 12Z, and 18Z with analysis and forecasts every 3 hours out to 84 hours (3.5 days). Horizontal = 139 by 107 points, resolution 45.0 km, Polar Stereographic projection. Vertical = 1000 to 50 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM Alaska 45km from CONDUIT Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "30.00000000000001 -172.99999999999994 70.11139202708944 -62.85040019582402" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 105 Grid. Model runs are made at 0, 6, 12, and 18Z, with analysis and forecasts every 3 hours out to 84 hours. Horizontal = 147 by 110 points, resolution 90.75 km, Polar Stereographic projection. Vertical = 1000 to 50 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM Polar 90km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-0.2680000066757303 -139.47500610351562 32.74686154915562 -14.598488868806385" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC WW3 Global_1p0deg Model : Global Lat/Lon grid. Model runs are made at 0, and 12Z, with analysis and forecasts every 3 hours out 24 hours then every 6 hours out 180 hours. Horizontal= 181 by 360 points, resolution 1 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC WW3 Global 1.0 Degree Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T12:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 241 by 151 points, resolution 10 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Regional US West Coast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "24.99995008111 -150.0 50.0 -109.999920129776" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : Mercator Grid over most of the Pacific. longitude 110 W to 110 E. Model runs are made at 0, 6, 12, and 18Z, with analysis and forecasts every 6 hours out 10 days. Horizontal = 300 by 369 points, resolution 40 km, Mercator projection. Vertical = 1000 to 100 hPa mandatory pressure levels (29 levels); surface, height above ground, pressure layers." ;
+    <http://schema.org/name> "Best GFS Pacific 40km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-35.000000000000014 110.0 60.78878203352615 -109.12906056061036" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-06T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC COAMPS Northeastern Pacific Model : Global Lat/Lon grid. Model runs are made at 0 and 12Z, with analysis and forecasts every 3 hours out 48 hours. Horizontal= 156 by 271 points, resolution .2 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC COAMPS Northeast Pacific Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "34.0 -172.00001525878906 64.00000044703484 -118.00001445412636" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-30T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory MRMS Precipitation fields" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T10:58:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 216 (V) grid over Alaska. Model runs are made at 0 and 12Z, with analysis and forecasts every 3 hours out to 60 hours. Horizontal = 139 by 107 points, resolution 45.0 km, Polar Stereographic projection. Vertical = 1000 to 50 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM Alaska 45km from NOAAPORT Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "30.000001907348643 -172.99998474121088 70.11138765052343 -62.85036311287888" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-28T12:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory MRMS Mid-level Rotation Tracks" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00250215549022 -129.99749755859375 54.997501373291016 -60.00249912310392" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:34Z/2019-04-26T10:58:32Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time The NCEP RTMA Model is Real Time Mesoscale Analysis models. NCEP Model horizontal = 1377 by 2145 points, resolution 2.5 km, LambertConformal projection. Model runs are made hourly, with 0 hour forecast" ;
+    <http://schema.org/name> "Best Real Time Mesoscale Analysis 2.5 km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.1919994354248 -130.10343744073265 50.1055463250169 -60.88556057076988" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T11:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP High Resolution Rapid Refresh NCEP HRRR Model : AWIPS 184 (C) Grid. 2.5 km NDFD grid over CONUS (Lambert Conformal). Model runs are made hourly. Horizontal = 2145 by 1377 points, resolution 2.5 km, Lambert Conformal projection. Vertical = 1000 to 500 hPa mandatory pressure levels (5 levels); surface, height above ground, pressure layers. Forecasts grids every hour out 15 hours." ;
+    <http://schema.org/name> "Best NCEP HRRR CONUS 2.5km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.1919994354248 -130.1033862772356 50.10547177729705 -60.88591254248189" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-23T00:00:00Z/2019-04-27T04:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 511 by 301 points, resolution 10 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Regional Eastern Pacific Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-20.00009983778 130.0 30.0 -144.999830275774" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time National Digital Forecast Database (NDFD): US National Weather Service gridded forecasts of sensible weather elements. CONUS, 2145 by 1377 points, resolution 2.5 km. Forecast grids, updated hourly. Forecast intervals and duration vary with the time of forecast and the particular parameter." ;
+    <http://schema.org/name> "Best National Weather Service CONUS Forecast Grids (CONDUIT) Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.1919994354248 -130.10343744073265 50.1055463250169 -60.88556057076988" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T01:00:00Z/2024-09-26T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 548 by 391 points, resolution 4 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Coastal Alaska Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "47.99987079203129 165.0 74.0 -122.0668503344059" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time National Digital Forecast Database (NDFD): US National Weather Service gridded forecasts of sensible weather elements. CONUS, 2145 by 1377 points, resolution 2.5 km. Forecast grids for Storm Prediction Center outlooks." ;
+    <http://schema.org/name> "Best Storm Prediction Center CONUS Forecast Grids Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.190000534057628 -130.09801167125502 50.1024604936146 -60.882024569613066" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T12:00:00Z/2019-04-29T12:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 218 (B) grid over the continental United States. Model runs are made at 06Z, 12Z, 18Z and 00Z, with analysis and forecasts every hour, out to 36 hours, and then every three hours out to 84 hours (3.5 days). Horizontal = 614 by 428 points, resolution 12.19 km, LambertConformal projection. Vertical = small number of mandatory pressure levels, lots of surface fields." ;
+    <http://schema.org/name> "Best NAM CONUS 12km from CONDUIT Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.189999580383306 -152.87864418407665 57.32844250829164 -49.416005717303506" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC COAMPS Southern California Model : Global Lat/Lon grid. Model runs are made at 0 and 12Z, with analysis and forecasts every 3 hours out 48 hours. Horizontal= 141 by 128 points, resolution .15 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC COAMPS Southern California Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "22.000001907348633 -128.0 43.00000274181366 -108.94999924302101" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-30T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC COAMPS Western Atlantic Model : Global Lat/Lon grid. Model runs are made at 0 and 12Z, with analysis and forecasts every 3 hours out 72 hours. Horizontal= 176 by 191 points, resolution .2 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC COAMPS Western Atlantic Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "17.05000114440918 -99.00000762939453 55.00000265240669 -54.00000584125519" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 229 (F) Grid. Global Lat/Lon grid. Model runs are made at 0, 6, 12, and 18Z. Horizontal = 181 by 360 points, resolution 1 degree, Lat/Lon projection. Vertical = 1000 to 100 hPa mandatory pressure levels (10 levels); surface, height above ground, pressure layers. Forecasts grids starting from the 0 hour forecast every 3 hours out to 192 hours (8 days)." ;
+    <http://schema.org/name> "Best GFS One Degree Forecast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-12T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 586 by 481 points, resolution 4 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Coastal US East Coast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "14.99984097480774 -99.0 47.0 -59.99980618804693" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Short Range Ensemble Forecast (SREF) NCEP Short Range Ensemble Forecast (SREF) 40km derived products: bias-corrected mean, spread, and probability, over CONUS with 185 by 129 points, resolution 40 km. Models are run daily at 3,9,15,and 21Z. Forecasts every 3 hours from 3 to 87 hours." ;
+    <http://schema.org/name> "Best SREF CONUS 40km Ensemble Derived Products (Bias Corrected) Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.189999580383306 -152.85512784941602 57.28918658025636 -49.38660780527863" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T06:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Short Range Ensemble Forecast (SREF) NCEP SREF Pacific NE 0.4 degree derived products:mean, spread, and probability." ;
+    <http://schema.org/name> "Best SREF Pacific North East 0.4 Degree Ensemble Derived Products Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "10.0 -170.0 50.00000059604645 -119.99999925494194" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T03:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory Base Reflectivity Fields" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:02:13Z/2019-04-26T10:58:08Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Rapid Refresh (RR / RAP)) Model: frequently updated short-range weather forecasts. Replaced the Rapid Update Cycle (RUC/RUC2) on 05 May 2012 12Z. Model runs are made hourly, with analysis and hourly forecasts out to 3 hours; on the 0, 3, 6, 9, 12, 15, 18, and 21Z runs, the hourly forecasts go out to 12 hours Horizontal = 337 by 451 points, resolution 13.55 km, LambertConformal projection." ;
+    <http://schema.org/name> "Best Rapid Refresh CONUS 13km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "16.28100013732909 -139.8561226608637 55.481311754301515 -57.38107002604471" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-27T07:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition The NCEP RTMA Model is Real Time Mesoscale Analysis models. NCEP Model horizontal = 193 by 193 points, resolution 2.5 km, Mercator projection. Model runs are made every 3 hours at 0, 3, ... with 0 hour forecasts." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.349884033203127 143.68653869628906 16.794486121661944 148.2801771956238" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T09:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time National Digital Forecast Database (NDFD): US National Weather Service gridded forecasts of sensible weather elements. CONUS, 2145 by 1377 points, resolution 2.5 km. Forecast grids from 00Z and 12Z." ;
+    <http://schema.org/name> "Best National Weather Service CONUS Forecast Grids (NOAAPORT) Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.1919994354248 -130.10358411698786 50.10599737004012 -60.88599093428331" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-30T06:00:00Z/2019-05-04T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition National Digital Forecast Database (NDFD): US National Weather Service gridded forecasts of sensible weather elements. CONUS, 2145 by 1377 points, resolution 2.5 km. Grids for Climate Prediction Center extended forecasts." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.190000534057628 -130.09801167125502 50.1024604936146 -60.882024569613066" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-09T00:00:00Z/2019-05-09T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory MRMS Low-level Rotation Tracks" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00250215549022 -129.99749755859375 54.997501373291016 -60.00249912310392" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:34Z/2019-04-26T10:58:32Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition NCEP Global Ensemble Forecasting System (GEFS) Global one degree Lat/Lon grid. Model runs are made at 0, 6, 12, 18 ... hours out to 378 hours (16 days). Horizontal = 181 by 360 points, resolution 1 degree, Lat/Lon projection. Vertical = 2000 to 1000 hPa mandatory pressure levels (7 levels); pressure, height above ground, pressure_difference_layers. Ensemble members - Analysis grids only." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Short Range Ensemble Forecast (SREF) NCEP Short Range Ensemble Forecast (SREF) 40km derived products: mean, spread, and probability, over CONUS with 185 by 129 points, resolution 40 km. Models are run daily at 3,9,15,and 21Z. Forecasts every 3 hours from 3 to 87 hours." ;
+    <http://schema.org/name> "Best SREF CONUS 40km Ensemble Derived Products Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.189999580383306 -152.85512784941602 57.28918658025636 -49.38660780527863" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T03:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 230 (G) Grid. Global Lat/Lon grid. Model runs at 0, 6, 12, and 18Z. Horizontal= 361 by 720 points, resolution 0.5 degree, Lat/Lon projection. Vertical= 1000 to 100 hPa mandatory pressure levels (10 levels); surface, height above ground, pressure layers. Analysis grids only." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-26T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 207 (N) Regional - Alaska. Model runs are made at 0 and 12Z, with analysis and forecasts every 6 hours out to 60 hours. Horizontal = 49 by 35 points, resolution 95.25 km, Stereographic projection. Vertical = 1000 to 100 hPa pressure levels." ;
+    <http://schema.org/name> "Best NAM Alaska 95km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "42.084934851331916 -175.6409912109375 63.975772612374875 -93.68958377486075" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-28T12:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Wave Watch III (WW3): US National Weather Service gridded forecasts of sensible weather elements. 736 by 526 points, resolution 4 minute. Models are run daily at 0Z, 6Z, 12Z and 18Z. Forecasts every 3 hours from 0 to 72, every 6 hours from 72 to 180 hours." ;
+    <http://schema.org/name> "Best Wave Watch III Coastal US West Coast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "14.999826066195965 -165.0 50.0 -115.99975649267435" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Rapid Refresh (RR / RAP)) Model: frequently updated short-range weather forecasts. Replaced the Rapid Update Cycle (RUC/RUC2) on 05 May 2012 12Z. Model runs are made hourly, with analysis and hourly forecasts out to 3 hours; on the 0, 3, 6, 9, 12, 15, 18, and 21Z runs, the hourly forecasts go out to 12 hours Horizontal = 301 by 225 points, resolution 20.31 km, Lambert Conformal projection." ;
+    <http://schema.org/name> "Best Rapid Refresh CONUS 20km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "16.28100013732909 -139.85660422055307 55.48181988843929 -57.37871545619316" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-27T07:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition Multi-radar multi-sensor analysis produced by the National Severe Storms Laboratory MRMS NLDN (lightning) fields" ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:11Z/2019-04-26T10:59:02Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Short Range Ensemble Forecast (SREF) NCEP SREF Alaska 45km derived products:mean, spread, and probability." ;
+    <http://schema.org/name> "Best SREF Alaska 45km Ensemble Derived Products Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "30.00000000000001 -172.99999999999994 70.11139202708944 -62.85040019582402" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T03:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : Puerto_Rico 0.5 degree Lat/Lon grid. Model runs are made at 0, 6, 12, 18 hours out to 10 days. Horizontal = 102 by 107 points, resolution .5 degree, Lat/Lon projection. Vertical = 1000 to 100 hPa mandatory pressure levels (29 levels); surface, height above ground, pressure layers." ;
+    <http://schema.org/name> "Best GFS Puerto Rico Half Degree Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-0.25 -88.24996948242188 50.75 -20.249969482421875" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-06T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> .
+
+[]
+    <http://schema.org/description> "Multiple reference, unique time Grib Partition NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 230 (G) Grid. Global Lat/Lon grid. Model runs at 0, 6, 12, and 18Z. Horizontal= 721 by 14400 points, resolution 0.25 degree, Lat/Lon projection. Vertical= 1000 to 100 hPa mandatory pressure levels (26 levels); surface, height above ground, pressure layers. Analysis grids only." ;
+    <http://schema.org/name> "Full Collection Dataset" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-23T00:00:00Z/2019-04-26T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 212 (R) Regional - CONUS - Double Resolution. Horizontal = 185 by 129 points, resolution 40.63 km; LambertConformal projection. Vertical = surface, 1000 to 50 hPa pressure levels, layers, and depth. Model runs are made at 00Z, 06Z, 12Z, and 18Z and have analysis and forecasts every 3 hours out to 84 hours." ;
+    <http://schema.org/name> "Best NAM CONUS 40km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.189999580383306 -152.85512784941602 57.28918658025636 -49.38660780527863" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC COAMPS Europe Model : Global Lat/Lon grid. Model runs are made at 0 and 12Z, with analysis and forecasts every 6 hours out 96 hours. Horizontal= 186 by 301 points, resolution .2 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC COAMPS Europe Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "29.000001907348633 -15.000000953674316 66.40000246465206 44.999999940395355" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-30T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 230 (G) Grid. Global Lat/Lon grid. Model runs at 0, 6, 12, and 18Z. Horizontal= 361 by 720 points, resolution 0.5 degree, Lat/Lon projection. Vertical= 1000 to 100 hPa mandatory pressure levels (10 levels); surface, height above ground, pressure layers. Forecasts grids starting from the 0 hour forecast every 3 hours out to 10 days, then 12 hour forecasts for days 10-16." ;
+    <http://schema.org/name> "Best GFS Half Degree Forecast Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-12T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Nonhydrostatic Mesoscale Model (NMM) and Gridpoint Statistical Interpolation (GSI) analysis, running in the Weather Research and Forecasting (WRF) infrastructure. NCEP North American Model : AWIPS 218 (B) grid over the continental United States. Model runs are made at 06Z, 12Z, 18Z and 00Z, with analysis and forecasts every 3 hours out to 84 hours (3.5 days). Horizontal = 614 by 428 points, resolution 12.19 km, LambertConformal projection. Vertical = 1000 to 100 hPa pressure levels (29)." ;
+    <http://schema.org/name> "Best NAM CONUS 12km from NOAAPORT Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.189999580383306 -152.87864418407665 57.32844250829164 -49.416005717303506" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-04-29T18:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time NCEP Global Forecast System Model, previously called AVN/MRF (Medium Range Forecast) NCEP GFS Model : AWIPS 211 (Q) Grid. Regional - CONUS (Lambert Conformal). Model runs are made at 0, 6, 12, and 18Z, with analysis and forecasts every 6 hours out 10 days. Horizontal = 93 by 65 points, resolution 81.27 km, LambertConformal projection. Vertical = 1000 to 100 hPa pressure levels (29 levels); surface, height above ground, pressure layers." ;
+    <http://schema.org/name> "Best GFS CONUS 80km Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "12.190000534057615 -152.87233875914026 57.30011352036161 -49.31375333991065" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-06T06:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC NAVGEM Global_0p5deg Model : Global Lat/Lon grid. Model runs are made at 0, 6, 12, and 18Z, with analysis and forecasts every 3 hours out 66 hours. Horizontal = 361 by 720 points, resolution 0.5 degree, Lat/Lon projection. Vertical = 1013 to 4 hPa pressure levels (33 levels); surface, height above ground, pressure layers." ;
+    <http://schema.org/name> "Best FNMOC NAVGEM Global 0.5 Degree Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-03T12:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time" ;
+    <http://schema.org/name> "Best GSD HRRR CONUS 3km wrfprs Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "21.138124465942376 -134.09548029305594 47.84219632282758 -60.91719159461894" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-04-23T00:00:00Z/2019-04-27T22:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> .
+
+[]
+    <http://schema.org/description> "Single time dimension: for each forecast time, use GRIB record with smallest offset from reference time FNMOC FAROP Global_1p0deg Model : Global Lat/Lon grid. Model runs are made at 0, 6, 12, and 18Z, with analysis and forecasts every 3 hours out 9 hours. Horizontal= 181 by 360 points, resolution 1 degree, Lat/Lon projection." ;
+    <http://schema.org/name> "Best FNMOC FAROP Global 1.0 Degree Time Series" ;
+    <http://schema.org/spatialCoverage> [
+        <http://schema.org/geo> [
+            <http://schema.org/box> "-90.0 -180.0 90.0 180.0" ;
+            a <http://schema.org/GeoShape> ;
+            <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best>
+        ] ;
+        a <http://schema.org/Place> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best>
+    ] ;
+    <http://schema.org/temporalCoverage> "2019-03-27T00:00:00Z/2019-05-02T00:00:00Z" ;
+    <http://schema.org/url> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html> ;
+    a <http://schema.org/Dataset> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> .
+
