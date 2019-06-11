@@ -15,10 +15,10 @@ millers:
   fdpgraph: false
   prov: false
 sources:
-- name: thredds-testunidataucaredu
-  shortname: unidata
+- name: ssdbiodporg
+  shortname: ssdb
   logo: http://geodex.org/images/logos/EarthCubeLogo.png
-  url: https://thredds-test.unidata.ucar.edu/geocodesmap.xml
+  url: https://ssdb.iodp.org/dataset/sitemap.xml
   headless: false
   sitemapformat: xml
   active: true
