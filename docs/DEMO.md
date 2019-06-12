@@ -43,7 +43,6 @@ start with and modify to your needs.
 optional SHACL validation miller.
 `mc cp *.ttl local/gleaner-shacl`
 
-
 ## First run
 
 With all the containers running and the propper buckets in place in minio we are ready 
@@ -51,6 +50,8 @@ to run Gleaner.
 
 We need to ensure our configuration file is ready to go.  There are a couple included in the starterpack.zip
 you can use for some testing runs.
+
+```gleaner -configfils ssdb.yml```
 
 
 ## Docker notes
