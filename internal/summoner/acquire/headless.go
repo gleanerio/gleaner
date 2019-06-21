@@ -57,14 +57,16 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.
 					bss := fmt.Sprintf("%x", bs) // better way to convert bs hex string to string?
 
 					// objectName := fmt.Sprintf("%s/%s.jsonld", up.Path, bss)
-					objectName := fmt.Sprintf("%s.jsonld", bss)
+					// objectName := fmt.Sprintf("%s.jsonld", bss)
+					objectName := fmt.Sprintf("%s/%s.jsonld", k, bss)
 					contentType := "application/ld+json"
 					b := bytes.NewBufferString(jsonld)
 
 					usermeta := make(map[string]string) // what do I want to know?
 					usermeta["url"] = urlloc
 					usermeta["sha1"] = bss
-					bucketName := k
+					bucketName := "gleaner-summoned"
+					//bucketName := fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 					// Upload the zip file with FPutObject
 					n, err := minioClient.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})

@@ -32,9 +32,10 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
 	var gb common.Buffer
-	m := common.GetMillObjects(mc, "gleaner-shacl") // todo: beware static bucket lists!!!
+	m := common.GetShapeGraphs(mc, "gleaner-shacl") // todo: beware static bucket lists!!!
 
 	for j := range m {
+		log.Printf("Checking data graphs against shape graph: %s\n", m[j])
 		for k := range e {
 			wg.Add(1)
 			// log.Printf("Ready JSON-LD package  #%d #%s \n", j, e[k].Urlval)

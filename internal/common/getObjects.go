@@ -17,12 +17,13 @@ type Entry struct {
 	Jld        string
 }
 
-// GetMillObjects
-func GetMillObjects(mc *minio.Client, bucketname string) []Entry {
+// GetMillObjects gets the objects for a given miller
+func GetMillObjects(mc *minio.Client, prefix string) []Entry {
 	doneCh := make(chan struct{}) // Create a done channel to control 'ListObjectsV2' go routine.
 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
-	objectCh := mc.ListObjectsV2(bucketname, "", isRecursive, doneCh)
+	bucketname := "gleaner-summoned"
+	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
 
 	var entries []Entry
 

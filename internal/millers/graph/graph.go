@@ -33,7 +33,7 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 			semaphoreChan <- struct{}{}
 			status := millerutils.Jsl2graph(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
 
-			wg.Done() // tell the wait group that we be done
+			wg.Done() // tell the wait group that we be done!
 			log.Printf("#%d wrote %d bytes", k, status)
 			<-semaphoreChan
 		}(k)

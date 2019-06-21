@@ -1,3 +1,7 @@
 **/secret/
 deployments/output/**
 deployments/dataVolume/**
+cmd/gleaner/gleaner
+cmd/gleaner/gleaner.exe
+cmd/gleaner/gleaner_darwin
+output/**

@@ -3,6 +3,7 @@ package acquire
 import (
 	"bytes"
 	"crypto/sha1"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,12 +12,16 @@ import (
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
 	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/kazarena/json-gold/ld"
 	"github.com/minio/minio-go"
 )
 
-// ResRetrieve
+// ResRetrieve is a function to pull down the data graphs at resources
 func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config) {
-	buildBuckets(mc, m) // TODO needs error obviously
+	err := buildBuckets(mc, m) // TODO needs error obviously
+	if err != nil {
+		log.Printf("Gleaner bucket report:  %s", err)
+	}
 
 	// set up some concurrency support
 	semaphoreChan := make(chan struct{}, 5) // a blocking channel to keep concurrency under control
@@ -73,9 +78,9 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 					doc.Find("script").Each(func(i int, s *goquery.Selection) {
 						val, _ := s.Attr("type")
 						if val == "application/ld+json" {
-							err = isValid(s.Text())
+							action, err := isValid(s.Text())
 							if err != nil {
-								log.Printf("ERROR: At %s JSON-LD is NOT valid: %s", urlloc, err)
+								log.Printf("ERROR: URL: %s Action: %s  Error: %s", urlloc, action, err)
 							}
 							jsonld = s.Text()
 						}
@@ -90,14 +95,16 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 					bss := fmt.Sprintf("%x", bs) // better way to convert bs hex string to string?
 
 					// objectName := fmt.Sprintf("%s/%s.jsonld", up.Path, bss)
-					objectName := fmt.Sprintf("%s.jsonld", bss)
+					// objectName := fmt.Sprintf("%s.jsonld", bss)
+					objectName := fmt.Sprintf("%s/%s.jsonld", k, bss)
 					contentType := "application/ld+json"
 					b := bytes.NewBufferString(jsonld)
 
 					usermeta := make(map[string]string) // what do I want to know?
 					usermeta["url"] = urlloc
 					usermeta["sha1"] = bss
-					bucketName := k
+					bucketName := "gleaner-summoned"
+					//bucketName := fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 					// Upload the file with FPutObject
 					n, err := mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
@@ -117,4 +124,27 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 	}
 
 	wg.Wait() // wait for all the goroutines to be done
+}
+
+func isValid(jsonld string) (string, error) {
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+	options.Format = "application/nquads"
+
+	var myInterface interface{}
+	action := ""
+
+	err := json.Unmarshal([]byte(jsonld), &myInterface)
+	if err != nil {
+		action = "json.Unmarshal call"
+		return "", err
+	}
+
+	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
+	if err != nil {
+		action = "JSON-LD to RDF call"
+		return "", err
+	}
+
+	return action, err
 }

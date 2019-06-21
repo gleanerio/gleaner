@@ -1,12 +1,12 @@
 package acquire
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
 
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
 	"earthcube.org/Project418/gleaner/pkg/utils"
-	"github.com/kazarena/json-gold/ld"
+	"github.com/minio/minio-go"
 )
 
 // Sources Holds the metadata associated with the sites to harvest
@@ -18,27 +18,9 @@ type Sources struct {
 	Active        bool
 }
 
-func isValid(jsonld string) error {
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
-	options.Format = "application/nquads"
-
-	var myInterface interface{}
-	err := json.Unmarshal([]byte(jsonld), &myInterface)
-	if err != nil {
-		log.Println("Error when transforming JSON-LD document to interface:", err)
-		return err
-	}
-
-	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
-	if err != nil {
-		log.Println("Error when transforming JSON-LD document to RDF:", err)
-		return err
-	}
-
-	return err
-}
-
+// DomainListJSON gets all the domains we will be working with.  It will
+// return two arrays (domains, and domains that need headless processing) along
+// any error that might occur.
 func DomainListJSON(cs utils.Config) ([]Sources, []Sources, error) {
 	// log.Printf("Opening source list file: %s \n", f)
 
@@ -71,7 +53,8 @@ func DomainListJSON(cs utils.Config) ([]Sources, []Sources, error) {
 	return domains, hd, nil
 }
 
-// ResourceURLs
+// ResourceURLs looks gets the resource URLs for a domain.  The results is a
+// map with domain name as key and []string of the URLs to process.
 func ResourceURLs(domains []Sources, cs utils.Config) map[string]sitemaps.URLSet {
 	m := make(map[string]sitemaps.URLSet) // make a map
 
@@ -96,43 +79,47 @@ func ResourceURLs(domains []Sources, cs utils.Config) map[string]sitemaps.URLSet
 	return m
 }
 
-// // ResourceURLs
-// func ResourceURLs(domains []string) map[string]sitemaps.URLSet {
-// 	m := make(map[string]sitemaps.URLSet) // make a map
+// TODO if we default to glaner-summoned then no buckets are needed since we work with prefixes..
+// buildBuckets generates the needed buckets for a run.
+func buildBuckets(minioClient *minio.Client, m map[string]sitemaps.URLSet) error {
+	log.Println("Building buckets")
+	var err error
 
-// 	for key := range domains {
-// 		mapname, _, err := utils.DomainNameShort(domains[key])
-// 		if err != nil {
-// 			log.Println("Error in domain parsing")
-// 		}
-// 		log.Println(mapname)
-// 		us := sitemaps.IngestSitemapXML(domains[key])
-// 		m[mapname] = us
-// 	}
+	for k := range m {
+		// bucketName := fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
+		bucketName := "gleaner-summoned" // old was just k
+		fmt.Printf("Keeping k alive during testing %s\n", k)
+		location := "us-east-1"
+		err = minioClient.MakeBucket(bucketName, location)
+		if err != nil {
+			// Check to see if we already own this bucket (which happens if you run this twice)
+			exists, err := minioClient.BucketExists(bucketName)
+			if err == nil && exists {
+				log.Printf("We already own %s, deleting current objects\n", bucketName)
+			} else {
+				log.Fatalln(err)
+			}
 
-// 	return m
-// }
+			// TODO   should I empty the bucket if it exists?  (make this a flag?)
+			objectsCh := make(chan string)
+			// Send object names that are needed to be removed to objectsCh
+			go func() {
+				defer close(objectsCh)
+				// List all objects from a bucket-name with a matching prefix.
+				for object := range minioClient.ListObjects(bucketName, "", true, nil) {
+					if object.Err != nil {
+						log.Fatalln(object.Err)
+					}
+					objectsCh <- object.Key
+				}
+			}()
 
-// DomainList  DEPRECATED
-// func DomainList(f string) ([]string, error) { // return map(string[]string)
-// 	log.Printf("Opening source list file: %s \n", f)
+			for rErr := range minioClient.RemoveObjects(bucketName, objectsCh) {
+				fmt.Println("Error detected during deletion: ", rErr)
+			}
+		}
+		log.Printf("Successfully created %s\n", bucketName)
+	}
 
-// 	var domains []string
-
-// 	file, err := os.Open(f)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-// 	defer file.Close()
-
-// 	scanner := bufio.NewScanner(file)
-// 	for scanner.Scan() {
-// 		domains = append(domains, scanner.Text())
-// 	}
-
-// 	if err := scanner.Err(); err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	return domains, nil
-// }
+	return err
+}

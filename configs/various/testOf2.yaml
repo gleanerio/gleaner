@@ -2,10 +2,10 @@
 gleaner:
   summon: false  # do we want to visit the web sites and pull down the files
   mill: true
-  runid: testoftwo  # this will be the bucket the output is placed in...
+  runid: dirtest3  # this will be the bucket the output is placed in...
 millers:
   mock: false
-  graph: true
+  graph: false
   spatial: false
   shacl: true
   organic: false
@@ -13,7 +13,7 @@ millers:
   fdptika: false
   fdptikajena: false
   fdpgraph: false
-  prov: true
+  prov: false
 sources:
 - name: thredds-testunidataucaredu
   shortname: unidata
