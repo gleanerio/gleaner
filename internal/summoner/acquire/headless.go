@@ -73,7 +73,6 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.
 						log.Println(err)
 					}
 					log.Printf("#%d Uploaded Bucket:%s File:%s Size %d \n", i, bucketName, objectName, n)
-					fmt.Printf("#%d Uploaded Bucket:%s File:%s Size %d \n", i, bucketName, objectName, n)
 				}
 
 				wg.Done() // tell the wait group that we be done

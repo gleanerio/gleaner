@@ -102,7 +102,7 @@ sources:
 - name: wwwunavcoorg
   shortname: unavco
   logo: http://geodex.org/images/logos/uv-logo.png
-  url: https://www.unavco.org/data/demos/doi/sitemap.xml
+  url: http://www.unavco.org/data/doi/sitemap.xml
   headless: false
   sitemapformat: xml
   active: true

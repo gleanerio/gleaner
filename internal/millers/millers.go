@@ -5,16 +5,17 @@ import (
 	"log"
 	"time"
 
-	"earthcube.org/Project418/gleaner/internal/millers/millerbleve"
-	"earthcube.org/Project418/gleaner/internal/millers/millerfdpgraph"
-	"earthcube.org/Project418/gleaner/internal/millers/millerfdptika"
-	"earthcube.org/Project418/gleaner/internal/millers/millerfdptikajena"
-	"earthcube.org/Project418/gleaner/internal/millers/millerprov"
-	"earthcube.org/Project418/gleaner/internal/millers/millersgraph"
-	"earthcube.org/Project418/gleaner/internal/millers/millershacl"
-	"earthcube.org/Project418/gleaner/internal/millers/millersmock"
-	"earthcube.org/Project418/gleaner/internal/millers/millerspatial"
-	"earthcube.org/Project418/gleaner/internal/millers/millertika"
+	"earthcube.org/Project418/gleaner/internal/millers/fdpgraph"
+	"earthcube.org/Project418/gleaner/internal/millers/fdptika"
+	"earthcube.org/Project418/gleaner/internal/millers/fdptikajena"
+	"earthcube.org/Project418/gleaner/internal/millers/graph"
+	"earthcube.org/Project418/gleaner/internal/millers/mock"
+	"earthcube.org/Project418/gleaner/internal/millers/ner"
+	"earthcube.org/Project418/gleaner/internal/millers/prov"
+	"earthcube.org/Project418/gleaner/internal/millers/shapes"
+	"earthcube.org/Project418/gleaner/internal/millers/spatial"
+	"earthcube.org/Project418/gleaner/internal/millers/textindex"
+	"earthcube.org/Project418/gleaner/internal/millers/tika"
 	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/minio/minio-go"
 )
@@ -55,63 +56,69 @@ func Millers(mc *minio.Client, cs utils.Config) {
 	// Mock is just a template miller..  prints resource entries only...
 	if cs.Millers.Mock {
 		for d := range as {
-			millersmock.MockObjects(mc, as[d])
+			mock.MockObjects(mc, as[d])
 		}
 	}
 
 	if cs.Millers.Graph {
 		for d := range as {
-			millersgraph.GraphMillObjects(mc, as[d], cs)
+			graph.GraphMillObjects(mc, as[d], cs)
 		}
 	}
 
 	if cs.Millers.Spatial {
 		for d := range as {
-			millerspatial.ProcessBucketObjects(mc, as[d])
+			spatial.ProcessBucketObjects(mc, as[d])
 		}
 		// TODO add in saving the AOF file to the output directory
 	}
 
 	if cs.Millers.Shacl {
 		for d := range as {
-			millershacl.SHACLMillObjects(mc, as[d], cs)
+			shapes.SHACLMillObjects(mc, as[d], cs)
 		}
 		// TODO add in saving the AOF file to the output directory
 	}
 
 	if cs.Millers.Organic {
 		for d := range as {
-			millerbleve.GetObjects(mc, as[d])
+			textindex.GetObjects(mc, as[d])
 		}
 	}
 
 	if cs.Millers.Prov {
 		for d := range as {
-			millerprov.MockObjects(mc, as[d], cs)
+			prov.MockObjects(mc, as[d], cs)
 		}
 	}
 
 	if cs.Millers.Tika {
 		for d := range as {
-			millertika.TikaObjects(mc, as[d])
+			tika.TikaObjects(mc, as[d])
 		}
 	}
 
 	if cs.Millers.FDPTika {
 		for d := range as {
-			millerfdptika.TikaObjects(mc, as[d], cs)
+			fdptika.TikaObjects(mc, as[d], cs)
 		}
 	}
 
 	if cs.Millers.FDPTikaJena {
 		for d := range as {
-			millerfdptikajena.TikaObjects(mc, as[d], cs)
+			fdptikajena.TikaObjects(mc, as[d], cs)
 		}
 	}
 
 	if cs.Millers.FDPGraph {
 		for d := range as {
-			millerfdpgraph.TikaObjects(mc, as[d], cs)
+			fdpgraph.TikaObjects(mc, as[d], cs)
+		}
+	}
+
+	if cs.Millers.NER {
+		for d := range as {
+			ner.NERObjects(mc, as[d])
 		}
 	}
 

@@ -1,0 +1,3 @@
+Some todo reminders
+
+* index http://datadiscoverystudio.org/sitemap/CinergiSiteIndex.xml

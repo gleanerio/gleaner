@@ -16,17 +16,6 @@ import (
 
 // ResRetrieve
 func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config) {
-
-	// Set up minio and initialize client
-	// endpoint := cs.Minio.Endpoint
-	// accessKeyID := cs.Minio.AccessKeyID
-	// secretAccessKey := cs.Minio.SecretAccessKey
-	// useSSL := false
-	// mc, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
-
 	buildBuckets(mc, m) // TODO needs error obviously
 
 	// set up some concurrency support
@@ -61,7 +50,6 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 				resp, err := client.Do(req)
 				if err != nil {
 					log.Printf("Error reading location: %s", err)
-					// nothing more to do if we can't get a doc
 					log.Printf("#%d error on %s ", i, urlloc) // print an message containing the index (won't keep order)
 					wg.Done()                                 // tell the wait group that we be done
 					<-semaphoreChan
@@ -72,7 +60,6 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 				doc, err := goquery.NewDocumentFromResponse(resp)
 				if err != nil {
 					log.Printf("Error doc from resp: %v", err)
-					// nothing more to do if we can't get a doc
 					log.Printf("#%d error on %s ", i, urlloc) // print an message containing the index (won't keep order)
 					wg.Done()                                 // tell the wait group that we be done
 					<-semaphoreChan
@@ -94,20 +81,6 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 						}
 					})
 				}
-
-				// TODO  Neotoma hack....
-				// if X == neotoma {
-				// 				jsonld = strings.Replace(jsonld, "\"@context\": \"http://schema.org\",", "\"@context\": { \"@vocab\": \"http://schema.org/\"},", 1)
-				// }
-
-				// if jsonld != "" {
-				// 	u, o, err := LoadToMinio(jsonld, k, urlloc, mc, i)
-				// 	if err != nil {
-				// 		log.Printf("Error loading to bucket: %s", urlloc)
-				// 	}
-				// 	fmt.Printf("Status: %v \n URL: %s \n ObjectName: %s \n schema.org --> \n", err, u, o)
-
-				// }
 
 				if jsonld != "" { // traps out the root domain...   should do this different
 					// get sha1 of the JSONLD..  it's a nice ID

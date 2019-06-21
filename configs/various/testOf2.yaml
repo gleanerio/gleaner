@@ -1,0 +1,31 @@
+---
+gleaner:
+  summon: false  # do we want to visit the web sites and pull down the files
+  mill: true
+  runid: testoftwo  # this will be the bucket the output is placed in...
+millers:
+  mock: false
+  graph: true
+  spatial: false
+  shacl: true
+  organic: false
+  tika: false
+  fdptika: false
+  fdptikajena: false
+  fdpgraph: false
+  prov: true
+sources:
+- name: thredds-testunidataucaredu
+  shortname: unidata
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url: https://thredds-test.unidata.ucar.edu/geocodesmap.xml
+  headless: false
+  sitemapformat: xml
+  active: true
+- name: opencoredataorg
+  shortname: opencore
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url: https://opencoredata.org/sitemap.xml
+  headless: false
+  sitemapformat: xml
+  active: true

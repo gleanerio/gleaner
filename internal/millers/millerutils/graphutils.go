@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/hacks"
 	"github.com/blevesearch/bleve"
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
@@ -45,14 +44,7 @@ func Jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *common.Buffe
 	if err != nil {
 		log.Printf("error in the jsonld write... %v\n", err)
 	}
-	// IEDA hack call  (hope to remove)
-	if bucketname == "getiedadataorg" {
-		nq = hacks.IEDA1(nq)
-	}
-	// Neotoma hack call (hope to remove)
-	if bucketname == "dataneotomadborg" {
-		nq = hacks.Neotoma1(nq)
-	}
+
 	rdf := GlobalUniqueBNodes(nq) // unique bnodes
 	lpt := LPtriples(rdf, urlval) // associate landing page URL with all unique subject URIs and subject bnodes in graph
 

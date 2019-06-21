@@ -13,3 +13,19 @@
 * WKT output from miller..   ref: https://github.com/twpayne/go-geom
 * SHACL pulls from minio and initial test is for spatial element
 
+
+New Summoner
+
+ref: https://stackoverflow.com/questions/38654383/how-to-search-for-an-element-in-a-golang-slice 
+
+* pull down the sitemap and place in object store first
+* load the sitemap into a struct   (or should it be an in memory KV store)?
+* compare the old sitemap with the new sitemap (if that is the case) 
+* compare via structs or via KV pattern
+* at some point we need to reconcile the objects existing to the sitemap.
+* URL, LastModDate, sha256 of the data graph
+
+
+New Object location.
+
+

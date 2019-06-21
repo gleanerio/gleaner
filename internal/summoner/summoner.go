@@ -13,6 +13,7 @@ import (
 func Summoner(mc *minio.Client, cs utils.Config) {
 	log.Printf("Summoner start time: %s \n", time.Now())
 
+	// Get the domains and split into domais and headless (post render DOM updates)
 	domains, headlessdomains, err := acquire.DomainListJSON(cs)
 	if err != nil {
 		log.Printf("Error reading list of domains %v\n", err)
@@ -26,7 +27,7 @@ func Summoner(mc *minio.Client, cs utils.Config) {
 		acquire.ResRetrieve(mc, ru, cs)
 	}
 
-	hru := acquire.ResourceURLs(headlessdomains, cs) // TODO..  pass mc and get this working again
+	hru := acquire.ResourceURLs(headlessdomains, cs)
 	if len(hru) > 0 {
 		acquire.Headless(mc, hru, cs)
 	}

@@ -39,6 +39,7 @@ type Config struct {
 		FDPTikaJena bool `json:"fdptikajena"`
 		FDPGraph    bool `json:"fdpgraph"`
 		Prov        bool `json:"prov"`
+		NER         bool `json:"ner"`
 	} `json:"millers"`
 	Sources []struct {
 		Name          string `json:"name"`

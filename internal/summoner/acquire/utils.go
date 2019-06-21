@@ -9,7 +9,7 @@ import (
 	"github.com/kazarena/json-gold/ld"
 )
 
-// Sources is a struct holding the metadata associated with the sites to harvest
+// Sources Holds the metadata associated with the sites to harvest
 type Sources struct {
 	Name          string
 	URL           string
