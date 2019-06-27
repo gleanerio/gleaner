@@ -29,3 +29,6 @@ ref: https://stackoverflow.com/questions/38654383/how-to-search-for-an-element-i
 New Object location.
 
 
+## notes and such
+
+The 1m samples.earth summon took about 3 1/2 hours

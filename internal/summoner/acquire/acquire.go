@@ -115,9 +115,9 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config
 					log.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, n)
 				}
 
-				log.Printf("#%d acting on %s ", i, urlloc) // print an message containing the index (won't keep order)
-				wg.Done()                                  // tell the wait group that we be done
-				<-semaphoreChan                            // clear a spot in the semaphore channel
+				log.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
+				wg.Done()                                   // tell the wait group that we be done
+				<-semaphoreChan                             // clear a spot in the semaphore channel
 			}(i, k)
 
 		}

@@ -1,0 +1,48 @@
+---
+gleaner:
+  summon: false
+  mill: true
+  runid: fuzzyFour
+summoner:
+  mode: diff  # one of diff: look for difference or full: delete old objects and replace
+millers:
+  mock: false
+  graph: true
+  spatial: false
+  shacl: false
+  organic: false
+  tika: false
+  fdptika: false
+  fdptikajena: false
+  fdpgraph: false
+  prov: true
+  ner: false
+sources:
+- name: dataneotomadborg
+  shortname: neotoma
+  logo: http://geodex.org/images/logos/neotoma.png
+  url: http://data.neotomadb.org/sitemap.xml
+  headless: false
+  sitemapformat: xml
+  active: true
+- name: getiedadataorg
+  shortname: ieda
+  logo: http://geodex.org/images/logos/ieda_maplogo.png
+  url: http://get.iedadata.org/doi/xml-sitemap.php
+  headless: false
+  sitemapformat: xml
+  active: true
+- name: opentopographyorg
+  shortname: opentopo
+  logo: http://geodex.org/images/logos/opentopo.png
+  url: http://opentopography.org/sitemap.xml
+  headless: false
+  sitemapformat: xml
+  active: true
+- name: wikilinkedearth
+  shortname: linkedearth
+  logo: http://geodex.org/images/logos/linkedEarth.jpeg
+  url: http://wiki.linked.earth/sitemap.xml
+  headless: false
+  sitemapformat: xml
+  active: true

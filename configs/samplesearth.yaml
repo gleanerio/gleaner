@@ -1,0 +1,26 @@
+---
+gleaner:
+  summon: false # do we want to visit the web sites and pull down the files
+  mill: true
+  runid: samplesearth2  # this will be the bucket the output is placed in...
+summoner:
+  mode: diff  # one of diff: look for difference or full: delete old objects and replace
+millers:
+  mock: false
+  graph: true
+  spatial: false
+  shacl: false
+  organic: false
+  tika: false
+  fdptika: false
+  fdptikajena: false
+  fdpgraph: false
+  prov: false
+sources:
+- name: samplesearth  #  convert to old style in code is needed?
+  shortname: samplesearth   # does this have to be lower case one word?
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url: http://samples.earth/sitemap.xml
+  headless: false
+  sitemapformat: xml
+  active: true

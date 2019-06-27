@@ -1,5 +1,4 @@
 #!/bin/bash
-#a wrapper script for invoking 
 mc_cmd() {
         mc ls local/gleaner-milled | awk '{print $5}'
 }

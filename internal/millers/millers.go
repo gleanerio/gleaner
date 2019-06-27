@@ -49,7 +49,7 @@ func Millers(mc *minio.Client, cs utils.Config) {
 
 	if cs.Millers.Graph {
 		for d := range as {
-			graph.GraphMillObjects(mc, as[d], cs)
+			graph.NewGraphMillObjects(mc, as[d], cs)
 		}
 	}
 
