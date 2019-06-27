@@ -16,31 +16,66 @@ import (
 	minio "github.com/minio/minio-go"
 )
 
-// GraphMillObjects test a concurrent version of calling mock
-func GraphMillObjects(mc *minio.Client, bucketname string, cs utils.Config) {
-	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(entries, bucketname, mc, cs)
-}
+// NewGraphMillObjects doesn't marshal the objects to memory.  That doesn't work with
+// millions of objects.  We have to stream them through...
+func Miller(mc *minio.Client, prefix string, cs utils.Config) {
+	doneCh := make(chan struct{}) // Create a done channel to control 'ListObjectsV2' go routine.
+	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
+	isRecursive := true
+	bucketname := "gleaner-summoned"
+	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
 
-func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.Config) {
-	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
-
 	var gb common.Buffer
+	k := 0
 
-	for k := range e {
+	for object := range objectCh {
+
 		wg.Add(1)
 		log.Printf("About to run #%d in a goroutine\n", k)
+
 		go func(k int) {
 			semaphoreChan <- struct{}{}
-			status := millerutils.Jsl2graph(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
+
+			if object.Err != nil {
+				fmt.Println(object.Err)
+			}
+
+			fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+			if err != nil {
+				fmt.Println(err)
+			}
+			oi, err := fo.Stat()
+			if err != nil {
+				log.Println("Issue with reading an object..  should I just fatal on this to make sure?")
+			}
+			urlval := ""
+			sha1val := ""
+			if len(oi.Metadata["X-Amz-Meta-Url"]) > 0 {
+				urlval = oi.Metadata["X-Amz-Meta-Url"][0] // also have  X-Amz-Meta-Sha1
+			}
+			if len(oi.Metadata["X-Amz-Meta-Sha1"]) > 0 {
+				sha1val = oi.Metadata["X-Amz-Meta-Sha1"][0]
+			}
+			buf := new(bytes.Buffer)
+			buf.ReadFrom(fo)
+			jld := buf.String() // Does a complete copy of the bytes in the buffer.
+
+			status := millerutils.Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, &gb)
+
+			// fmt.Println(status)
 
 			wg.Done() // tell the wait group that we be done!
 			log.Printf("#%d wrote %d bytes", k, status)
 			<-semaphoreChan
 		}(k)
+
+		k = k + 1
+
+		// fmt.Printf("Processed object %d/%d with status: %d\n", n, c, status)
+
 	}
 	wg.Wait()
 
@@ -75,20 +110,21 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 	// TODO: Can we clear up gb at this point if we use these good/bad buffers from here out?
 
 	// write two object to S3; the quads and the error list
-	flgood, err := millerutils.LoadToMinio(good.String(), "gleaner-milled", fmt.Sprintf("%s/%s.nq", cs.Gleaner.RunID, bucketname), mc)
+	flgood, err := millerutils.LoadToMinio(good.String(), "gleaner-milled", fmt.Sprintf("%s/%s.nq", cs.Gleaner.RunID, prefix), mc)
 	if err != nil {
 		log.Println("RDF file could not be written")
 	} else {
 		log.Printf("RDF file written len:%d\n", flgood)
 	}
 	if bad.Len() > 0 { // when the light is green, the trap is clean
-		flbad, err := millerutils.LoadToMinio(bad.String(), "gleaner-milled", fmt.Sprintf("%s/%s_rdfErrors.txt", cs.Gleaner.RunID, bucketname), mc)
+		flbad, err := millerutils.LoadToMinio(bad.String(), "gleaner-milled", fmt.Sprintf("%s/%s_rdfErrors.txt", cs.Gleaner.RunID, prefix), mc)
 		if err != nil {
 			log.Println("RDF Error file could not be written")
 		} else {
 			log.Printf("RDF Error file written len:%d\n", flbad)
 		}
 	}
+
 }
 
 // TODO  convert this to use a bytes.Buffer  (or better a pointer to that)
@@ -99,15 +135,18 @@ func goodTriples(f, c string) (string, error) {
 	if err != nil {
 		log.Printf("Error decoding triples: %v\n", err)
 		return "", err
+
 	}
 
 	// enc := rdf.NewQuadEncoder(outFile, rdf.NQuads)
 	q, err := makeQuad(triple, c)
 	if err != nil {
 		return "", err
+
 	}
 
 	return fmt.Sprint(q), err
+
 }
 
 // makeQuad make a quad from a triple and a context string
@@ -121,4 +160,5 @@ func makeQuad(t rdf.Triple, c string) (string, error) {
 	fmt.Fprintf(buf, "%s", qs)
 
 	return buf.String(), err
+
 }
