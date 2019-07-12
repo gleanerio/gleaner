@@ -114,9 +114,14 @@ func buildBuckets(minioClient *minio.Client, m map[string]sitemaps.URLSet) error
 				}
 			}()
 
-			for rErr := range minioClient.RemoveObjects(bucketName, objectsCh) {
-				fmt.Println("Error detected during deletion: ", rErr)
-			}
+			// NOTE removed the delete...  need to resolve this better with node ModDate and
+			// the existence of prefixes!
+
+			// TODO  Update or remove this?  Now we use prefixes we don't remove gleaner-summoned ..
+			// but if we could remove by prefix that would fine
+			// for rErr := range minioClient.RemoveObjects(bucketName, objectsCh) {
+			// 	fmt.Println("Error detected during deletion: ", rErr)
+			// }
 		}
 		log.Printf("Successfully created %s\n", bucketName)
 	}

@@ -1,8 +1,8 @@
 ---
 gleaner:
-  summon: false # do we want to visit the web sites and pull down the files
+  summon: true # do we want to visit the web sites and pull down the files
   mill: true
-  runid: samplesearth2  # this will be the bucket the output is placed in...
+  runid: samplesearth  # this will be the bucket the output is placed in...
 summoner:
   mode: diff  # one of diff: look for difference or full: delete old objects and replace
 millers:

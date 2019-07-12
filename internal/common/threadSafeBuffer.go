@@ -16,6 +16,12 @@ func (b *Buffer) Read(p []byte) (n int, err error) {
 	return b.b.Read(p)
 }
 
+func (b *Buffer) Reset() {
+	b.m.Lock()
+	defer b.m.Unlock()
+	b.b.Reset() // is it odd reset doesn't return anything?
+}
+
 func (b *Buffer) Write(p []byte) (n int, err error) {
 	b.m.Lock()
 	defer b.m.Unlock()

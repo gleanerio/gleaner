@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io"
 	"log"
+	"os"
 	"strings"
 	"sync"
 
@@ -14,10 +16,10 @@ import (
 
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
+	bolt "go.etcd.io/bbolt"
 )
 
-// NewGraphMillObjects doesn't marshal the objects to memory.  That doesn't work with
-// millions of objects.  We have to stream them through...
+// Miller (dev version to deal with memory and scale isues)
 func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 	doneCh := make(chan struct{}) // Create a done channel to control 'ListObjectsV2' go routine.
 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
@@ -25,66 +27,184 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 	bucketname := "gleaner-summoned"
 	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
 
-	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
-	defer close(semaphoreChan)
-	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
-	var gb common.Buffer
-	k := 0
+	// Do this in main and pass the reference later
+	db, err := bolt.Open("gleaner.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucket([]byte("JSONLD"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		_, err = tx.CreateBucket([]byte("GoodTriples"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		_, err = tx.CreateBucket([]byte("BadTriples"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
 
 	for object := range objectCh {
+		if object.Err != nil {
+			fmt.Println(object.Err)
+		}
 
-		wg.Add(1)
-		log.Printf("About to run #%d in a goroutine\n", k)
+		fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+		if err != nil {
+			fmt.Println(err)
+		}
+		oi, err := fo.Stat()
+		if err != nil {
+			log.Println("Issue with reading an object..  should I just fatal on this to make sure?")
+		}
 
-		go func(k int) {
-			semaphoreChan <- struct{}{}
+		var urlval, sha1val string
+		if len(oi.Metadata["X-Amz-Meta-Url"]) > 0 {
+			urlval = oi.Metadata["X-Amz-Meta-Url"][0] // also have  X-Amz-Meta-Sha1
+		}
+		if len(oi.Metadata["X-Amz-Meta-Sha1"]) > 0 {
+			sha1val = oi.Metadata["X-Amz-Meta-Sha1"][0]
+		}
 
-			if object.Err != nil {
-				fmt.Println(object.Err)
-			}
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(fo)
+		jld := buf.String() // Does a complete copy of the bytes in the buffer.
 
-			fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+		cb := new(common.Buffer) // TODO..   really just a bytes buffer should be used
+
+		_ = millerutils.Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, cb)
+		//rb, err := ioutil.ReadAll(cb) // read buffer to []byte
+		//if err != nil {
+		//		log.Println(err)
+		//		}
+
+		good, bad, err := graphSplit(cb, bucketname)
+
+		db.Update(func(tx *bolt.Tx) error {
+			b2 := tx.Bucket([]byte("GoodTriples"))
 			if err != nil {
-				fmt.Println(err)
+				log.Println(err)
 			}
-			oi, err := fo.Stat()
+			err = b2.Put([]byte(urlval), []byte(good))
+			return err
+		})
+
+		db.Update(func(tx *bolt.Tx) error {
+			b3 := tx.Bucket([]byte("BadTriples"))
 			if err != nil {
-				log.Println("Issue with reading an object..  should I just fatal on this to make sure?")
+				log.Println(err)
 			}
-			urlval := ""
-			sha1val := ""
-			if len(oi.Metadata["X-Amz-Meta-Url"]) > 0 {
-				urlval = oi.Metadata["X-Amz-Meta-Url"][0] // also have  X-Amz-Meta-Sha1
-			}
-			if len(oi.Metadata["X-Amz-Meta-Sha1"]) > 0 {
-				sha1val = oi.Metadata["X-Amz-Meta-Sha1"][0]
-			}
-			buf := new(bytes.Buffer)
-			buf.ReadFrom(fo)
-			jld := buf.String() // Does a complete copy of the bytes in the buffer.
+			err = b3.Put([]byte(urlval), []byte(bad))
+			return err
+		})
 
-			status := millerutils.Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, &gb)
-
-			// fmt.Println(status)
-
-			wg.Done() // tell the wait group that we be done!
-			log.Printf("#%d wrote %d bytes", k, status)
-			<-semaphoreChan
-		}(k)
-
-		k = k + 1
-
-		// fmt.Printf("Processed object %d/%d with status: %d\n", n, c, status)
+		cb.Reset()
 
 	}
+
+	fmt.Println("cp0")
+
+	// ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
+	// https://zupzup.org/io-pipe-go/
+	// https://rodaine.com/2015/04/async-split-io-reader-in-golang/
+	pr, pw := io.Pipe() // TeeReader of use?
+	fmt.Println("cp1")
+	// we need to wait for everything to be done
+	wg := sync.WaitGroup{}
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		defer pw.Close()
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte("GoodTriples"))
+			c := b.Cursor()
+
+			fmt.Println("cp2")
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				pw.Write(v)
+			}
+
+			return nil
+		})
+	}()
+
+	fmt.Println("Get ready for the pipewrite!")
+
+	go func() {
+		defer wg.Done()
+		// read from the PipeReader to stdout
+		if _, err := io.Copy(os.Stdout, pr); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
 	wg.Wait()
 
-	log.Println(gb.Len())
+	/*
+		db.View(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte("GoodTriples"))
+			c := b.Cursor()
 
-	// STEP 1 clean triples  (split to two buffers..   good and bad)
-	// STEP 1 covert good buffer NT to NQ (so I need the context from the config file to define the graph)
+			fmt.Println("cp2")
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				//pw.Write(v)
+				//_, err := tx.WriteTo(pw)
+				//if err != nil {
+				//		log.Println(err)
+				//}
+				//fmt.Fprint(pw, v)
+				// fmt.Fprintf(pw, "%d)teststring\n", i)
+				fmt.Printf("key=%s, value=%d\n", k, len(v))
+			}
+
+			return nil
+		})
+	*/
+
+	//pw.Close()
+	fmt.Println("cp3")
+	// background(mc, pr)
+
+}
+
+// https://play.golang.org/p/c0fLEI350w
+func background(mc *minio.Client, r io.Reader) {
+	buf := make([]byte, 64)
+
+	for {
+		_, err := r.Read(buf)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		ior := bytes.NewReader(buf)
+
+		_, err = mc.PutObject("test", "test-object2", ior, -1, minio.PutObjectOptions{})
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		// n, err := r.Read(buf)
+		// if err != nil {
+		// 	fmt.Print(err.Error())
+		// 	//return
+		// }
+		// fmt.Print(string(buf[:n]))
+	}
+	// log.Println("Uploaded", "my-objectname", " of size: ", n, "Successfully.")
+}
+
+func graphSplit(gb *common.Buffer, bucketname string) (string, string, error) {
 	var err error
-	scanner := bufio.NewScanner(&gb) // rdf is already a pointer
+	scanner := bufio.NewScanner(gb) // rdf is already a pointer
 	good := bytes.NewBuffer(make([]byte, 0))
 	bad := bytes.NewBuffer(make([]byte, 0))
 	for scanner.Scan() {
@@ -100,65 +220,41 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
-	// TODO  write both of these to the Minio system
-	log.Println(good.Len())
-	log.Println(bad.Len())
-
-	// TODO: Can we clear up gb at this point if we use these good/bad buffers from here out?
-
-	// write two object to S3; the quads and the error list
-	flgood, err := millerutils.LoadToMinio(good.String(), "gleaner-milled", fmt.Sprintf("%s/%s.nq", cs.Gleaner.RunID, prefix), mc)
-	if err != nil {
-		log.Println("RDF file could not be written")
-	} else {
-		log.Printf("RDF file written len:%d\n", flgood)
-	}
-	if bad.Len() > 0 { // when the light is green, the trap is clean
-		flbad, err := millerutils.LoadToMinio(bad.String(), "gleaner-milled", fmt.Sprintf("%s/%s_rdfErrors.txt", cs.Gleaner.RunID, prefix), mc)
-		if err != nil {
-			log.Println("RDF Error file could not be written")
-		} else {
-			log.Printf("RDF Error file written len:%d\n", flbad)
-		}
-	}
+	return good.String(), bad.String(), err
 
 }
 
 // TODO  convert this to use a bytes.Buffer  (or better a pointer to that)
 func goodTriples(f, c string) (string, error) {
-	fmt.Printf("Trying: %s \n", f)
+	// fmt.Printf("Trying: %s \n", f)
 	dec := rdf.NewTripleDecoder(strings.NewReader(f), rdf.NTriples)
 	triple, err := dec.Decode()
 	if err != nil {
 		log.Printf("Error decoding triples: %v\n", err)
 		return "", err
-
 	}
 
 	// enc := rdf.NewQuadEncoder(outFile, rdf.NQuads)
 	q, err := makeQuad(triple, c)
 	if err != nil {
 		return "", err
-
 	}
 
-	return fmt.Sprint(q), err
-
+	return q, err // q is alread a string..
 }
 
 // makeQuad make a quad from a triple and a context string
 func makeQuad(t rdf.Triple, c string) (string, error) {
 	newctx, err := rdf.NewIRI(c)
+	if err != nil {
+		return "", err
+	}
 	ctx := rdf.Context(newctx)
-
-	q := rdf.Quad{t, ctx}
-	buf := bytes.NewBufferString("")
+	q := rdf.Quad{Triple: t, Ctx: ctx}
 	qs := q.Serialize(rdf.NQuads)
-	fmt.Fprintf(buf, "%s", qs)
 
-	return buf.String(), err
-
+	return qs, err
 }
