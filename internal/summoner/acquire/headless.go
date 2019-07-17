@@ -18,7 +18,10 @@ import (
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
 func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config) {
-	buildBuckets(minioClient, m) // TODO needs error obviously
+	// err := buildBuckets(minioClient, m) // TODO needs error obviously
+	// if err != nil {
+	// 	log.Printf("Gleaner bucket report:  %s", err)
+	// }
 
 	// Create context and headless chrome instances
 	ctxt, cancel := chromedp.NewContext(context.Background())

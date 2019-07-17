@@ -1,0 +1,47 @@
+---
+gleaner:
+  summon: false # do we want to visit the web sites and pull down the files
+  mill: true
+  runid: testof2v2  # this will be the bucket the output is placed in...
+summoner:
+  mode: diff  # one of diff: look for difference or full: delete old objects and replace
+millers:
+  mock: false
+  graph: true
+  spatial: false
+  shacl: false
+  organic: false
+  tika: false
+  fdptika: false
+  fdptikajena: false
+  fdpgraph: false
+  prov: false
+sources:
+- name: thredds-testunidataucaredu
+  shortname: unidata
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url: https://thredds-test.unidata.ucar.edu/geocodesmap.xml
+  headless: false
+  sitemapformat: xml
+  active: true
+- name: ssdbiodporg
+  shortname: sitesurvey
+  logo: https://ssdb.iodp.org/images/head_logo_PRO.gif
+  url: https://ssdb.iodp.org/dataset/sitemap.xml
+  headless: false
+  sitemapformat: xml
+  active: false
+- name: dataucaredu 
+  shortname: dataucar
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url:  https://data.ucar.edu/sitemap.xml 
+  headless: false
+  sitemapformat: xml
+  active: false
+- name: wwwhydroshareorg
+  shortname: hydroshare
+  logo: http://geodex.org/images/logos/cuahsiHydroshare.png
+  url: https://www.hydroshare.org/sitemap-resources.xml
+  headless: false
+  sitemapformat: xml
+  active: false

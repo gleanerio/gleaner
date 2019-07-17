@@ -10,19 +10,45 @@ import (
 
 // GleanerSetup set up  elements of Gleaner are running
 
-// GleanerCheck checks the setup
-func GleanerCheck(mc *minio.Client) (bool, error) {
-	var err error
-	syscheck(mc)
+// ConnCheck check the connections iwth a list buckets call
+func ConnCheck(mc *minio.Client) error {
+	_, err := mc.ListBuckets()
+	return err
+}
 
-	bl := []string{"gleaner", "gleaner-config", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
+// Buckets checks the setup
+func Buckets(mc *minio.Client) error {
+	var err error
+
+	bl := []string{"gleaner", "gleaner-config", "gleaner-summoned", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
+
+	for i := range bl {
+		found, err := mc.BucketExists(bl[i])
+		if err != nil {
+			return err
+		}
+		if !found {
+			return fmt.Errorf("Unable to locate required bucket.  Did you run with -setup the first time? Missing bucket: %s", bl[i])
+		}
+		if found {
+			log.Printf("Verfied Gleaner bucket: %s.\n", bl[i])
+		}
+	}
+
+	return err
+}
+
+// MakeBuckets checks the setup
+func MakeBuckets(mc *minio.Client) error {
+	var err error
+
+	bl := []string{"gleaner", "gleaner-config", "gleaner-summoned", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
 
 	for i := range bl {
 		found, err := mc.BucketExists(bl[i])
 		if err != nil {
 			log.Printf("Existing bucket %s check:%v\n", bl[i], err)
 		}
-
 		if found {
 			log.Printf("Gleaner Bucket %s found.\n", bl[i])
 		} else {
@@ -34,10 +60,7 @@ func GleanerCheck(mc *minio.Client) (bool, error) {
 		}
 	}
 
-	// look for the docker containers like tika, shacl
-	fmt.Printf("Checking for needed services in docker.\n (Not finished..  ignore results): %t \n", urlCheck())
-
-	return true, err
+	return err
 }
 
 // need to check, tika, shacl, headless

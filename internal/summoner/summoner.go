@@ -19,8 +19,8 @@ func Summoner(mc *minio.Client, cs utils.Config) {
 		log.Printf("Error reading list of domains %v\n", err)
 	}
 
-	log.Printf("Domains: %v \n", domains)
-	log.Printf("Headless domains: %v \n", headlessdomains)
+	// log.Printf("Domains: %v \n", domains)
+	// log.Printf("Headless domains: %v \n", headlessdomains)
 
 	ru := acquire.ResourceURLs(domains, cs)
 	if len(ru) > 0 {

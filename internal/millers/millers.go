@@ -47,9 +47,11 @@ func Millers(mc *minio.Client, cs utils.Config) {
 		}
 	}
 
+	// Graph is the miller to convert from JSON-LD to nquads with validation of well formed
 	if cs.Millers.Graph {
 		for d := range as {
-			graph.Miller(mc, as[d], cs)
+			// graph.GraphMillObjects(mc, as[d], cs)  // old memory based function
+			graph.Miller(mc, as[d], cs) // kv based function (disk based with memory mapping)
 		}
 	}
 

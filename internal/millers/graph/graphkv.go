@@ -27,28 +27,8 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 	bucketname := "gleaner-summoned"
 	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
 
-	// Do this in main and pass the reference later
-	db, err := bolt.Open("gleaner.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := kvclient()
 	defer db.Close()
-
-	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte("JSONLD"))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		_, err = tx.CreateBucket([]byte("GoodTriples"))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		_, err = tx.CreateBucket([]byte("BadTriples"))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		return nil
-	})
 
 	for object := range objectCh {
 		if object.Err != nil {
@@ -61,7 +41,7 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 		}
 		oi, err := fo.Stat()
 		if err != nil {
-			log.Println("Issue with reading an object..  should I just fatal on this to make sure?")
+			log.Println("Issue with reading an object..  should I just fail on this to make sure?")
 		}
 
 		var urlval, sha1val string
@@ -108,6 +88,19 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 
 	}
 
+	// b2 := tx.Bucket([]byte("GoodTriples"))
+	// dbs := db.Stats()
+	// db.View(func(tx *bolt.Tx) error {
+	// 	// Assume bucket exists and has keys
+	// 	b := tx.Bucket([]byte("GoodTriples"))
+
+	// 	b.ForEach(func(k, v []byte) error {
+	// 		fmt.Printf("key=%s, value=%s\n", k, v)
+	// 		return nil
+	// 	})
+	// 	return nil
+	// })
+
 	fmt.Println("cp0")
 
 	// ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
@@ -116,6 +109,11 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 	pr, pw := io.Pipe() // TeeReader of use?
 	fmt.Println("cp1")
 	// we need to wait for everything to be done
+
+	// TODO
+	//  No pooint for this to be a work group?
+	// or do 2 seperate ones....
+
 	wg := sync.WaitGroup{}
 	wg.Add(2)
 
@@ -126,7 +124,6 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 			b := tx.Bucket([]byte("GoodTriples"))
 			c := b.Cursor()
 
-			fmt.Println("cp2")
 			for k, v := c.First(); k != nil; k, v = c.Next() {
 				pw.Write(v)
 			}
@@ -135,12 +132,16 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 		})
 	}()
 
-	fmt.Println("Get ready for the pipewrite!")
+	// TODO replace os.Stdout with a file writer
+	f, err := os.Create("./TESTOUT.txt")
+	if err != nil {
+		log.Println(err)
+	}
 
 	go func() {
 		defer wg.Done()
 		// read from the PipeReader to stdout
-		if _, err := io.Copy(os.Stdout, pr); err != nil {
+		if _, err := io.Copy(f, pr); err != nil {
 			log.Fatal(err)
 		}
 	}()
@@ -257,4 +258,31 @@ func makeQuad(t rdf.Triple, c string) (string, error) {
 	qs := q.Serialize(rdf.NQuads)
 
 	return qs, err
+}
+
+func kvclient() *bolt.DB {
+	// Do this in main and pass the reference later?
+	db, err := bolt.Open("gleaner.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucket([]byte("JSONLD"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		_, err = tx.CreateBucket([]byte("GoodTriples"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		_, err = tx.CreateBucket([]byte("BadTriples"))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
+	return db
+
 }

@@ -3,7 +3,6 @@ package mock
 import (
 	//	"bytes"
 
-	"crypto/sha1"
 	"fmt"
 	"log"
 	"sync"
@@ -43,14 +42,6 @@ func multiCall(e []common.Entry) {
 
 // Mock is a simple function to use as a stub for talking about millers
 func simplePrint(bucketname, key, urlval, sha1val, jsonld string) string {
-	fmt.Printf("%s:  %s %s   %s =? %s \n", bucketname, key, urlval, sha1val, getsha(jsonld))
+	fmt.Printf("%s:  %s %s   %s =? %s \n", bucketname, key, urlval, sha1val, common.GetSHA(jsonld))
 	return "ok"
-}
-
-func getsha(jsonld string) string {
-	h := sha1.New()
-	h.Write([]byte(jsonld))
-	bs := h.Sum(nil)
-	bss := fmt.Sprintf("%x", bs)
-	return bss
 }

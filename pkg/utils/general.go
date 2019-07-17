@@ -2,13 +2,10 @@ package utils
 
 import (
 	"bytes"
-	"crypto/sha1"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/minio/minio-go"
@@ -63,7 +60,6 @@ func ConfigYAML(file string) Config {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	fmt.Printf("--- t:\n%v\n\n", config)
 
 	return config
 }
@@ -84,38 +80,6 @@ func S3ConfigYAML(minioClient *minio.Client, bucket, file string) Config {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	fmt.Printf("--- t:\n%v\n\n", config)
-
-	return config
-}
-
-// LoadConfiguration take a string name of a configuration file
-func LoadConfiguration(file string) Config {
-	var config Config
-	configFile, err := os.Open(file)
-	defer configFile.Close()
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	jsonParser := json.NewDecoder(configFile)
-	jsonParser.Decode(&config)
-	return config
-}
-
-// LoadConfigurationS3 loads config file from S3(minio)
-// func LoadConfigurationS3(endpoint, port, accessKeyID, secretAccessKey, bucket, file string, useSSL bool) Config {
-func LoadConfigurationS3(minioClient *minio.Client, bucket, file string) Config {
-	fo, err := minioClient.GetObject(bucket, file, minio.GetObjectOptions{})
-	if err != nil {
-		log.Println(err)
-	}
-
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(fo)
-
-	var config Config
-	jsonParser := json.NewDecoder(buf)
-	jsonParser.Decode(&config)
 
 	return config
 }
@@ -128,14 +92,6 @@ func DomainNameShort(dn string) (string, string, error) {
 	}
 
 	return strings.Replace(u.Host, ".", "", -1), u.Scheme, err
-}
-
-// GetSHA1 returns the sha1 string for the given byte array
-func GetSHA1(b []byte) string {
-	h := sha1.New()
-	h.Write(b)
-	bs := h.Sum(nil)
-	return string(bs)
 }
 
 // MinioConnection Set up minio and initialize client
@@ -151,12 +107,51 @@ func MinioConnection(cs Config) *minio.Client {
 	return minioClient
 }
 
-// ListBuckets list bucket at a minio server
-func ListBuckets(mc *minio.Client) ([]minio.BucketInfo, error) {
-	buckets, err := mc.ListBuckets()
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-	return buckets, err
-}
+// // GetSHA1 returns the sha1 string for the given byte array
+// func GetSHA1(b []byte) string {
+// 	h := sha1.New()
+// 	h.Write(b)
+// 	bs := h.Sum(nil)
+// 	return string(bs)
+// }
+
+// // ListBuckets list bucket at a minio server
+// func ListBuckets(mc *minio.Client) ([]minio.BucketInfo, error) {
+// 	buckets, err := mc.ListBuckets()
+// 	if err != nil {
+// 		log.Println(err)
+// 		return nil, err
+// 	}
+// 	return buckets, err
+// }
+
+// LoadConfiguration take a string name of a configuration file
+// func LoadConfiguration(file string) Config {
+// 	var config Config
+// 	configFile, err := os.Open(file)
+// 	defer configFile.Close()
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 	}
+// 	jsonParser := json.NewDecoder(configFile)
+// 	jsonParser.Decode(&config)
+// 	return config
+// }
+
+// LoadConfigurationS3 loads config file from S3(minio)
+// func LoadConfigurationS3(endpoint, port, accessKeyID, secretAccessKey, bucket, file string, useSSL bool) Config {
+// func LoadConfigurationS3(minioClient *minio.Client, bucket, file string) Config {
+// 	fo, err := minioClient.GetObject(bucket, file, minio.GetObjectOptions{})
+// 	if err != nil {
+// 		log.Println(err)
+// 	}
+
+// 	buf := new(bytes.Buffer)
+// 	buf.ReadFrom(fo)
+
+// 	var config Config
+// 	jsonParser := json.NewDecoder(buf)
+// 	jsonParser.Decode(&config)
+
+// 	return config
+// }
