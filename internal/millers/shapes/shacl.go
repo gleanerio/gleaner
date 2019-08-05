@@ -26,7 +26,6 @@ func SHACLMillObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 }
 
 func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.Config) {
-	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control (1 == single thread)
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
@@ -41,7 +40,7 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 			// log.Printf("Ready JSON-LD package  #%d #%s \n", j, e[k].Urlval)
 			go func(j, k int) {
 				semaphoreChan <- struct{}{}
-				status := shaclTest(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
+				status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
 
 				wg.Done() // tell the wait group that we be done
 				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status)
@@ -66,13 +65,6 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 		log.Println(err)
 	}
 
-	// write to file
-	//	fl, err := millerutils.WriteRDF(gb.String(), bucketname)
-	//	if err != nil {
-	//		log.Println("RDF file could not be written")
-	//	} else {
-	//		log.Printf("RDF file written len:%d\n", fl)
-	//	}
 }
 
 func rdf2rdf(r string) (string, error) {
@@ -82,6 +74,7 @@ func rdf2rdf(r string) (string, error) {
 
 	var outFormat rdf.Format
 	outFormat = rdf.NTriples
+
 	var s string
 	buf := bytes.NewBufferString(s)
 
@@ -96,7 +89,7 @@ func rdf2rdf(r string) (string, error) {
 	return buf.String(), err
 }
 
-func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer) int {
+func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
 	if err != nil {
 		log.Printf("Error in the jsonld write... %v\n", err)
@@ -104,16 +97,9 @@ func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer)
 		return 0
 	}
 
-	// fmt.Println("---------------------------------------------")
-	// fmt.Printf("\n\n %s \n\n", datagraph)
-	// fmt.Println("checked with --------------------------------")
-	// fmt.Printf("\n\n %s \n\n", sg)
-	// fmt.Println("---------------------------------------------")
-
 	url := "http://localhost:7000"
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-
 	writer.WriteField("dataref", urlval)
 	writer.WriteField("shaperef", sgkey)
 
@@ -140,9 +126,6 @@ func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer)
 		log.Println(err)
 	}
 
-	// fmt.Println("------------------------------")
-	// fmt.Println(body.String())
-
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
 		log.Println(err)
@@ -161,8 +144,6 @@ func shaclTest(bucketname, key, urlval, dg, sgkey, sg string, gb *common.Buffer)
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	// log.Println(string(b))
 
 	// write result to buffer
 	len, err := gb.Write(b)
