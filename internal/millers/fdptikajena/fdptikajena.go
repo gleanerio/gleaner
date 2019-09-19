@@ -174,7 +174,8 @@ func callTika(lb *common.Buffer, urlval, path string) string {
 
 func getBytes(url, key string) (int, []byte) {
 	resurl := fmt.Sprintf("%s/%s", url, key)
-	resp, err := resty.R().Get(resurl)
+	client := resty.New()
+	resp, err := client.R().Get(resurl)
 	if err != nil {
 		log.Printf("getBytes %v\n", err)
 	}

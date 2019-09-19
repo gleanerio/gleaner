@@ -18,10 +18,7 @@ various things.
 
 ![Basic Gleaner](./docs/images/gleanerbasic.png)
 
- 
-
  The current millers are:
-
 
 * text:  build a text index in raw bleve
 * spatial: parse and build a spatial index using a geohash server

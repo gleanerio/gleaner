@@ -58,7 +58,7 @@ func ResourceURLs(domains []Sources, cs utils.Config) map[string]sitemaps.URLSet
 
 	for k := range domains {
 		if domains[k].Active {
-			log.Printf("Working with sitemap: %s\n", domains[k].URL)
+			log.Printf("Parsing sitemap: %s\n", domains[k].URL)
 			mapname, _, err := utils.DomainNameShort(domains[k].URL)
 			if err != nil {
 				log.Println("Error in domain parsing")

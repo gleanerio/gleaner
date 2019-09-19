@@ -128,7 +128,8 @@ func tikaIndex(bucketname, key, urlval, jsonld string, index bleve.Index) string
 
 func getBytes(url, key string) (int, []byte) {
 	resurl := fmt.Sprintf("%s/%s", url, key)
-	resp, err := resty.R().Get(resurl)
+	client := resty.New()
+	resp, err := client.R().Get(resurl)
 	if err != nil {
 		log.Println(err)
 	}

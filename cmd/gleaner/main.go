@@ -19,6 +19,20 @@ var sslVal, setupVal bool
 
 func init() {
 	log.SetFlags(log.Lshortfile)
+	// log.SetOutput(ioutil.Discard) // turn off all logging
+
+	// logger approach to buffer in core lib (use for sending logs to s3 in web ui)
+	// var (
+	// 	buf    bytes.Buffer
+	// 	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	// )
+
+	// logFile, err := os.OpenFile("log.txt", os.O_WRONLY, 0666)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer logFile.Close()
+	// log.SetOutput(logFile)  	// direct all log messages to log.txt
 
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
@@ -95,6 +109,8 @@ func main() {
 	}
 
 	cli(mc, cs)
+
+	// fmt.Print(&buf)
 }
 
 func cli(mc *minio.Client, cs utils.Config) {

@@ -1,6 +1,5 @@
 # ECAM Gleaner Demo
 
-
 ## Prerequsits
 
 The only real requirement is a running Docker installation.  You can learn more about
@@ -37,8 +36,8 @@ file.  You can also find them at the GitHub repo for Gleaner in the deployments 
 docker containers needed by Gleaner.  The staterpack.zip contains a basic compose file you can 
 start with and modify to your needs. 
 * You need to run Gleaner with the flag to check and create the needed buckets 
-	* `./gleaner -check`
-	* `./gleaner -address=localhost -port=9000 -check`
+	* `./gleaner -setup`
+	* `./gleaner -address=localhost -port=9000 -setup`
 * You need to copy the shape graphs into the gleaner-shacl bucket to support the
 optional SHACL validation miller.
 `mc cp *.ttl local/gleaner-shacl`
@@ -51,8 +50,7 @@ to run Gleaner.
 We need to ensure our configuration file is ready to go.  There are a couple included in the starterpack.zip
 you can use for some testing runs.
 
-```gleaner -configfils ssdb.yml```
-
+```gleaner -configfile ssdb.yml```
 
 ## Docker notes
 

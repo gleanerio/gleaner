@@ -1,8 +1,8 @@
 ---
 gleaner:
-  summon: false # do we want to visit the web sites and pull down the files
-  mill: true
-  runid: testof2v2  # this will be the bucket the output is placed in...
+  summon: true # do we want to visit the web sites and pull down the files
+  mill: false
+  runid: demo1  # this will be the bucket the output is placed in...
 summoner:
   mode: diff  # one of diff: look for difference or full: delete old objects and replace
 millers:
@@ -30,18 +30,18 @@ sources:
   url: https://ssdb.iodp.org/dataset/sitemap.xml
   headless: false
   sitemapformat: xml
-  active: false
+  active: true
 - name: dataucaredu 
   shortname: dataucar
   logo: http://geodex.org/images/logos/EarthCubeLogo.png
   url:  https://data.ucar.edu/sitemap.xml 
   headless: false
   sitemapformat: xml
-  active: false
+  active: true
 - name: wwwhydroshareorg
   shortname: hydroshare
   logo: http://geodex.org/images/logos/cuahsiHydroshare.png
   url: https://www.hydroshare.org/sitemap-resources.xml
   headless: false
   sitemapformat: xml
-  active: false
+  active: true
