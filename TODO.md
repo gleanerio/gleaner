@@ -7,9 +7,6 @@
 [] Log better...
 
 
-
-
-
 ## Items
 
 * minio bucket validation (in gleaner)

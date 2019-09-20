@@ -5,10 +5,12 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 	"sync"
+	"time"
 
 	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
@@ -19,25 +21,45 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+// MillerSetup issues a go call for each domain in the ocnfig file to mill the graph
+func MillerSetup(mc *minio.Client, b []string, cs utils.Config) {
+	//	uiprogress.Start()
+	wg := sync.WaitGroup{}
+
+	for k := range b {
+		log.Printf("Queuing URLs for %s \n", b[k])
+		// 	go getDomain(mc, m, k, &wg)
+		go Miller(mc, b[k], cs, &wg) // kv based function (disk based with memory mapping)
+	}
+
+	time.Sleep(2 * time.Second)
+	wg.Wait()
+	//	uiprogress.Stop()
+}
+
 // Miller (dev version to deal with memory and scale isues)
-func Miller(mc *minio.Client, prefix string, cs utils.Config) {
-	doneCh := make(chan struct{}) // Create a done channel to control 'ListObjectsV2' go routine.
+func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup) {
+	wg.Add(1)
+
+	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
 	bucketname := "gleaner-summoned"
 	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
 
-	db := kvclient()
+	db := kvclient(prefix)
 	defer db.Close()
+
+	log.Println(prefix)
 
 	for object := range objectCh {
 		if object.Err != nil {
-			fmt.Println(object.Err)
+			log.Println(object.Err)
 		}
 
 		fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
 		oi, err := fo.Stat()
 		if err != nil {
@@ -59,10 +81,6 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 		cb := new(common.Buffer) // TODO..   really just a bytes buffer should be used
 
 		_ = millerutils.Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, cb)
-		//rb, err := ioutil.ReadAll(cb) // read buffer to []byte
-		//if err != nil {
-		//		log.Println(err)
-		//		}
 
 		good, bad, err := graphSplit(cb, bucketname)
 
@@ -85,122 +103,60 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config) {
 		})
 
 		cb.Reset()
-
 	}
 
-	// b2 := tx.Bucket([]byte("GoodTriples"))
-	// dbs := db.Stats()
-	// db.View(func(tx *bolt.Tx) error {
-	// 	// Assume bucket exists and has keys
-	// 	b := tx.Bucket([]byte("GoodTriples"))
-
-	// 	b.ForEach(func(k, v []byte) error {
-	// 		fmt.Printf("key=%s, value=%s\n", k, v)
-	// 		return nil
-	// 	})
-	// 	return nil
-	// })
-
-	fmt.Println("cp0")
-
+	log.Println("Start pipe reader / writer sequence")
 	// ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
 	// https://zupzup.org/io-pipe-go/
 	// https://rodaine.com/2015/04/async-split-io-reader-in-golang/
 	pr, pw := io.Pipe() // TeeReader of use?
-	fmt.Println("cp1")
-	// we need to wait for everything to be done
 
-	// TODO
-	//  No pooint for this to be a work group?
-	// or do 2 seperate ones....
-
-	wg := sync.WaitGroup{}
-	wg.Add(2)
+	// work group for the pipe writes...
+	lwg := sync.WaitGroup{}
+	lwg.Add(2)
 
 	go func() {
-		defer wg.Done()
+		defer lwg.Done()
 		defer pw.Close()
 		db.View(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte("GoodTriples"))
 			c := b.Cursor()
-
 			for k, v := c.First(); k != nil; k, v = c.Next() {
 				pw.Write(v)
 			}
-
 			return nil
 		})
 	}()
 
-	// TODO replace os.Stdout with a file writer
-	f, err := os.Create("./TESTOUT.txt")
-	if err != nil {
-		log.Println(err)
-	}
+	// file object needed by pipe to file go function
+	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))
+	// if err != nil {
+	// 	log.Println(err)
+	// }
 
+	// go function to write to file from pipe
+	// go func() {
+	// 	defer lwg.Done()
+	// 	if _, err := io.Copy(f, pr); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }()
+
+	// go function to write to minio from pipe
 	go func() {
-		defer wg.Done()
-		// read from the PipeReader to stdout
-		if _, err := io.Copy(f, pr); err != nil {
-			log.Fatal(err)
+		defer lwg.Done()
+		_, err := mc.PutObject("gleaner-milled", prefix, pr, -1, minio.PutObjectOptions{})
+		if err != nil {
+			log.Println(err)
 		}
 	}()
 
-	wg.Wait()
+	lwg.Wait() // wait for the pipe read writes to finish
+	pw.Close()
+	pr.Close()
+	// f.Close() // close file object needed by pipe to file go function
 
-	/*
-		db.View(func(tx *bolt.Tx) error {
-			b := tx.Bucket([]byte("GoodTriples"))
-			c := b.Cursor()
-
-			fmt.Println("cp2")
-			for k, v := c.First(); k != nil; k, v = c.Next() {
-				//pw.Write(v)
-				//_, err := tx.WriteTo(pw)
-				//if err != nil {
-				//		log.Println(err)
-				//}
-				//fmt.Fprint(pw, v)
-				// fmt.Fprintf(pw, "%d)teststring\n", i)
-				fmt.Printf("key=%s, value=%d\n", k, len(v))
-			}
-
-			return nil
-		})
-	*/
-
-	//pw.Close()
-	fmt.Println("cp3")
-	// background(mc, pr)
-
-}
-
-// https://play.golang.org/p/c0fLEI350w
-func background(mc *minio.Client, r io.Reader) {
-	buf := make([]byte, 64)
-
-	for {
-		_, err := r.Read(buf)
-		if err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-
-		ior := bytes.NewReader(buf)
-
-		_, err = mc.PutObject("test", "test-object2", ior, -1, minio.PutObjectOptions{})
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		// n, err := r.Read(buf)
-		// if err != nil {
-		// 	fmt.Print(err.Error())
-		// 	//return
-		// }
-		// fmt.Print(string(buf[:n]))
-	}
-	// log.Println("Uploaded", "my-objectname", " of size: ", n, "Successfully.")
+	wg.Done()
 }
 
 func graphSplit(gb *common.Buffer, bucketname string) (string, string, error) {
@@ -225,7 +181,6 @@ func graphSplit(gb *common.Buffer, bucketname string) (string, string, error) {
 	}
 
 	return good.String(), bad.String(), err
-
 }
 
 // TODO  convert this to use a bytes.Buffer  (or better a pointer to that)
@@ -260,9 +215,20 @@ func makeQuad(t rdf.Triple, c string) (string, error) {
 	return qs, err
 }
 
-func kvclient() *bolt.DB {
-	// Do this in main and pass the reference later?
-	db, err := bolt.Open("gleaner.db", 0600, nil)
+// pass in a bucket name here to make several of these
+// and use trhe go func pattern from the summoner
+// to do these graph builds in parrallel
+// Could 1 db but might have write collisions more then
+func kvclient(name string) *bolt.DB {
+
+	dir, err := ioutil.TempDir("", name) // emptry string puts tmp dir in os.TempDir
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	defer os.RemoveAll(dir)
+
+	db, err := bolt.Open(fmt.Sprintf("%s/%s.db", dir, name), 0600, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -286,3 +252,24 @@ func kvclient() *bolt.DB {
 	return db
 
 }
+
+// https://play.golang.org/p/c0fLEI350w
+// func background(mc *minio.Client, r io.Reader, o string) {
+// 	buf := make([]byte, 64)
+
+// 	for {
+// 		_, err := r.Read(buf)
+// 		if err != nil {
+// 			fmt.Println(err.Error())
+// 			return
+// 		}
+
+// 		ior := bytes.NewReader(buf)
+
+// 		_, err = mc.PutObject("test", o, ior, -1, minio.PutObjectOptions{})
+// 		if err != nil {
+// 			log.Fatalln(err)
+// 		}
+// 	}
+
+// }

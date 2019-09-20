@@ -49,9 +49,18 @@ func Millers(mc *minio.Client, cs utils.Config) {
 
 	// Graph is the miller to convert from JSON-LD to nquads with validation of well formed
 	if cs.Millers.Graph {
+		graph.MillerSetup(mc, as, cs) // kv based function (disk based with memory mapping)
+		//for d := range as {
+		// graph.GraphMillObjects(mc, as[d], cs)  // old memory based function
+		// TODO really each of these can be a go func.call .
+		// be sure to update the file name  (buckets can stay the same since different files)
+		//	graph.Miller(mc, as[d], cs) // kv based function (disk based with memory mapping)
+		//}
+	}
+
+	if cs.Millers.Shacl {
 		for d := range as {
-			// graph.GraphMillObjects(mc, as[d], cs)  // old memory based function
-			graph.Miller(mc, as[d], cs) // kv based function (disk based with memory mapping)
+			shapes.SHACLMillObjects(mc, as[d], cs)
 		}
 	}
 
@@ -62,11 +71,8 @@ func Millers(mc *minio.Client, cs utils.Config) {
 		// TODO add in saving the AOF file to minio / S3
 	}
 
-	if cs.Millers.Shacl {
-		for d := range as {
-			shapes.SHACLMillObjects(mc, as[d], cs)
-		}
-	}
+	// The millers below here should be removed and
+	// turned into a second step processing tool (Guildsmen)
 
 	if cs.Millers.Organic {
 		for d := range as {
