@@ -105,6 +105,7 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 		cb.Reset()
 	}
 
+	// make this it's own function..    it really only needs the db pointer, mc pointer and prefix and bucket (Good/Bad)
 	log.Println("Start pipe reader / writer sequence")
 	// ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
 	// https://zupzup.org/io-pipe-go/
@@ -128,12 +129,20 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 		})
 	}()
 
-	// file object needed by pipe to file go function
+	// go function to write to minio from pipe
+	go func() {
+		defer lwg.Done()
+		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_good.nq", prefix), pr, -1, minio.PutObjectOptions{})
+		if err != nil {
+			log.Println(err)
+		}
+	}()
+
+	// Note: We can also make a file and pipe write to that, keep this code around in case
 	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))
 	// if err != nil {
 	// 	log.Println(err)
 	// }
-
 	// go function to write to file from pipe
 	// go func() {
 	// 	defer lwg.Done()
@@ -141,15 +150,6 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 	// 		log.Fatal(err)
 	// 	}
 	// }()
-
-	// go function to write to minio from pipe
-	go func() {
-		defer lwg.Done()
-		_, err := mc.PutObject("gleaner-milled", prefix, pr, -1, minio.PutObjectOptions{})
-		if err != nil {
-			log.Println(err)
-		}
-	}()
 
 	lwg.Wait() // wait for the pipe read writes to finish
 	pw.Close()

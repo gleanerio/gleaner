@@ -67,6 +67,11 @@ func getDomain(mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *syn
 		lwg.Add(1)
 		urlloc := m[k].URL[i].Loc
 
+		// TODO for large site we can exhause memory with the just the creation of the
+		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
+		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
+		// library too)
+
 		go func(i int, k string) {
 
 			// logger approach to buffer in core lib (use for sending logs to s3 in web ui)

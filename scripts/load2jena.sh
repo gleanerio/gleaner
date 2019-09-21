@@ -8,8 +8,10 @@ mc_cmd() {
         mc ls $1 | awk '{print $5}'
 }
 
+# If you use this for ntriples, be sure to add in a graph in the URL target
 for i in $(mc_cmd $1); do
     echo $i
-    mc cat $1/$i | curl -X POST --header "Content-Type:application/n-triples" -d @- http://localhost:3030/$2/data?graph=$3
+    # mc cat $1/$i | curl -X POST --header "Content-Type:application/n-triples" -d @- http://localhost:3030/$2/data?graph=$3
+    mc cat $1/$i | curl -X POST --header "Content-Type:application/n-quads" -d @- http://localhost:3030/$2/data
 done
 
