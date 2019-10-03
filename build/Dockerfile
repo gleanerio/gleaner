@@ -2,8 +2,8 @@
 # CGO_ENABLED=0 env  go build .
 # docker build  --tag="opencoredata/ocdweb:0.9.4"  .
 # docker run -d -p 9900:9900  opencoredata/ocdweb:0.9.4
-#FROM alpine
-FROM scratch
+FROM alpine
+#FROM scratch
 
 # Add in the static elements (could also mount these from local filesystem)
 ADD ./cmd/gleaner/gleaner / 

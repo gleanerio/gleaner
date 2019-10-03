@@ -1,0 +1,33 @@
+SELECT DISTINCT ?r ?t ?p ?o
+WHERE { graph ?g {
+  ?s <http://www.w3.org/ns/shacl#conforms>  false .
+    ?s <http://www.w3.org/ns/shacl#result> ?r .
+    ?r ?p ?o .
+    ?s <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?t
+    
+}
+}
+
+
+
+SELECT DISTINCT  ?fn
+WHERE { graph ?g {
+  ?s <http://www.w3.org/ns/shacl#conforms>  false .
+      ?s <http://www.w3.org/ns/shacl#result> ?r .
+          ?r ?p ?o .
+              ?r <http://www.w3.org/ns/shacl#focusNode> ?fn
+              
+}
+}
+
+SELECT DISTINCT  ?s ?path ?severity ?source
+WHERE { graph ?g {
+    ?s <http://www.w3.org/ns/shacl#focusNode> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html> .
+        ?s <http://www.w3.org/ns/shacl#resultPath> ?path .
+            ?s <http://www.w3.org/ns/shacl#resultSeverity> ?severity .
+                ?s <http://www.w3.org/ns/shacl#sourceConstraintComponent> ?source .
+                
+}
+}
+
+

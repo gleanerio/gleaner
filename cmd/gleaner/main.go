@@ -37,8 +37,8 @@ func init() {
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
 
-	flag.StringVar(&minioVal, "address", "localhost", "FQDN for server")
-	flag.StringVar(&portVal, "port", "9000", "Port for minio server, default 9000")
+	flag.StringVar(&minioVal, "address", "localhost", "FQDN for minio(s3) server")
+	flag.StringVar(&portVal, "port", "9000", "Port for minio(s3) server, default 9000")
 	flag.StringVar(&accessVal, "access", akey, "Access key - read from environment variable if set")
 	flag.StringVar(&secretVal, "secret", skey, "Secret key - read from environment variable if set")
 	flag.StringVar(&bucketVal, "bucket", "gleaner", "The default bucket namepace")

@@ -26,7 +26,7 @@ func SHACLMillObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 }
 
 func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.Config) {
-	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control (1 == single thread)
+	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control (1 == single thread)
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
@@ -54,65 +54,43 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 	log.Println(gb.Len())
 
 	// TODO   gb is type turtle here..   need to convert to ntriples to store
-	nt, err := rdf2rdf(gb.String())
-	if err != nil {
-		log.Println(err)
-	}
+	// nt, err := rdf2rdf(gb.String())
+	// if err != nil {
+	// 		log.Println(err)
+	// 	}
 
 	// write to S3
-	_, err = millerutils.LoadToMinio(nt, "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", cs.Gleaner.RunID, bucketname), mc)
+	// _, err = millerutils.LoadToMinio(nt, "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", cs.Gleaner.RunID, bucketname), mc)
+	_, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", cs.Gleaner.RunID, bucketname), mc)
 	if err != nil {
 		log.Println(err)
 	}
-
-}
-
-func rdf2rdf(r string) (string, error) {
-	// Decode the existing triples
-	var inFormat rdf.Format
-	inFormat = rdf.Turtle
-
-	var outFormat rdf.Format
-	outFormat = rdf.NTriples
-
-	var s string
-	buf := bytes.NewBufferString(s)
-
-	dec := rdf.NewTripleDecoder(strings.NewReader(r), inFormat)
-	tr, err := dec.DecodeAll()
-
-	enc := rdf.NewTripleEncoder(buf, outFormat)
-	err = enc.EncodeAll(tr)
-
-	enc.Close()
-
-	return buf.String(), err
 }
 
 func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
-	datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
-	if err != nil {
-		log.Printf("Error in the jsonld write... %v\n", err)
-		log.Printf("Nothing to do..   going home")
-		return 0
-	}
+	// datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
+	// if err != nil {
+	// 	log.Printf("Error in the jsonld write... %v\n", err)
+	// 	log.Printf("Nothing to do..   going home")
+	// 	return 0
+	// }
 
-	url := "http://localhost:7000"
+	url := "http://localhost:8080/uploader"
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	writer.WriteField("dataref", urlval)
-	writer.WriteField("shaperef", sgkey)
+	writer.WriteField("datagraph", urlval)
+	writer.WriteField("shapegraph", sgkey)
 
-	part, err := writer.CreateFormFile("datag", "datagraph")
+	part, err := writer.CreateFormFile("datagraph", "datagraph")
 	if err != nil {
 		log.Println(err)
 	}
-	_, err = io.Copy(part, strings.NewReader(datagraph))
+	_, err = io.Copy(part, strings.NewReader(dg))
 	if err != nil {
 		log.Println(err)
 	}
 
-	part, err = writer.CreateFormFile("shapeg", "shapegraph")
+	part, err = writer.CreateFormFile("shapegraph", "shapegraph")
 	if err != nil {
 		log.Println(err)
 	}
@@ -152,4 +130,26 @@ func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	}
 
 	return len //  we will return the bytes count we write...
+}
+
+func rdf2rdf(r string) (string, error) {
+	// Decode the existing triples
+	var inFormat rdf.Format
+	inFormat = rdf.Turtle
+
+	var outFormat rdf.Format
+	outFormat = rdf.NTriples
+
+	var s string
+	buf := bytes.NewBufferString(s)
+
+	dec := rdf.NewTripleDecoder(strings.NewReader(r), inFormat)
+	tr, err := dec.DecodeAll()
+
+	enc := rdf.NewTripleEncoder(buf, outFormat)
+	err = enc.EncodeAll(tr)
+
+	enc.Close()
+
+	return buf.String(), err
 }

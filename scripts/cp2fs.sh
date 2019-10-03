@@ -7,6 +7,6 @@ mc_cmd() {
 }
 
 for i in $(mc_cmd $1); do
-    mc cp $1/$i $i.nq
+    mc cp $1/$i $i
 done
 

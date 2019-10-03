@@ -105,7 +105,58 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 		cb.Reset()
 	}
 
-	// make this it's own function..    it really only needs the db pointer, mc pointer and prefix and bucket (Good/Bad)
+	err := pipeCopy(mc, db, prefix, "BadTriples")
+	if err != nil {
+		log.Printf("Error in pipeCopy: %s\n", err)
+	}
+
+	err = pipeCopy(mc, db, prefix, "GoodTriples")
+	if err != nil {
+		log.Printf("Error in pipeCopy: %s\n", err)
+	}
+
+	// // make this it's own function..    it really only needs the db pointer, mc pointer and prefix and bucket (Good/Bad)
+	// log.Println("Start pipe reader / writer sequence")
+	// // ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
+	// // https://zupzup.org/io-pipe-go/
+	// // https://rodaine.com/2015/04/async-split-io-reader-in-golang/
+	// pr, pw := io.Pipe() // TeeReader of use?
+
+	// // work group for the pipe writes...
+	// lwg := sync.WaitGroup{}
+	// lwg.Add(2)
+
+	// go func() {
+	// 	defer lwg.Done()
+	// 	defer pw.Close()
+	// 	db.View(func(tx *bolt.Tx) error {
+	// 		b := tx.Bucket([]byte("GoodTriples"))
+	// 		c := b.Cursor()
+	// 		for k, v := c.First(); k != nil; k, v = c.Next() {
+	// 			pw.Write(v)
+	// 		}
+	// 		return nil
+	// 	})
+	// }()
+
+	// // go function to write to minio from pipe
+	// go func() {
+	// 	defer lwg.Done()
+	// 	_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_good.nq", prefix), pr, -1, minio.PutObjectOptions{})
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 	}
+	// }()
+
+	// lwg.Wait() // wait for the pipe read writes to finish
+	// pw.Close()
+	// pr.Close()
+	// // f.Close() // close file object needed by pipe to file go function
+
+	wg.Done()
+}
+
+func pipeCopy(mc *minio.Client, db *bolt.DB, prefix, bucket string) error {
 	log.Println("Start pipe reader / writer sequence")
 	// ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
 	// https://zupzup.org/io-pipe-go/
@@ -120,7 +171,7 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 		defer lwg.Done()
 		defer pw.Close()
 		db.View(func(tx *bolt.Tx) error {
-			b := tx.Bucket([]byte("GoodTriples"))
+			b := tx.Bucket([]byte(bucket))
 			c := b.Cursor()
 			for k, v := c.First(); k != nil; k, v = c.Next() {
 				pw.Write(v)
@@ -132,7 +183,7 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
-		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_good.nq", prefix), pr, -1, minio.PutObjectOptions{})
+		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_%s.nq", prefix, bucket), pr, -1, minio.PutObjectOptions{})
 		if err != nil {
 			log.Println(err)
 		}
@@ -154,9 +205,8 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 	lwg.Wait() // wait for the pipe read writes to finish
 	pw.Close()
 	pr.Close()
-	// f.Close() // close file object needed by pipe to file go function
 
-	wg.Done()
+	return nil
 }
 
 func graphSplit(gb *common.Buffer, bucketname string) (string, string, error) {
@@ -189,7 +239,7 @@ func goodTriples(f, c string) (string, error) {
 	dec := rdf.NewTripleDecoder(strings.NewReader(f), rdf.NTriples)
 	triple, err := dec.Decode()
 	if err != nil {
-		log.Printf("Error decoding triples: %v\n", err)
+		// log.Printf("Error decoding triples: %v\n", err)
 		return "", err
 	}
 
