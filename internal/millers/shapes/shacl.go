@@ -12,20 +12,20 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/pkg/utils"
+	"earthcube.org/Project418/gleaner/internal/millers/graph"
 
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
+	"github.com/spf13/viper"
 )
 
 // SHACLMillObjects test a concurrent version of calling mock
-func SHACLMillObjects(mc *minio.Client, bucketname string, cs utils.Config) {
+func SHACLMillObjects(mc *minio.Client, bucketname string, v1 *viper.Viper) {
 	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(entries, bucketname, mc, cs)
+	multiCall(entries, bucketname, mc, v1)
 }
 
-func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.Config) {
+func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.Viper) {
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control (1 == single thread)
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
@@ -60,8 +60,9 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 	// 	}
 
 	// write to S3
-	// _, err = millerutils.LoadToMinio(nt, "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", cs.Gleaner.RunID, bucketname), mc)
-	_, err := millerutils.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", cs.Gleaner.RunID, bucketname), mc)
+	mcfg := v1.GetStringMapString("gleaner")
+
+	_, err := graph.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", mcfg["runid"], bucketname), mc)
 	if err != nil {
 		log.Println(err)
 	}
@@ -114,13 +115,13 @@ func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	// write result to buffer

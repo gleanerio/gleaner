@@ -53,3 +53,12 @@ Work on the validation of data graphs using W3C SHACL shape graphs is
 taing place in the [GeoShapes repository](https://github.com/geoschemas-org/geoshapes).  Gleaner leverages the pySHACL
 Python package to perform the actual validation.  
 
+### Profiling
+
+You can profile runs with 
+
+```bash
+go tool pprof --pdf gleaner /tmp/profile317320184/cpu.pprof  > profileRun1.pdf
+```
+
+Example CPU and Memory profile of a recent release.  

@@ -1,6 +1,0 @@
-
-
-Once the shacl result graph is loaded it can 
-be queried via sparql for the nodes
-that were violations and then those can 
-be presented with their results

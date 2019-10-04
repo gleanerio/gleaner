@@ -5,114 +5,64 @@ import (
 	"log"
 	"time"
 
-	"earthcube.org/Project418/gleaner/internal/millers/fdpgraph"
-	"earthcube.org/Project418/gleaner/internal/millers/fdptika"
-	"earthcube.org/Project418/gleaner/internal/millers/fdptikajena"
 	"earthcube.org/Project418/gleaner/internal/millers/graph"
-	"earthcube.org/Project418/gleaner/internal/millers/mock"
-	"earthcube.org/Project418/gleaner/internal/millers/ner"
 	"earthcube.org/Project418/gleaner/internal/millers/prov"
 	"earthcube.org/Project418/gleaner/internal/millers/shapes"
-	"earthcube.org/Project418/gleaner/internal/millers/spatial"
-	"earthcube.org/Project418/gleaner/internal/millers/textindex"
-	"earthcube.org/Project418/gleaner/internal/millers/tika"
-	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/minio/minio-go"
+	"github.com/spf13/viper"
 )
+
+type Sources struct {
+	Name     string
+	Logo     string
+	URL      string
+	Headless bool
+	// SitemapFormat string
+	// Active        bool
+}
 
 // Millers is our main controller for calling the various milling paths we will
 // do on the JSON-LD data graphs
-func Millers(mc *minio.Client, cs utils.Config) {
+func Millers(mc *minio.Client, v1 *viper.Viper) {
 	st := time.Now()
 	log.Printf("Miller start time: %s \n", st) // Log the time at start for the record
 
+	var domains []Sources
+	err := v1.UnmarshalKey("sources", &domains)
+	if err != nil {
+		log.Println(err)
+	}
+
 	// Make an array "as" of active buckets to process...
 	as := []string{}
-	for i := range cs.Sources {
-		if cs.Sources[i].Active == true {
-			m := fmt.Sprintf("%s", cs.Sources[i].Name)
-			as = append(as, m)
-			log.Printf("Adding bucket to milling list: %s\n", m)
-		}
+	for i := range domains {
+		m := fmt.Sprintf("%s", domains[i].Name)
+		as = append(as, m)
+		log.Printf("Adding bucket to milling list: %s\n", m)
 	}
 
-	// TODO There is easy concurency hidden here we are not yet exploiting
-
-	// Start calling the millers
-
-	// Mock is just a template miller..  prints resource entries only...
-	if cs.Millers.Mock {
-		for d := range as {
-			mock.MockObjects(mc, as[d])
-		}
-	}
+	mcfg := v1.GetStringMapString("millers")
 
 	// Graph is the miller to convert from JSON-LD to nquads with validation of well formed
-	if cs.Millers.Graph {
-		graph.MillerSetup(mc, as, cs) // kv based function (disk based with memory mapping)
+	if mcfg["graph"] == "true" {
+		graph.MillerSetup(mc, as, v1) // kv based function (disk based with memory mapping)
 		//for d := range as {
-		// graph.GraphMillObjects(mc, as[d], cs)  // old memory based function
+		// graph.MillObjects(mc, as[d], cs)  // old memory based function
 		// TODO really each of these can be a go func.call .
 		// be sure to update the file name  (buckets can stay the same since different files)
 		//	graph.Miller(mc, as[d], cs) // kv based function (disk based with memory mapping)
 		//}
 	}
 
-	if cs.Millers.Shacl {
+	if mcfg["shacl"] == "true" {
 		for d := range as {
-			shapes.SHACLMillObjects(mc, as[d], cs)
+			shapes.SHACLMillObjects(mc, as[d], v1)
 		}
 	}
 
-	if cs.Millers.Spatial {
+	if mcfg["prov"] == "true" {
 		for d := range as {
-			spatial.ProcessBucketObjects(mc, as[d])
-		}
-		// TODO add in saving the AOF file to minio / S3
-	}
-
-	// The millers below here should be removed and
-	// turned into a second step processing tool (Guildsmen)
-
-	if cs.Millers.Organic {
-		for d := range as {
-			textindex.GetObjects(mc, as[d])
-		}
-	}
-
-	if cs.Millers.Prov {
-		for d := range as {
-			prov.MockObjects(mc, as[d], cs)
-		}
-	}
-
-	if cs.Millers.Tika {
-		for d := range as {
-			tika.TikaObjects(mc, as[d])
-		}
-	}
-
-	if cs.Millers.FDPTika {
-		for d := range as {
-			fdptika.TikaObjects(mc, as[d], cs)
-		}
-	}
-
-	if cs.Millers.FDPTikaJena {
-		for d := range as {
-			fdptikajena.TikaObjects(mc, as[d], cs)
-		}
-	}
-
-	if cs.Millers.FDPGraph {
-		for d := range as {
-			fdpgraph.TikaObjects(mc, as[d], cs)
-		}
-	}
-
-	if cs.Millers.NER {
-		for d := range as {
-			ner.NERObjects(mc, as[d])
+			prov.MockObjects(mc, as[d], v1)
 		}
 	}
 

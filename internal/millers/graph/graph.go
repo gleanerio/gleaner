@@ -9,19 +9,18 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/pkg/utils"
 
 	minio "github.com/minio/minio-go"
+	"github.com/spf13/viper"
 )
 
 // GraphMillObjects test a concurrent version of calling mock
-func GraphMillObjects(mc *minio.Client, bucketname string, cs utils.Config) {
+func MillObjects(mc *minio.Client, bucketname string, v1 *viper.Viper) {
 	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(entries, bucketname, mc, cs)
+	multiCall(entries, bucketname, mc, v1)
 }
 
-func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.Config) {
+func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.Viper) {
 	// Set up the the semaphore and conccurancey
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -34,7 +33,7 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 		log.Printf("About to run #%d in a goroutine\n", k)
 		go func(k int) {
 			semaphoreChan <- struct{}{}
-			status := millerutils.Jsl2graph(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
+			status := Jsl2graph(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
 
 			wg.Done() // tell the wait group that we be done!
 			log.Printf("#%d wrote %d bytes", k, status)
@@ -72,16 +71,17 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, cs utils.C
 	log.Println(bad.Len())
 
 	// TODO: Can we clear up gb at this point if we use these good/bad buffers from here out?
+	mcfg := v1.GetStringMapString("gleaner")
 
 	// write two object to S3; the quads and the error list
-	flgood, err := millerutils.LoadToMinio(good.String(), "gleaner-milled", fmt.Sprintf("%s/%s.nq", cs.Gleaner.RunID, bucketname), mc)
+	flgood, err := LoadToMinio(good.String(), "gleaner-milled", fmt.Sprintf("%s/%s.nq", mcfg["runid"], bucketname), mc)
 	if err != nil {
 		log.Println("RDF file could not be written")
 	} else {
 		log.Printf("RDF file written len:%d\n", flgood)
 	}
 	if bad.Len() > 0 { // when the light is green, the trap is clean
-		flbad, err := millerutils.LoadToMinio(bad.String(), "gleaner-milled", fmt.Sprintf("%s/%s_rdfErrors.txt", cs.Gleaner.RunID, bucketname), mc)
+		flbad, err := LoadToMinio(bad.String(), "gleaner-milled", fmt.Sprintf("%s/%s_rdfErrors.txt", mcfg["runid"], bucketname), mc)
 		if err != nil {
 			log.Println("RDF Error file could not be written")
 		} else {

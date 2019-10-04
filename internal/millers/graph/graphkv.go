@@ -13,23 +13,22 @@ import (
 	"time"
 
 	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/pkg/utils"
 
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
+	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
 )
 
 // MillerSetup issues a go call for each domain in the ocnfig file to mill the graph
-func MillerSetup(mc *minio.Client, b []string, cs utils.Config) {
+func MillerSetup(mc *minio.Client, b []string, v1 *viper.Viper) {
 	//	uiprogress.Start()
 	wg := sync.WaitGroup{}
 
 	for k := range b {
 		log.Printf("Queuing URLs for %s \n", b[k])
 		// 	go getDomain(mc, m, k, &wg)
-		go Miller(mc, b[k], cs, &wg) // kv based function (disk based with memory mapping)
+		go Miller(mc, b[k], v1, &wg) // kv based function (disk based with memory mapping)
 	}
 
 	time.Sleep(2 * time.Second)
@@ -38,7 +37,7 @@ func MillerSetup(mc *minio.Client, b []string, cs utils.Config) {
 }
 
 // Miller (dev version to deal with memory and scale isues)
-func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup) {
+func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup) {
 	wg.Add(1)
 
 	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
@@ -80,7 +79,7 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 
 		cb := new(common.Buffer) // TODO..   really just a bytes buffer should be used
 
-		_ = millerutils.Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, cb)
+		_ = Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, cb)
 
 		good, bad, err := graphSplit(cb, bucketname)
 
@@ -105,66 +104,31 @@ func Miller(mc *minio.Client, prefix string, cs utils.Config, wg *sync.WaitGroup
 		cb.Reset()
 	}
 
-	err := pipeCopy(mc, db, prefix, "BadTriples")
+	mcfg := v1.GetStringMapString("gleaner")
+
+	err := pipeCopy(mc, db, mcfg["runid"], prefix, "BadTriples")
 	if err != nil {
 		log.Printf("Error in pipeCopy: %s\n", err)
 	}
 
-	err = pipeCopy(mc, db, prefix, "GoodTriples")
+	err = pipeCopy(mc, db, mcfg["runid"], prefix, "GoodTriples")
 	if err != nil {
 		log.Printf("Error in pipeCopy: %s\n", err)
 	}
-
-	// // make this it's own function..    it really only needs the db pointer, mc pointer and prefix and bucket (Good/Bad)
-	// log.Println("Start pipe reader / writer sequence")
-	// // ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
-	// // https://zupzup.org/io-pipe-go/
-	// // https://rodaine.com/2015/04/async-split-io-reader-in-golang/
-	// pr, pw := io.Pipe() // TeeReader of use?
-
-	// // work group for the pipe writes...
-	// lwg := sync.WaitGroup{}
-	// lwg.Add(2)
-
-	// go func() {
-	// 	defer lwg.Done()
-	// 	defer pw.Close()
-	// 	db.View(func(tx *bolt.Tx) error {
-	// 		b := tx.Bucket([]byte("GoodTriples"))
-	// 		c := b.Cursor()
-	// 		for k, v := c.First(); k != nil; k, v = c.Next() {
-	// 			pw.Write(v)
-	// 		}
-	// 		return nil
-	// 	})
-	// }()
-
-	// // go function to write to minio from pipe
-	// go func() {
-	// 	defer lwg.Done()
-	// 	_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_good.nq", prefix), pr, -1, minio.PutObjectOptions{})
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 	}
-	// }()
-
-	// lwg.Wait() // wait for the pipe read writes to finish
-	// pw.Close()
-	// pr.Close()
-	// // f.Close() // close file object needed by pipe to file go function
 
 	wg.Done()
 }
 
-func pipeCopy(mc *minio.Client, db *bolt.DB, prefix, bucket string) error {
+func pipeCopy(mc *minio.Client, db *bolt.DB, runid, prefix, bucket string) error {
 	log.Println("Start pipe reader / writer sequence")
-	// ref io.Pipe https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
+
+	// refs
+	// https://stackoverflow.com/questions/37645869/how-to-deal-with-io-eof-in-a-bytes-buffer-stream
 	// https://zupzup.org/io-pipe-go/
 	// https://rodaine.com/2015/04/async-split-io-reader-in-golang/
-	pr, pw := io.Pipe() // TeeReader of use?
 
-	// work group for the pipe writes...
-	lwg := sync.WaitGroup{}
+	pr, pw := io.Pipe()     // TeeReader of use?
+	lwg := sync.WaitGroup{} // work group for the pipe writes...
 	lwg.Add(2)
 
 	go func() {
@@ -183,14 +147,14 @@ func pipeCopy(mc *minio.Client, db *bolt.DB, prefix, bucket string) error {
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
-		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_%s.nq", prefix, bucket), pr, -1, minio.PutObjectOptions{})
+		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s/%s_%s.nq", runid, prefix, bucket), pr, -1, minio.PutObjectOptions{})
 		if err != nil {
 			log.Println(err)
 		}
 	}()
 
 	// Note: We can also make a file and pipe write to that, keep this code around in case
-	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))
+	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))  // needs a f.Close() later
 	// if err != nil {
 	// 	log.Println(err)
 	// }
@@ -235,11 +199,9 @@ func graphSplit(gb *common.Buffer, bucketname string) (string, string, error) {
 
 // TODO  convert this to use a bytes.Buffer  (or better a pointer to that)
 func goodTriples(f, c string) (string, error) {
-	// fmt.Printf("Trying: %s \n", f)
 	dec := rdf.NewTripleDecoder(strings.NewReader(f), rdf.NTriples)
 	triple, err := dec.Decode()
 	if err != nil {
-		// log.Printf("Error decoding triples: %v\n", err)
 		return "", err
 	}
 
@@ -302,24 +264,3 @@ func kvclient(name string) *bolt.DB {
 	return db
 
 }
-
-// https://play.golang.org/p/c0fLEI350w
-// func background(mc *minio.Client, r io.Reader, o string) {
-// 	buf := make([]byte, 64)
-
-// 	for {
-// 		_, err := r.Read(buf)
-// 		if err != nil {
-// 			fmt.Println(err.Error())
-// 			return
-// 		}
-
-// 		ior := bytes.NewReader(buf)
-
-// 		_, err = mc.PutObject("test", o, ior, -1, minio.PutObjectOptions{})
-// 		if err != nil {
-// 			log.Fatalln(err)
-// 		}
-// 	}
-
-// }

@@ -5,31 +5,25 @@ import (
 	"time"
 
 	"earthcube.org/Project418/gleaner/internal/summoner/acquire"
-	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/minio/minio-go"
+	"github.com/spf13/viper"
 )
 
 // Summoner pulls the resources from the data facilities
-func Summoner(mc *minio.Client, cs utils.Config) {
+// func Summoner(mc *minio.Client, cs utils.Config) {
+func Summoner(mc *minio.Client, v1 *viper.Viper) {
+
 	log.Printf("Summoner start time: %s \n", time.Now())
 
-	// Get the domains and split into domais and headless (post render DOM updates)
-	domains, headlessdomains, err := acquire.DomainListJSON(cs)
-	if err != nil {
-		log.Printf("Error reading list of domains %v\n", err)
-	}
+	ru := acquire.ResourceURLs(v1, false)
+	hru := acquire.ResourceURLs(v1, true)
 
-	// log.Printf("Domains: %v \n", domains)
-	// log.Printf("Headless domains: %v \n", headlessdomains)
-
-	ru := acquire.ResourceURLs(domains, cs)
 	if len(ru) > 0 {
-		acquire.ResRetrieve(mc, ru, cs)
+		acquire.ResRetrieve(mc, ru)
 	}
 
-	hru := acquire.ResourceURLs(headlessdomains, cs)
 	if len(hru) > 0 {
-		acquire.Headless(mc, hru, cs)
+		acquire.Headless(mc, hru)
 	}
 
 	log.Printf("Summoner end time: %s \n", time.Now())

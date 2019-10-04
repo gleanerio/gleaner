@@ -2,7 +2,6 @@ package common
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 
 	minio "github.com/minio/minio-go"
@@ -22,13 +21,13 @@ func GetShapeGraphs(mc *minio.Client, bucketname string) []Entry {
 
 	for object := range objectCh {
 		if object.Err != nil {
-			fmt.Println(object.Err)
+			log.Println(object.Err)
 			return nil
 		}
 
 		fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return nil
 		}
 
@@ -56,7 +55,7 @@ func GetShapeGraphs(mc *minio.Client, bucketname string) []Entry {
 
 	}
 
-	fmt.Println(len(entries))
+	log.Println(len(entries))
 	// multiCall(entries)
 
 	return entries

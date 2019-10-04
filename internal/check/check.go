@@ -8,7 +8,12 @@ import (
 	"github.com/minio/minio-go"
 )
 
-// GleanerSetup set up  elements of Gleaner are running
+var bl []string
+
+func init() {
+	// bl := []string{"gleaner", "gleaner-config", "gleaner-summoned", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
+	bl = []string{"gleaner", "gleaner-summoned", "gleaner-milled"}
+}
 
 // ConnCheck check the connections iwth a list buckets call
 func ConnCheck(mc *minio.Client) error {
@@ -19,8 +24,6 @@ func ConnCheck(mc *minio.Client) error {
 // Buckets checks the setup
 func Buckets(mc *minio.Client) error {
 	var err error
-
-	bl := []string{"gleaner", "gleaner-config", "gleaner-summoned", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
 
 	for i := range bl {
 		found, err := mc.BucketExists(bl[i])
@@ -41,8 +44,6 @@ func Buckets(mc *minio.Client) error {
 // MakeBuckets checks the setup
 func MakeBuckets(mc *minio.Client) error {
 	var err error
-
-	bl := []string{"gleaner", "gleaner-config", "gleaner-summoned", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
 
 	for i := range bl {
 		found, err := mc.BucketExists(bl[i])
@@ -83,7 +84,7 @@ func urlCheck() bool {
 
 // syscheck is a place holder function for work to be done....
 func syscheck(mc *minio.Client) {
-	fmt.Println("System setup check placeholder")
+	log.Println("System setup check placeholder")
 	s := "NA"
-	fmt.Printf("System check results: %s\n", s)
+	log.Printf("System check results: %s\n", s)
 }

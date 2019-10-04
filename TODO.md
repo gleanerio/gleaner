@@ -38,9 +38,10 @@ New Object location.
 
 ## notes and such
 
-The 1m samples.earth summon took about 3 1/2 hours
-
+Command line examples for gleaner in docker
+```
 docker run --rm -ti --network=host nsfearthcube/gleaner:2.0.6 -help 
 docker run --rm -it --network=host nsfearthcube/gleaner:2.0.6 -setup -access=ACCESS -secret=SECRET
+```
 
 

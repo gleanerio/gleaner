@@ -1,7 +1,7 @@
 package check
 
 import (
-	"fmt"
+	"log"
 
 	"github.com/minio/minio-go"
 )
@@ -13,10 +13,10 @@ func MkBuckets(mc *minio.Client) (bool, error) {
 	// build the buckets...
 	err := mc.MakeBucket("gleaner", "us-east-1")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return false, err
 	}
-	fmt.Println("Successfully created mybucket.")
+	log.Println("Successfully created mybucket.")
 
 	return true, err
 }

@@ -6,16 +6,17 @@ import (
 	"log"
 	"os"
 
+	"github.com/minio/minio-go"
+	"github.com/spf13/viper"
+
 	"earthcube.org/Project418/gleaner/internal/check"
+	"earthcube.org/Project418/gleaner/internal/common"
 	"earthcube.org/Project418/gleaner/internal/millers"
 	"earthcube.org/Project418/gleaner/internal/summoner"
-	"earthcube.org/Project418/gleaner/pkg/utils"
-
-	"github.com/minio/minio-go"
 )
 
-var minioVal, portVal, accessVal, secretVal, bucketVal, cfgValObj, cfgValFile string
-var sslVal, setupVal bool
+var viperVal string
+var setupVal bool
 
 func init() {
 	log.SetFlags(log.Lshortfile)
@@ -27,42 +28,33 @@ func init() {
 	// 	logger = log.New(&buf, "logger: ", log.Lshortfile)
 	// )
 
-	// logFile, err := os.OpenFile("log.txt", os.O_WRONLY, 0666)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer logFile.Close()
-	// log.SetOutput(logFile)  	// direct all log messages to log.txt
-
-	akey := os.Getenv("MINIO_ACCESS_KEY")
-	skey := os.Getenv("MINIO_SECRET_KEY")
-
-	flag.StringVar(&minioVal, "address", "localhost", "FQDN for minio(s3) server")
-	flag.StringVar(&portVal, "port", "9000", "Port for minio(s3) server, default 9000")
-	flag.StringVar(&accessVal, "access", akey, "Access key - read from environment variable if set")
-	flag.StringVar(&secretVal, "secret", skey, "Secret key - read from environment variable if set")
-	flag.StringVar(&bucketVal, "bucket", "gleaner", "The default bucket namepace")
-	flag.StringVar(&cfgValObj, "configobj", "config.json", "Configuration object in object store bucket: [bucket]-config")
-	flag.StringVar(&cfgValFile, "configfile", "config.json", "Configuration file")
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
-	flag.BoolVar(&sslVal, "ssl", false, "Use SSL true/false")
+	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
 }
 
 func main() {
 	log.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
 
-	flagset := make(map[string]bool)
-	flag.Visit(func(f *flag.Flag) { flagset[f.Name] = true })
+	// Profiling lines (comment out for release builds)
+	// defer profile.Start().Stop()                    // cpu
+	// defer profile.Start(profile.MemProfile).Stop()  // memory
 
-	// Create a minio client
-	log.Println("Creating needed connection client")
-	ep := fmt.Sprintf("%s:%s", minioVal, portVal)
-	mc, err := minio.New(ep, accessVal, secretVal, sslVal)
+	v1, err := readConfig(viperVal, map[string]interface{}{
+		"sqlfile": "",
+		"bucket":  "",
+		"minio": map[string]string{
+			"address":   "localhost",
+			"port":      "9000",
+			"accesskey": "",
+			"secretkey": "",
+		},
+	})
 	if err != nil {
-		log.Println("Can not create minio connection client")
-		os.Exit(1)
+		panic(fmt.Errorf("error when reading config: %v", err))
 	}
+
+	mc := common.MinioConnection(v1)
 
 	// If requested, set up the buckets
 	if setupVal {
@@ -91,34 +83,30 @@ func main() {
 		os.Exit(1)
 	}
 
-	cs := utils.Config{}
-
-	if flagset["configfile"] {
-		log.Printf("Loading config file: %s \n", cfgValFile)
-		cs = utils.ConfigYAML(cfgValFile)
-	}
-
-	if flagset["configobj"] {
-		log.Printf("Loading config object: %s \n", cfgValObj)
-		cs = utils.S3ConfigYAML(mc, "gleaner-config", cfgValObj)
-	}
-
-	if !flagset["configfile"] && !flagset["configobj"] {
-		fmt.Println("No configuration file or object provided")
-		os.Exit(0)
-	}
-
-	cli(mc, cs)
-
-	// fmt.Print(&buf)
+	cli(mc, v1)
 }
 
-func cli(mc *minio.Client, cs utils.Config) {
-	if cs.Gleaner.Summon {
-		summoner.Summoner(mc, cs)
+// func cli(mc *minio.Client, cs utils.Config) {
+func cli(mc *minio.Client, v1 *viper.Viper) {
+	mcfg := v1.GetStringMapString("gleaner")
+
+	if mcfg["summon"] == "true" {
+		summoner.Summoner(mc, v1)
 	}
 
-	if cs.Gleaner.Mill {
-		millers.Millers(mc, cs) // need to remove rundir and then fix the compile
+	if mcfg["mill"] == "true" {
+		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
 	}
+}
+
+func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
+	v := viper.New()
+	for key, value := range defaults {
+		v.SetDefault(key, value)
+	}
+	v.SetConfigName(filename)
+	v.AddConfigPath(".")
+	v.AutomaticEnv()
+	err := v.ReadInConfig()
+	return v, err
 }

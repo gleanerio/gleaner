@@ -6,28 +6,39 @@ import (
 	"strings"
 
 	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/pkg/utils"
+	"earthcube.org/Project418/gleaner/internal/millers/graph"
 
 	"github.com/deiu/rdf2go"
 	minio "github.com/minio/minio-go"
+	"github.com/spf13/viper"
 	"github.com/tidwall/gjson"
 	"github.com/twinj/uuid"
 )
 
+type Sources struct {
+	Name     string
+	Logo     string
+	URL      string
+	Headless bool
+	// SitemapFormat string
+	// Active        bool
+}
+
 // MockObjects test a concurrent version of calling mock
-func MockObjects(mc *minio.Client, bucketname string, cs utils.Config) {
+func MockObjects(mc *minio.Client, bucketname string, v1 *viper.Viper) {
 	entries := common.GetMillObjects(mc, bucketname)
-	gd := buildGraph(entries, bucketname, cs)
+	gd := buildGraph(entries, bucketname, v1)
+
+	mcfg := v1.GetStringMapString("gleaner")
 
 	// write to S3
-	i, err := millerutils.LoadToMinio(gd, "gleaner-milled", fmt.Sprintf("%s/%s_prov.nt", cs.Gleaner.RunID, bucketname), mc)
+	i, err := graph.LoadToMinio(gd, "gleaner-milled", fmt.Sprintf("%s/%s_prov.nt", mcfg["runid"], bucketname), mc)
 	if err != nil {
 		log.Println(err)
 	}
 
 	// // write to file
-	// i, err := millerutils.WriteRDF(gd, fmt.Sprintf("%s_prov", bucketname))
+	// i, err := graph.WriteRDF(gd, fmt.Sprintf("%s_prov", bucketname))
 	// if err != nil {
 	// 	log.Println(err)
 	// }
@@ -35,7 +46,7 @@ func MockObjects(mc *minio.Client, bucketname string, cs utils.Config) {
 	log.Printf("Wrote prov record for %s with len %d\n", bucketname, i)
 }
 
-func buildGraph(pi []common.Entry, bucketname string, cs utils.Config) string {
+func buildGraph(pi []common.Entry, bucketname string, v1 *viper.Viper) string {
 	// make UUID here to make the baseuri unique
 	u := uuid.NewV4()
 
@@ -44,8 +55,8 @@ func buildGraph(pi []common.Entry, bucketname string, cs utils.Config) string {
 	g := rdf2go.NewGraph("")
 
 	// r is of type io.Reader
-	ot := orgTriples(bucketname, u.String(), cs) // TODO..  bucketname obviously not what we want to do here....
-	bt := baseTriples(u.String(), cs)            // TODO..  bucketname obviously not what we want to do here....
+	ot := orgTriples(bucketname, u.String(), v1) // TODO..  bucketname obviously not what we want to do here....
+	bt := baseTriples(u.String(), v1)            // TODO..  bucketname obviously not what we want to do here....
 
 	err := g.Parse(strings.NewReader(bt), "text/turtle") // should be ntriples
 	if err != nil {
@@ -78,24 +89,24 @@ func buildGraph(pi []common.Entry, bucketname string, cs utils.Config) string {
 }
 
 // This should have the name of the organization exposing the data
-func orgTriples(bname, u string, cs utils.Config) string {
+func orgTriples(bname, u string, v1 *viper.Viper) string {
 	g := rdf2go.NewGraph("")
 	s := fmt.Sprintf("http://provisium.org/id/%s/pagecollection", u)
 
+	var domains []Sources
+	err := v1.UnmarshalKey("sources", &domains)
+	if err != nil {
+		log.Println(err)
+	}
+
 	// pull url and shortname from cs based on Lable (aka  name)
 	var shortname, url string
-	for _, v := range cs.Sources {
+	for _, v := range domains {
 		if bname == v.Name {
-			shortname = v.ShortName
+			shortname = v.Name // TODO this code debt from the old config, but looks pointless now..   clear this up
 			url = v.URL
 		}
 	}
-
-	// 	 grep related ocdProvP418.n3
-	// 	<https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://provisium.org/id/opencoredataorg/pagecollection> <https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://www.w3.org/2000/01/rdf-schema#label> "A collection of provenance related to the creation of a P418 index" .
-	// 	<https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://provisium.org/id/opencoredataorg/pagecollection> <https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://www.w3.org/2004/02/skos/core#related> <https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://opencoredata.org/sitemap.xml> .
-
-	// <https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://provisium.org/id/opencoredataorg/pagecollection> <https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#http://www.w3.org/2004/02/skos/core#related> <https://provisium.org/id/43989f37-8504-46af-a340-16641c9b5b0f#opencore> .
 
 	if shortname != "" {
 		g.Add(rdf2go.NewTriple(rdf2go.NewResource(s), rdf2go.NewResource("http://www.w3.org/2004/02/skos/core#related"), rdf2go.NewLiteral(shortname)))
@@ -114,7 +125,7 @@ func orgTriples(bname, u string, cs utils.Config) string {
 	return g.String()
 }
 
-func baseTriples(u string, cs utils.Config) string {
+func baseTriples(u string, v1 *viper.Viper) string {
 	g := rdf2go.NewGraph("")
 
 	// Bundel and entity

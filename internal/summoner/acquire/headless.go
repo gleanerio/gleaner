@@ -9,7 +9,6 @@ import (
 	"sync"
 
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
-	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/chromedp/chromedp"
 	minio "github.com/minio/minio-go"
 )
@@ -17,7 +16,7 @@ import (
 // Headless gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.Config) {
+func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet) {
 	// err := buildBuckets(minioClient, m) // TODO needs error obviously
 	// if err != nil {
 	// 	log.Printf("Gleaner bucket report:  %s", err)
@@ -32,16 +31,16 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
-	fmt.Println("headless before loops")
-	fmt.Println(m)
+	log.Println("headless before loops")
+	log.Println(m)
 
 	for k := range m {
-		fmt.Printf("Act on URL's for %s", k)
+		log.Printf("Act on URL's for %s", k)
 		for i := range m[k].URL {
 
 			wg.Add(1)
 			urlloc := m[k].URL[i].Loc
-			fmt.Println(urlloc)
+			log.Println(urlloc)
 
 			go func(i int, k string) {
 				semaphoreChan <- struct{}{}
@@ -82,7 +81,7 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet, cs utils.
 
 				wg.Done() // tell the wait group that we be done
 
-				fmt.Printf("#%d got %s ", i, urlloc) // print an message containing the index (won't keep order)
+				log.Printf("#%d got %s ", i, urlloc) // print an message containing the index (won't keep order)
 				<-semaphoreChan                      // clear a spot in the semaphore channel
 			}(i, k)
 

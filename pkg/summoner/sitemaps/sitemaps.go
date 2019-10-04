@@ -1,17 +1,10 @@
 package sitemaps
 
 import (
-	"bufio"
-	"bytes"
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
-
-	"earthcube.org/Project418/gleaner/pkg/utils"
-	minio "github.com/minio/minio-go"
 )
 
 // URLSet takes a URL to a sitemap and parses out the content.
@@ -40,32 +33,29 @@ type SiteMapEntry struct {
 	Lastmod string `xml:"lastmod"`
 }
 
-// IngestSitemapXML validates the XMl format of the sitemap and
+// IngestSitemap validates the XMl format of the sitemap and
 // reads each entry into a struct array that is sent back
-func IngestSitemapXML(url string, cs utils.Config) URLSet {
-	// First check our URL..   if it is S3, call our S3 reader function
+func IngestSitemap(url string) URLSet {
+	// get the body then check the type
+	// if text, use the text code else..  use the XML code (do a case switch here perhaps?)
+
+	bb, err := getBody(url)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// I would like to be able to use this to parse between XML and Text versions of the sitemap
+	ct := http.DetectContentType(bb)
+	log.Printf("Content type of sitemap reference is %s\n", ct)
+
 	var us URLSet
-
-	if strings.HasPrefix(url, "s3://") {
-		bodyBytes, err := getS3Body(url, cs) // TODO handle this error
-		if err == nil {
-			xml.Unmarshal(bodyBytes, &us)
-		}
-		return us
-	}
-
-	b, s := isSiteMapIndex(url)
-
-	// b == false means our URL is not a sitemap, try it now as a URL node set
-	if b == false {
-		bodyBytes, err := getBody(url) // TODO handle this error
-		if err == nil {
-			xml.Unmarshal(bodyBytes, &us)
-		}
-	}
-
 	una := []URLNode{}
-	if b == true {
+
+	b, s := isSiteMapIndex(bb)
+
+	if b == false { // not a sitemap
+		xml.Unmarshal(bb, &us)
+	} else { // is a sitemap
 		for item := range s {
 			var sm URLSet
 			bodyBytes, err := getBody(s[item]) // TODO handle this error
@@ -85,34 +75,14 @@ func IngestSitemapXML(url string, cs utils.Config) URLSet {
 	return us
 }
 
-func getS3Body(url string, cs utils.Config) ([]byte, error) {
-	// split s3://bucket/object
-
-	mc := utils.MinioConnection(cs)
-
-	bucket := "gleaner"
-	object := "cdfsitemap.xml"
-
-	fo, err := mc.GetObject(bucket, object, minio.GetObjectOptions{})
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(fo)
-
-	return buf.Bytes(), err
-}
-
-func isSiteMapIndex(url string) (bool, []string) {
-	bodyBytes, _ := getBody(url)
-
+func isSiteMapIndex(bodyBytes []byte) (bool, []string) {
 	var smi SmIndex
 	err := xml.Unmarshal(bodyBytes, &smi)
 	if err != nil {
 		return false, nil
 	}
 
+	// We seem to be a sitemap, so let's try and parse it..
 	var sma []string
 	for k := range smi.SiteMap {
 		sma = append(sma, smi.SiteMap[k].Loc)
@@ -121,24 +91,23 @@ func isSiteMapIndex(url string) (bool, []string) {
 	return true, sma
 }
 
-// IngestSiteMapText takes the URL and pulls the the URL from it
-// using concept of type sitemap
-func IngestSiteMapText(url string, cs utils.Config) URLSet {
-	bodyBytes, _ := getBody(url) // TODO handle this error
-	var sitemap URLSet
+// // IngestSiteMapText takes the URL and pulls the the URL from it
+// func IngestSiteMapText(url string, cs utils.Config) URLSet {
+// 	bodyBytes, _ := getBody(url) // TODO handle this error
+// 	var us URLSet
 
-	sc := bufio.NewScanner(strings.NewReader(string(bodyBytes)))
-	for sc.Scan() {
-		u := sc.Text()
-		un := URLNode{Loc: u}
-		sitemap.URL = append(sitemap.URL, un)
-	}
-	if err := sc.Err(); err != nil {
-		log.Fatalf("scan file error: %v", err)
-	}
+// 	sc := bufio.NewScanner(strings.NewReader(string(bodyBytes)))
+// 	for sc.Scan() {
+// 		u := sc.Text()
+// 		un := URLNode{Loc: u}
+// 		us.URL = append(us.URL, un)
+// 	}
+// 	if err := sc.Err(); err != nil {
+// 		log.Fatalf("scan file error: %v", err)
+// 	}
 
-	return sitemap
-}
+// 	return us
+// }
 
 func getBody(url string) ([]byte, error) {
 	var client http.Client
@@ -157,7 +126,6 @@ func getBody(url string) ([]byte, error) {
 	}
 	defer resp.Body.Close()
 
-	// var bodyString string
 	var bodyBytes []byte
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err = ioutil.ReadAll(resp.Body)

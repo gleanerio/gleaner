@@ -235,6 +235,14 @@
   version = "v1.3.1-etcd.8"
 
 [[projects]]
+  digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
+  name = "github.com/fsnotify/fsnotify"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
+  version = "v1.4.7"
+
+[[projects]]
   branch = "master"
   digest = "1:867c8c56a9cb6e342a1eafa041f8f8bad9cdbf1f62168d8794fbcf0ecb115b9d"
   name = "github.com/glycerine/go-unsnap-stream"
@@ -324,6 +332,25 @@
   version = "0.0.1"
 
 [[projects]]
+  digest = "1:c0d19ab64b32ce9fe5cf4ddceba78d5bc9807f0016db6b1183599da3dcc24d10"
+  name = "github.com/hashicorp/hcl"
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/printer",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token",
+  ]
+  pruneopts = "UT"
+  revision = "8cb6e5b959231cc1119e43259c4a608f9c51a241"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:65a81e8d71c1aa40b12525cc532a7fb6199366ae861f425169c16c4c3cb2ca8a"
   name = "github.com/kazarena/json-gold"
   packages = ["ld"]
@@ -362,6 +389,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "4f5db6791326b8962ede4edbba693edcf20fd1ad"
+
+[[projects]]
+  digest = "1:5a0ef768465592efca0412f7e838cdc0826712f8447e70e6ccc52eb441e9ab13"
+  name = "github.com/magiconair/properties"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "de8848e004dd33dc07a2947b3d76f618a7fc7ef1"
+  version = "v1.8.1"
 
 [[projects]]
   branch = "master"
@@ -416,6 +451,14 @@
   version = "v1.1.0"
 
 [[projects]]
+  digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
+  name = "github.com/mitchellh/mapstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
+  version = "v1.1.2"
+
+[[projects]]
   branch = "master"
   digest = "1:c22fdadfe2de0e1df75987cac34f1c721157dc24f180c76b4ef66a3c9637a799"
   name = "github.com/mschoch/smat"
@@ -430,6 +473,14 @@
   pruneopts = "UT"
   revision = "a5c451da2d9c67c590ae6be92565b67698286a1a"
   version = "v1.4"
+
+[[projects]]
+  digest = "1:93131d8002d7025da13582877c32d1fc302486775a1b06f62241741006428c5e"
+  name = "github.com/pelletier/go-toml"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "728039f679cbcd4f6a54e080d2219a4c4928c546"
+  version = "v1.4.0"
 
 [[projects]]
   digest = "1:5e73b34a27d827212102605789de00bd411b2e434812133c83935fe9897c75e1"
@@ -483,12 +534,63 @@
   version = "v1.4.2"
 
 [[projects]]
+  digest = "1:bb495ec276ab82d3dd08504bbc0594a65de8c3b22c6f2aaa92d05b73fbf3a82e"
+  name = "github.com/spf13/afero"
+  packages = [
+    ".",
+    "mem",
+  ]
+  pruneopts = "UT"
+  revision = "588a75ec4f32903aa5e39a2619ba6a4631e28424"
+  version = "v1.2.2"
+
+[[projects]]
+  digest = "1:08d65904057412fc0270fc4812a1c90c594186819243160dc779a402d4b6d0bc"
+  name = "github.com/spf13/cast"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "8c9545af88b134710ab1cd196795e7f2388358d7"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:1b753ec16506f5864d26a28b43703c58831255059644351bbcb019b843950900"
+  name = "github.com/spf13/jwalterweatherman"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "94f6ae3ed3bceceafa716478c5fbf8d29ca601a1"
+  version = "v1.1.0"
+
+[[projects]]
+  digest = "1:524b71991fc7d9246cc7dc2d9e0886ccb97648091c63e30eef619e6862c955dd"
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab"
+  version = "v1.0.5"
+
+[[projects]]
+  branch = "master"
+  digest = "1:b128b147709e8aab7d0b2a0e5468931cff30809aa262e0e436e021758ae62f3a"
+  name = "github.com/spf13/viper"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "71509d28871fd3eeda5f56fb097e65d318c578d6"
+
+[[projects]]
   branch = "master"
   digest = "1:970bd01f655c6e4cf6d335aadded53eca531d3d856f7de61eebe6fc253552b49"
   name = "github.com/steveyen/gtreap"
   packages = ["."]
   pruneopts = "UT"
   revision = "0abe01ef9be25c4aedc174758ec2d917314d6d70"
+
+[[projects]]
+  digest = "1:f4b32291cad5efac2bfdba89ccde6aa04618b62ce06c1a571da2dc4f3f2677fb"
+  name = "github.com/subosito/gotenv"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2ef7124db659d49edac6aa459693a15ae36c671a"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:46aea6ffe39c3d95c13640c2515236ed3c5cdffc3c78c6c0ed4edec2caf7a0dc"
@@ -711,6 +813,7 @@
     "github.com/paulmach/go.geojson",
     "github.com/piprate/json-gold/ld",
     "github.com/rs/xid",
+    "github.com/spf13/viper",
     "github.com/tidwall/gjson",
     "github.com/twinj/uuid",
     "github.com/xiaost/jsonport",
