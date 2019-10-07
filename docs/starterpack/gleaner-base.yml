@@ -1,15 +1,6 @@
 version: '3'
 
 services:
-  tika:
-    image: logicalspark/docker-tikaserver
-    ports:
-      - 9998:9998
-    environment:
-      - SERVICE_PORTS=9998
-    networks:
-      - web
-
   minio:
     image: minio/minio:latest
     ports:
@@ -27,15 +18,12 @@ services:
       - web
     command: ["server", "/data"]
 
-  shacl:
-    image: fcore/shaclservice:0.1.4
-    labels:
-      - "traefik.backend=shacl"
-      - "traefik.port=7000"
+  tangram:
+    image: fils/p418tangram:0.1.15
     ports:
-      - 7000:7000
+       - "8080:8080"
     networks:
-      - web
+       - web
 
   headless:
     image: chromedp/headless-shell:latest
@@ -59,19 +47,6 @@ services:
        - $DATAVOL/jena/data:/data
     networks:
        - web
-
-  tile38:
-    image: tile38/tile38
-    ports:
-     - 9851:9851
-    env_file:
-     - ./prod.env
-    environment:
-     - SERVICE_PORTS=9851
-    volumes:
-      - "${DATAVOL}/spatialindex:/data"
-    networks:
-      - web
 
 networks:
   web:

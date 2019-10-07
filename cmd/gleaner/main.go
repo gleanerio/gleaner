@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime/trace"
 
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
@@ -36,10 +37,25 @@ func main() {
 	log.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
 
-	// Profiling lines (comment out for release builds)
+	// Profiling code (comment out for release builds)
 	// defer profile.Start().Stop()                    // cpu
 	// defer profile.Start(profile.MemProfile).Stop()  // memory
 
+	// Tracing code
+	// use with go tool trace
+	f, err := os.Create("trace.out")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	err = trace.Start(f)
+	if err != nil {
+		panic(err)
+	}
+	defer trace.Stop()
+
+	// Load the config file and set some defaults (config overrides)
 	v1, err := readConfig(viperVal, map[string]interface{}{
 		"sqlfile": "",
 		"bucket":  "",
