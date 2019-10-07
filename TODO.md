@@ -1,5 +1,15 @@
 # TODO for Release One
 
+
+## Resolve context caching
+
+```go
+l.PreloadWithMapping(map[string]string{
+    "http://www.example.com/context.json": "/home/me/cache/example_com_context.json",
+})
+``` 
+
+
 ## Near Term
 
 [] Fix the process delete process in summoner with bucket prefix now in use

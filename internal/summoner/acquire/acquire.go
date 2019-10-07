@@ -16,7 +16,6 @@ import (
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gosuri/uiprogress"
-	"github.com/kazarena/json-gold/ld"
 	"github.com/minio/minio-go"
 )
 
@@ -30,7 +29,7 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet) {
 		go getDomain(mc, m, k, &wg)
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 	uiprogress.Stop()
 }
@@ -141,14 +140,17 @@ func getDomain(mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *syn
 
 			bar.Incr()
 
-			// logger.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
-			lwg.Done() // tell the wait group that we be done
+			logger.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
+			lwg.Done()                                     // tell the wait group that we be done
 
 			<-semaphoreChan // clear a spot in the semaphore channel
 		}(i, k)
 
 	}
 
+	lwg.Wait()
+
+	// TODO write this to minio in the run ID bucket
 	// return the logger buffer or write to a mutex locked bytes buffer
 	f, err := os.Create(fmt.Sprintf("./%s.log", k))
 	if err != nil {
@@ -162,8 +164,6 @@ func getDomain(mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *syn
 	}
 	w.Flush()
 
-	lwg.Wait()
-
 }
 
 func rightPad2Len(s string, padStr string, overallLen int) string {
@@ -174,9 +174,12 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 }
 
 func isValid(jsonld string) (string, error) {
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
-	options.Format = "application/nquads"
+
+	proc, options := common.JLDProc()
+
+	// proc := ld.NewJsonLdProcessor()
+	// options := ld.NewJsonLdOptions("")
+	// options.Format = "application/nquads"
 
 	var myInterface interface{}
 	action := ""

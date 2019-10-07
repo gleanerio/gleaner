@@ -18,9 +18,10 @@ func GetSHA(s string) string {
 
 // GetNormSHA returns the sha hash for a normalized JSON-LD data graph
 func GetNormSHA(jsonld string) (string, error) {
+	proc, options := JLDProc()
 
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
+	// proc := ld.NewJsonLdProcessor()
+	// options := ld.NewJsonLdOptions("")
 	// add the processing mode explicitly if you need JSON-LD 1.1 features
 	options.ProcessingMode = ld.JsonLd_1_1
 	options.Format = "application/n-quads"

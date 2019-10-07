@@ -13,7 +13,6 @@ import (
 	"github.com/blevesearch/bleve"
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
-	"github.com/piprate/json-gold/ld"
 	"github.com/rs/xid"
 )
 
@@ -39,7 +38,7 @@ func Jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *common.Buffe
 	return len //  we will return the bytes count we write...
 }
 
-// TODO look for <s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Dataset> .
+// LPtriples TODO look for <s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Dataset> .
 func LPtriples(t, urlval string) string {
 	scanner := bufio.NewScanner(strings.NewReader(t))
 
@@ -71,9 +70,17 @@ func appendIfMissing(slice []string, i string) []string {
 
 // JSONLDToNQ converts JSON-LD documents to NQuads
 func JSONLDToNQ(jsonld, urlval string) (string, error) {
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
-	options.Format = "application/nquads"
+
+	// proc := ld.NewJsonLdProcessor()
+	// options := ld.NewJsonLdOptions("")
+	// options.Format = "application/nquads"
+
+	// // testing caching
+	// cdl := ld.NewCachingDocumentLoader(options.DocumentLoader)
+	// cdl.PreloadWithMapping(map[string]string{"http://schema.org": "./doc/jsonldcontext.json"})
+	// options.DocumentLoader = cdl
+
+	proc, options := common.JLDProc()
 
 	var myInterface interface{}
 	err := json.Unmarshal([]byte(jsonld), &myInterface)

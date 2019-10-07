@@ -18,15 +18,12 @@ services:
       - web
     command: ["server", "/data"]
 
-  shacl:
-    image: fcore/shaclservice:0.1.4
-    labels:
-      - "traefik.backend=shacl"
-      - "traefik.port=7000"
+  tangram:
+    image: fils/p418tangram:0.1.15
     ports:
-      - 7000:7000
+       - "8080:8080"
     networks:
-      - web
+       - web
 
   headless:
     image: chromedp/headless-shell:latest

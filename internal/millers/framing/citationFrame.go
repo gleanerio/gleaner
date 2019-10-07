@@ -3,8 +3,6 @@ package framing
 import (
 	"encoding/json"
 	"log"
-
-	"github.com/kazarena/json-gold/ld"
 )
 
 type CitationFrameRes struct {
@@ -16,8 +14,10 @@ type CitationFrameRes struct {
 }
 
 func CitationFrame(jsonld string) []CitationFrameRes {
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
+	proc, options := common.JLDProc()
+
+	// proc := ld.NewJsonLdProcessor()
+	// options := ld.NewJsonLdOptions("")
 
 	frame := map[string]interface{}{
 		"@context": "http://schema.org/",

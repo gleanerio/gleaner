@@ -51,7 +51,7 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 	}
 	wg.Wait()
 
-	log.Println(gb.Len())
+	// log.Println(gb.Len())
 
 	// TODO   gb is type turtle here..   need to convert to ntriples to store
 	// nt, err := rdf2rdf(gb.String())
@@ -68,6 +68,8 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 	}
 }
 
+// Call the SHACL service container (or cloud instance)
+// TODO, the end point for this service needs to be in the config file!
 func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	// datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
 	// if err != nil {

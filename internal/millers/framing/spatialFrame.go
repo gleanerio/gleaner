@@ -5,7 +5,6 @@ import (
 	"log"
 	"reflect"
 
-	ld "github.com/kazarena/json-gold/ld"
 	jql "github.com/xiaost/jsonport"
 )
 
@@ -18,7 +17,7 @@ import (
 // }
 
 type Geo struct {
-  ID        string `json:"id"`
+	ID        string `json:"id"`
 	Type      string `json:"type"`
 	Latitude  string `json:"latitude"`
 	Longitude string `json:"longitude"`
@@ -36,36 +35,38 @@ type SubjectOf struct {
 }
 
 type SpatialCoverage struct {
-	ID        string `json:"id"`
-	Type      string `json:"type"`
-	Geos      []Geo `json:"-"`
+	ID        string      `json:"id"`
+	Type      string      `json:"type"`
+	Geos      []Geo       `json:"-"`
 	SubjectOf []SubjectOf `json:"subjectOf"`
 }
 
 type SpatialFrameRes struct {
-	ID                  string `json:"id"`
-	Type                string `json:"type"`
-	URL                 string `json:"url"`
-	SpatialCoverages    []SpatialCoverage `json:"-"`
+	ID               string            `json:"id"`
+	Type             string            `json:"type"`
+	URL              string            `json:"url"`
+	SpatialCoverages []SpatialCoverage `json:"-"`
 }
 
 func SpatialFrame(jsonld string) []SpatialFrameRes {
-	proc := ld.NewJsonLdProcessor()
-	options := ld.NewJsonLdOptions("")
+	proc, options := common.JLDProc()
+
+	// proc := ld.NewJsonLdProcessor()
+	// options := ld.NewJsonLdOptions("")
 
 	frame := map[string]interface{}{
-		"@context":        "http://schema.org/",
-		"@explicit":       true,
-		"@type":           "Dataset",
-		"@id":             "",
+		"@context":  "http://schema.org/",
+		"@explicit": true,
+		"@type":     "Dataset",
+		"@id":       "",
 		"spatialCoverage": map[string]interface{}{
-			"@type":           "Place",
-			"geo":             map[string]interface{}{},
-			"subjectOf":       map[string]interface{}{
-				"@type":           "CreativeWork",
-				"@explicit":       true,
-				"fileFormat":      "",
-				"text":            "",
+			"@type": "Place",
+			"geo":   map[string]interface{}{},
+			"subjectOf": map[string]interface{}{
+				"@type":      "CreativeWork",
+				"@explicit":  true,
+				"fileFormat": "",
+				"text":       "",
 			},
 		},
 	}
@@ -250,4 +251,3 @@ func parseSubjectOf(so jql.Json) (SubjectOf, error) {
 
 	return subjectOf, nil
 }
-
