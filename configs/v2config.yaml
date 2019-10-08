@@ -7,7 +7,7 @@ minio:
   ssl: false
 gleaner:
   runid: t8  # this will be the bucket the output is placed in...
-  summon: true # do we want to visit the web sites and pull down the files
+  summon: false # do we want to visit the web sites and pull down the files
   mill: true
 context:
   cache: true

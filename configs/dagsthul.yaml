@@ -9,12 +9,26 @@ gleaner:
   runid: codata1  # this will be the bucket the output is placed in...
   summon: false # do we want to visit the web sites and pull down the files
   mill: true
+context:
+  cache: true
+contextmaps:
+- prefix: "https://schema.org/"
+  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
+- prefix: "http://schema.org/"
+  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
+- prefix: "https://schema.org"
+  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
+- prefix: "http://schema.org"
+  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"  
 summoner:
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
-  graph: true
-  shacl: false
+  graph: false
+  shacl: true
   prov: false
+shapefiles:
+ - ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
+ - ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl  
 sources:
  - name: unicef
    logo: http://geodex.org/images/logos/EarthCubeLogo.png

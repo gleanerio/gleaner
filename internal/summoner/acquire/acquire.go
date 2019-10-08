@@ -175,12 +175,7 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 }
 
 func isValid(v1 *viper.Viper, jsonld string) (string, error) {
-
 	proc, options := common.JLDProc(v1)
-
-	// proc := ld.NewJsonLdProcessor()
-	// options := ld.NewJsonLdOptions("")
-	// options.Format = "application/nquads"
 
 	var myInterface interface{}
 	action := ""

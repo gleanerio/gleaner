@@ -8,6 +8,8 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
 	"sync"
 
@@ -19,13 +21,70 @@ import (
 	"github.com/spf13/viper"
 )
 
+// ShapeRef holds http:// or file:// URIs for shape file locations
+type ShapeRef struct {
+	Ref string
+}
+
 // SHACLMillObjects test a concurrent version of calling mock
 func SHACLMillObjects(mc *minio.Client, bucketname string, v1 *viper.Viper) {
 	entries := common.GetMillObjects(mc, bucketname)
 	multiCall(entries, bucketname, mc, v1)
+
+	// load the SHACL files listed in the config file
+	loadShapeFiles(mc, v1)
+}
+
+func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
+
+	var s []ShapeRef
+	err := v1.UnmarshalKey("shapefiles", &s)
+	if err != nil {
+		log.Println(err)
+	}
+
+	for x := range s {
+		if isURL(s[x].Ref) {
+			log.Println("Load SHACL file")
+			b, err := getBody(s[x].Ref)
+			if err != nil {
+				log.Println("Error getting SHACL file body")
+				log.Println(err)
+			}
+
+			as := strings.Split(s[x].Ref, "/")
+
+			// TODO  caution..  we need to note the RDF encoding and perhaps pass it along or verify it
+			// is what we should be using
+			_, err = graph.LoadToMinio(string(b), "gleaner", as[len(as)-1], mc)
+			if err != nil {
+				log.Println(err)
+			}
+			log.Printf("Loaded SHACL file: %s \n", s[x].Ref)
+		} else { // see if it's a file
+			log.Println("Load file...")
+		}
+	}
+
+	return nil
+}
+
+func isURL(str string) bool {
+	u, err := url.Parse(str)
+	return err == nil && u.Scheme != "" && u.Host != ""
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.Viper) {
+	mcfg := v1.GetStringMapString("gleaner")
+
 	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control (1 == single thread)
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
@@ -60,16 +119,13 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 	// 	}
 
 	// write to S3
-	mcfg := v1.GetStringMapString("gleaner")
-
 	_, err := graph.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", mcfg["runid"], bucketname), mc)
 	if err != nil {
 		log.Println(err)
 	}
 }
 
-// Call the SHACL service container (or cloud instance)
-// TODO, the end point for this service needs to be in the config file!
+// Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
 func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	// datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
 	// if err != nil {
@@ -78,7 +134,7 @@ func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	// 	return 0
 	// }
 
-	url := "http://localhost:8080/uploader"
+	url := "http://localhost:8080/uploader" // TODO this should be set in the config file
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	writer.WriteField("datagraph", urlval)
@@ -155,4 +211,35 @@ func rdf2rdf(r string) (string, error) {
 	enc.Close()
 
 	return buf.String(), err
+}
+
+// this same function is in pkg/summoner  resolve duplication here and
+// potentially elsewhere
+func getBody(url string) ([]byte, error) {
+	var client http.Client
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		log.Print(err) // not even being able to make a req instance..  might be a fatal thing?
+		return nil, err
+	}
+
+	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("Error reading sitemap: %s", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var bodyBytes []byte
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, err = ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Print(err)
+			return nil, err
+		}
+	}
+
+	return bodyBytes, err
 }
