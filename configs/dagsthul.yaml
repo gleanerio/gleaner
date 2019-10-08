@@ -1,0 +1,38 @@
+---
+minio:
+  address: localhost
+  port: 9000
+  accesskey: AKIAIOSFODNN7EXAMPLE
+  secretkey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  ssl: false
+gleaner:
+  runid: codata1  # this will be the bucket the output is placed in...
+  summon: false # do we want to visit the web sites and pull down the files
+  mill: true
+summoner:
+  mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
+millers:
+  graph: true
+  shacl: false
+  prov: false
+sources:
+ - name: unicef
+   logo: http://geodex.org/images/logos/EarthCubeLogo.png
+   url:  https://data.unicef.org/sitemap_index.xml
+   headless: false
+ - name: knoema
+   logo: http://geodex.org/images/logos/EarthCubeLogo.png
+   url: https://knoema.com/sitemap.xml
+   headless: false
+ - name: worldbank
+   logo: http://geodex.org/images/logos/EarthCubeLogo.png
+   url: https://datacatalog.worldbank.org/sitemap.xml
+   headless: false
+ - name: humdata
+   logo: http://geodex.org/images/logos/EarthCubeLogo.png
+   url: https://data.humdata.org/sitemap.xml
+   headless: false
+
+
+
+

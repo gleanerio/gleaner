@@ -1,8 +1,6 @@
 package common
 
 import (
-	"net/http"
-
 	"github.com/piprate/json-gold/ld"
 )
 
@@ -12,17 +10,18 @@ func JLDProc() (*ld.JsonLdProcessor, *ld.JsonLdOptions) {
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
 
-	client := &http.Client{}
-	nl := ld.NewDefaultDocumentLoader(client)
+	// Make a caching client
+	// client := &http.Client{}
+	// nl := ld.NewDefaultDocumentLoader(client)
 
-	// testing caching
-	cdl := ld.NewCachingDocumentLoader(nl)
-	cdl.PreloadWithMapping(map[string]string{"https://schema.org/": "/home/fils/Project418/gleaner/docs/jsonldcontext.json",
-		"http://schema.org/": "/home/fils/Project418/gleaner/docs/jsonldcontext.json",
-		"https://schema.org": "/home/fils/Project418/gleaner/docs/jsonldcontext.json",
-		"http://schema.org":  "/home/fils/Project418/gleaner/docs/jsonldcontext.json"})
+	// cdl := ld.NewCachingDocumentLoader(nl)
+	// cdl.PreloadWithMapping(map[string]string{"https://schema.org/": "/home/fils/Project418/gleaner/docs/jsonldcontext.json",
+	// 	"http://schema.org/": "/home/fils/Project418/gleaner/docs/jsonldcontext.json",
+	// 	"https://schema.org": "/home/fils/Project418/gleaner/docs/jsonldcontext.json",
+	// 	"http://schema.org":  "/home/fils/Project418/gleaner/docs/jsonldcontext.json"})
+	// options.DocumentLoader = cdl
 
-	options.DocumentLoader = cdl
+	// Set a default format..  let this be set later...
 	options.Format = "application/nquads"
 
 	return proc, options
