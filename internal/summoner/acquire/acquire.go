@@ -17,16 +17,17 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gosuri/uiprogress"
 	"github.com/minio/minio-go"
+	"github.com/spf13/viper"
 )
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet) {
 	uiprogress.Start()
 	wg := sync.WaitGroup{}
 
 	for k := range m {
 		//	log.Printf("Queuing URLs for %s \n", k)
-		go getDomain(mc, m, k, &wg)
+		go getDomain(v1, mc, m, k, &wg)
 	}
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
@@ -34,7 +35,7 @@ func ResRetrieve(mc *minio.Client, m map[string]sitemaps.URLSet) {
 	uiprogress.Stop()
 }
 
-func getDomain(mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *sync.WaitGroup) {
+func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *sync.WaitGroup) {
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
@@ -106,7 +107,7 @@ func getDomain(mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *syn
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
 					if val == "application/ld+json" {
-						action, err := isValid(s.Text())
+						action, err := isValid(v1, s.Text())
 						if err != nil {
 							logger.Printf("ERROR: URL: %s Action: %s  Error: %s", urlloc, action, err)
 						}
@@ -116,7 +117,7 @@ func getDomain(mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *syn
 			}
 
 			if jsonld != "" { // traps out the root domain...   should do this different
-				sha, err := common.GetNormSHA(jsonld) // Moved to the normalized sha value
+				sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 				if err != nil {
 					logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 				}
@@ -173,9 +174,9 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	return retStr[:overallLen]
 }
 
-func isValid(jsonld string) (string, error) {
+func isValid(v1 *viper.Viper, jsonld string) (string, error) {
 
-	proc, options := common.JLDProc()
+	proc, options := common.JLDProc(v1)
 
 	// proc := ld.NewJsonLdProcessor()
 	// options := ld.NewJsonLdOptions("")

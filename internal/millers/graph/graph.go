@@ -33,7 +33,7 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 		log.Printf("About to run #%d in a goroutine\n", k)
 		go func(k int) {
 			semaphoreChan <- struct{}{}
-			status := Jsl2graph(e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
+			status := Jsl2graph(v1, e[k].Bucketname, e[k].Key, e[k].Urlval, e[k].Sha1val, e[k].Jld, &gb)
 
 			wg.Done() // tell the wait group that we be done!
 			log.Printf("#%d wrote %d bytes", k, status)

@@ -19,7 +19,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	hru := acquire.ResourceURLs(v1, true)
 
 	if len(ru) > 0 {
-		acquire.ResRetrieve(mc, ru)
+		acquire.ResRetrieve(v1, mc, ru)
 	}
 
 	if len(hru) > 0 {

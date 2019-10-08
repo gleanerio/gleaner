@@ -14,13 +14,15 @@ import (
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"
 	"github.com/rs/xid"
+	"github.com/spf13/viper"
 )
 
+// RunDir TODO:  is this used at all?
 var RunDir string // could inlcude an init() func to check this is set and default or error
 
 // Jsl2graph is a simple function to do stuff  :)
-func Jsl2graph(bucketname, key, urlval, sha1val, jsonld string, gb *common.Buffer) int {
-	nq, err := JSONLDToNQ(jsonld, urlval) // TODO replace with NQ from isValid function..  saving time..
+func Jsl2graph(v1 *viper.Viper, bucketname, key, urlval, sha1val, jsonld string, gb *common.Buffer) int {
+	nq, err := JSONLDToNQ(v1, jsonld, urlval) // TODO replace with NQ from isValid function..  saving time..
 	if err != nil {
 		log.Printf("error in the jsonld write... %v\n", err)
 	}
@@ -69,7 +71,7 @@ func appendIfMissing(slice []string, i string) []string {
 }
 
 // JSONLDToNQ converts JSON-LD documents to NQuads
-func JSONLDToNQ(jsonld, urlval string) (string, error) {
+func JSONLDToNQ(v1 *viper.Viper, jsonld, urlval string) (string, error) {
 
 	// proc := ld.NewJsonLdProcessor()
 	// options := ld.NewJsonLdOptions("")
@@ -80,7 +82,7 @@ func JSONLDToNQ(jsonld, urlval string) (string, error) {
 	// cdl.PreloadWithMapping(map[string]string{"http://schema.org": "./doc/jsonldcontext.json"})
 	// options.DocumentLoader = cdl
 
-	proc, options := common.JLDProc()
+	proc, options := common.JLDProc(v1)
 
 	var myInterface interface{}
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
@@ -99,12 +101,12 @@ func JSONLDToNQ(jsonld, urlval string) (string, error) {
 }
 
 // JSONLDToTTL Relates the SHACL support..  (REMOVE THIS...   put JSON-LD -> turtle in the java service)
-func JSONLDToTTL(jsonld, urlval string) (string, error) {
+func JSONLDToTTL(v1 *viper.Viper, jsonld, urlval string) (string, error) {
 	// Sad that rdf2go has a bug in jsonld around blank nodes...
 	// I can convert to NQ above..   I guess use knakk to then convert to turtle  (since json-ld gold
 	// also does not support converting to TTL.
 
-	nq, err := JSONLDToNQ(jsonld, urlval)
+	nq, err := JSONLDToNQ(v1, jsonld, urlval)
 	if err != nil {
 		log.Println(err)
 		return "", err

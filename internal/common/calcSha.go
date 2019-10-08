@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/piprate/json-gold/ld"
+	"github.com/spf13/viper"
 )
 
 // GetSHA returns the sha with any string s
@@ -17,8 +18,8 @@ func GetSHA(s string) string {
 }
 
 // GetNormSHA returns the sha hash for a normalized JSON-LD data graph
-func GetNormSHA(jsonld string) (string, error) {
-	proc, options := JLDProc()
+func GetNormSHA(jsonld string, v1 *viper.Viper) (string, error) {
+	proc, options := JLDProc(v1)
 
 	// proc := ld.NewJsonLdProcessor()
 	// options := ld.NewJsonLdOptions("")

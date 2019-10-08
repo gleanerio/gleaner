@@ -79,7 +79,7 @@ func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup
 
 		cb := new(common.Buffer) // TODO..   really just a bytes buffer should be used
 
-		_ = Jsl2graph(bucketname, object.Key, urlval, sha1val, jld, cb)
+		_ = Jsl2graph(v1, bucketname, object.Key, urlval, sha1val, jld, cb)
 
 		good, bad, err := graphSplit(cb, bucketname)
 
