@@ -9,7 +9,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 
@@ -53,7 +52,6 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 			}
 
 			as := strings.Split(s[x].Ref, "/")
-
 			// TODO  caution..  we need to note the RDF encoding and perhaps pass it along or verify it
 			// is what we should be using
 			_, err = graph.LoadToMinio(string(b), "gleaner", as[len(as)-1], mc)
@@ -63,6 +61,19 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 			log.Printf("Loaded SHACL file: %s \n", s[x].Ref)
 		} else { // see if it's a file
 			log.Println("Load file...")
+
+			dat, err := ioutil.ReadFile(s[x].Ref)
+			if err != nil {
+				log.Printf("Error loading file %s: %s\n", s[x].Ref, err)
+			}
+
+			as := strings.Split(s[x].Ref, "/")
+			_, err = graph.LoadToMinio(string(dat), "gleaner", as[len(as)-1], mc)
+			if err != nil {
+				log.Println(err)
+			}
+			log.Printf("Loaded SHACL file: %s \n", s[x].Ref)
+
 		}
 	}
 
@@ -72,14 +83,6 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 func isURL(str string) bool {
 	u, err := url.Parse(str)
 	return err == nil && u.Scheme != "" && u.Host != ""
-}
-
-func fileExists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
 }
 
 func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.Viper) {
