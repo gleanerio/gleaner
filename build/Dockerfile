@@ -6,11 +6,13 @@ FROM alpine
 #FROM scratch
 
 # Add in the static elements (could also mount these from local filesystem)
-ADD ./cmd/gleaner/gleaner / 
+RUN mkdir /gleaner
+RUN mkdir /gleaner/config
+ADD ./cmd/gleaner/gleaner /gleaner/
 
 # ADD ../web/static  /static   # Replace with -v mounting the /web/static directory
 # static is in the .dockerignore..  so an emptry dir is made unless static is removed
 # from the ignore file... we mount the volume via compose from the local FS
 
 # Add our binary
-ENTRYPOINT ["/gleaner"]
+ENTRYPOINT ["/gleaner/gleaner"]

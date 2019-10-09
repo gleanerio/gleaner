@@ -15,7 +15,7 @@ import (
 	"earthcube.org/Project418/gleaner/internal/summoner"
 )
 
-var viperVal string
+var viperVal, viperObj string
 var setupVal bool
 
 func init() {
@@ -30,6 +30,7 @@ func init() {
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
+	flag.StringVar(&viperObj, "cfgo", "config", "Configuration object")
 }
 
 func main() {
@@ -53,21 +54,37 @@ func main() {
 	// }
 	// defer trace.Stop()
 
-	// Load the config file and set some defaults (config overrides)
-	v1, err := readConfig(viperVal, map[string]interface{}{
-		"sqlfile": "",
-		"bucket":  "",
-		"minio": map[string]string{
-			"address":   "localhost",
-			"port":      "9000",
-			"accesskey": "",
-			"secretkey": "",
-		},
-	})
-	if err != nil {
-		panic(fmt.Errorf("error when reading config: %v", err))
+	// If cfgo (config object)
+	// loadcfgo load the config object into gleaner-milled/ID
+	// runid    run the ID by looking for gleaner-milled/ID/config.yaml
+
+	var v1 *viper.Viper
+	var err error
+
+	if isFlagPassed("cfgo") {
+		log.Println("place holder for object based file loaded")
+		// this wont work unless the MC is made first...  likely
+		// move this to the web code for use there only...
 	}
 
+	// Load the config file and set some defaults (config overrides)
+	if isFlagPassed("cfg") {
+		v1, err = readConfig(viperVal, map[string]interface{}{
+			"sqlfile": "",
+			"bucket":  "",
+			"minio": map[string]string{
+				"address":   "localhost",
+				"port":      "9000",
+				"accesskey": "",
+				"secretkey": "",
+			},
+		})
+		if err != nil {
+			panic(fmt.Errorf("error when reading config: %v", err))
+		}
+	}
+
+	// Set up the minio connector
 	mc := common.MinioConnection(v1)
 
 	// If requested, set up the buckets
@@ -123,4 +140,14 @@ func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper,
 	v.AutomaticEnv()
 	err := v.ReadInConfig()
 	return v, err
+}
+
+func isFlagPassed(name string) bool {
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }

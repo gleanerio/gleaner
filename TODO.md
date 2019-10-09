@@ -1,14 +1,12 @@
 # TODO for Release One
 
+## Config workflow
 
-## Resolve context caching
+In the command line load the config object into the object store 
+and read from there.   Load it the ID in gleaner-milled
 
-```go
-l.PreloadWithMapping(map[string]string{
-    "http://www.example.com/context.json": "/home/me/cache/example_com_context.json",
-})
-``` 
-
+Then read it from there.....
+Use this approach to leverage from Docker but also for the web later...
 
 ## Near Term
 
