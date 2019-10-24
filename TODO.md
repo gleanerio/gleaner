@@ -1,5 +1,15 @@
 # TODO for Release One
 
+
+## TempFS issue
+
+I need to pass a temp FS location in the config file which will be the 
+local mount from the script.  So this is /gleaner/config
+
+However, note in the config this should be blank if you are running the 
+binary.  That will let the OS run the tmp file location which is better.  
+
+
 ## Config workflow
 
 In the command line load the config object into the object store 

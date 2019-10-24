@@ -3,6 +3,7 @@ package common
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/viper"
@@ -16,6 +17,8 @@ type ContextMapping struct {
 
 // JLDProc build the JSON-LD processer and sets the options object
 // to use in framing, processing and all JSON-LD actions
+// TODO   we create this all the time..  stupidly..  Generate these pointers
+// and pass them around, don't keep making it over and over
 func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO make a booklean
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
@@ -35,7 +38,12 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 		m := make(map[string]string)
 
 		for i := range s {
-			m[s[i].Prefix] = s[i].File
+			if fileExists(s[i].File) {
+				m[s[i].Prefix] = s[i].File
+
+			} else {
+				log.Printf("ERROR: context file location %s is wrong, this is a critical error", s[i].File)
+			}
 		}
 
 		// Read mapping from config file
@@ -48,4 +56,12 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 	options.Format = "application/nquads"
 
 	return proc, options
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

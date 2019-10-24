@@ -5,6 +5,12 @@
 FROM alpine
 #FROM scratch
 
+#RUN apk add py-urllib3 openssl certbot curl --no-cache \
+RUN apk add openssl certbot curl --no-cache \
+    --repository http://dl-3.alpinelinux.org/alpine/v3.7/community/ \
+    --repository http://dl-3.alpinelinux.org/alpine/v3.7/main/ \
+    && rm -rf /var/cache/apk/*
+
 # Add in the static elements (could also mount these from local filesystem)
 RUN mkdir /gleaner
 RUN mkdir /gleaner/config

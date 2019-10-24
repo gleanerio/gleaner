@@ -10,7 +10,7 @@ services:
     ports:
      - 9000:9000
     env_file:
-     - ./prod.env
+     - ./demo.env
     environment:
      - SERVICE_PORTS=9000
        #- MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}

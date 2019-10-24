@@ -46,7 +46,9 @@ func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup
 	bucketname := "gleaner-summoned"
 	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
 
-	db := kvclient(prefix)
+	mcfg := v1.GetStringMapString("gleaner")
+
+	db := kvclient(prefix, mcfg["tmpdir"])
 	defer db.Close()
 
 	log.Println(prefix)
@@ -62,7 +64,7 @@ func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup
 		}
 		oi, err := fo.Stat()
 		if err != nil {
-			log.Println("Issue with reading an object..  should I just fail on this to make sure?")
+			log.Println("Issue with reading an object. Should I just fail on this to make sure?")
 		}
 
 		var urlval, sha1val string
@@ -78,9 +80,7 @@ func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup
 		jld := buf.String() // Does a complete copy of the bytes in the buffer.
 
 		cb := new(common.Buffer) // TODO..   really just a bytes buffer should be used
-
 		_ = Jsl2graph(v1, bucketname, object.Key, urlval, sha1val, jld, cb)
-
 		good, bad, err := graphSplit(cb, bucketname)
 
 		db.Update(func(tx *bolt.Tx) error {
@@ -103,8 +103,6 @@ func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup
 
 		cb.Reset()
 	}
-
-	mcfg := v1.GetStringMapString("gleaner")
 
 	err := pipeCopy(mc, db, mcfg["runid"], prefix, "BadTriples")
 	if err != nil {
@@ -228,16 +226,16 @@ func makeQuad(t rdf.Triple, c string) (string, error) {
 }
 
 // pass in a bucket name here to make several of these
-// and use trhe go func pattern from the summoner
-// to do these graph builds in parrallel
-// Could 1 db but might have write collisions more then
-func kvclient(name string) *bolt.DB {
+// and use the go func pattern from the summoner
+// to do these graph builds in parallel
+// Could do 1 db but might have write collisions more then
+func kvclient(name, tmpdir string) *bolt.DB {
 
-	dir, err := ioutil.TempDir("", name) // emptry string puts tmp dir in os.TempDir
+	dir, err := ioutil.TempDir(tmpdir, name) // empty string puts tmp dir in os.TempDir for Docker this could be memory or aufs..  make option in cfg to put in mount?
 	if err != nil {
 		log.Fatal(err)
-
 	}
+	log.Printf("Created tempdir %s/%s   %s", tmpdir, name, dir)
 	defer os.RemoveAll(dir)
 
 	db, err := bolt.Open(fmt.Sprintf("%s/%s.db", dir, name), 0600, nil)
@@ -262,5 +260,4 @@ func kvclient(name string) *bolt.DB {
 	})
 
 	return db
-
 }

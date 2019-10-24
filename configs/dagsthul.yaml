@@ -9,6 +9,7 @@ gleaner:
   runid: codata1  # this will be the bucket the output is placed in...
   summon: false # do we want to visit the web sites and pull down the files
   mill: true
+  tmpdir: ""   #  empty string for OS default..   use /gleaner/config for docker based runs 
 context:
   cache: true
 contextmaps:
