@@ -70,6 +70,8 @@ func Miller(mc *minio.Client, prefix string, v1 *viper.Viper, wg *sync.WaitGroup
 		var urlval, sha1val string
 		if len(oi.Metadata["X-Amz-Meta-Url"]) > 0 {
 			urlval = oi.Metadata["X-Amz-Meta-Url"][0] // also have  X-Amz-Meta-Sha1
+		} else {
+			urlval = oi.ETag
 		}
 		if len(oi.Metadata["X-Amz-Meta-Sha1"]) > 0 {
 			sha1val = oi.Metadata["X-Amz-Meta-Sha1"][0]

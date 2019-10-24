@@ -351,14 +351,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:65a81e8d71c1aa40b12525cc532a7fb6199366ae861f425169c16c4c3cb2ca8a"
-  name = "github.com/kazarena/json-gold"
-  packages = ["ld"]
-  pruneopts = "UT"
-  revision = "d724c3337ae7cffc4ab830902c4af587ad725a9c"
-  version = "v0.3.0"
-
-[[projects]]
   branch = "master"
   digest = "1:2ac3d3d77c9017820227d59d2ca42e3db5eef2073fe7e8c5aecf10d6ad73193f"
   name = "github.com/knakk/rdf"
@@ -721,7 +713,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:1e5ba8f4291f0c7061abb7fb4d7f917f7ed28b8b3ecdfc33014452eec274dc2a"
+  digest = "1:41ba507fc438fc5d13dc1d2e7e8911087d773f204b7597b3ab2a0e7bdfd7a413"
   name = "gonum.org/v1/gonum"
   packages = [
     "blas",
@@ -807,7 +799,6 @@
     "github.com/go-resty/resty",
     "github.com/gorilla/mux",
     "github.com/gosuri/uiprogress",
-    "github.com/kazarena/json-gold/ld",
     "github.com/knakk/rdf",
     "github.com/minio/minio-go",
     "github.com/paulmach/go.geojson",
@@ -820,7 +811,6 @@
     "go.etcd.io/bbolt",
     "gopkg.in/jdkato/prose.v2",
     "gopkg.in/redis.v5",
-    "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
