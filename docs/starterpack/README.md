@@ -1,12 +1,14 @@
-# How to run
+# Starterpack
 
 ## Intro
+This _starterpack_ is a simple set of scripts and Docker files that download and run 
+the containers needed to run the Gleaner workflow.  
 
+This README is in flux but I will attempt to detail the configuration and support
+scripts for a simple run.
+
+I will also link here to a screencast showing the process in action.  
 
 ## Steps
-
-
-docker run -it  --mount type=bind,source="$(pwd)",target=/gleaner/config --net=host  --entrypoint=/gleaner/gleaner nsfearthcube/gleaner:2.0.7 -cfg=/gleaner/config/config
-
 
 
