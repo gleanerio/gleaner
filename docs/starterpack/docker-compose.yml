@@ -13,8 +13,8 @@ services:
      - ./demo.env
     environment:
      - SERVICE_PORTS=9000
-       #- MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-       #- MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     volumes:
      - "$DATAVOL/s3/data:/data"
      - "$DATAVOL/s3/config:/root/.minio"
@@ -44,7 +44,7 @@ services:
   jena:
     image: fcore/p418jena:0.1.11
     env_file:
-     - ./prod.env
+     - ./demo.env
     ports:
        - "3030:3030"
     volumes:

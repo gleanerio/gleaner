@@ -6,8 +6,8 @@ minio:
   secretkey: MySecretSecretKeyforMinio
   ssl: false
 gleaner:
-  runid: t10  # this will be the bucket the output is placed in...
-  summon: false # do we want to visit the web sites and pull down the files
+  runid: demo  # this will be the bucket the output is placed in...
+  summon: true # do we want to visit the web sites and pull down the files
   mill: true  
   tmpdir: ""
 context:
@@ -31,19 +31,7 @@ shapefiles:
 - ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
 - ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl  
 sources:
-- name: ucar
+- name: opencore
   logo: http://geodex.org/images/logos/EarthCubeLogo.png
-  url:  https://data.ucar.edu/sitemap.xml 
+  url: http://opencoredata.org/sitemap.xml
   headless: false
-  #- name: hydroshare
-  #  logo: http://geodex.org/images/logos/cuahsiHydroshare.png
-  #url: https://www.hydroshare.org/sitemap-resources.xml
-  #headless: false
-  #- name: unidata
-  #logo: http://geodex.org/images/logos/EarthCubeLogo.png
-  #url: https://thredds-test.unidata.ucar.edu/geocodesmap.xml
-  #headless: false
-  #- name: iodpss
-  #logo: https://ssdb.iodp.org/images/head_logo_PRO.gif
-  #url: https://ssdb.iodp.org/dataset/sitemap.xml
-  #headless: false
