@@ -269,19 +269,156 @@ A more detailed review of the configuration file will be made and linked here.
 ## **Run Gleaner via Docker**
 
 With our configuration file ready we have arrived at the time when we can run Gleaner.  
+First we need to make sure that we have Minio set up with the correct buckets.   Use the 
+runGleaner.sh script with the --setup flag.  
 
 ```bash
- ./runGleaner.sh --setup
+root@gleaner:~/gleanerRuns/starterpack# ./runGleaner.sh --setup
+my-vol
+main.go:37: EarthCube Gleaner
+main.go:92: Setting up buckets
+check.go:56: Gleaner Bucket gleaner not found, generating
+check.go:56: Gleaner Bucket gleaner-summoned not found, generating
+check.go:56: Gleaner Bucket gleaner-milled not found, generating
+main.go:98: Buckets generated.  Object store should be ready for runs
+my-vol
 ```
 
-Note the option and the changes needs to run the binary here?
+We only need to run this the first time.  It will look for the Minio buckets (storage containers) we need and set them up if not found.  It wont hurt anything to run this again, so if you think you have not run it, go ahead and issue the command.  Likely this should just be an init call in the main run of Gleaner and then could be removed as a step.  
+
+With our system set up, containers running, configuration file finished and the buckets created we are ready to run Gleaner. 
+
+Simply use the command: 
+
+```bash
+root@gleaner:~/gleanerRuns/starterpack# ./runGleaner.sh
+my-vol
+main.go:37: EarthCube Gleaner
+main.go:103: Validating access to object store
+main.go:110: Validating access to needed buckets
+check.go:37: Verfied Gleaner bucket: gleaner.
+check.go:37: Verfied Gleaner bucket: gleaner-summoned.
+check.go:37: Verfied Gleaner bucket: gleaner-milled.
+summoner.go:16: Summoner start time: 2019-11-06 14:12:46.636899634 +0000 UTC m=+0.025597505
+resources.go:35: Parsing sitemap: http://opencoredata.org/sitemap.xml
+sitemaps.go:49: Content type of sitemap reference is text/xml; charset=utf-8
+opencore                  55m14s [--------------------------------------------------------------------] 100%
+summoner.go:29: Summoner end time: 2019-11-06 15:08:01.708350533 +0000 UTC m=+3315.097048410 
+millers.go:28: Miller start time: 2019-11-06 15:08:01.708401893 +0000 UTC m=+3315.097099749 
+millers.go:41: Adding bucket to milling list: opencore
+graphkv.go:29: Queuing URLs for opencore 
+graphkv.go:238: Created tempdir /opencore   /tmp/opencore812448063
+graphkv.go:54: opencore
+graphkv.go:121: Start pipe reader / writer sequence
+graphkv.go:121: Start pipe reader / writer sequence
+millers.go:71: Miller end time: 2019-11-06 15:32:25.559500706 +0000 UTC m=+4778.948198623 
+millers.go:72: Miller run time: 24.397518 
+my-vol
+
+```
+
+This may take some time to run especially if you have added more resources or if those sites or your network connection is slow.  
 
 ## **Reviewing the output**
 
-The output from the Gleaner runs is located in the object store (default Minio). You can use the mc command in the related Docker container or any other s3 compatible viewer like CyberDuck. 
+Once Gleaner is done and if everything has gone OK the results will be written to Minio buckets.   This is done to better support automated work flows with the data, but it doesn't lend itself to the easiest use by humans.  To access the results you will need a S3 capable client or your web browser.  
+
+### Browser
+
+The easiest way by far would be to access the Minio server via your web browser.  If you are running the Gleaner setup local this should work fine.  However, if you are running remotely you may or may not have access to the port 9000 that Minio is running on.  
+
+If you do, simply point your browser at http://localhost;9000 (assuming the same, local, machine here).  
+
+The login screen will look like:
+
+![Minio login](./images/miniologin.png)
+
+Use your keys to login and the interface will look like:
+
+![minio](./images/minio.png)
+
+### mc
+
+For interested in a command line option Minio offers a free cross platform client.  For the client, go to https://min.io/download and download the mc client (not server) for your platform.  Follow the instructions to download and ensure the binary is executable so it can be run. 
+
+You can then configure your server to the client with a command template like;
+
+```bash
+mc config host add <ALIAS> <YOUR-S3-ENDPOINT> <YOUR-ACCESS-KEY> <YOUR-SECRET-KEY> <API-SIGNATURE>
+```
+
+For our set up, it might look like.
+
+```bash
+mc config host add local http://localhost:9000 MySecretAccessKey  MySecretSecretKeyforMinio
+```
+
+You can then view the buckets, content and even copy the files from Minio to your local file system to work with.
+
+```bash
+root@gleaner:~/gleanerRuns/starterpack# wget https://dl.min.io/client/mc/release/linux-amd64/mc
+
+[ ...  download progress removed ...]
+
+root@gleaner:~/gleanerRuns/starterpack# chmod +x mc
+root@gleaner:~/gleanerRuns/starterpack# ./mc config host add local http://localhost:9000 MySecretAccessKey  MySecretSecretKeyforMinio
+Added `local` successfully.
+root@gleaner:~/gleanerRuns/starterpack# ./mc ls local
+[2019-11-05 10:23:53 HST]      0B gleaner/
+[2019-11-06 05:32:13 HST]      0B gleaner-milled/
+[2019-11-06 04:12:51 HST]      0B gleaner-summoned/
+root@gleaner:~/gleanerRuns/starterpack# ./mc ls local/gleaner-summoned
+[2019-11-06 05:47:37 HST]      0B opencore/
+root@gleaner:~/gleanerRuns/starterpack# ./mc ls local/gleaner-milled
+[2019-11-06 05:47:44 HST]      0B demo/
+root@gleaner:~/gleanerRuns/starterpack# ./mc ls local/gleaner-milled/demo
+[2019-11-06 05:32:13 HST]      0B opencore_BadTriples.nq
+[2019-11-06 05:32:24 HST]  566MiB opencore_GoodTriples.nq
+root@gleaner:~/gleanerRuns/starterpack# ./mc cp local/gleaner-milled/demo/opencore_GoodTriples.nq .
+...opencore_GoodTriples.nq:  565.46 MiB / 565.46 MiB ┃▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓┃ 100.00% 285.81 MiB/s 1s
+root@gleaner:~/gleanerRuns/starterpack# ls -lt opencore_GoodTriples.nq 
+-rw-r--r-- 1 root root 592925612 Nov  6 05:48 opencore_GoodTriples.nq
+root@gleaner:~/gleanerRuns/starterpack# 
+
+```
+
+So now we would have the output from Gleaner in our directory.  The "Good triples" and "Bad triples" names are part of Gleaner reporting.  Any triples that Gleaner finds that are not properly formed according to the RDF spec get reported and routed to this file so providers can review the issues.  In this case we had no bad triples so the file was empty.  
+
+The "Good triples" file can then be used in any RDF or RDF compatible triple store to support query and analysis. 
+
+### Other tools
+
+If you already use other tools to interact with S3 compiant object stores you can use them with minio as well.  These would be things like s3tools (python) or CyberDuck (Mac and Windows).  Since it's an S3 API, there are even ways you can mount Minio to your file system and view the buckets and simple folders on your machine.  
+
+## **Load to a triple store and query** 
+
+As part of the process of loading Gleaner container an example triple store is loaded.  This is the Jena Fuseki triple store and we can load our graph into this and begin to make queries on it.   This is outside the scope of Gleaner now, but we will review it briefly here at the end to give an idea of how Gleaner products could be used.
+
+If you visit http://localhost:3030 you should find Jena available.  
+
+![jean](./images/jena.png)
+
+Click the "add data" button to arrive at the screen where you can upload your data.   Here you can put in a named graph entry.  In the example below we used the run ID we provided to Gleaner.  Now use the "select files" button to select your file. 
+
+Then click "upload all" to try and load the file.  If everything is OK with the RDF graph, you should get a nice green bar and the RDF will be loaded.  
+
+![jena load 2](./images/jenaLoad2.png)
+
+Now use the query tab to navigate to the query interface and try out a query.  In this example, we already new what a resource URI was and used that in our search to see what data was associated with it.  You can explore more about SPARQL, the graph query language, at https://www.w3.org/TR/sparql11-overview/. 
 
 
 
-## **Load to a triplestore and query** 
+![seach](./images/jenaSearch.png)
 
-A set of scripts are available in the repository to load the Gleaner output into a file system or triplestore. 
+Using something like Jena and SPARQL you could build out APIs or interfaces like we did with the https://geodex.org site below.
+
+![geodex](./images/geodexSearch.png)
+
+
+
+## Conclusion
+
+This concludes the Gleaner walk through.  The goal was to go from nothing to a semantic network.  Gleaner is still in development as are these documentations.  Any issues, suggestions or edits you have are more than welcome and you are encouraged to use the GitHub issue system to provide them.  
+
+
+
