@@ -1,5 +1,0 @@
-mc config host add <ALIAS> <YOUR-S3-ENDPOINT> <YOUR-ACCESS-KEY> <YOUR-SECRET-KEY> <API-SIGNATURE>
-
-
-mc config host add local http://localhost:9000 MySecretAccessKey  MySecretSecretKeyforMini
-
