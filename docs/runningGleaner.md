@@ -1,5 +1,7 @@
 # Gleaner getting started
 
+A video of this guide is available at: https://vimeo.com/372081748
+
 This guide is intended to walk through getting started with Gleaner in the easier manner.   It is not the only way to use this program and may not be the best way for your environment or use case.  However, it will give a general overview and many of the points here are common across all the ways to use this program.
 
 First, what is Gleaner.  Gleaner is a tool for extracting structured data on the web from a set of define providers.  It is not a web crawler and will not follow links in the pages it access.  It use a sitemap file created by a provider which is a set of URLs to resources Gleaner will visit.  Gleaner then extracts the structured data from the web represented by JSON-LD.  Some readers will note there are others ways, like RDFA, to represent this data on a web site.  Gleaner only looks for JSON-LD at this time.
@@ -7,6 +9,8 @@ First, what is Gleaner.  Gleaner is a tool for extracting structured data on the
 If you are interested in publishing this sort of data, take a look at the ESIP hosted Science on Scheme GitHub repository and also the Google Developer Guide on publishing this sort of data as a provider.  
 
 ## **Prerequisites** 
+
+### Docker 
 
 To start this guide you will need a few things first.  One is a computer with Docker installed.  Docker is a popular tool for creating and using containers.  Containers are packaged applications like databases, games or web servers.  The Docker runtime providers a cross platform environment to run this common container images.  Images are downloaded from the net and can be maintained and updated.  Containers can be run in large cloud based environments with sophisticated orchestration systems or on your local computer.  For this example we will be running on a rather simple Linux based server provided by NSF's XSEDE environment.  However, any personal computer will do just fine.   You can download Docekr your PC or Mac at https://www.docker.com/products/docker-desktop and Linux users can typically just use your distro's package management system.
 
@@ -16,9 +20,25 @@ Gleaner is a command line application, so you will need a terminal program on yo
 
 Testing on Windows has not taken place yet.  This documentation will be updated when that is done. These scripts are just simple Docker commands, so use them as a guide and we will work to generate the Windows scripts ASAP.
 
-Let's make a directory and download the starter pack.  Visit the web site at  https://github.com/earthcubearchitecture-project418/gleaner/releases  and find the latest release.  In the assets drop down section you will find links to the various assets of that release.  We will need the starterpack.zip file.  
+Note, when you first install Docker on a new system you will need to opt it into "swarm" mode to use the configuration files we will get to.  To do this use
 
-Here we will use wget to download the file, but you could use curl or just web browser to download this file. 
+```bash
+docker swarm init
+```
+
+You can always turn swarm mode off late if you wish to.  Use:
+
+```bash
+docker swarm leave
+```
+
+
+
+### Starter Pack 
+
+To provide you a set of files and scripts to bootstrap the process we have created a starter pack ZIP file.  Let's make a directory and download the starter pack.  Visit the web site at  https://github.com/earthcubearchitecture-project418/gleaner/releases  and find the latest release.  In the assets drop down section you will find links to the various assets of that release.  We will need the starterpack.zip file.  
+
+Here we will use wget to download the file, but you could use curl or just web browser to download this file.   Be sure to visit the release page at GitHub and not just use the command from below as this will likely be out of date with the current release versions.
 
 ```bash
 root@gleaner:~# mkdir gleanerRuns
@@ -79,7 +99,9 @@ root@gleaner:~/gleanerRuns/starterpack# echo $DATAVOL
 ./DV
 ```
 
-Note that the file assumes BASH or a BASH compliant shell.  If you are running ZSH or another shell, you likely know how to set these.  Those of you more familiar with Docker might note you could copy this file to a new name.  Specifically a .env file located in the same directory as your docker-compose.yml file.  This should also work.  Also, the compose file actually reference this demo.env file as an "env_file" entry.   However, I have seen cases where some of these approaches do not always work, so manually setting them and confirming them is a good move unless you are more familiar with Docker and Docker annoyances.  
+Note that the file assumes BASH or a BASH compliant shell.  If you are running ZSH or another shell, there are some other steps you will need to take to set these values.  
+
+Those of you more familiar with Docker might note you could copy this file to a new name.  Specifically a .env file located in the same directory as your docker-compose.yml file.  This should also work.  Also, the compose file actually reference this demo.env file as an "env_file" entry.   However, I have seen cases where some of these approaches do not always work, so manually setting them and confirming them is a good move unless you are more familiar with Docker and Docker annoyances.  
 
 ## Docker Compose command
 
