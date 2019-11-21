@@ -318,9 +318,9 @@ my-vol
 main.go:37: EarthCube Gleaner
 main.go:103: Validating access to object store
 main.go:110: Validating access to needed buckets
-check.go:37: Verfied Gleaner bucket: gleaner.
-check.go:37: Verfied Gleaner bucket: gleaner-summoned.
-check.go:37: Verfied Gleaner bucket: gleaner-milled.
+check.go:37: Verified Gleaner bucket: gleaner.
+check.go:37: Verified Gleaner bucket: gleaner-summoned.
+check.go:37: Verified Gleaner bucket: gleaner-milled.
 summoner.go:16: Summoner start time: 2019-11-06 14:12:46.636899634 +0000 UTC m=+0.025597505
 resources.go:35: Parsing sitemap: http://opencoredata.org/sitemap.xml
 sitemaps.go:49: Content type of sitemap reference is text/xml; charset=utf-8
