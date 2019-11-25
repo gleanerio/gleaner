@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/chromedp/chromedp"
@@ -95,6 +96,8 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet) {
 func domprocess(targeturl string, res *string) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.Navigate(targeturl),
-		chromedp.Text(`#schemaorg`, res, chromedp.ByID),
+		chromedp.Sleep(5 * time.Second),
+		chromedp.OuterHTML("html", res),
+		// chromedp.Text(`#schemaorg`, res, chromedp.ByID),
 	}
 }
