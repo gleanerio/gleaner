@@ -1,0 +1,37 @@
+---
+minio:
+  address: localhost
+  port: 9000
+  accesskey: MySecretAccessKey
+  secretkey: MySecretSecretKeyforMinio
+  ssl: false
+gleaner:
+  runid: demo  # this will be the bucket the output is placed in...
+  summon: true # do we want to visit the web sites and pull down the files
+  mill: false
+  tmpdir: ""
+context:
+  cache: true
+contextmaps:
+- prefix: "https://schema.org/"
+  file: "config/jsonldcontext.json"
+- prefix: "http://schema.org/"
+  file: "onfig/jsonldcontext.json"
+- prefix: "https://schema.org"
+  file: "config/jsonldcontext.json"
+- prefix: "http://schema.org"
+  file: "config/jsonldcontext.json"
+summoner:
+  mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
+millers:
+  graph: true
+  shacl: false
+  prov: false
+shapefiles:
+- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
+- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl  
+sources:
+- name: ard
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url: https://arcticdata.io/metacat/sitemaps/sitemap1.xml
+  headless: true
