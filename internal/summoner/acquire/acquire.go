@@ -26,7 +26,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet
 	wg := sync.WaitGroup{}
 
 	for k := range m {
-		//	log.Printf("Queuing URLs for %s \n", k)
+		log.Printf("Queuing URLs for %s \n", k)
 		go getDomain(v1, mc, m, k, &wg)
 	}
 

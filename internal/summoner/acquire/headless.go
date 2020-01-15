@@ -119,8 +119,8 @@ func getDebugURL() string {
 func domprocess(targeturl string, res *string) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.Navigate(targeturl),
-		chromedp.Sleep(5 * time.Second),
-		chromedp.OuterHTML("html", res),
-		// chromedp.Text(`#schemaorg`, res, chromedp.ByID),
+		chromedp.Sleep(1 * time.Second),
+		//chromedp.OuterHTML("html", res),
+		chromedp.Text(`#schemaorg`, res, chromedp.ByID),
 	}
 }

@@ -1,0 +1,38 @@
+---
+minio:
+  address: localhost
+  port: 9000
+  accesskey: AKIAIOSFODNN7EXAMPLE
+  secretkey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  ssl: false
+gleaner:
+  runid: magic1 # this will be the bucket the output is placed in...
+  summon: true # do we want to visit the web sites and pull down the files
+  mill: true
+  tmpdir: "/root/gleanerRuns/starterpack/TMP"
+context:
+  cache: true
+contextmaps:
+- prefix: "https://schema.org/"
+  file: "jsonldcontext.json"
+- prefix: "http://schema.org/"
+  file: "jsonldcontext.json"
+- prefix: "https://schema.org"
+  file: "jsonldcontext.json"
+- prefix: "http://schema.org"
+  file: "jsonldcontext.json"
+summoner:
+  mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
+millers:
+  graph: true
+  shacl: false
+  prov: false
+shapefiles:
+- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
+- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
+sources:
+- name: earthreforg
+  logo: http://geodex.org/images/logos/magic.png
+  url: https://www2.earthref.org/MagIC/contributions.sitemap.xml
+  headless: true
+

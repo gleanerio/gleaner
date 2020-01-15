@@ -50,7 +50,7 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.URLSet {
 func domainNameShort(dn string) (string, string, error) {
 	u, err := url.Parse(dn)
 	if err != nil {
-		panic(err)
+		log.Printf("Error with domainNameShort: %s ;  %s", dn, err)
 	}
 
 	return strings.Replace(u.Host, ".", "", -1), u.Scheme, err
