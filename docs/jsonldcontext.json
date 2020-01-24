@@ -4,6 +4,9 @@
         "id": "@id",
         "HTML": { "@id": "rdf:HTML" },
 
+        "ecrro": "http://purl.obolibrary.org/obo/ECRRO_",
+        "ecrr": "https://n2t.net/ark:/23942/g2",
+
         "@vocab": "http://schema.org/",
         "xml": "http://www.w3.org/XML/1998/namespace",
         "foaf": "http://xmlns.com/foaf/0.1/",
