@@ -1,11 +1,18 @@
 # Gleaner
 
-## About
+## Visit https://gleaner.io
 
+## About
 
 Gleaner is the structured data on the web indexing tool developed as part of 
  NSF EarthCube.  Its focus is on collection JSON-LD encoding data graphs describing 
  data resources and services.  Gleaner can then process and generate a semantic network based on a list of providers. 
+ 
+ ![Basic Gleaner](./docs/images/gleaneroverview.png/)
+
+A set of cloud based tools and functions can be found https://fence.gleaner.io/ These can be usd online via the browser or through command line calls.  They are also available for use in Jupyter notebooks do develop out workflows with.
+
+## More 
 
 *The Summoner*, which uses site map files to access and parse facility 
 resources pages.  Summoner places the results of these calls into a S3 API 
@@ -14,7 +21,6 @@ compliant storage.
 *The Miller*, which takes the JSON-LD documents pulled and stored by 
 summoner and runs them through various millers.  These millers can do 
 various things. 
-
 
 ![Basic Gleaner](./docs/images/gleanerbasic.png)
 
@@ -43,9 +49,8 @@ data publishing workflow.
 
 ### Running
 
-The most recent documentation on running would be for the second 
-release used during the 
-[EarthCube Annual Meeting 2019](./docs/DEMO.md).
+Some early documentation on running gleaner can be found at:
+[Running Gleaner](./docs/runningGleaner.md).
 
 ### Validation (SHACL Shapes)
 
@@ -53,7 +58,7 @@ Work on the validation of data graphs using W3C SHACL shape graphs is
 taing place in the [GeoShapes repository](https://github.com/geoschemas-org/geoshapes).  Gleaner leverages the pySHACL
 Python package to perform the actual validation.  
 
-### Profiling
+### Profiling  (for dev work)
 
 You can profile runs with 
 
@@ -62,3 +67,4 @@ go tool pprof --pdf gleaner /tmp/profile317320184/cpu.pprof  > profileRun1.pdf
 ```
 
 Example CPU and Memory profile of a recent release.  
+

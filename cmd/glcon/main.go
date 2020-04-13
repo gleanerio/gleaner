@@ -91,8 +91,8 @@ func loadCfg() error {
 func initBucket() error {
 	// Set up minio and initialize client
 	endpoint := "192.168.2.131:9000"
-	accessKeyID := "AKIAIOSFODNN7EXAMPLE"
-	secretAccessKey := "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+	accessKeyID := ""
+	secretAccessKey := ""
 	useSSL := false
 	minioClient, err := minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
 	if err != nil {

@@ -186,8 +186,8 @@ func isValid(v1 *viper.Viper, jsonld string) (string, error) {
 		return action, err
 	}
 
-	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
-	if err != nil {
+	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating  
+	if err != nil {                           // it's wasted cycles.. but if just doing a summon, needs to be done here
 		action = "JSON-LD to RDF call"
 		return action, err
 	}

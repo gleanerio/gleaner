@@ -19,6 +19,7 @@ type URLNode struct {
 	XMLName     xml.Name `xml:"url"`
 	Loc         string   `xml:"loc"`
 	Description string   `xml:"description"`
+	Lastmod     string   `xml:"lastmod"` // W3C date time  http://www.w3.org/TR/NOTE-datetime   ISO 8601?   use YYYY-MM-DD
 }
 
 // SmIndex is the sitemap index
@@ -90,24 +91,6 @@ func isSiteMapIndex(bodyBytes []byte) (bool, []string) {
 
 	return true, sma
 }
-
-// // IngestSiteMapText takes the URL and pulls the the URL from it
-// func IngestSiteMapText(url string, cs utils.Config) URLSet {
-// 	bodyBytes, _ := getBody(url) // TODO handle this error
-// 	var us URLSet
-
-// 	sc := bufio.NewScanner(strings.NewReader(string(bodyBytes)))
-// 	for sc.Scan() {
-// 		u := sc.Text()
-// 		un := URLNode{Loc: u}
-// 		us.URL = append(us.URL, un)
-// 	}
-// 	if err := sc.Err(); err != nil {
-// 		log.Fatalf("scan file error: %v", err)
-// 	}
-
-// 	return us
-// }
 
 func getBody(url string) ([]byte, error) {
 	var client http.Client

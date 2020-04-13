@@ -37,6 +37,7 @@ func main() {
 	log.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
 
+	// BEGIN profile section
 	// Profiling code (comment out for release builds)
 	// defer profile.Start().Stop()                    // cpu
 	// defer profile.Start(profile.MemProfile).Stop()  // memory
@@ -53,6 +54,8 @@ func main() {
 	// 	panic(err)
 	// }
 	// defer trace.Stop()
+
+	// END profile section
 
 	// If cfgo (config object)
 	// loadcfgo load the config object into gleaner-milled/ID
