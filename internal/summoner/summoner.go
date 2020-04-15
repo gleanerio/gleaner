@@ -15,6 +15,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 
 	log.Printf("Summoner start time: %s \n", time.Now())
 
+	// Get a list of resource URLs that do and don't required headless processing
 	ru := acquire.ResourceURLs(v1, false)
 	hru := acquire.ResourceURLs(v1, true)
 

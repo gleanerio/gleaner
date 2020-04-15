@@ -1,6 +1,14 @@
 version: '3'
 
+# The deployment I use for development work in Gleaner
+
 services:
+  mc:
+    image: minio/mc:latest
+
+  gleaner:
+    image: nsfearthcube/gleaner:latest
+
   tika:
     image: logicalspark/docker-tikaserver
     ports:
@@ -18,8 +26,8 @@ services:
      - ./prod.env
     environment:
      - SERVICE_PORTS=9000
-       #- MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-       #- MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     volumes:
      - "$DATAVOL/s3/data:/data"
      - "$DATAVOL/s3/config:/root/.minio"
@@ -27,13 +35,10 @@ services:
       - web
     command: ["server", "/data"]
 
-  shacl:
-    image: fcore/shaclservice:0.1.4
-    labels:
-      - "traefik.backend=shacl"
-      - "traefik.port=7000"
+  tangram:
+    image: fils/p418tangram:0.1.15
     ports:
-      - 7000:7000
+      - "8080:8080"
     networks:
       - web
 

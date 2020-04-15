@@ -3,8 +3,10 @@ version: '3'
 services:
   mc:
     image: minio/mc:latest
+
   gleaner:
     image: nsfearthcube/gleaner:latest
+  
   minio:
     image: minio/minio:latest
     ports:

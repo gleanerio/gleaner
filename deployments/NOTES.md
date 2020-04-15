@@ -1,35 +1,12 @@
-# Deployments
+# Deployment notes
 
-## Compose
+## Note
+I'd suggest just looking at: https://docs.docker.com/compose/gettingstarted/   They will do a 
+better job than I could.  Perhaps later I will try and put in a few notes here specific to any
+Gleaner issues. 
 
-```
-export DATAVOL=/home/fils/Data/P418/dataVolumes
-```
 
-## Swarm
+## Files
 
-```
-docker stack deploy --compose-file=hatest.yml gleaner
-
-docker-compose -f gleaner-compose.yml down
-docker-compose -f gleaner-compose.yml up -d
-docker-compose -f hatest.yml up -d
-docker-compose -f hatest.yml down
-
-docker rm $(docker ps -a -f status=exited -q)
-
-docker stack deploy --compose-file=hatest.yml gleaner
-docker stack ls
-docker stack ps gleaner
-docker stack services gleaner
-docker stack rm gleaner
-docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
-docker ps
-```
-
-```
-docker-compose up -d
-docker-compose scale web=3
-docker-compose ps you can see there are 4 containers run
-```
+* gleaner-dev.yml is likely the best to use for now.  It will run a few 
+containers you don't always need but they full suite is there.  

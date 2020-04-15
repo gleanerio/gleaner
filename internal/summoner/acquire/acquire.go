@@ -62,22 +62,20 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
+	// we actually go get the URLs now
 	for i := range m[k].URL {
 		lwg.Add(1)
 		urlloc := m[k].URL[i].Loc
 
-		// TODO for large site we can exhause memory with  just the creation of the
+		// TODO / WARNING for large site we can exhaust memory with just the creation of the
 		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
 		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
 		// library too)
 
 		go func(i int, k string) {
-
-			// logger approach to buffer in core lib (use for sending logs to s3 in web ui)
-
 			semaphoreChan <- struct{}{}
 
-			var client http.Client
+			var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
 				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
@@ -103,7 +101,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 			}
 
 			var jsonld string
-			if err == nil {
+
+			// TODO  this check should be for application/ld+json, not octet stream
+			if err == nil && !contains(resp.Header["Content-Type"], "application/octet-stream") {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
 					if val == "application/ld+json" {
@@ -114,6 +114,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 						jsonld = s.Text()
 					}
 				})
+			}
+
+			if err == nil && contains(resp.Header["Content-Type"], "application/octet-stream") {
+				jsonld = doc.Text()
 			}
 
 			if jsonld != "" { // traps out the root domain...   should do this different
@@ -167,6 +171,15 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 
 }
 
+func contains(arr []string, str string) bool {
+	for _, a := range arr {
+		if a == str {
+			return true
+		}
+	}
+	return false
+}
+
 func rightPad2Len(s string, padStr string, overallLen int) string {
 	var padCountInt int
 	padCountInt = 1 + ((overallLen - len(padStr)) / len(padStr))
@@ -186,7 +199,7 @@ func isValid(v1 *viper.Viper, jsonld string) (string, error) {
 		return action, err
 	}
 
-	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating  
+	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
 	if err != nil {                           // it's wasted cycles.. but if just doing a summon, needs to be done here
 		action = "JSON-LD to RDF call"
 		return action, err

@@ -66,6 +66,8 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 		}
 	}
 
+	// TODO add back in spatial
+
 	et := time.Now()
 	diff := et.Sub(st)
 	log.Printf("Miller end time: %s \n", et)
