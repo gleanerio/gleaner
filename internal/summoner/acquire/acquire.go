@@ -103,7 +103,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 			var jsonld string
 
 			// TODO  this check should be for application/ld+json, not octet stream
-			if err == nil && !contains(resp.Header["Content-Type"], "application/octet-stream") {
+			if err == nil && !contains(resp.Header["Content-Type"], "application/ld+json") {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
 					if val == "application/ld+json" {
@@ -116,7 +116,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 				})
 			}
 
-			if err == nil && contains(resp.Header["Content-Type"], "application/octet-stream") {
+			if err == nil && contains(resp.Header["Content-Type"], "application/ld+json") {
 				jsonld = doc.Text()
 			}
 

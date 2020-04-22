@@ -105,7 +105,7 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 				status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
 
 				wg.Done() // tell the wait group that we be done
-				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status)
+				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status)  // why print the status??
 
 				<-semaphoreChan
 			}(j, k)
