@@ -36,7 +36,7 @@ services:
     command: ["server", "/data"]
 
   tangram:
-    image: fils/p418tangram:0.1.15
+    image: fils/p418tangram:latest
     ports:
       - "8080:8080"
     networks:

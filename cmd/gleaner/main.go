@@ -22,12 +22,6 @@ func init() {
 	log.SetFlags(log.Lshortfile)
 	// log.SetOutput(ioutil.Discard) // turn off all logging
 
-	// logger approach to buffer in core lib (use for sending logs to s3 in web ui)
-	// var (
-	// 	buf    bytes.Buffer
-	// 	logger = log.New(&buf, "logger: ", log.Lshortfile)
-	// )
-
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
 	flag.StringVar(&viperObj, "cfgo", "config", "Configuration object")

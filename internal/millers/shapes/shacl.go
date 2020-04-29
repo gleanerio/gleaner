@@ -3,10 +3,8 @@ package shapes
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
-	"mime/multipart"
 	"net/http"
 	"net/url"
 	"strings"
@@ -104,8 +102,8 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 				semaphoreChan <- struct{}{}
 				status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
 
-				wg.Done() // tell the wait group that we be done
-				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status)  // why print the status??
+				wg.Done()                                                    // tell the wait group that we be done
+				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status) // why print the status??
 
 				<-semaphoreChan
 			}(j, k)
@@ -126,72 +124,6 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 	if err != nil {
 		log.Println(err)
 	}
-}
-
-// Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
-func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
-	// datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
-	// if err != nil {
-	// 	log.Printf("Error in the jsonld write... %v\n", err)
-	// 	log.Printf("Nothing to do..   going home")
-	// 	return 0
-	// }
-
-	url := "http://localhost:8080/uploader" // TODO this should be set in the config file
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	writer.WriteField("datagraph", urlval)
-	writer.WriteField("shapegraph", sgkey)
-
-	part, err := writer.CreateFormFile("datagraph", "datagraph")
-	if err != nil {
-		log.Println(err)
-	}
-	_, err = io.Copy(part, strings.NewReader(dg))
-	if err != nil {
-		log.Println(err)
-	}
-
-	part, err = writer.CreateFormFile("shapegraph", "shapegraph")
-	if err != nil {
-		log.Println(err)
-	}
-	_, err = io.Copy(part, strings.NewReader(sg))
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = writer.Close()
-	if err != nil {
-		log.Println(err)
-	}
-
-	req, err := http.NewRequest("POST", url, body)
-	if err != nil {
-		log.Println(err)
-	}
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Println(err)
-	}
-	defer resp.Body.Close()
-
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-	}
-
-	// write result to buffer
-	len, err := gb.Write(b)
-	if err != nil {
-		log.Printf("error in the buffer write... %v\n", err)
-	}
-
-	return len //  we will return the bytes count we write...
 }
 
 func rdf2rdf(r string) (string, error) {

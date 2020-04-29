@@ -1,12 +1,14 @@
 ---
 minio:
-  address: localhost
-  port: 9000
-  accesskey: MySecretAccessKey
-  secretkey: MySecretSecretKeyforMinio
+  address: 192.168.86.45 
+  port: 32768        
+  accessKey: AKIAIOSFODNN7EXAMPLE
+  secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+            #accesskey: MySecretAccessKey
+            #secretkey: MySecretSecretKeyforMinio
   ssl: false
 gleaner:
-  runid: igsnrun5 # this will be the bucket the output is placed in...
+  runid: igsnrun7 # this will be the bucket the output is placed in...
   summon: false # do we want to visit the web sites and pull down the files
   mill: true
   tmpdir: ""
@@ -24,13 +26,13 @@ contextmaps:
 summoner:
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
-  graph: true
+  graph: false
   shacl: true
   prov: false  #  this is not a useful miller at this time and doesn't return valuable triples
   #geojson: false
 shapefiles:
-- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
-#- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
+    #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
+- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
 sources:
 # - name: opencore
 #   logo: http://geodex.org/images/logos/EarthCubeLogo.png

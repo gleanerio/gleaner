@@ -19,6 +19,7 @@ type ContextMapping struct {
 // to use in framing, processing and all JSON-LD actions
 // TODO   we create this all the time..  stupidly..  Generate these pointers
 // and pass them around, don't keep making it over and over
+// Ref:  https://schema.org/docs/howwework.html and https://schema.org/docs/jsonldcontext.json
 func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO make a booklean
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")

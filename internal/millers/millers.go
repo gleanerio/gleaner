@@ -27,6 +27,7 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	st := time.Now()
 	log.Printf("Miller start time: %s \n", st) // Log the time at start for the record
 
+	// Put the sources in the config file into a struct
 	var domains []Sources
 	err := v1.UnmarshalKey("sources", &domains)
 	if err != nil {
@@ -41,22 +42,19 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 		log.Printf("Adding bucket to milling list: %s\n", m)
 	}
 
-	mcfg := v1.GetStringMapString("millers")
+	mcfg := v1.GetStringMapString("millers") // get the millers we want to run from the config file
 
 	// Graph is the miller to convert from JSON-LD to nquads with validation of well formed
 	if mcfg["graph"] == "true" {
-		graph.MillerSetup(mc, as, v1) // kv based function (disk based with memory mapping)
-		//for d := range as {
-		// graph.MillObjects(mc, as[d], cs)  // old memory based function
-		// TODO really each of these can be a go func.call .
-		// be sure to update the file name  (buckets can stay the same since different files)
-		//	graph.Miller(mc, as[d], cs) // kv based function (disk based with memory mapping)
-		//}
+		for d := range as {
+			graph.GraphNG(mc, as[d], v1)
+		}
 	}
 
 	if mcfg["shacl"] == "true" {
 		for d := range as {
-			shapes.SHACLMillObjects(mc, as[d], v1)
+			shapes.ShapeNG(mc, as[d], v1)
+			// shapes.SHACLMillObjects(mc, as[d], v1)
 		}
 	}
 
@@ -66,8 +64,7 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 		}
 	}
 
-	// TODO add back in spatial
-
+	// Time report
 	et := time.Now()
 	diff := et.Sub(st)
 	log.Printf("Miller end time: %s \n", et)
