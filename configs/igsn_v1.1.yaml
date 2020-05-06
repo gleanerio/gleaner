@@ -8,7 +8,7 @@ minio:
             #secretkey: MySecretSecretKeyforMinio
   ssl: false
 gleaner:
-  runid: igsnrun7 # this will be the bucket the output is placed in...
+  runid: igsnrun8 # this will be the bucket the output is placed in...
   summon: false # do we want to visit the web sites and pull down the files
   mill: true
   tmpdir: ""
@@ -32,7 +32,8 @@ millers:
   #geojson: false
 shapefiles:
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
-- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
+    #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
+- ref: https://gist.githubusercontent.com/fils/77d40a917a7af8020693678be30e87dd/raw/f2480cd2f304f2bc74143d4a72e72d43727942c4/westerntropicalshape.ttl
 sources:
 # - name: opencore
 #   logo: http://geodex.org/images/logos/EarthCubeLogo.png

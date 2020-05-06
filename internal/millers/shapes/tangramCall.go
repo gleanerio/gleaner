@@ -36,7 +36,7 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 		log.Println(err)
 	}
 
-	// TODO
+	// TODO  this is a waste to read the same bytes N times!   read early and pass a pointer!
 	// Read the object bytes (our data graoh)
 	so, err := mc.GetObject("gleaner", shape.Key, minio.GetObjectOptions{})
 	if err != nil {
@@ -69,6 +69,11 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 	if err != nil {
 		log.Print(err)
 	}
+
+	// TODO we have our nt from SHACL, but it needs some extra info to let us
+	// build reports.  The response is ntriples, so easy to find the subject
+	// IRI.   On our end we need the @id or schema:url.  I hate doing another
+	// heavy frame. Can I get the value earlier in the chain?
 
 	// make an object with prefix like  scienceorg-dg/objectname.rdf  (where is had .jsonld before)
 	objectName := fmt.Sprintf("%s-shacl/%s", prefix, strings.ReplaceAll(key, ".jsonld", ".rdf"))
@@ -148,12 +153,6 @@ func shaclCallNG(dg, sg string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	// // write result to buffer
-	// len, err := gb.Write(b)
-	// if err != nil {
-	// 	log.Printf("error in the buffer write... %v\n", err)
-	// }
 
 	return string(b), err //  we will return the bytes count we write...
 }

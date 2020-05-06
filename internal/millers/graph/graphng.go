@@ -76,6 +76,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-dg", prefix), mc)
+	log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
 
 	return nil
 }

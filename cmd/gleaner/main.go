@@ -15,7 +15,7 @@ import (
 	"earthcube.org/Project418/gleaner/internal/summoner"
 )
 
-var viperVal, viperObj string
+var viperVal string
 var setupVal bool
 
 func init() {
@@ -24,7 +24,6 @@ func init() {
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
-	flag.StringVar(&viperObj, "cfgo", "config", "Configuration object")
 }
 
 func main() {
@@ -51,18 +50,8 @@ func main() {
 
 	// END profile section
 
-	// If cfgo (config object)
-	// loadcfgo load the config object into gleaner-milled/ID
-	// runid    run the ID by looking for gleaner-milled/ID/config.yaml
-
 	var v1 *viper.Viper
 	var err error
-
-	if isFlagPassed("cfgo") {
-		log.Println("place holder for object based file loaded")
-		// this wont work unless the MC is made first...  likely
-		// move this to the web code for use there only...
-	}
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
@@ -104,7 +93,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Println("Validating access to needed buckets")
 	buckets := check.Buckets(mc)
 	if buckets != nil {
 		log.Printf("%v", buckets)

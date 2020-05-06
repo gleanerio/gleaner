@@ -70,7 +70,6 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 				// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
 
 				bar.Incr()
-
 				<-semaphoreChan
 			}(object)
 		}
@@ -80,10 +79,13 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	uiprogress.Stop()
 
 	// all done..  write the full graph to the object store
-	// log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
-	// mcfg := v1.GetStringMapString("gleaner")
+	log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
+	mcfg := v1.GetStringMapString("gleaner")
 
-	// pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-dg", prefix), mc)
+	//pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
+	// TODO fix this with correct variables
+	pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
+	log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
 
 	return nil
 }
