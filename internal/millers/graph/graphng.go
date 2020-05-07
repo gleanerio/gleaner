@@ -20,7 +20,8 @@ import (
 
 // GraphNG is a new and improved RDF conversion
 func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
-	bucketname := "gleaner-summoned"
+	bucketname := "gleaner" //  "gleaner-summoned"
+	// prefix := fmt.Sprintf("summoned/%s", suffix)
 
 	// My go func controller vars
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control (1 == single thread)
@@ -42,19 +43,19 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		x = x + 1
 	}
 	count := x
-	bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
-	bar.PrependFunc(func(b *uiprogress.Bar) string {
+	bar1 := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
+	bar1.PrependFunc(func(b *uiprogress.Bar) string {
 		return rightPad2Len(fmt.Sprintf("%d", x), " ", 12)
 	})
-	bar.Fill = '-'
-	bar.Head = '>'
-	bar.Empty = ' '
+	bar1.Fill = '-'
+	bar1.Head = '>'
+	bar1.Empty = ' '
 
 	for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
 		wg.Add(1)
 		go func(object minio.ObjectInfo) {
 			semaphoreChan <- struct{}{}
-			_, err := obj2RDF(bucketname, prefix, mc, object, proc, options)
+			_, err := obj2RDF(bucketname, "milled", mc, object, proc, options)
 			if err != nil {
 				log.Println(err) // need to log to an "errors" log file
 			}
@@ -62,7 +63,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			wg.Done() // tell the wait group that we be done
 			// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
 
-			bar.Incr()
+			bar1.Incr()
 
 			<-semaphoreChan
 		}(object)
@@ -72,11 +73,14 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	uiprogress.Stop()
 
 	// all done..  write the full graph to the object store
-	log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
-	mcfg := v1.GetStringMapString("gleaner")
+	// log.Printf("Building result graph from: %s/milled-dg/%s", bucketname, prefix)
 
-	pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-dg", prefix), mc)
-	log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
+	log.Printf("Processed prefix: %s", prefix)
+	millprefix := strings.ReplaceAll(prefix, "summoned", "milled")
+	log.Printf("Building result graph from: %s", millprefix)
+
+	mcfg := v1.GetStringMapString("gleaner")
+	pipeCopyNG(fmt.Sprintf("%s_graph.nq", mcfg["runid"]), "gleaner", millprefix, mc)
 
 	return nil
 }
@@ -109,8 +113,11 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	rdfubn := GlobalUniqueBNodes(rdf)
 
+	milledkey := strings.ReplaceAll(key, ".jsonld", ".rdf")
+	milledkey = strings.ReplaceAll(milledkey, "summoned/", "")
+
 	// make an object with prefix like  scienceorg-dg/objectname.rdf  (where is had .jsonld before)
-	objectName := fmt.Sprintf("%s-dg/%s", prefix, strings.ReplaceAll(key, ".jsonld", ".rdf"))
+	objectName := fmt.Sprintf("%s/%s", prefix, milledkey)
 	//contentType := "application/ld+json"
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["origfile"] = key
@@ -119,7 +126,7 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 	//		bucketName := "gleaner-summoned" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 	// Upload the file
-	_, err = LoadToMinio(rdfubn, "gleaner-milled", objectName, mc)
+	_, err = LoadToMinio(rdfubn, "gleaner", objectName, mc)
 	if err != nil {
 		return objectName, err
 	}
@@ -154,7 +161,7 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	return retStr[:overallLen]
 }
 
-func pipeCopyNG(runid, bucket, prefix string, mc *minio.Client) error {
+func pipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 	log.Println("Start pipe reader / writer sequence")
 
 	pr, pw := io.Pipe()     // TeeReader of use?
@@ -188,10 +195,12 @@ func pipeCopyNG(runid, bucket, prefix string, mc *minio.Client) error {
 
 	}()
 
+	// log.Printf("%s_graph.nq", name)
+
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
-		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_%s_%s.nq", runid, prefix, bucket), pr, -1, minio.PutObjectOptions{})
+		_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
 		if err != nil {
 			log.Println(err)
 		}

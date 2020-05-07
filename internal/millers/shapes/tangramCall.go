@@ -63,6 +63,10 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 	// rdfubn := GlobalUniqueBNodes(rdf)
 	// rdfubn := "blank node fixed RDF if I can't skolemize in Tangram"
 
+	//log.Println(string(b.Bytes()))
+	//log.Println("------------------")
+	//log.Println(string(sb.Bytes()))
+
 	// TODO
 	// resolve how call
 	rdfubn, err := shaclCallNG(string(b.Bytes()), string(sb.Bytes()))
@@ -75,8 +79,14 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 	// IRI.   On our end we need the @id or schema:url.  I hate doing another
 	// heavy frame. Can I get the value earlier in the chain?
 
+	milledkey := strings.ReplaceAll(key, ".jsonld", ".rdf")
+	milledkey = strings.ReplaceAll(milledkey, "summoned/", "")
+
 	// make an object with prefix like  scienceorg-dg/objectname.rdf  (where is had .jsonld before)
-	objectName := fmt.Sprintf("%s-shacl/%s", prefix, strings.ReplaceAll(key, ".jsonld", ".rdf"))
+	// objectName := fmt.Sprintf("%s-shacl/%s", prefix, strings.ReplaceAll(key, ".jsonld", ".rdf"))
+
+	objectName := fmt.Sprintf("%s/%s", prefix, milledkey)
+
 	//contentType := "application/ld+json"
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["origfile"] = key
@@ -85,7 +95,7 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 	//		bucketName := "gleaner-summoned" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 	// Upload the file
-	_, err = graph.LoadToMinio(rdfubn, "gleaner-milled", objectName, mc)
+	_, err = graph.LoadToMinio(rdfubn, "gleaner", objectName, mc)
 	if err != nil {
 		return objectName, err
 	}
@@ -102,7 +112,7 @@ func shaclCallNG(dg, sg string) (string, error) {
 	// 	return 0
 	// }
 
-	url := "https://8m86jksvx8.execute-api.us-east-1.amazonaws.com/dev/verify"
+	url := "https://1bzh4a0lbd.execute-api.us-east-1.amazonaws.com/dev/verify"
 	//url := "http://localhost:8080/uploader" // TODO this should be set in the config file
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)

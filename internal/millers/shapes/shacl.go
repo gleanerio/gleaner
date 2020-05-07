@@ -52,7 +52,7 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 			as := strings.Split(s[x].Ref, "/")
 			// TODO  caution..  we need to note the RDF encoding and perhaps pass it along or verify it
 			// is what we should be using
-			_, err = graph.LoadToMinio(string(b), "gleaner", as[len(as)-1], mc)
+			_, err = graph.LoadToMinio(string(b), "gleaner", fmt.Sprintf("shapes/%s", as[len(as)-1]), mc)
 			if err != nil {
 				log.Println(err)
 			}
@@ -66,7 +66,7 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 			}
 
 			as := strings.Split(s[x].Ref, "/")
-			_, err = graph.LoadToMinio(string(dat), "gleaner", as[len(as)-1], mc)
+			_, err = graph.LoadToMinio(string(dat), "gleaner", fmt.Sprintf("shapes/%s", as[len(as)-1]), mc)
 			if err != nil {
 				log.Println(err)
 			}

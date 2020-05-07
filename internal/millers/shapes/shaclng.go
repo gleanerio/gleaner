@@ -18,7 +18,7 @@ import (
 
 // ShapeNG is a new and improved RDF conversion
 func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
-	bucketname := "gleaner-summoned"
+	bucketname := "gleaner"
 
 	loadShapeFiles(mc, v1) // TODO, this should be done in main
 	// m := common.GetShapeGraphs(mc, "gleaner") // TODO: beware static bucket lists, put this in the config
@@ -52,14 +52,14 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	bar.Empty = ' '
 
 	// TODO get the list of shape files in the shape bucket
-	for shape := range mc.ListObjectsV2("gleaner", "", isRecursive, doneCh) {
+	for shape := range mc.ListObjectsV2(bucketname, "shapes", isRecursive, doneCh) {
 		// log.Printf("Checking data graphs against shape graph: %s\n", m[j])
 		for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
 			wg.Add(1)
 			go func(object minio.ObjectInfo) {
 				semaphoreChan <- struct{}{}
 				//status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
-				_, err := shaclTestNG(bucketname, prefix, mc, object, shape, proc, options)
+				_, err := shaclTestNG(bucketname, "verified", mc, object, shape, proc, options)
 				if err != nil {
 					log.Println(err) // need to log to an "errors" log file
 				}
@@ -78,14 +78,22 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 
 	uiprogress.Stop()
 
-	// all done..  write the full graph to the object store
-	log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
-	mcfg := v1.GetStringMapString("gleaner")
+	// // all done..  write the full graph to the object store
+	// log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
+	// mcfg := v1.GetStringMapString("gleaner")
 
-	//pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
-	// TODO fix this with correct variables
-	pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
-	log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
+	// //pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
+	// // TODO fix this with correct variables
+	// pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
+	// log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
+
+	log.Printf("Processed prefix: %s", prefix)
+	millprefix := strings.ReplaceAll(prefix, "summoned", "verified")
+	log.Printf("Building result graph from: %s", millprefix)
+
+	mcfg := v1.GetStringMapString("gleaner")
+	pipeCopyNG(fmt.Sprintf("%s_verified.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+
 
 	return nil
 }
@@ -100,7 +108,7 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	return retStr[:overallLen]
 }
 
-func pipeCopyNG(runid, bucket, prefix string, mc *minio.Client) error {
+func pipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 	log.Println("Start pipe reader / writer sequence")
 
 	pr, pw := io.Pipe()     // TeeReader of use?
@@ -137,7 +145,7 @@ func pipeCopyNG(runid, bucket, prefix string, mc *minio.Client) error {
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
-		_, err := mc.PutObject("gleaner-milled", fmt.Sprintf("%s_%s_%s.nq", runid, prefix, bucket), pr, -1, minio.PutObjectOptions{})
+		_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
 		if err != nil {
 			log.Println(err)
 		}

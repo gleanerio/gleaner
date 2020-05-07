@@ -12,7 +12,8 @@ var bl []string
 
 func init() {
 	// bl := []string{"gleaner", "gleaner-config", "gleaner-summoned", "gleaner-milled", "gleaner-shacl", "gleaner-voc"}
-	bl = []string{"gleaner", "gleaner-summoned", "gleaner-milled", "gleaner-assets"}
+	// bl = []string{"gleaner", "gleaner-summoned", "gleaner-milled", "gleaner-assets"}
+	bl = []string{"gleaner"}
 }
 
 // ConnCheck check the connections iwth a list buckets call

@@ -37,7 +37,7 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	// Make an array "as" of active buckets to process...
 	as := []string{}
 	for i := range domains {
-		m := fmt.Sprintf("%s", domains[i].Name)
+		m := fmt.Sprintf("summoned/%s", domains[i].Name)
 		as = append(as, m)
 		log.Printf("Adding bucket to milling list: %s\n", m)
 	}

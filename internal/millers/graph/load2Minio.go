@@ -21,8 +21,9 @@ func LoadToMinio(jsonld, bucketName, objectName string, mc *minio.Client) (int64
 	// Upload the zip file with FPutObject
 	n, err := mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Printf("%s", objectName)
-		log.Fatalln(err)
+		log.Printf("%s/%s", bucketName, objectName)
+		log.Println(err)
+		// TODO   should return 0, err here and deal with it on the other end
 	}
 
 	// log.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, n)

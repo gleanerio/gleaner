@@ -36,6 +36,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *sync.WaitGroup) {
+
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
@@ -61,6 +62,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
+
+	log.Println(len(m[k].URL))
 
 	// we actually go get the URLs now
 	for i := range m[k].URL {
@@ -125,14 +128,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 				if err != nil {
 					logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 				}
-				objectName := fmt.Sprintf("%s/%s.jsonld", k, sha)
+				objectName := fmt.Sprintf("summoned/%s/%s.jsonld", k, sha)
 				contentType := "application/ld+json"
 				b := bytes.NewBufferString(jsonld)
 
 				usermeta := make(map[string]string) // what do I want to know?
 				usermeta["url"] = urlloc
 				usermeta["sha1"] = sha
-				bucketName := "gleaner-summoned" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
+				bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 				// Upload the file with FPutObject
 				_, err = mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
@@ -169,6 +172,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 	}
 	w.Flush()
 
+	// uiprogress.Stop()
 }
 
 func contains(arr []string, str string) bool {

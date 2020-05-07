@@ -7,9 +7,10 @@ minio:
             #accesskey: MySecretAccessKey
             #secretkey: MySecretSecretKeyforMinio
   ssl: false
+  bucket: gleaner
 gleaner:
   runid: igsnrun8 # this will be the bucket the output is placed in...
-  summon: false # do we want to visit the web sites and pull down the files
+  summon: true # do we want to visit the web sites and pull down the files
   mill: true
   tmpdir: ""
 context:
@@ -26,9 +27,9 @@ contextmaps:
 summoner:
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
-  graph: false
-  shacl: true
-  prov: false  #  this is not a useful miller at this time and doesn't return valuable triples
+  graph: true
+  shacl: false
+  #prov: false  #  this is not a useful miller at this time and doesn't return valuable triples
   #geojson: false
 shapefiles:
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
@@ -43,7 +44,11 @@ sources:
   logo: http://geodex.org/images/logos/EarthCubeLogo.png
   url: http://samples.earth/sitemap.xml   # XML version available?
   headless: false
-#- name: getiedadataorg
-#logo: http://geodex.org/images/logos/ieda_maplogo.png
-#url: http://get.iedadata.org/doi/xml-sitemap.php
-#headless: false
+   #- name: getiedadataorg
+   #logo: http://geodex.org/images/logos/ieda_maplogo.png
+   #url: http://get.iedadata.org/doi/xml-sitemap.php
+   #headless: false
+# - name: fuo
+#   logo: http://geodex.org/images/logos/ieda_maplogo.png
+#   url: https://features.ufokn.org/sitemap.xml
+#   headless: false

@@ -87,15 +87,15 @@ func main() {
 
 	// Validate Minio is up  TODO:  validate all expected containers are up
 	log.Println("Validating access to object store")
-	conntest := check.ConnCheck(mc)
-	if conntest != nil {
-		log.Println("Can not make connection to required object store.  Make sure the minio server is running and accessible")
+	err = check.ConnCheck(mc)
+	if err != nil {
+		log.Printf("Connection issue, make sure the minio server is running and accessible. %s ", err)
 		os.Exit(1)
 	}
 
-	buckets := check.Buckets(mc)
-	if buckets != nil {
-		log.Printf("%v", buckets)
+	err = check.Buckets(mc)
+	if err != nil {
+		log.Printf("Can not find bucket. %s ", err)
 		os.Exit(1)
 	}
 
