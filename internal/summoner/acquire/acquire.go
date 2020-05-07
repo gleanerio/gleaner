@@ -32,7 +32,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
-	uiprogress.Stop()
+	// uiprogress.Stop()
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *sync.WaitGroup) {
@@ -47,7 +47,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 	count := len(m[k].URL)
 	bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
 	bar.PrependFunc(func(b *uiprogress.Bar) string {
-		return rightPad2Len(k, " ", 25)
+		return rightPad2Len(k, " ", 15)
 	})
 	bar.Fill = '-'
 	bar.Head = '>'
@@ -63,7 +63,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-	log.Println(len(m[k].URL))
+	// log.Println(len(m[k].URL))
 
 	// we actually go get the URLs now
 	for i := range m[k].URL {
@@ -105,7 +105,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 
 			var jsonld string
 
-			// TODO  this check should be for application/ld+json, not octet stream
 			if err == nil && !contains(resp.Header["Content-Type"], "application/ld+json") {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
@@ -172,7 +171,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, 
 	}
 	w.Flush()
 
-	// uiprogress.Stop()
 }
 
 func contains(arr []string, str string) bool {

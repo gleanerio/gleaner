@@ -43,13 +43,13 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		x = x + 1
 	}
 	count := x
-	bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
-	bar.PrependFunc(func(b *uiprogress.Bar) string {
-		return rightPad2Len(fmt.Sprintf("%d", x), " ", 12)
+	bar3 := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
+	bar3.PrependFunc(func(b *uiprogress.Bar) string {
+		return rightPad2Len("shacl", " ", 15)
 	})
-	bar.Fill = '-'
-	bar.Head = '>'
-	bar.Empty = ' '
+	bar3.Fill = '-'
+	bar3.Head = '>'
+	bar3.Empty = ' '
 
 	// TODO get the list of shape files in the shape bucket
 	for shape := range mc.ListObjectsV2(bucketname, "shapes", isRecursive, doneCh) {
@@ -69,14 +69,14 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 				wg.Done() // tell the wait group that we be done
 				// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
 
-				bar.Incr()
+				bar3.Incr()
 				<-semaphoreChan
 			}(object)
 		}
 	}
 	wg.Wait()
 
-	uiprogress.Stop()
+	// uiprogress.Stop()
 
 	// // all done..  write the full graph to the object store
 	// log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
@@ -87,15 +87,19 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	// pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
 	// log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
 
-	log.Printf("Processed prefix: %s", prefix)
+	// log.Printf("Processed prefix: %s", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "verified")
-	log.Printf("Building result graph from: %s", millprefix)
+	log.Printf("Building result graph from prefix: %s to: %s", prefix, millprefix)
 
 	mcfg := v1.GetStringMapString("gleaner")
-	pipeCopyNG(fmt.Sprintf("%s_verified.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+	err := pipeCopyNG(fmt.Sprintf("%s_verified.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+	if err != nil {
+		log.Printf("Error on pipe copy: %s", err)
+	} else {
+		log.Println("Pipe copy for shacl done")
+	}
 
-
-	return nil
+	return err
 }
 
 //  ---------- func below are dupes..  they will be moved to a commons

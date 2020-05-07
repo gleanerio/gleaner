@@ -36,7 +36,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
 
-	// Spiffy progress line
+	// Spiffy progress line  (do I really want this?)
 	uiprogress.Start()
 	x := 0 // ugh..  why won't len(oc) work..   buffered channel issue I assume?
 	for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
@@ -45,7 +45,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	count := x
 	bar1 := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
 	bar1.PrependFunc(func(b *uiprogress.Bar) string {
-		return rightPad2Len(fmt.Sprintf("%d", x), " ", 12)
+		return rightPad2Len("miller", " ", 15)
 	})
 	bar1.Fill = '-'
 	bar1.Head = '>'
@@ -64,25 +64,30 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
 
 			bar1.Incr()
-
 			<-semaphoreChan
 		}(object)
 	}
-	wg.Wait()
+	wg.Wait()  
+   
 
-	uiprogress.Stop()
+	// uiprogress.Stop()
 
 	// all done..  write the full graph to the object store
 	// log.Printf("Building result graph from: %s/milled-dg/%s", bucketname, prefix)
 
-	log.Printf("Processed prefix: %s", prefix)
+	// log.Printf("Processed prefix: %s", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "milled")
-	log.Printf("Building result graph from: %s", millprefix)
+	log.Printf("Building result graph from prefix: %s to: %s", prefix, millprefix)
 
 	mcfg := v1.GetStringMapString("gleaner")
-	pipeCopyNG(fmt.Sprintf("%s_graph.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+	err := pipeCopyNG(fmt.Sprintf("%s_graph.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+    if err != nil {
+		log.Printf("Error on pipe copy: %s", err)
+	} else {
+		log.Println("Pipe copy for graph done")
+	}
 
-	return nil
+	return err
 }
 
 // func obj2RDF(fo io.Reader, key string, mc *minio.Client) (string, int64, error) {

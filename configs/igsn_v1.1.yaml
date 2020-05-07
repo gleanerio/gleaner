@@ -28,7 +28,7 @@ summoner:
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
   graph: true
-  shacl: false
+  shacl: true
   #prov: false  #  this is not a useful miller at this time and doesn't return valuable triples
   #geojson: false
 shapefiles:
