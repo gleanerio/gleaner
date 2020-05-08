@@ -1,10 +1,7 @@
 package shapes
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
-	"io"
 	"log"
 	"strings"
 	"sync"
@@ -92,7 +89,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	log.Printf("Building result graph from prefix: %s to: %s", prefix, millprefix)
 
 	mcfg := v1.GetStringMapString("gleaner")
-	err := pipeCopyNG(fmt.Sprintf("%s_verified.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+	err := common.PipeCopyNG(fmt.Sprintf("%s_verified.nq", mcfg["runid"]), "gleaner", millprefix, mc)
 	if err != nil {
 		log.Printf("Error on pipe copy: %s", err)
 	} else {
@@ -112,65 +109,65 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	return retStr[:overallLen]
 }
 
-func pipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
-	log.Println("Start pipe reader / writer sequence")
+// func pipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
+// 	log.Println("Start pipe reader / writer sequence")
 
-	pr, pw := io.Pipe()     // TeeReader of use?
-	lwg := sync.WaitGroup{} // work group for the pipe writes...
-	lwg.Add(2)
+// 	pr, pw := io.Pipe()     // TeeReader of use?
+// 	lwg := sync.WaitGroup{} // work group for the pipe writes...
+// 	lwg.Add(2)
 
-	// params for list objects calls
-	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
-	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
-	isRecursive := true
+// 	// params for list objects calls
+// 	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
+// 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
+// 	isRecursive := true
 
-	go func() {
-		defer lwg.Done()
-		defer pw.Close()
-		for object := range mc.ListObjectsV2(bucket, prefix, isRecursive, doneCh) {
-			fo, err := mc.GetObject(bucket, object.Key, minio.GetObjectOptions{})
-			if err != nil {
-				fmt.Println(err)
-			}
+// 	go func() {
+// 		defer lwg.Done()
+// 		defer pw.Close()
+// 		for object := range mc.ListObjectsV2(bucket, prefix, isRecursive, doneCh) {
+// 			fo, err := mc.GetObject(bucket, object.Key, minio.GetObjectOptions{})
+// 			if err != nil {
+// 				fmt.Println(err)
+// 			}
 
-			var b bytes.Buffer
-			bw := bufio.NewWriter(&b)
+// 			var b bytes.Buffer
+// 			bw := bufio.NewWriter(&b)
 
-			_, err = io.Copy(bw, fo)
-			if err != nil {
-				log.Println(err)
-			}
+// 			_, err = io.Copy(bw, fo)
+// 			if err != nil {
+// 				log.Println(err)
+// 			}
 
-			pw.Write(b.Bytes())
-		}
+// 			pw.Write(b.Bytes())
+// 		}
 
-	}()
+// 	}()
 
-	// go function to write to minio from pipe
-	go func() {
-		defer lwg.Done()
-		_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
-		if err != nil {
-			log.Println(err)
-		}
-	}()
+// 	// go function to write to minio from pipe
+// 	go func() {
+// 		defer lwg.Done()
+// 		_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
+// 		if err != nil {
+// 			log.Println(err)
+// 		}
+// 	}()
 
-	// Note: We can also make a file and pipe write to that, keep this code around in case
-	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))  // needs a f.Close() later
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	// go function to write to file from pipe
-	// go func() {
-	// 	defer lwg.Done()
-	// 	if _, err := io.Copy(f, pr); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// }()
+// 	// Note: We can also make a file and pipe write to that, keep this code around in case
+// 	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))  // needs a f.Close() later
+// 	// if err != nil {
+// 	// 	log.Println(err)
+// 	// }
+// 	// go function to write to file from pipe
+// 	// go func() {
+// 	// 	defer lwg.Done()
+// 	// 	if _, err := io.Copy(f, pr); err != nil {
+// 	// 		log.Fatal(err)
+// 	// 	}
+// 	// }()
 
-	lwg.Wait() // wait for the pipe read writes to finish
-	pw.Close()
-	pr.Close()
+// 	lwg.Wait() // wait for the pipe read writes to finish
+// 	pw.Close()
+// 	pr.Close()
 
-	return nil
-}
+// 	return nil
+// }

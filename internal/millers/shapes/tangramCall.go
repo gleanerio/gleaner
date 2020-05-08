@@ -167,6 +167,8 @@ func shaclCallNG(dg, sg string) (string, error) {
 	return string(b), err //  we will return the bytes count we write...
 }
 
+
+// DEPRECATED CODE BELOW..   will be replaced
 // Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
 func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	// datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
