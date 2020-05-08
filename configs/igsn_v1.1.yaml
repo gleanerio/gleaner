@@ -14,38 +14,21 @@ context:
   cache: true
 contextmaps:
 - prefix: "https://schema.org/"
-  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
+  file: "./jsonldcontext.json"
 - prefix: "http://schema.org/"
-  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
-- prefix: "https://schema.org"
-  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
-- prefix: "http://schema.org"
-  file: "/home/fils/Project418/gleaner/docs/jsonldcontext.json"
+  file: "./jsonldcontext.json"
 summoner:
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
   graph: true
   shacl: true
-  #prov: false  #  this is not a useful miller at this time and doesn't return valuable triples
   #geojson: false
 shapefiles:
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
 - ref: https://gist.githubusercontent.com/fils/77d40a917a7af8020693678be30e87dd/raw/f2480cd2f304f2bc74143d4a72e72d43727942c4/westerntropicalshape.ttl
 sources:
-# - name: opencore
-#   logo: http://geodex.org/images/logos/EarthCubeLogo.png
-#   url: https://opencoredata.org/sitemapold.xml
-#   headless: false
 - name: sampleearth
   logo: http://geodex.org/images/logos/EarthCubeLogo.png
   url: http://samples.earth/sitemap.xml   # XML version available?
   headless: false
-   #- name: getiedadataorg
-   #logo: http://geodex.org/images/logos/ieda_maplogo.png
-   #url: http://get.iedadata.org/doi/xml-sitemap.php
-   #headless: false
-# - name: fuo
-#   logo: http://geodex.org/images/logos/ieda_maplogo.png
-#   url: https://features.ufokn.org/sitemap.xml
-#   headless: false

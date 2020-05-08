@@ -5,8 +5,6 @@ services:
     image: minio/minio:latest
     ports:
      - 9000:9000
-    env_file:
-     - ./prod.env
     environment:
      - SERVICE_PORTS=9000
      - MINIO_ACCESS_KEY=gleaneraccess
@@ -39,8 +37,6 @@ services:
 
   jena:
     image: fcore/p418jena:0.1.11
-    env_file:
-     - ./prod.env
     ports:
        - "3030:3030"
     volumes:
