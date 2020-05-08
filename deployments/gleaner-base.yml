@@ -1,12 +1,6 @@
 version: '3'
 
-services:
-  mc:
-    image: minio/mc:latest
-
-  gleaner:
-    image: nsfearthcube/gleaner:latest
-  
+services:  
   minio:
     image: minio/minio:latest
     ports:
@@ -15,8 +9,8 @@ services:
      - ./prod.env
     environment:
      - SERVICE_PORTS=9000
-       #- MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-       #- MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+     - MINIO_ACCESS_KEY=gleaneraccess
+     - MINIO_SECRET_KEY=gleanersecret
     volumes:
      - "$DATAVOL/s3/data:/data"
      - "$DATAVOL/s3/config:/root/.minio"

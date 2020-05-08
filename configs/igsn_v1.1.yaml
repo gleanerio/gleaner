@@ -1,18 +1,15 @@
 ---
 minio:
-  address: 192.168.86.45 
-  port: 32768        
-  accessKey: AKIAIOSFODNN7EXAMPLE
-  secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-            #accesskey: MySecretAccessKey
-            #secretkey: MySecretSecretKeyforMinio
+  address: 0.0.0.0
+  port: 9000   
+  accessKey: gleaneraccess
+  secretKey: gleanersecret
   ssl: false
   bucket: gleaner
 gleaner:
-  runid: igsnrun8 # this will be the bucket the output is placed in...
+  runid: igsnrunX # this will be the bucket the output is placed in...
   summon: true # do we want to visit the web sites and pull down the files
   mill: true
-  tmpdir: ""
 context:
   cache: true
 contextmaps:
