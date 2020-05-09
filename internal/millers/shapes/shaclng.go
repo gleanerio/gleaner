@@ -86,10 +86,13 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 
 	// log.Printf("Processed prefix: %s", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "verified")
-	log.Printf("Building result graph from prefix: %s to: %s", prefix, millprefix)
-
+	sp := strings.SplitAfterN(prefix, "/", 2)
 	mcfg := v1.GetStringMapString("gleaner")
-	err := common.PipeCopyNG(fmt.Sprintf("%s_verified.nq", mcfg["runid"]), "gleaner", millprefix, mc)
+	rslt := fmt.Sprintf("results/%s/%s_verified.nq", mcfg["runid"], sp[1])
+	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
+	log.Printf("Result graph will be at: %s", rslt)
+
+	err := common.PipeCopyNG(rslt, "gleaner", millprefix, mc)
 	if err != nil {
 		log.Printf("Error on pipe copy: %s", err)
 	} else {
