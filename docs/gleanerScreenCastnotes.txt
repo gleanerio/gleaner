@@ -4,18 +4,19 @@ Get the files we need from the GitHub repo releases section
 https://github.com/earthcubearchitecture-project418/gleaner/releases
 
 Make and set a directory for the data volume for the Docker containers if you are using those
-export DATAVOL=/root/harvests/dv
+mkdir /home/tmp/dv
+export DATAVOL=/home/tmp/dv
 
 Need to grab any context files we use 
 Just schema.org for now.   Note, not required but highly recommended
 curl -L -H "Accept: application/ld+json" -H "Content-Type: application/ld+json" https://schema.org > jsonldcontext.jsonld
 
 Minio client (or use your web browser)
-https://docs.min.io/docs/minio-client-complete-guide.html
+Ref: https://docs.min.io/docs/minio-client-complete-guide.html
 wget https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod 755 mc
 ./mc config host add minio http://0.0.0.0:9000 gleaneraccess gleanersecret --api S3v4
 
-Load the data into Jena
-./mc cat local/gleaner/igsnrun8_graph.nq | curl -X POST --header "Content-Type:application/n-quads" -d @- http://localhost:3030/demo/data
+After running gleaner you can look for the output graphs and load the data into Jena
+./mc cat local/gleaner/results/runid/samplesearth_graph.nq | curl -X POST --header "Content-Type:application/n-quads" -d @- http://localhost:3030/demo/data
 

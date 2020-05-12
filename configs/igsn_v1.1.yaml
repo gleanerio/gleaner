@@ -14,9 +14,9 @@ context:
   cache: true
 contextmaps:
 - prefix: "https://schema.org/"
-  file: "./jsonldcontext.json"
+  file: "./jsonldcontext.jsonld"
 - prefix: "http://schema.org/"
-  file: "./jsonldcontext.json"
+  file: "./jsonldcontext.jsonld"
 summoner:
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
