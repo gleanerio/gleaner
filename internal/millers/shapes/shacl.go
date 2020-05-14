@@ -25,11 +25,11 @@ type ShapeRef struct {
 
 // SHACLMillObjects test a concurrent version of calling mock
 func SHACLMillObjects(mc *minio.Client, bucketname string, v1 *viper.Viper) {
-	entries := common.GetMillObjects(mc, bucketname)
-	multiCall(entries, bucketname, mc, v1)
-
 	// load the SHACL files listed in the config file
 	loadShapeFiles(mc, v1)
+
+	entries := common.GetMillObjects(mc, bucketname)
+	multiCall(entries, bucketname, mc, v1)
 }
 
 func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {

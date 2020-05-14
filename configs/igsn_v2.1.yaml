@@ -23,6 +23,8 @@ millers:
   graph: true
   shacl: true
   #geojson: false
+shackservice:
+  url: https://1bzh4a0lbd.execute-api.us-east-1.amazonaws.com/dev/verify 
 shapefiles:
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
