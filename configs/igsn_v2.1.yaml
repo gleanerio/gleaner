@@ -23,14 +23,14 @@ millers:
   graph: true
   shacl: true
   #geojson: false
-shackservice:
+shaclservice:
   url: https://1bzh4a0lbd.execute-api.us-east-1.amazonaws.com/dev/verify 
 shapefiles:
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
 - ref: https://gist.githubusercontent.com/fils/77d40a917a7af8020693678be30e87dd/raw/f2480cd2f304f2bc74143d4a72e72d43727942c4/westerntropicalshape.ttl
 sources:
-- name: sampleearth
+- name: samplesearth
   logo: http://geodex.org/images/logos/EarthCubeLogo.png
   url: http://samples.earth/sitemap.xml   # XML version available?
   headless: false

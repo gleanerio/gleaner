@@ -56,7 +56,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			go func(object minio.ObjectInfo) {
 				semaphoreChan <- struct{}{}
 				//status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
-				_, err := shaclTestNG(bucketname, "verified", mc, object, shape, proc, options)
+				_, err := shaclTestNG(v1, bucketname, "verified", mc, object, shape, proc, options)
 				if err != nil {
 					log.Println(err) // need to log to an "errors" log file
 				}

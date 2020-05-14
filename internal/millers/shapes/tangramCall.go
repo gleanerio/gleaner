@@ -15,10 +15,11 @@ import (
 	"earthcube.org/Project418/gleaner/internal/millers/graph"
 	minio "github.com/minio/minio-go"
 	"github.com/piprate/json-gold/ld"
+	"github.com/spf13/viper"
 )
 
 // Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
-func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
+func shaclTestNG(v1 *viper.Viper, bucketname, prefix string, mc *minio.Client, object, shape minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
 	key := object.Key // replace if new function idea works..
 
 	// Read the object bytes (our data graoh)
@@ -67,9 +68,12 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 	//log.Println("------------------")
 	//log.Println(string(sb.Bytes()))
 
+	// get the URL from viper object
+	mcfg := v1.GetStringMapString("shaclservice")
+
 	// TODO
 	// resolve how call
-	rdfubn, err := shaclCallNG(string(b.Bytes()), string(sb.Bytes()))
+	rdfubn, err := shaclCallNG(mcfg["url"], string(b.Bytes()), string(sb.Bytes()))
 	if err != nil {
 		log.Print(err)
 	}
@@ -104,7 +108,7 @@ func shaclTestNG(bucketname, prefix string, mc *minio.Client, object, shape mini
 }
 
 // Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
-func shaclCallNG(dg, sg string) (string, error) {
+func shaclCallNG(url, dg, sg string) (string, error) {
 	// datagraph, err := millerutils.JSONLDToTTL(dg, urlval)
 	// if err != nil {
 	// 	log.Printf("Error in the jsonld write... %v\n", err)
@@ -112,8 +116,6 @@ func shaclCallNG(dg, sg string) (string, error) {
 	// 	return 0
 	// }
 
-	url := "https://1bzh4a0lbd.execute-api.us-east-1.amazonaws.com/dev/verify"
-	//url := "http://localhost:8080/uploader" // TODO this should be set in the config file
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	// writer.WriteField("datagraph", urlval)
@@ -166,7 +168,6 @@ func shaclCallNG(dg, sg string) (string, error) {
 
 	return string(b), err //  we will return the bytes count we write...
 }
-
 
 // DEPRECATED CODE BELOW..   will be replaced
 // Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
