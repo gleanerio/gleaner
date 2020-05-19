@@ -1,0 +1,1887 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.xml?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Northeast_Pacific/catalog.html?dataset=grib/FNMOC/COAMPS/Northeast_Pacific/Best> ;
+        <https://schema.org/box> "34.0 -172.00001525878906 64.00000044703484 -118.00001445412636"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.xml?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/conduit/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/conduit/Best> ;
+        <https://schema.org/box> "30.00000000000001 -172.99999999999994 70.11139202708944 -62.85040019582402"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-29T08:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.xml?dataset=grib/NCEP/NAM/CONUS_12km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/Best> ;
+        <https://schema.org/box> "12.189999580383306 -152.87864418407665 57.32844250829164 -49.416005717303506"
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.xml?dataset=grib/NCEP/RAP/CONUS_20km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_20km/catalog.html?dataset=grib/NCEP/RAP/CONUS_20km/Best> ;
+        <https://schema.org/box> "16.28100013732909 -139.85660422055307 55.48181988843929 -57.37871545619316"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-30T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.xml?dataset=grib/NCEP/NAM/Alaska_95km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_95km/catalog.html?dataset=grib/NCEP/NAM/Alaska_95km/Best> ;
+        <https://schema.org/box> "42.084934851331916 -175.6409912109375 63.975772612374875 -93.68958377486075"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-25T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.xml?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg_ana/TP> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.xml?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NAVGEM/Global_0p5deg/catalog.html?dataset=grib/FNMOC/NAVGEM/Global_0p5deg/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.xml?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_East_Coast/Best> ;
+        <https://schema.org/box> "-1.0982155799865723E-4 -100.0 55.0 -49.99990016222"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T03:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.xml?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod/Best> ;
+        <https://schema.org/box> "12.189999580383306 -152.85512784941602 57.28918658025636 -49.38660780527863"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-29T04:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-07T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.xml?dataset=grib/NCEP/GFS/CONUS_80km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.xml?dataset=grib/NCEP/RAP/CONUS_40km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_80km/catalog.html?dataset=grib/NCEP/GFS/CONUS_80km/Best> ;
+        <https://schema.org/box> "12.190000534057615 -152.87233875914026 57.30011352036161 -49.31375333991065"
+    ] .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_40km/catalog.html?dataset=grib/NCEP/RAP/CONUS_40km/Best> ;
+        <https://schema.org/box> "16.28100013732909 -139.85612174361665 55.48131078640182 -57.38107451090991"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-25T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T11:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.xml?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km_ANA/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km_ANA/TP> ;
+        <https://schema.org/box> "20.1919994354248 -130.1033862772356 50.10547177729705 -60.88591254248189"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-13T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.xml?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/derived/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.xml?dataset=grib/NCEP/NAM/Polar_90km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Polar_90km/catalog.html?dataset=grib/NCEP/NAM/Polar_90km/Best> ;
+        <https://schema.org/box> "-0.2680000066757303 -139.47500610351562 32.74686154915562 -14.598488868806385"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.xml?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_40km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_40km/conduit/Best> ;
+        <https://schema.org/box> "12.189999580383306 -152.85512784941602 57.28918658025636 -49.38660780527863"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.xml?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_12km/conduit/catalog.html?dataset=grib/NCEP/NAM/CONUS_12km/conduit/Best> ;
+        <https://schema.org/box> "12.189999580383306 -152.87864418407665 57.32844250829164 -49.416005717303506"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.xml?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Equatorial_America/catalog.html?dataset=grib/FNMOC/COAMPS/Equatorial_America/Best> ;
+        <https://schema.org/box> "-12.000000953674316 -122.00000762939453 32.55000081658363 -53.00000488758087"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.xml?dataset=grib/FNMOC/COAMPS/Europe/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Europe/catalog.html?dataset=grib/FNMOC/COAMPS/Europe/Best> ;
+        <https://schema.org/box> "29.000001907348633 -15.000000953674316 66.40000246465206 44.999999940395355"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:31Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T11:58:34Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.xml?dataset=grib/NCEP/MRMS/RotationTrackML/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrackML/catalog.html?dataset=grib/NCEP/MRMS/RotationTrackML/TP> ;
+        <https://schema.org/box> "20.00250215549022 -129.99749755859375 54.997501373291016 -60.00249912310392"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.xml?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_East_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_East_Coast/Best> ;
+        <https://schema.org/box> "14.99984097480774 -99.0 47.0 -59.99980618804693"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T09:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.xml?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/GUAM_2p5km/catalog.html?dataset=grib/NCEP/RTMA/GUAM_2p5km/TP> ;
+        <https://schema.org/box> "12.349884033203127 143.68653869628906 16.794486121661944 148.2801771956238"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-07T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.xml?dataset=grib/NCEP/GFS/CONUS_95km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/CONUS_95km/catalog.html?dataset=grib/NCEP/GFS/CONUS_95km/Best> ;
+        <https://schema.org/box> "7.8379998207092205 -141.02799987792966 35.61744720606792 -18.576283151533914"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.xml?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members-analysis/TP> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-13T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.xml?dataset=grib/NCEP/GFS/Global_onedeg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-11T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-10T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.xml?dataset=grib/NCEP/NDFD/CPC/CONUS/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/CPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/CPC/CONUS/TP> ;
+        <https://schema.org/box> "20.190000534057628 -130.09801167125502 50.1024604936146 -60.882024569613066"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.xml?dataset=grib/NCEP/WW3/Regional_Alaska/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Alaska/catalog.html?dataset=grib/NCEP/WW3/Regional_Alaska/Best> ;
+        <https://schema.org/box> "43.9999381005764 140.0 75.0 -120.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-01T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-05T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-03T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.xml?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.xml?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/FAROP/Global_1p0deg/catalog.html?dataset=grib/FNMOC/FAROP/Global_1p0deg/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/NOAAPORT/Best> ;
+        <https://schema.org/box> "20.1919994354248 -130.10358411698786 50.10599737004012 -60.88599093428331"
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.xml?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg_ana/TP> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.xml?dataset=grib/FNMOC/WW3/Europe/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Europe/catalog.html?dataset=grib/FNMOC/WW3/Europe/Best> ;
+        <https://schema.org/box> "29.000001907348633 -15.000000953674316 66.40000246465206 44.999999940395355"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.xml?dataset=grib/NCEP/WW3/Global/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Global/catalog.html?dataset=grib/NCEP/WW3/Global/Best> ;
+        <https://schema.org/box> "-77.5 0.0 90.0 -0.5"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.xml?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_Eastern_Pacific/catalog.html?dataset=grib/NCEP/WW3/Regional_Eastern_Pacific/Best> ;
+        <https://schema.org/box> "-20.00009983778 130.0 30.0 -144.999830275774"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-25T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-29T04:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.xml?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/HRRR/CONUS_2p5km/catalog.html?dataset=grib/NCEP/HRRR/CONUS_2p5km/Best> ;
+        <https://schema.org/box> "20.1919994354248 -130.1033862772356 50.10547177729705 -60.88591254248189"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T01:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.xml?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/NWS/CONUS/CONDUIT/catalog.html?dataset=grib/NCEP/NDFD/NWS/CONUS/CONDUIT/Best> ;
+        <https://schema.org/box> "20.1919994354248 -130.10343744073265 50.1055463250169 -60.88556057076988"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.xml?dataset=grib/NCEP/NDFD/SPC/CONUS/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NDFD/SPC/CONUS/catalog.html?dataset=grib/NCEP/NDFD/SPC/CONUS/Best> ;
+        <https://schema.org/box> "20.190000534057628 -130.09801167125502 50.1024604936146 -60.882024569613066"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:31Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T11:58:34Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.xml?dataset=grib/NCEP/MRMS/RotationTrack/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/RotationTrack/catalog.html?dataset=grib/NCEP/MRMS/RotationTrack/TP> ;
+        <https://schema.org/box> "20.00250215549022 -129.99749755859375 54.997501373291016 -60.00249912310392"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-25T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-29T21:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.xml?dataset=grib/HRRR/CONUS_3km/wrfprs/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/wrfprs/catalog.html?dataset=grib/HRRR/CONUS_3km/wrfprs/Best> ;
+        <https://schema.org/box> "21.138124465942376 -134.09548029305594 47.84219632282758 -60.91719159461894"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.xml?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Coastal_US_West_Coast/Best> ;
+        <https://schema.org/box> "14.999826066195965 -165.0 50.0 -115.99975649267435"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T03:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.xml?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/PacificNE_0p4/ensprod/catalog.html?dataset=grib/NCEP/SREF/PacificNE_0p4/ensprod/Best> ;
+        <https://schema.org/box> "10.0 -170.0 50.00000059604645 -119.99999925494194"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-30T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.xml?dataset=grib/NCEP/NAM/CONUS_80km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_80km/catalog.html?dataset=grib/NCEP/NAM/CONUS_80km/Best> ;
+        <https://schema.org/box> "12.190000534057615 -152.87231995943296 57.300109844026004 -49.31373619179368"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.xml?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Regional_US_West_Coast/catalog.html?dataset=grib/NCEP/WW3/Regional_US_West_Coast/Best> ;
+        <https://schema.org/box> "24.99995008111 -150.0 50.0 -109.999920129776"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.xml?dataset=grib/NCEP/WW3/Coastal_Alaska/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/WW3/Coastal_Alaska/catalog.html?dataset=grib/NCEP/WW3/Coastal_Alaska/Best> ;
+        <https://schema.org/box> "47.99987079203129 165.0 74.0 -122.0668503344059"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.xml?dataset=grib/NCEP/NAM/Alaska_11km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_11km/catalog.html?dataset=grib/NCEP/NAM/Alaska_11km/Best> ;
+        <https://schema.org/box> "30.00000000000001 -172.99999999999994 70.11139202708944 -62.85040019582402"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T10:58:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.xml?dataset=grib/NCEP/MRMS/Precip/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Precip/catalog.html?dataset=grib/NCEP/MRMS/Precip/TP> ;
+        <https://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-30T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.xml?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/Alaska_45km/noaaport/catalog.html?dataset=grib/NCEP/NAM/Alaska_45km/noaaport/Best> ;
+        <https://schema.org/box> "30.000001907348643 -172.99998474121088 70.11138765052343 -62.85036311287888"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-29T08:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.xml?dataset=grib/NCEP/RAP/CONUS_13km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RAP/CONUS_13km/catalog.html?dataset=grib/NCEP/RAP/CONUS_13km/Best> ;
+        <https://schema.org/box> "16.28100013732909 -139.8561226608637 55.481311754301515 -57.38107002604471"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-25T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-13T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.xml?dataset=grib/NCEP/GFS/Global_0p25deg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p25deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p25deg/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.xml?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Western_Atlantic/catalog.html?dataset=grib/FNMOC/COAMPS/Western_Atlantic/Best> ;
+        <https://schema.org/box> "17.05000114440918 -99.00000762939453 55.00000265240669 -54.00000584125519"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-04T12:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.xml?dataset=grib/FNMOC/WW3/Global_1p0deg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/WW3/Global_1p0deg/catalog.html?dataset=grib/FNMOC/WW3/Global_1p0deg/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-13T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.xml?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/catalog.html?dataset=grib/NCEP/GEFS/Global_1p0deg_Ensemble/members/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:03Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T11:59:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.xml?dataset=grib/NCEP/MRMS/NLDN/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/NLDN/catalog.html?dataset=grib/NCEP/MRMS/NLDN/TP> ;
+        <https://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.xml?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/CONUS_40km/ensprod_biasc/catalog.html?dataset=grib/NCEP/SREF/CONUS_40km/ensprod_biasc/Best> ;
+        <https://schema.org/box> "12.189999580383306 -152.85512784941602 57.28918658025636 -49.38660780527863"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.xml?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_onedeg_ana/catalog.html?dataset=grib/NCEP/GFS/Global_onedeg_ana/TP> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-13T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.xml?dataset=grib/NCEP/GFS/Global_0p5deg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Global_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Global_0p5deg/Best> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-30T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.xml?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/NAM/CONUS_20km/noaaport/catalog.html?dataset=grib/NCEP/NAM/CONUS_20km/noaaport/Best> ;
+        <https://schema.org/box> "12.190000534057615 -152.87269071350659 57.30033656605528 -49.31226623770094"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-25T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-29T03:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.xml?dataset=grib/HRRR/CONUS_3km/surface/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/HRRR/CONUS_3km/surface/catalog.html?dataset=grib/HRRR/CONUS_3km/surface/Best> ;
+        <https://schema.org/box> "21.138124465942376 -134.09548029305594 47.84219632282758 -60.91719159461894"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-01T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.xml?dataset=grib/FNMOC/COAMPS/Southern_California/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/COAMPS/Southern_California/catalog.html?dataset=grib/FNMOC/COAMPS/Southern_California/Best> ;
+        <https://schema.org/box> "22.000001907348633 -128.0 43.00000274181366 -108.94999924302101"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-07T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.xml?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Puerto_Rico_0p5deg/catalog.html?dataset=grib/NCEP/GFS/Puerto_Rico_0p5deg/Best> ;
+        <https://schema.org/box> "-0.25 -88.24996948242188 50.75 -20.249969482421875"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.xml?dataset=grib/FNMOC/NCODA/Global_Ocean/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/FNMOC/NCODA/Global_Ocean/catalog.html?dataset=grib/FNMOC/NCODA/Global_Ocean/TP> ;
+        <https://schema.org/box> "-90.0 -180.0 90.0 180.0"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T11:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.xml?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/RTMA/CONUS_2p5km/catalog.html?dataset=grib/NCEP/RTMA/CONUS_2p5km/Best> ;
+        <https://schema.org/box> "20.1919994354248 -130.10343744073265 50.1055463250169 -60.88556057076988"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T12:10:17Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.xml?dataset=grib/NCEP/MRMS/BaseRef/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/BaseRef/catalog.html?dataset=grib/NCEP/MRMS/BaseRef/TP> ;
+        <https://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-06-07T06:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.xml?dataset=grib/NCEP/GFS/Pacific_40km/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/GFS/Pacific_40km/catalog.html?dataset=grib/NCEP/GFS/Pacific_40km/Best> ;
+        <https://schema.org/box> "-35.000000000000014 110.0 60.78878203352615 -109.12906056061036"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:38Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-28T11:58:36Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.xml?dataset=grib/NCEP/MRMS/Radar/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Radar/catalog.html?dataset=grib/NCEP/MRMS/Radar/TP> ;
+        <https://schema.org/box> "20.00499971397221 -129.99501037597656 54.994998931884766 -60.00501194037497"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T03:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-31T18:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.xml?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/SREF/Alaska_45km/ensprod/catalog.html?dataset=grib/NCEP/SREF/Alaska_45km/ensprod/Best> ;
+        <https://schema.org/box> "30.00000000000001 -172.99999999999994 70.11139202708944 -62.85040019582402"
+    ] .
+
+[]
+    a <http://www.w3.org/2006/time#TemporalEntity> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> ;
+    <http://www.w3.org/2006/time#hasBeginning> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-04-28T00:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] ;
+    <http://www.w3.org/2006/time#hasEnd> [
+        a <http://www.w3.org/2006/time#Instant> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> ;
+        <http://www.w3.org/2006/time#inXSDDateTimeStamp> "2019-05-27T23:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>
+    ] .
+
+[]
+    a <https://schema.org/DataDownload> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> ;
+    <https://schema.org/contentUrl> "https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.xml?dataset=grib/NCEP/MRMS/Model/TP" ;
+    <https://schema.org/encodingFormat> "text/xml" .
+
+[]
+    a <https://schema.org/Place> ;
+    <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> ;
+    <https://schema.org/geo> [
+        a <https://schema.org/GeoShape> ;
+        <http://www.w3.org/2000/01/rdf-schema#seeAlso> <https://thredds-test.unidata.ucar.edu/thredds/catalog/grib/NCEP/MRMS/Model/catalog.html?dataset=grib/NCEP/MRMS/Model/TP> ;
+        <https://schema.org/box> "20.00499971397221 -129.9940185546875 54.994998931884766 -60.00402011908591"
+    ] .
+

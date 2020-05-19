@@ -1,0 +1,43 @@
+prefix schema: <http://schema.org/>
+select ?s ?name ?url ?desc
+where {
+  ?s rdf:type schema:Organization .
+  ?s schema:description ?desc .
+  ?s schema:name ?name .
+  ?s schema:url ?url .
+}
+
+
+
+prefix bds: <http://www.bigdata.com/rdf/search#>
+select ?s ?p ?o ?score ?rank
+where {
+?o bds:search "Nitrogen" .
+?o bds:minRelevance "0.25" .
+?o bds:relevance ?score .
+?o bds:maxRank "1000" .
+?o bds:rank ?rank .
+?s ?p ?o .
+}
+ORDER BY DESC(?score)
+
+
+
+prefix bds: <http://www.bigdata.com/rdf/search#>
+select DISTINCT ?s
+where {
+?o bds:search "Nitrogen" .
+?o bds:minRelevance "0.25" .
+?o bds:relevance ?score .
+?o bds:maxRank "1000" .
+?o bds:rank ?rank .
+?s ?p ?o .
+}
+ORDER BY DESC(?score)
+
+
+Will then need to try and find all the details about the entries
+to display nicely.   That is really where a simple web component would be nice
+that I can pass the URL to and have collect the information..
+
+

@@ -1,0 +1,36 @@
+---
+minio:
+  address: 0.0.0.0
+  port: 9000   
+  accessKey: gleaneraccess
+  secretKey: gleanersecret
+  ssl: false
+  bucket: gleaner
+gleaner:
+  runid: igsnrunX # this will be the bucket the output is placed in...
+  summon: true # do we want to visit the web sites and pull down the files
+  mill: true
+context:
+  cache: true
+contextmaps:
+- prefix: "https://schema.org/"
+  file: "./jsonldcontext.jsonld"
+- prefix: "http://schema.org/"
+  file: "./jsonldcontext.jsonld"
+summoner:
+  mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
+millers:
+  graph: true
+  shacl: true
+  #geojson: false
+shaclservice:
+  url: https://1bzh4a0lbd.execute-api.us-east-1.amazonaws.com/dev/verify 
+shapefiles:
+    #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
+    #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
+- ref: https://gist.githubusercontent.com/fils/77d40a917a7af8020693678be30e87dd/raw/f2480cd2f304f2bc74143d4a72e72d43727942c4/westerntropicalshape.ttl
+sources:
+- name: samplesearth
+  logo: http://geodex.org/images/logos/EarthCubeLogo.png
+  url: http://samples.earth/sitemap.xml   # XML version available?
+  headless: false
