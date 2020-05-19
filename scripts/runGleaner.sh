@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # bind vs volume
-
-
 docker volume create my-vol
 
 docker run --rm  --mount type=bind,source=$(pwd),target=/gleaner/config \
