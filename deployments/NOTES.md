@@ -8,5 +8,3 @@ Gleaner issues.
 
 ## Files
 
-* gleaner-dev.yml is likely the best to use for now.  It will run a few 
-containers you don't always need but they full suite is there.  
