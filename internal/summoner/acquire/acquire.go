@@ -21,7 +21,7 @@ import (
 )
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap) {
 	uiprogress.Start()
 	wg := sync.WaitGroup{}
 
@@ -35,7 +35,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet
 	// uiprogress.Stop()
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.URLSet, k string, wg *sync.WaitGroup) {
+func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap, k string, wg *sync.WaitGroup) {
 
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)

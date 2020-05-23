@@ -19,7 +19,7 @@ import (
 // Headless gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func Headless(minioClient *minio.Client, m map[string]sitemaps.URLSet) {
+func Headless(minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
 	// err := buildBuckets(minioClient, m) // TODO needs error obviously
 	// if err != nil {
 	// 	log.Printf("Gleaner bucket report:  %s", err)

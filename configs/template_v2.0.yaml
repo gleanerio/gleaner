@@ -18,6 +18,7 @@ contextmaps:
 - prefix: "http://schema.org/"
   file: "./jsonldcontext.jsonld"
 summoner:
+  after: ""      # "21 May 20 10:00 UTC"   
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
 millers:
   graph: true
@@ -31,6 +32,5 @@ shapefiles:
 - ref: https://gist.githubusercontent.com/fils/77d40a917a7af8020693678be30e87dd/raw/f2480cd2f304f2bc74143d4a72e72d43727942c4/westerntropicalshape.ttl
 sources:
 - name: samplesearth
-  logo: http://geodex.org/images/logos/EarthCubeLogo.png
   url: http://samples.earth/sitemap.xml   # XML version available?
   headless: false

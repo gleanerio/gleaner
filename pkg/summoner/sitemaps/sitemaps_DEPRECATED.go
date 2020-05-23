@@ -34,9 +34,9 @@ type SiteMapEntry struct {
 	Lastmod string `xml:"lastmod"`
 }
 
-// IngestSitemap validates the XMl format of the sitemap and
+// DEPRECATEDIngestSitemap validates the XMl format of the sitemap and
 // reads each entry into a struct array that is sent back
-func IngestSitemap(url string) URLSet {
+func DEPRECATEDIngestSitemap(url string) URLSet {
 	// get the body then check the type
 	// if text, use the text code else..  use the XML code (do a case switch here perhaps?)
 
