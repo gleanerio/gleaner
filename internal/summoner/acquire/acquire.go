@@ -25,6 +25,9 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitema
 	uiprogress.Start()
 	wg := sync.WaitGroup{}
 
+	// Why do I pass the wg pointer..   just make a new one
+	// for each domain in getDomain and us this one where with a semaphore
+	// to control the loop...
 	for k := range m {
 		log.Printf("Queuing URLs for %s \n", k)
 		go getDomain(v1, mc, m, k, &wg)
@@ -37,7 +40,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitema
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap, k string, wg *sync.WaitGroup) {
 
-	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control
+	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
 
@@ -63,7 +66,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-	// log.Println(len(m[k].URL))
+	// var client http.Client
 
 	// we actually go get the URLs now
 	for i := range m[k].URL {
@@ -83,7 +86,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 			if err != nil {
 				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
 			}
-
 			req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
 
 			resp, err := client.Do(req)
