@@ -24,7 +24,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	}
 
 	if len(hru) > 0 {
-		acquire.Headless(mc, hru)
+		acquire.HeadlessNG(v1, mc, hru)
 	}
 
 	log.Printf("Summoner end time: %s \n", time.Now())

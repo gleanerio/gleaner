@@ -50,16 +50,21 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
 
 			wg.Add(1)
 			urlloc := m[k].URL[i].Loc
-			// log.Println(urlloc)
 
 			go func(i int, k string) {
 				semaphoreChan <- struct{}{}
+
+				log.Println(urlloc)
+
+				log.Println(ctxt)
 
 				var jsonld string
 				err := chromedp.Run(ctxt, domprocess(urlloc, &jsonld))
 				if err != nil {
 					log.Println(err)
 				}
+
+				log.Println(jsonld)
 
 				if jsonld != "" { // traps out the root domain...   should do this different
 					// get sha1 of the JSONLD..  it's a nice ID
@@ -80,7 +85,7 @@ func Headless(minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
 					bucketName := "gleaner-summoned"
 					//bucketName := fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
-					// Upload the zip file with FPutObject
+					// Upload the  file with FPutObject
 					n, err := minioClient.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 					if err != nil {
 						log.Printf("%s", objectName)

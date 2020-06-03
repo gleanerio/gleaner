@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -40,7 +41,30 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitema
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap, k string, wg *sync.WaitGroup) {
 
-	semaphoreChan := make(chan struct{}, 20) // a blocking channel to keep concurrency under control
+	mcfg := v1.GetStringMapString("summoner")
+	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
+	if err != nil {
+		log.Println(err)
+		log.Panic("Could not convert threads from config file to an int")
+	}
+
+	delay := mcfg["delay"]
+	var dt int64
+	if delay != "" {
+		log.Printf("Delay set to: %s milliseconds", delay)
+		dt, err = strconv.ParseInt(delay, 10, 64)
+		if err != nil {
+			log.Println(err)
+			log.Panic("Could not convert delay from config file to a value")
+		}
+		// set threads to 1
+		log.Println("Delay is not 0, threads set to 1")
+		tc = 1
+	} else {
+		dt = 0
+	}
+
+	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
 
@@ -150,7 +174,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 			bar.Incr()
 
 			logger.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
-			lwg.Done()                                     // tell the wait group that we be done
+			lwg.Done()
+
+			time.Sleep(time.Duration(dt) * time.Millisecond) // tell the wait group that we be done
 
 			<-semaphoreChan // clear a spot in the semaphore channel
 		}(i, k)

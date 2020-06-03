@@ -20,12 +20,14 @@ contextmaps:
 summoner:
   after: ""      # "21 May 20 10:00 UTC"   
   mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
+  threads: 20
+  delay: 0  # milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1) 
 millers:
   graph: true
   shacl: true
   #geojson: false
 shaclservice:
-  url: https://1bzh4a0lbd.execute-api.us-east-1.amazonaws.com/dev/verify 
+  url:  https://1bwb5ptlgh.execute-api.us-east-1.amazonaws.com/dev/verify 
 shapefiles:
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
     #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
