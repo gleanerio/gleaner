@@ -6,11 +6,15 @@ package sitemaps
 // contribute back any needed changes and then link.
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/xml"
 	"errors"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/araddon/dateparse"
@@ -92,6 +96,54 @@ func GetAfterDate(URL string, options interface{}, date string) (Sitemap, error)
 	return smap, nil
 }
 
+// Get sitemap data from URL
+func Get(URL string, options interface{}) (Sitemap, error) {
+	data, err := fetch(URL, options)
+	if err != nil {
+		return Sitemap{}, err
+	}
+
+	idx, idxErr := ParseIndex(data)
+	smap, smapErr := Parse(data)
+
+	if idxErr != nil && smapErr != nil {
+		log.Println(idxErr)
+		log.Println(smapErr)
+		return Sitemap{}, errors.New("URL is not a sitemap or sitemapindex")
+	} else if idxErr != nil {
+		log.Println(idxErr)
+		return smap, nil
+	}
+
+	smap, err = idx.get(data, options)
+	if err != nil {
+		log.Println(err)
+		return Sitemap{}, err
+	}
+
+	return smap, nil
+}
+
+func gUnzipData(data []byte) (resData []byte, err error) {
+	b := bytes.NewBuffer(data)
+
+	var r io.Reader
+	r, err = gzip.NewReader(b)
+	if err != nil {
+		return
+	}
+
+	var resB bytes.Buffer
+	_, err = resB.ReadFrom(r)
+	if err != nil {
+		return
+	}
+
+	resData = resB.Bytes()
+
+	return
+}
+
 // aftertime returns a boolean true if check is after lastmod
 func afterTime(lastmod, check time.Time) bool {
 	return lastmod.After(check)
@@ -107,35 +159,27 @@ var fetch = func(URL string, options interface{}) ([]byte, error) {
 	}
 	defer res.Body.Close()
 
-	return ioutil.ReadAll(res.Body)
+	// TODO  move the gunzip here..
+	// if url ends in .gz then returnthe uncompressed bytes...
+
+	b, err := ioutil.ReadAll(res.Body)
+	var data []byte
+	if strings.HasSuffix(URL, ".gz") {
+		log.Println("Gziped sitemap / index")
+		data, err = gUnzipData(b)
+		if err != nil {
+			log.Println(err)
+		}
+	} else {
+		log.Println("Plain text XML format")
+		data = append(data, b...)
+	}
+
+	return data, err
 }
 
 // Time interval to be used in Index.get
 var interval = time.Second
-
-// Get sitemap data from URL
-func Get(URL string, options interface{}) (Sitemap, error) {
-	data, err := fetch(URL, options)
-	if err != nil {
-		return Sitemap{}, err
-	}
-
-	idx, idxErr := ParseIndex(data)
-	smap, smapErr := Parse(data)
-
-	if idxErr != nil && smapErr != nil {
-		return Sitemap{}, errors.New("URL is not a sitemap or sitemapindex")
-	} else if idxErr != nil {
-		return smap, nil
-	}
-
-	smap, err = idx.get(data, options)
-	if err != nil {
-		return Sitemap{}, err
-	}
-
-	return smap, nil
-}
 
 // Get Sitemap data from sitemapindex file
 func (s *Index) get(data []byte, options interface{}) (Sitemap, error) {
