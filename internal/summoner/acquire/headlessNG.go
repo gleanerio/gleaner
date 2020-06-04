@@ -30,22 +30,17 @@ type DocumentInfo struct {
 // TODO..  trap out error where headless is NOT running
 func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
 
-	// log.Println("headless before loops")
-	// log.Println(m)
-
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
 		for i := range m[k].URL {
-
-			err := run(v1, minioClient, 15*time.Second, m[k].URL[i].Loc, k)
+			err := run(v1, minioClient, 25*time.Second, m[k].URL[i].Loc, k)
 			if err != nil {
 				log.Print(err)
 			}
-
 		}
-	}
 
+	}
 }
 
 func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url, k string) error {
