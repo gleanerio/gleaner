@@ -94,6 +94,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	fmt.Printf("Page loaded with frame ID: %s\n", nav.FrameID)
 
 	// Parse information from the document by evaluating JavaScript.
+	// querySelector('script[type="application/ld+json"]')
 	expression := `
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
