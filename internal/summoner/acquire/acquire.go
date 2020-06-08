@@ -131,7 +131,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 
 			var jsonld string
 
-			if err == nil && !contains(resp.Header["Content-Type"], "application/ld+json") {
+			// look in the HTML page for <script type=application/ld+json
+			if err == nil && !contains(resp.Header["Content-Type"], "application/json") && !contains(resp.Header["Content-Type"], "application/ld+json") {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
 					if val == "application/ld+json" {
@@ -144,6 +145,13 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 				})
 			}
 
+			// this should not be here IMHO, but need to support people not setting proper header value
+			// The URL is sending back JSON-LD but incorrectly sending as application/json
+			if err == nil && contains(resp.Header["Content-Type"], "application/json") {
+				jsonld = doc.Text()
+			}
+
+			// The URL is sending back JSON-LD correctly as application/ld+json
 			if err == nil && contains(resp.Header["Content-Type"], "application/ld+json") {
 				jsonld = doc.Text()
 			}
@@ -203,7 +211,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 
 func contains(arr []string, str string) bool {
 	for _, a := range arr {
-		if a == str {
+		// if a == str {
+		if strings.Contains(a, str) {
 			return true
 		}
 	}
