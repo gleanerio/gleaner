@@ -4,13 +4,42 @@
 
 ## About
 
-Gleaner is the structured data on the web indexing tool developed as part of 
- NSF EarthCube.  Its focus is on collection JSON-LD encoding data graphs describing 
- data resources and services.  Gleaner can then process and generate a semantic network based on a list of providers. 
+Many facilities are working to align with FAIR data principles. The
+publishing of both human and machine readable metadata in a common manner and
+leveraging open and standards based protocols are supporting activities.
+Better alignment with FAIR principles is also a component in many facility
+certification efforts while commercially backed tools like Google DataSet Search
+leverage this work to provide expansive and easy searching of data resources.
+Within the geoscience community, the work at Science on Schema is a key
+community partner to help providers with this publishing work.  Gleaner also
+leverages this work.
+
+Gleaner is an open source tool, written in Go, that compiles to a simple single
+static binary across most platforms.   It is designed to leverage sitemaps to
+access resources and extract JSON-LD encoded structured data.   It can perform
+various actions on these collected resources then.   Validation through calling
+SHACL services like Tangram, form checking (making sure the basic structure is
+proper) and generating indexes.    The basic index generated is a graph, formed
+from the various individual data graphs for each resource.   This can then be
+fed into a graph database and used for searching, analysis or exposed through
+Web APIs or other approaches like GraphQL.   Results of Gleaner could also be
+used to feed Elasticsearch or other data systems though spatial or even temporal
+indexes could be formed from the exposed data. 
+
+Gleaner can also be used as a tool to quickly test and evaluate facility or
+community resources publishing patterns to ensure better alignment with
+commercial or other indexing services.  As such, Gleaner is part of a "Data Ops"
+approach to rapid and iterative data publishing.
+
+Gleaner is simply an implementation of web architecture patterns and client code
+focused on accessing and indexing these resources.
+
  
  ![Basic Gleaner](./docs/images/gleaneroverview.png/)
 
-A set of cloud based tools and functions can be found https://fence.gleaner.io/ These can be usd online via the browser or through command line calls.  They are also available for use in Jupyter notebooks do develop out workflows with.
+A set of cloud based tools and functions can be found https://fence.gleaner.io/ These can be usd 
+online via the browser or through command line calls.  
+They are also available for use in Jupyter notebooks do develop out workflows with.
 
 ## More 
 

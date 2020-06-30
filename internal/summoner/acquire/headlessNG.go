@@ -29,7 +29,6 @@ type DocumentInfo struct {
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
 func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
-
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
@@ -39,7 +38,6 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemap
 				log.Print(err)
 			}
 		}
-
 	}
 }
 
@@ -47,8 +45,10 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	mcfg := v1.GetStringMapString("summoner")
+
 	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
-	devt := devtool.New("http://127.0.0.1:9222")
+	devt := devtool.New(mcfg["headless"])
 	pt, err := devt.Get(ctx, devtool.Page)
 	if err != nil {
 		pt, err = devt.Create(ctx)
@@ -94,11 +94,12 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	fmt.Printf("Page loaded with frame ID: %s\n", nav.FrameID)
 
 	// Parse information from the document by evaluating JavaScript.
-	// querySelector('script[type="application/ld+json"]')
+	// const title = document.querySelector('script[type="application/ld+json"]').innerText;
+	//const title = document.querySelector('#jsonld').innerText;
 	expression := `
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
-				const title = document.querySelector('#jsonld').innerText;
+				const title = document.querySelector('script[type="application/ld+json"]').innerText;
 				resolve({title});
 			}, 500);
 		});
@@ -117,7 +118,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	}
 
 	jsonld := info.Title
-	fmt.Printf("%s JSON-LD: %s\n\n", url, jsonld)
+	// fmt.Printf("%s JSON-LD: %s\n\n", url, jsonld)
 
 	if info.Title != "" { // traps out the root domain...   should do this different
 		// get sha1 of the JSONLD..  it's a nice ID
