@@ -16,10 +16,6 @@ gleaner.darwin:
 
 releases: gleaner gleaner.exe gleaner.darwin
 
-glcon:
-	cd cmd/glcon ; \
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o glcon
-
 docker:
 	docker build  --tag="nsfearthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile . ; \
 	docker tag nsfearthcube/gleaner:$(VERSION) nsfearthcube/gleaner:latest
@@ -31,3 +27,15 @@ removeimage:
 publish: docker
 	docker push nsfearthcube/gleaner:$(VERSION) ; \
 	docker push nsfearthcube/gleaner:latest
+
+glweb:
+	cd cmd/glweb ; \
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o glweb
+
+dockerweb:
+	docker build  --tag="fils/gleanerweb:$(VERSION)"  --file=./build/DockerfileWeb . ; \
+	docker tag fils/gleanerweb:$(VERSION) fils/gleanerweb:latest
+
+publishweb:
+	docker push fils/gleanerweb:$(VERSION) ; \
+	docker push fils/gleanerweb:latest

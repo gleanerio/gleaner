@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- <link rel="icon" href="https://via.placeholder.com/70x70"> -->
+    <link rel="stylesheet" href="./mvp.css">
+    <meta charset="utf-8">
+    <meta name="description" content="ALPHA Gleaner Web UI">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gleaner Web UI</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/"><img alt="Gleaner" src="/G_grey.png" height="80"></a>
+            <ul>
+                <li><a href="https://github.com/earthcubearchitecture-project418/gleaner">GitHub</a></li>
+                <li><a href="#">More Info</a>
+                    <ul>
+                        <li><a href="#">About Gleaner Web</a></li>
+                        <li><a href="#">Submit an issue or request</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <h1>Gleaner Web UI<sup>ALPHA</sup> </h1>
+        <section>
+            <div class="nullform">
+                <header>
+                    <h2> Sitemap URL Submission </h2>
+                </header>
+                <label for="input1">Sitemap URL</label>
+                <input type="text" id="input1" name="input1" size="40" placeholder="Input1">
+                <label for="select1">Pages are:</label>
+                <select id="select1">
+                    <option value="option1">static</option>
+                    <option value="option2">dynamic</option>
+                </select>
+                <label for="textarea1">Run Notes:</label>
+                <textarea cols="40" rows="5" id="textarea1"></textarea>
+                <button id="bt" >Submit</button>
+            </div>
+        </section>
+
+   
+    
+
+    </header>
+
+   
+
+    <main>
+        <article>
+            <aside>
+                <p>Job URL (DO NOT LOOSE): <span id="PID"></span></p>
+            </aside>
+        </article>
+
+        <div>
+            <details>
+                <summary>More info</summary>
+                <p>This is just a test. In the future I many add
+                    some text or a video here to better help guide
+                    users. For now, if anyone other than me is seeing this I likely
+                    told you about this. ;)
+                </p>
+                <p>
+                    When you submit a sitemap URL this site will provide you a URL with
+                    a unique ID associated with you run. You will need this URL (with the ID)
+                    to check on the status of your run.
+                </p>
+                <p>
+                    The URL will 303 (redirect) when the run is over to a new page that will allow
+                    you to download the run results.
+                </p>
+            </details>
+
+        </div>
+
+    </main>
+    <footer>
+        <hr>
+        <p>
+            <small>https://gleaner.io</small>
+        </p>
+    </footer>
+</body>
+
+<script>
+    function createGist(opts) {
+        console.log('Posting request to Gleaner');
+        fetch('/job', {
+            method: 'post',
+            body: JSON.stringify(opts)
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            console.log(data);
+            var span = document.getElementById("PID");
+            span.innerHTML = data.ID;
+            console.log(data.ID);
+        });
+    }
+
+    function submitURL() {
+        var content = document.querySelector('#input1').value;
+        var mode = document.querySelector('#select1').value;
+        if (content) {
+            createGist({
+                url: content,
+                mode: mode
+            });
+        } else {
+            console.log('Please enter in content to POST to a new Gist.');
+        }
+    }
+
+    var submitBtn = document.querySelector('#bt');
+    submitBtn.addEventListener('click', submitURL);
+
+
+
+</script>
+
+
+</html>
