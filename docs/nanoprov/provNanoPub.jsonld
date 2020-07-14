@@ -1,0 +1,79 @@
+{
+  "@context": {
+    "gleaner": "http://voc.gleaner.io/id/",
+    "np": "http://www.nanopub.org/nschema#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@set": [
+    {
+      "@id": "gleaner:nanopub/XID",
+      "@type": "np:NanoPublication",
+      "np:hasAssertion": {
+        "@id": "gleaner:nanopub/XID#assertion"
+      },
+      "np:hasProvenance": {
+        "@id": "gleaner:nanopub/XID#provenance"
+      },
+      "np:hasPublicationInfo": {
+        "@id": "gleaner:nanopub/XID#pubInfo"
+      }
+    },
+    {
+      "@id": "gleaner:nanopub/XID#assertion",
+      "@graph": {
+        "@id": "gleaner:n???",
+        "@type": "schema:Thing",
+        "identifier": [
+          {
+            "@type": "schema:PropertyValue",
+            "name": "GraphSHA",
+            "description": "A SHA256 sha stamp on the harvest data graph from a URL",
+            "value": "SHA256 HASH HERE"
+          },
+          {
+            "@type": "schema:PropertyValue",
+            "name": "ProviderID",
+            "description": "The id provided with the data graph by the provider",
+            "value": "doi, URL, ark etv..  here"
+          },
+          {
+            "@type": "schema:PropertyValue",
+            "name": "URL",
+            "description": "The URL harvested by ",
+            "value": "SHA256 HASH HERE"
+          }
+        ]
+      }
+    },
+    {
+      "@id": "gleaner:nanopub/XID#provenance",
+      "@graph": {
+        "@id": "gleaner:nanopub/XID#assertion",
+        "prov:wasGeneratedAtTime": {
+          "@value": "2019-10-20T11:54:00Z",
+          "@type": "xsd:dateTime"
+        },
+        "prov:wasDerivedFrom": {
+          "@id": "URL of the resources and/or  @id from resource"
+        },
+        "prov:wasAttributedTo": {
+          "@id": "Can I put the Institution base URl or ID here"
+        }
+      }
+    },
+    {
+      "@id": "gleaner:nanopub/XID#pubInfo",
+      "@graph": {
+        "@id": "gleaner:nanopub/XID#nanopub",
+        "prov:wasAttributedTo": {
+          "@id": "gleaner:tool/gleaner"
+        },
+        "prov:generatedAtTime": {
+          "@value": "2019-10-23T14:38:00Z",
+          "@type": "xsd:dateTime"
+        }
+      }
+    }
+  ]
+}
