@@ -23,7 +23,7 @@
       "@id": "gleaner:nanopub/XID#assertion",
       "@graph": {
         "@id": "gleaner:n???",
-        "@type": "schema:Thing",
+        "@type": "schema:Dataset",
         "identifier": [
           {
             "@type": "schema:PropertyValue",

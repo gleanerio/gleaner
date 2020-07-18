@@ -21,9 +21,23 @@ duplication across the net.  The goal will be to be able to know which ones are
 likely the same.    If we provide a set of factors that are a "finger print" for 
 a resource then we can likely present this back to the user.  
 
+
+## Example
+
+
+<div id="code-element"></div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+      axios({
+      method: 'get',
+      url: 'https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/docs/nanoprov/provNanoPub.jsonld'
+       })
+      .then(function (response) {
+         document.getElementById("code-element").innerHTML = response.data;
+      });
+</script>
+
 ## References 
 
 * http://nanoweb.dei.unipd.it/
 * Indieweb specifications: https://indieweb.org/specifications
-
-
