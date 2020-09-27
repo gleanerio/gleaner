@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"earthcube.org/Project418/gleaner/internal/millers/graph"
-	"earthcube.org/Project418/gleaner/internal/millers/prov"
-	"earthcube.org/Project418/gleaner/internal/millers/shapes"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/prov"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/shapes"
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
 )

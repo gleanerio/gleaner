@@ -9,10 +9,10 @@ import (
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
 
-	"earthcube.org/Project418/gleaner/internal/check"
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers"
-	"earthcube.org/Project418/gleaner/internal/summoner"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/check"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
 )
 
 var viperVal string

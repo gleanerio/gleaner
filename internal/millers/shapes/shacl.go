@@ -10,8 +10,8 @@ import (
 	"strings"
 	"sync"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/graph"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
 
 	"github.com/knakk/rdf"
 	minio "github.com/minio/minio-go"

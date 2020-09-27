@@ -13,9 +13,9 @@ import (
 	"sync"
 	"time"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/gosuri/uiprogress"
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"

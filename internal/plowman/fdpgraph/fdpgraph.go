@@ -5,9 +5,9 @@ import (
 	"log"
 	"sync"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/pkg/utils"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/millerutils"
+	"github.com/earthcubearchitecture-project418/gleaner/pkg/utils"
 
 	minio "github.com/minio/minio-go"
 )

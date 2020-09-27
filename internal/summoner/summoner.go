@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"earthcube.org/Project418/gleaner/internal/summoner/acquire"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
 )

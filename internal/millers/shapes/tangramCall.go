@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"strings"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/graph"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
 	minio "github.com/minio/minio-go"
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/viper"

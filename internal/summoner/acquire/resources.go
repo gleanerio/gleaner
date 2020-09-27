@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
+	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/spf13/viper"
 )
 
