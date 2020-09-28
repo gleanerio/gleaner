@@ -13,7 +13,7 @@ import (
 	"github.com/gosuri/uiprogress"
 	"github.com/piprate/json-gold/ld"
 
-	"earthcube.org/Project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	minio "github.com/minio/minio-go"
 	"github.com/spf13/viper"
 )

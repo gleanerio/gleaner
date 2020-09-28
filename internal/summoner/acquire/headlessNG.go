@@ -9,8 +9,8 @@ import (
 	"log"
 	"time"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/pkg/summoner/sitemaps"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/page"
@@ -33,7 +33,7 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemap
 		log.Printf("Headless chrome call to: %s", k)
 
 		for i := range m[k].URL {
-			err := run(v1, minioClient, 25*time.Second, m[k].URL[i].Loc, k)
+			err := run(v1, minioClient, 45*time.Second, m[k].URL[i].Loc, k)
 			if err != nil {
 				log.Print(err)
 			}

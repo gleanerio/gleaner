@@ -2,13 +2,13 @@
 
 ## About
 
-glweb is the start of building an intereface to submit jobs into gleaner with.
+glweb is the start of building an interface to submit jobs into gleaner with.
 
 ## Notes
 
 glweb needs to 
 
-* allow you to load or creat a config file
+* allow you to load or create a config file
 * load it
 * check config loaded
 * run that config (fire off a webhook call to the webhook listener in gleaner)

@@ -16,9 +16,9 @@ func MinioConnection(v1 *viper.Viper) *minio.Client {
 	mcfg := v1.Sub("minio")
 	endpoint := fmt.Sprintf("%s:%s", mcfg.GetString("address"), mcfg.GetString("port"))
 	accessKeyID := mcfg.GetString("accesskey")
-
 	secretAccessKey := mcfg.GetString("secretkey")
 	useSSL := mcfg.GetBool("ssl")
+
 	minioClient, err := minio.NewV2(endpoint, accessKeyID, secretAccessKey, useSSL)
 	minioClient.SetCustomTransport(&http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}})
 	if err != nil {

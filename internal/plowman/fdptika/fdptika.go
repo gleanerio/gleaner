@@ -11,11 +11,11 @@ import (
 
 	//	"log"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers/millerutils"
-	"earthcube.org/Project418/gleaner/pkg/utils"
 	"github.com/bbalet/stopwords"
 	"github.com/blevesearch/bleve"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/millerutils"
+	"github.com/earthcubearchitecture-project418/gleaner/pkg/utils"
 	"github.com/go-resty/resty"
 	minio "github.com/minio/minio-go"
 )
