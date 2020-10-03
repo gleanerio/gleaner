@@ -7,7 +7,7 @@
   },
   "@set": [
     {
-      "@id": "gleaner:nanopub/XID",
+      "@id": "gleaner:nanopub/{{RES_ID}}",     this is XID in the rest of this document right now
       "@type": "np:NanoPublication",
       "np:hasAssertion": {
         "@id": "gleaner:nanopub/XID#assertion"
@@ -28,20 +28,20 @@
           {
             "@type": "schema:PropertyValue",
             "name": "GraphSHA",
-            "description": "A SHA256 sha stamp on the harvest data graph from a URL",
-            "value": "SHA256 HASH HERE"
+            "description": "A SHA256 sha stamp on the harvested data graph from a URL",
+            "value": "{{SHA256 HASH HERE}}"
           },
           {
             "@type": "schema:PropertyValue",
             "name": "ProviderID",
             "description": "The id provided with the data graph by the provider",
-            "value": "doi, URL, ark etv..  here"
+            "value": "{{re3 or URL noted in config}}"
           },
           {
             "@type": "schema:PropertyValue",
             "name": "URL",
-            "description": "The URL harvested by ",
-            "value": "SHA256 HASH HERE"
+            "description": "The URL harvested by gleaner",
+            "value": "{{The URL the JSON-LD came from}}"
           }
         ]
       }
@@ -51,7 +51,7 @@
       "@graph": {
         "@id": "gleaner:nanopub/XID#assertion",
         "prov:wasGeneratedAtTime": {
-          "@value": "2019-10-20T11:54:00Z",
+          "@value": "{{ The date done   like 2019-10-20T11:54:00Z}}",
           "@type": "xsd:dateTime"
         },
         "prov:wasDerivedFrom": {
