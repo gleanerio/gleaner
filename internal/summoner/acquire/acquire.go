@@ -170,6 +170,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 				usermeta["sha1"] = sha
 				bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
+				// TODO
+				// Make prov based on object name (org and object SHA)
+				//  DO this by writing a nanopub object to Minio..   then collect them up into a graph later...
+				// I need:  re3 of source, url of json-ld, sha of jsonld, date
+
 				// Upload the file with FPutObject
 				_, err = mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 				if err != nil {
