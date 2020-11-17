@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/prov"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/shapes"
 	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
@@ -42,9 +41,21 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 		log.Printf("Adding bucket to milling list: %s\n", m)
 	}
 
+	// Make array of prov buckets..  sad I have to do this..  I could just pass
+	// the domains and let each miller now pick where to get things from.  I
+	// only had to add this due to the prov data not being in summoned
+
+	ap := []string{}
+	for i := range domains {
+		m := fmt.Sprintf("prov/%s", domains[i].Name)
+		ap = append(ap, m)
+		log.Printf("Adding bucket to prov building list: %s\n", m)
+	}
+
 	mcfg := v1.GetStringMapString("millers") // get the millers we want to run from the config file
 
 	// Graph is the miller to convert from JSON-LD to nquads with validation of well formed
+	// TODO  none of these (graph, shacl, prov) deal with the returned error
 	if mcfg["graph"] == "true" {
 		for d := range as {
 			graph.GraphNG(mc, as[d], v1)
@@ -59,8 +70,8 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	}
 
 	if mcfg["prov"] == "true" {
-		for d := range as {
-			prov.MockObjects(mc, as[d], v1)
+		for d := range ap {
+			graph.AssembleObjs(mc, ap[d], v1)
 		}
 	}
 

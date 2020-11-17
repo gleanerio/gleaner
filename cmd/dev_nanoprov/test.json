@@ -7,7 +7,7 @@
   },
   "@set": [
     {
-      "@id": "gleaner:nanopub/XID",    
+      "@id": "gleaner:nanopub/resid", 
       "@type": "np:NanoPublication",
       "np:hasAssertion": {
         "@id": "gleaner:nanopub/XID#assertion"
@@ -22,27 +22,26 @@
     {
       "@id": "gleaner:nanopub/XID#assertion",
       "@graph": {
-        "@id": "DataSetURI",
+        "@id": "gleaner:n???",
         "@type": "schema:Dataset",
-        "description": "This is where you would put corrections or annotations",
         "identifier": [
           {
             "@type": "schema:PropertyValue",
             "name": "GraphSHA",
             "description": "A SHA256 sha stamp on the harvested data graph from a URL",
-            "value": "{{SHA256 HASH HERE}}"
+            "value": "sha256"
           },
           {
             "@type": "schema:PropertyValue",
             "name": "ProviderID",
             "description": "The id provided with the data graph by the provider",
-            "value": "{{re3 or URL noted in config}}"
+            "value": "re3"
           },
           {
             "@type": "schema:PropertyValue",
             "name": "URL",
             "description": "The URL harvested by gleaner",
-            "value": "{{The URL the JSON-LD came from}}"
+            "value": "source of the data"
           }
         ]
       }
@@ -50,23 +49,23 @@
     {
       "@id": "gleaner:nanopub/XID#provenance",
       "@graph": {
-        "@id": "URI for prov on data set",
+        "@id": "gleaner:nanopub/XID#assertion",
         "prov:wasGeneratedAtTime": {
-          "@value": "{{ The date done   like 2019-10-20T11:54:00Z}}",
+          "@value": "the date is ISO 396",
           "@type": "xsd:dateTime"
         },
         "prov:wasDerivedFrom": {
-          "@id": "URL of the resources and/or  @id from resource"
+          "@id": "ResourceIDorSomething"
         },
         "prov:wasAttributedTo": {
-          "@id": "Can I put the Institution base URl or ID here"
+          "@id": "SomeURI"
         }
       }
     },
     {
       "@id": "gleaner:nanopub/XID#pubInfo",
       "@graph": {
-        "@id": "the nanopub info ID",
+        "@id": "gleaner:nanopub/XID#nanopub",
         "prov:wasAttributedTo": {
           "@id": "gleaner:tool/gleaner"
         },

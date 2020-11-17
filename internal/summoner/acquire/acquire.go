@@ -172,8 +172,18 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 
 				// TODO
 				// Make prov based on object name (org and object SHA)
-				//  DO this by writing a nanopub object to Minio..   then collect them up into a graph later...
+				// DO this by writing a nanopub object to Minio..   then collect them up into a graph later...
 				// I need:  re3 of source, url of json-ld, sha of jsonld, date
+				// RESID  string SHA256 string RE3    string SOURCE string DATE   string
+				// sha points to object
+				// source to where I got it from
+				// also need what I searc for and display as the URL to link to
+				// need to revidw the subject and diurl I am using in the UI
+
+				err = StoreProv(v1, mc, k, sha, urlloc)
+				if err != nil {
+					log.Println(err)
+				}
 
 				// Upload the file with FPutObject
 				_, err = mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})

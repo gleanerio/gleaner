@@ -165,13 +165,13 @@ var fetch = func(URL string, options interface{}) ([]byte, error) {
 	b, err := ioutil.ReadAll(res.Body)
 	var data []byte
 	if strings.HasSuffix(URL, ".gz") {
-		log.Println("Gziped sitemap / index")
+		log.Println("Gziped sitemap")
 		data, err = gUnzipData(b)
 		if err != nil {
 			log.Println(err)
 		}
 	} else {
-		log.Println("Plain text XML format")
+		log.Println("Uncompressed XML sitemap")
 		data = append(data, b...)
 	}
 
