@@ -31,7 +31,6 @@ type DocumentInfo struct {
 func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
-
 		for i := range m[k].URL {
 			err := run(v1, minioClient, 45*time.Second, m[k].URL[i].Loc, k)
 			if err != nil {
@@ -53,6 +52,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
+			log.Print(err)
 			return err
 		}
 	}
@@ -60,6 +60,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
 	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 	defer conn.Close() // Leaving connections open will leak memory.
@@ -69,6 +70,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 	defer domContent.Close()
@@ -76,6 +78,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	// Enable events on the Page domain, it's often preferrable to create
 	// event clients before enabling events so that we don't miss any.
 	if err = c.Page.Enable(ctx); err != nil {
+		log.Print(err)
 		return err
 	}
 
@@ -83,13 +86,15 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 
 	// Wait until we have a DOMContentEventFired event.
-	if _, err = domContent.Recv(); err != nil {
-		return err
-	}
+	// if _, err = domContent.Recv(); err != nil {
+	// 	log.Print(err)
+	// 	return err
+	// }
 
 	fmt.Printf("Page loaded with frame ID: %s\n", nav.FrameID)
 
@@ -99,7 +104,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	expression := `
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
-				const title = document.querySelector('script[type="application/ld+json"]').innerText;
+				const title = document.querySelector('#schemaDotOrg').innerText;
 				resolve({title});
 			}, 500);
 		});
@@ -107,13 +112,13 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return (err)
 	}
 
 	var info DocumentInfo
 	if err = json.Unmarshal(eval.Result.Value, &info); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return (err)
 	}
 
