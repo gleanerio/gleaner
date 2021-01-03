@@ -31,6 +31,7 @@ type DocumentInfo struct {
 func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
+
 		for i := range m[k].URL {
 			err := run(v1, minioClient, 45*time.Second, m[k].URL[i].Loc, k)
 			if err != nil {
@@ -91,20 +92,21 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	}
 
 	// Wait until we have a DOMContentEventFired event.
-	// if _, err = domContent.Recv(); err != nil {
-	// 	log.Print(err)
-	// 	return err
-	// }
+	if _, err = domContent.Recv(); err != nil {
+		log.Print(err)
+		return err
+	}
 
 	fmt.Printf("Page loaded with frame ID: %s\n", nav.FrameID)
 
 	// Parse information from the document by evaluating JavaScript.
 	// const title = document.querySelector('script[type="application/ld+json"]').innerText;
+	// const title = document.querySelector('#schemaDotOrg').innerText;
 	//const title = document.querySelector('#jsonld').innerText;
 	expression := `
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
-				const title = document.querySelector('#schemaDotOrg').innerText;
+				const title = document.querySelector('script[type="application/ld+json"]').innerText;
 				resolve({title});
 			}, 500);
 		});
