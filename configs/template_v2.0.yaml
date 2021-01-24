@@ -37,3 +37,6 @@ sources:
 - name: samplesearth
   url: http://samples.earth/sitemap.xml   # XML version available?
   headless: false
+- name: r2r
+  url: https://dev.rvdata.us/sitemap.xml   # XML version available?
+  headless: true

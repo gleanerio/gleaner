@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
@@ -13,9 +14,10 @@ import (
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 )
 
-var viperVal string
+var viperVal, sourceVal string
 var setupVal bool
 
 func init() {
@@ -23,6 +25,7 @@ func init() {
 	// log.SetOutput(ioutil.Discard) // turn off all logging
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
+	flag.StringVar(&sourceVal, "source", "", "Override config file source")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
 }
 
@@ -69,6 +72,32 @@ func main() {
 			panic(fmt.Errorf("error when reading config: %v", err))
 		}
 	}
+
+	if isFlagPassed("source") {
+		// -source '{"Name":"demo1", "URL":"http://foo.org/sitemap.xml", "Headless":true}'
+
+		configMap := v1.AllSettings()
+		delete(configMap, "sources")
+
+		//log.Println(sourceVal)
+		ns := acquire.Sources{}
+		json.Unmarshal([]byte(sourceVal), &ns)
+		//log.Println(ns)
+
+		sa := []acquire.Sources{}
+		//s := acquire.Sources{Name: "dmeoname", URL: "https://foo.org/sitemap.xml", Headless: true}
+		//sa = append(sa, s)
+		sa = append(sa, ns)
+		v1.Set("sources", sa)
+	}
+
+	//var domains []acquire.Sources
+	//err = v1.UnmarshalKey("sources", &domains)
+	//if err != nil {
+	//log.Println(err)
+	//}
+	//log.Println(domains)
+	//os.Exit(0)
 
 	// Set up the minio connector
 	mc := common.MinioConnection(v1)

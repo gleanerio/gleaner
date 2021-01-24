@@ -40,7 +40,6 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitema
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap, k string, wg *sync.WaitGroup) {
-
 	mcfg := v1.GetStringMapString("summoner")
 	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
 	if err != nil {
