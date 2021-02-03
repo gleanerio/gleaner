@@ -59,6 +59,8 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	return nil
 }
 
+// TODO make a new prov grpah that makes real triples...
+
 // ProvGraph generates a JSON-LD based nanopub prov graph for
 // a resource collected.
 func ProvGraph(k, sha, urlloc string) (string, error) {

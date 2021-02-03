@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha1"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -13,16 +14,25 @@ import (
 	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
+	"github.com/mafredri/cdp/protocol/network"
 	"github.com/mafredri/cdp/protocol/page"
 	"github.com/mafredri/cdp/protocol/runtime"
 	"github.com/mafredri/cdp/rpcc"
 	minio "github.com/minio/minio-go"
 	"github.com/spf13/viper"
+	"golang.org/x/sync/errgroup"
 )
 
 // DocumentInfo contains information about the document.
 type DocumentInfo struct {
 	Title string `json:"title"`
+}
+
+// Cookie represents a browser cookie.
+type Cookie struct {
+	URL   string `json:"url"`
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
@@ -33,7 +43,7 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemap
 		log.Printf("Headless chrome call to: %s", k)
 
 		for i := range m[k].URL {
-			err := run(v1, minioClient, 45*time.Second, m[k].URL[i].Loc, k)
+			err := PageRender(v1, minioClient, 45*time.Second, m[k].URL[i].Loc, k)
 			if err != nil {
 				log.Print(err)
 			}
@@ -41,9 +51,16 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemap
 	}
 }
 
-func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url, k string) error {
+func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url, k string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
+
+	// Cookies := []Cookie{
+	// 	{url, "myauth", "myvalue"},
+	// 	{url, "mysetting1", "myvalue1"},
+	// 	{url, "mysetting2", "myvalue2"},
+	// 	{url, "mysetting3", "myvalue3"},
+	// }
 
 	mcfg := v1.GetStringMapString("summoner")
 
@@ -67,6 +84,39 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	defer conn.Close() // Leaving connections open will leak memory.
 
 	c := cdp.NewClient(conn)
+
+	// Give enough capacity to avoid blocking any event listeners
+	abort := make(chan error, 2)
+
+	// Watch the abort channel.
+	go func() {
+		select {
+		case <-ctx.Done():
+		case err := <-abort:
+			fmt.Printf("aborted: %s\n", err.Error())
+			cancel()
+		}
+	}()
+
+	// Setup event handlers early because domain events can be sent as
+	// soon as Enable is called on the domain.
+	if err = abortOnErrors(ctx, c, abort); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	// if err = runBatch(
+	// 	// Enable all the domain events that we're interested in.
+	// 	func() error { return c.DOM.Enable(ctx) },
+	// 	func() error { return c.Network.Enable(ctx, nil) },
+	// 	func() error { return c.Page.Enable(ctx) },
+	// 	func() error { return c.Runtime.Enable(ctx) },
+
+	// 	func() error { return setCookies(ctx, c.Network, Cookies...) },
+	// ); err != nil {
+	// 	fmt.Println(err)
+	// 	return err
+	// }
 
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
@@ -97,20 +147,34 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 		return err
 	}
 
-	fmt.Printf("Page loaded with frame ID: %s\n", nav.FrameID)
+	fmt.Printf("%s for %s\n", nav.FrameID, url)
 
 	// Parse information from the document by evaluating JavaScript.
+	// const title = document.getElementById('geocodes').innerText;
+	// 				const title = document.querySelector('script[id="geocodes"]').innerText;
+
 	// const title = document.querySelector('script[type="application/ld+json"]').innerText;
-	// const title = document.querySelector('#schemaDotOrg').innerText;
 	//const title = document.querySelector('#jsonld').innerText;
+	// const title = document.querySelector('#geocodes').innerText;
+
+	// expression := `
+	// 	new Promise((resolve, reject) => {
+	// 		setTimeout(() => {
+	// 			const title = document.querySelector('script[id="geocodes"]').innerText;
+	// 			resolve({title});
+	// 		}, 1000);
+	// 	});
+	//`
+
 	expression := `
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
-				const title = document.querySelector('script[type="application/ld+json"]').innerText;
+				const title = document.querySelectorAll('script[type="application/ld+json"]')[0].innerText;
 				resolve({title});
-			}, 500);
-		});
+			}, 1000);
+		});	
 	`
+
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
@@ -125,7 +189,7 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 	}
 
 	jsonld := info.Title
-	// fmt.Printf("%s JSON-LD: %s\n\n", url, jsonld)
+	fmt.Printf("%s JSON-LD: %s\n\n", url, jsonld)
 
 	if info.Title != "" { // traps out the root domain...   should do this different
 		// get sha1 of the JSONLD..  it's a nice ID
@@ -180,5 +244,119 @@ func run(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url,
 
 	// fmt.Printf("HTML: %s\n", len(result.OuterHTML))
 
+	return nil
+}
+
+// runBatchFunc is the function signature for runBatch.
+type runBatchFunc func() error
+
+// runBatch runs all functions simultaneously and waits until
+// execution has completed or an error is encountered.
+func runBatch(fn ...runBatchFunc) error {
+	eg := errgroup.Group{}
+	for _, f := range fn {
+		eg.Go(f)
+	}
+	return eg.Wait()
+}
+
+// setCookies sets all the provided cookies.
+func setCookies(ctx context.Context, net cdp.Network, cookies ...Cookie) error {
+	var cmds []runBatchFunc
+	for _, c := range cookies {
+		args := network.NewSetCookieArgs(c.Name, c.Value).SetURL(c.URL)
+		cmds = append(cmds, func() error {
+			reply, err := net.SetCookie(ctx, args)
+			if err != nil {
+				return err
+			}
+			if !reply.Success {
+				return errors.New("could not set cookie")
+			}
+			return nil
+		})
+	}
+	return runBatch(cmds...)
+}
+
+// navigate to the URL and wait for DOMContentEventFired. An error is
+// returned if timeout happens before DOMContentEventFired.
+func navigate(ctx context.Context, pageClient cdp.Page, url string, timeout time.Duration) error {
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithTimeout(ctx, timeout)
+	defer cancel()
+
+	// Make sure Page events are enabled.
+	err := pageClient.Enable(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Open client for DOMContentEventFired to block until DOM has fully loaded.
+	domContentEventFired, err := pageClient.DOMContentEventFired(ctx)
+	if err != nil {
+		return err
+	}
+	defer domContentEventFired.Close()
+
+	_, err = pageClient.Navigate(ctx, page.NewNavigateArgs(url))
+	if err != nil {
+		return err
+	}
+
+	_, err = domContentEventFired.Recv()
+	return err
+}
+
+func abortOnErrors(ctx context.Context, c *cdp.Client, abort chan<- error) error {
+	exceptionThrown, err := c.Runtime.ExceptionThrown(ctx)
+	if err != nil {
+		return err
+	}
+
+	loadingFailed, err := c.Network.LoadingFailed(ctx)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		defer exceptionThrown.Close() // Cleanup.
+		defer loadingFailed.Close()
+		for {
+			select {
+			// Check for exceptions so we can abort as soon
+			// as one is encountered.
+			case <-exceptionThrown.Ready():
+				ev, err := exceptionThrown.Recv()
+				if err != nil {
+					// This could be any one of: stream closed,
+					// connection closed, context deadline or
+					// unmarshal failed.
+					abort <- err
+					return
+				}
+
+				// Ruh-roh! Let the caller know something went wrong.
+				abort <- ev.ExceptionDetails
+
+			// Check for non-canceled resources that failed
+			// to load.
+			case <-loadingFailed.Ready():
+				ev, err := loadingFailed.Recv()
+				if err != nil {
+					abort <- err
+					return
+				}
+
+				// For now, most optional fields are pointers
+				// and must be checked for nil.
+				canceled := ev.Canceled != nil && *ev.Canceled
+
+				if !canceled {
+					abort <- fmt.Errorf("request %s failed: %s", ev.RequestID, ev.ErrorText)
+				}
+			}
+		}
+	}()
 	return nil
 }

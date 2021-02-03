@@ -1,0 +1,26 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+# Make JSON-LD with https://frogcat.github.io/ttl2jsonld/demo/
+# Source of the resource
+<https://ufokn.org/id/org/lipd>
+    a prov:Organization .
+    # could this be a https://schema.org/Organization then as well?
+
+# The resource from the source
+<http://lipdverse.org/Temp12k/1_0_2/Haugtjern.Eide.2009.html>    #  make the URL object was recieved from  OR @id if that is provided
+    a prov:Entity ;
+    prov:value "http://lipdverse.org/Temp12k/1_0_2/Haugtjern.Eide.2009.html" ;  # make this the value of the urn gleaner object store?
+    prov:wasAttributedTo <https://ufokn.org/id/org/lipd> .
+
+# Resulting object
+<urn:gleaner:milled:lipd:SHA>  # make something like a dx URI?  or gleaner.io
+    a prov:Entity ;
+    prov:value "https://dx.geodex.org/?o=/lipdverse/005a96f740da7fb3fac07936a04a86ad9d03537c.jsonld" .   # make this the value of the urn gleaner object store
+
+# The act
+<https://gleaner.io/id/GLEANERRUNID>
+    a prov:Activity ;
+    prov:endedAtTime "2020-01-08T08:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ; # just the gleaner run date
+    prov:generated <urn:gleaner:milled:lipd:SHA> ;
+    prov:used <http://lipdverse.org/Temp12k/1_0_2/Haugtjern.Eide.2009.html> .   # or its shahash?
