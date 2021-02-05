@@ -59,11 +59,35 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	return nil
 }
 
-// TODO make a new prov grpah that makes real triples...
+// ProvOGraph is a simpler provo prov function
+// Against better judgment rather than build triples, I'll just
+// template build them like with the nanoprov function
+func ProvOGraph(k, sha, urlloc string) (string, error) {
 
-// ProvGraph generates a JSON-LD based nanopub prov graph for
+	currentTime := time.Now()
+	date := fmt.Sprintf("%s", currentTime.Format("2006-01-02"))
+
+	td := ProvData{urlloc, sha, "re3", k, date}
+
+	var doc bytes.Buffer
+
+	t, err := template.New("prov").Parse(tmpl)
+	if err != nil {
+		panic(err)
+	}
+	err = t.Execute(&doc, td)
+	if err != nil {
+		panic(err)
+	}
+
+	// fmt.Print(doc.String())
+
+	return doc.String(), nil
+}
+
+// NanoProvGraph generates a JSON-LD based nanopub prov graph for
 // a resource collected.
-func ProvGraph(k, sha, urlloc string) (string, error) {
+func NanoProvGraph(k, sha, urlloc string) (string, error) {
 	tmpl := nanoprov()
 
 	currentTime := time.Now()
@@ -169,7 +193,6 @@ func nanoprov() string {
   ]
 }
 `
-
 	return t
 
 }
