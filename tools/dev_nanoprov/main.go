@@ -56,6 +56,7 @@ func main() {
 
 	err = acquire.StoreProv(v1, mc, k, sha, urlloc)
 	if err != nil {
+		log.Println("Store prov failed")
 		log.Println(err)
 	}
 

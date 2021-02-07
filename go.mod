@@ -22,5 +22,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/tidwall/gjson v1.6.1
 	github.com/twinj/uuid v1.0.0
+	github.com/vugu/vgrouter v0.0.0-20200725205318-eeb478c42e5d // indirect
+	github.com/vugu/vugu v0.3.3 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
 )
