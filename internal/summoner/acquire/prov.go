@@ -44,8 +44,8 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 
 	b := bytes.NewBufferString(p)
 
-	objectName := fmt.Sprintf("prov/%s/%s.jsonld", k, provsha) // k is the name of the provider from config
-	usermeta := make(map[string]string)                        // what do I want to know?
+	objectName := fmt.Sprintf("prov/%s/%s.nq", k, provsha) // k is the name of the provider from config
+	usermeta := make(map[string]string)                    // what do I want to know?
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
@@ -72,7 +72,13 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 	currentTime := time.Now()
 	date := fmt.Sprintf("%s", currentTime.Format("2006-01-02"))
 
-	td := ProvData{RESID: urlloc, SHA256: sha, RE3: "re3stingFromConfig",
+	var domains []Sources
+	err := v1.UnmarshalKey("sources", &domains)
+	if err != nil {
+		log.Println(err)
+	}
+
+	td := ProvData{RESID: urlloc, SHA256: sha, RE3: "http://doi.org/10.17616/R34R5H",
 		SOURCE: k, DATE: date, RUNID: "XIDString"}
 
 	var doc bytes.Buffer
@@ -94,15 +100,11 @@ func quadtemplate() string {
 	t := `<https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Organization> .
   <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Organization> .
   <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <{{.RE3}}> .
-
-
   <{{.RESID}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Entity> .
   <{{.RESID}}> <http://www.w3.org/ns/prov#value> "{{.RESID}}" .
   <{{.RESID}}> <http://www.w3.org/ns/prov#wasAttributedTo> <https://gleaner.io/id/org/{{.SOURCE}}> .
-
   <urn:gleaner:milled:{{.SOURCE}}:{{.SHA256}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Entity> .
   <urn:gleaner:milled:{{.SOURCE}}:{{.SHA256}}> <http://www.w3.org/ns/prov#value> "https://dx.geodex.org/?o=/lipdverse/005a96f740da7fb3fac07936a04a86ad9d03537c.jsonld" .
-
   <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Activity> .
   <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/ns/prov#endedAtTime> "{{.DATE}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
   <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/ns/prov#generated> <urn:gleaner:milled:{{.SOURCE}}:{{.SHA256}}> .

@@ -15,6 +15,7 @@ type Sources struct {
 	Logo     string
 	URL      string
 	Headless bool
+	Pid      string
 	// SitemapFormat string
 	// Active        bool
 }
