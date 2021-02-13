@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/spf13/viper"
 )
 
@@ -49,12 +49,12 @@ func main() {
 	mc := common.MinioConnection(v1)
 
 	// func StoreProv(k, sha, urlloc string, mc *minio.Client) error {
+	// err = acquire.StoreProv(v1, mc, k, sha, urlloc)
 
-	k := "lipdverse"
-	sha := "03834c00834c7d10506a14ee67ed3205b093b029"
-	urlloc := "https://example.com/id/datasetX"
+	// test prov
 
-	err = acquire.StoreProv(v1, mc, k, sha, urlloc)
+	organizations.BuildGraph(mc, v1)
+
 	if err != nil {
 		log.Println("Store prov failed")
 		log.Println(err)

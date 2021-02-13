@@ -13,6 +13,7 @@ import (
 	"github.com/earthcubearchitecture-project418/gleaner/internal/check"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 )
@@ -134,6 +135,9 @@ func main() {
 // func cli(mc *minio.Client, cs utils.Config) {
 func cli(mc *minio.Client, v1 *viper.Viper) {
 	mcfg := v1.GetStringMapString("gleaner")
+
+	// Build the org graph
+	organizations.BuildGraph(mc, v1)
 
 	if mcfg["summon"] == "true" {
 		summoner.Summoner(mc, v1)

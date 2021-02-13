@@ -16,7 +16,7 @@ import (
 type ProvData struct {
 	RESID  string
 	SHA256 string
-	RE3    string
+	PID    string
 	SOURCE string
 	DATE   string
 	RUNID  string
@@ -69,17 +69,31 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 	tmpl := quadtemplate()
 
+	// get the time
 	currentTime := time.Now()
 	date := fmt.Sprintf("%s", currentTime.Format("2006-01-02"))
 
+	// open the config to get the runID later
+	mcfg := v1.GetStringMapString("gleaner")
+
+	// pull domains since we need to align k (stupid var for name here) with the PID value
 	var domains []Sources
 	err := v1.UnmarshalKey("sources", &domains)
 	if err != nil {
 		log.Println(err)
 	}
 
-	td := ProvData{RESID: urlloc, SHA256: sha, RE3: "http://doi.org/10.17616/R34R5H",
-		SOURCE: k, DATE: date, RUNID: "XIDString"}
+	pid := "unknown"
+	for i := range domains {
+		if domains[i].Name == k {
+			pid = domains[i].PID
+		}
+	}
+
+	log.Println(pid)
+
+	// build the struct to pass to the template parser
+	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k, DATE: date, RUNID: mcfg["runid"]}
 
 	var doc bytes.Buffer
 	t, err := template.New("prov").Parse(tmpl)
@@ -91,6 +105,8 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 		panic(err)
 	}
 
+	// log.Print(doc.String())
+
 	return doc.String(), err
 }
 
@@ -99,7 +115,7 @@ func quadtemplate() string {
 
 	t := `<https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Organization> .
   <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Organization> .
-  <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <{{.RE3}}> .
+  <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <{{.PID}}> .
   <{{.RESID}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Entity> .
   <{{.RESID}}> <http://www.w3.org/ns/prov#value> "{{.RESID}}" .
   <{{.RESID}}> <http://www.w3.org/ns/prov#wasAttributedTo> <https://gleaner.io/id/org/{{.SOURCE}}> .
@@ -123,7 +139,7 @@ func NanoProvGraph(k, sha, urlloc string) (string, error) {
 	currentTime := time.Now()
 	date := fmt.Sprintf("%s", currentTime.Format("2006-01-02"))
 
-	td := ProvData{RESID: urlloc, SHA256: sha, RE3: "re3",
+	td := ProvData{RESID: urlloc, SHA256: sha, PID: "re3",
 		SOURCE: k, DATE: date, RUNID: "testrunid"}
 
 	var doc bytes.Buffer
@@ -181,7 +197,7 @@ func nanoprov() string {
             "@type": "schema:PropertyValue",
             "name": "ProviderID",
             "description": "The id provided with the data graph by the provider",
-            "value": "{{.RE3}}"
+            "value": "{{.PID}}"
           },
           {
             "@type": "schema:PropertyValue",

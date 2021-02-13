@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/PuerkitoBio/goquery v1.5.1
 	github.com/araddon/dateparse v0.0.0-20200409225146-d820a6159ab1
+	github.com/aws/aws-sdk-go v1.37.8 // indirect
 	github.com/chromedp/chromedp v0.6.5 // indirect
 	github.com/deiu/gon3 v0.0.0-20170627184619-f84eb1e0bd62 // indirect
 	github.com/deiu/rdf2go v0.0.0-20180504135839-3c24cc9e7afa
