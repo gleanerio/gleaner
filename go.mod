@@ -19,7 +19,7 @@ require (
 	github.com/piprate/json-gold v0.3.0
 	github.com/rs/xid v1.2.1
 	github.com/rychipman/easylex v0.0.0-20160129204217-49ee7767142f // indirect
-	github.com/schollz/progressbar/v3 v3.7.3 // indirect
+	github.com/schollz/progressbar/v3 v3.7.3
 	github.com/spf13/viper v1.7.1
 	github.com/tidwall/gjson v1.6.1
 	github.com/twinj/uuid v1.0.0

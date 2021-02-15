@@ -90,8 +90,6 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 		}
 	}
 
-	log.Println(pid)
-
 	// build the struct to pass to the template parser
 	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k, DATE: date, RUNID: mcfg["runid"]}
 

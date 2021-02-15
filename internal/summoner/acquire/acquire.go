@@ -16,14 +16,14 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
-	"github.com/gosuri/uiprogress"
 	"github.com/minio/minio-go"
+	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 )
 
 // ResRetrieve is a function to pull down the data graphs at resources
 func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap) {
-	uiprogress.Start()
+	// uiprogress.Start()
 	wg := sync.WaitGroup{}
 
 	// Why do I pass the wg pointer..   just make a new one
@@ -71,13 +71,16 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 	defer wg.Done() // tell the wait group that we be done
 
 	count := len(m[k].URL)
-	bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
-	bar.PrependFunc(func(b *uiprogress.Bar) string {
-		return rightPad2Len(k, " ", 15)
-	})
-	bar.Fill = '-'
-	bar.Head = '>'
-	bar.Empty = ' '
+	// OLD bar
+	// bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
+	// bar.PrependFunc(func(b *uiprogress.Bar) string {
+	// 	return rightPad2Len(k, " ", 15)
+	// })
+	// bar.Fill = '-'
+	// bar.Head = '>'
+	// bar.Empty = ' '
+
+	bar := progressbar.Default(int64(count))
 
 	// if count < 1 {
 	// 	log.Printf("No resources found for %s \n", k)
@@ -193,7 +196,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 				// logger.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, n)
 			}
 
-			bar.Incr()
+			bar.Add(1) // bar.Incr()
 
 			logger.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
 			lwg.Done()
