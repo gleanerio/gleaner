@@ -3,7 +3,6 @@ package graph
 import (
 	"bufio"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -113,7 +112,7 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	// TODO
 	// Process the bytes in b to RDF (with randomized blank nodes)
-	rdf, err := jld2nq(string(b.Bytes()), key, proc, options)
+	rdf, err := common.JLD2nq(string(b.Bytes()), proc, options)
 	if err != nil {
 		return key, err
 	}
@@ -139,25 +138,6 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 	}
 
 	return objectName, nil
-}
-
-// jld2nq converts JSON-LD documents to NQuads
-func jld2nq(jsonld, key string, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
-
-	var myInterface interface{}
-	err := json.Unmarshal([]byte(jsonld), &myInterface)
-	if err != nil {
-		log.Printf("Error when transforming %s JSON-LD document to interface: %v", key, err)
-		return "", err
-	}
-
-	nq, err := proc.ToRDF(myInterface, options)
-	if err != nil {
-		log.Printf("Error when transforming %s  JSON-LD document to RDF: %v", key, err)
-		return "", err
-	}
-
-	return nq.(string), err
 }
 
 // sugar function for the ui bar

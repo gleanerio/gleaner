@@ -54,9 +54,8 @@ func main() {
 	// test prov
 
 	organizations.BuildGraph(mc, v1)
-
 	if err != nil {
-		log.Println("Store prov failed")
+		log.Println("Org build failed")
 		log.Println(err)
 	}
 

@@ -139,6 +139,8 @@ func cli(mc *minio.Client, v1 *viper.Viper) {
 	// Build the org graph
 	organizations.BuildGraph(mc, v1)
 
+	os.Exit(0)
+
 	if mcfg["summon"] == "true" {
 		summoner.Summoner(mc, v1)
 	}

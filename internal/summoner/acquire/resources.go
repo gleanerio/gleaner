@@ -11,11 +11,13 @@ import (
 
 // Sources Holds the metadata associated with the sites to harvest
 type Sources struct {
-	Name     string
-	Logo     string
-	URL      string
-	Headless bool
-	PID      string
+	Name       string
+	Logo       string
+	URL        string
+	Headless   bool
+	PID        string
+	ProperName string
+	Domain     string
 	// SitemapFormat string
 	// Active        bool
 }
@@ -23,7 +25,6 @@ type Sources struct {
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
-	// m := make(map[string]sitemaps.URLSet) // make a map
 	m := make(map[string]sitemaps.Sitemap) // make a map
 
 	var domains []Sources
@@ -33,10 +34,6 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 	}
 
 	mcfg := v1.GetStringMapString("summoner")
-
-	// mcfg["after"] == "true" {
-	// // 	summoner.Summoner(mc, v1)
-	// // }
 
 	for k := range domains {
 		if headless == domains[k].Headless {
@@ -70,6 +67,10 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 					// and in the user experience
 				}
 			}
+
+			// Need to prune the us.URL array against the prov graph
+			// If we request "delta run"  How to do that with JSON-LD object, not
+			// a prov graph (which would need a triplestore)  ?  use golang SPARQL?
 
 			log.Printf("%s : %d\n", domains[k].Name, len(us.URL))
 

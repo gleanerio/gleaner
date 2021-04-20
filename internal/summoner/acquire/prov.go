@@ -20,6 +20,9 @@ type ProvData struct {
 	SOURCE string
 	DATE   string
 	RUNID  string
+	URN    string
+	PNAME  string
+	DOMAIN string
 }
 
 // StoreProv creates and stores a prov record for each JSON-LD data graph
@@ -44,8 +47,8 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 
 	b := bytes.NewBufferString(p)
 
-	objectName := fmt.Sprintf("prov/%s/%s.nq", k, provsha) // k is the name of the provider from config
-	usermeta := make(map[string]string)                    // what do I want to know?
+	objectName := fmt.Sprintf("prov/%s/%s.jsonld", k, provsha) // k is the name of the provider from config
+	usermeta := make(map[string]string)                        // what do I want to know?
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
@@ -67,7 +70,6 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 // Against better judgment rather than build triples, I'll just
 // template build them like with the nanoprov function
 func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
-	tmpl := quadtemplate()
 
 	// get the time
 	currentTime := time.Now()
@@ -84,14 +86,26 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 	}
 
 	pid := "unknown"
+	pname := "unknown"
+	domain := "unknown"
 	for i := range domains {
 		if domains[i].Name == k {
 			pid = domains[i].PID
+			pname = domains[i].ProperName
+			domain = domains[i].Domain
 		}
 	}
 
 	// build the struct to pass to the template parser
-	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k, DATE: date, RUNID: mcfg["runid"]}
+
+	// make the URN string // TODO make an extracted function to share with nabu
+	bucketName := "gleaner"
+	//objectURN := fmt.Sprintf("summoned:%s:%s", k, sha)
+	objectURN := fmt.Sprintf("milled:%s:%s", k, sha)
+
+	gp := fmt.Sprintf("urn:%s:%s", bucketName, objectURN)
+	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k, DATE: date, RUNID: mcfg["runid"], URN: gp, PNAME: pname, DOMAIN: domain}
+	tmpl := provTplt()
 
 	var doc bytes.Buffer
 	t, err := template.New("prov").Parse(tmpl)
@@ -108,22 +122,57 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 	return doc.String(), err
 }
 
-// TODO  need the RE3 ID in there..  {{.RE3}}
-func quadtemplate() string {
+func provTplt() string {
 
-	t := `<https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Organization> .
-  <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Organization> .
-  <https://gleaner.io/id/org/{{.SOURCE}}> <http://www.w3.org/2000/01/rdf-schema#seeAlso> <{{.PID}}> .
-  <{{.RESID}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Entity> .
-  <{{.RESID}}> <http://www.w3.org/ns/prov#value> "{{.RESID}}" .
-  <{{.RESID}}> <http://www.w3.org/ns/prov#wasAttributedTo> <https://gleaner.io/id/org/{{.SOURCE}}> .
-  <urn:gleaner:milled:{{.SOURCE}}:{{.SHA256}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Entity> .
-  <urn:gleaner:milled:{{.SOURCE}}:{{.SHA256}}> <http://www.w3.org/ns/prov#value> "https://dx.geodex.org/?o=/lipdverse/005a96f740da7fb3fac07936a04a86ad9d03537c.jsonld" .
-  <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/ns/prov#Activity> .
-  <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/ns/prov#endedAtTime> "{{.DATE}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-  <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/ns/prov#generated> <urn:gleaner:milled:{{.SOURCE}}:{{.SHA256}}> .
-  <https://gleaner.io/id/{{.RUNID}}> <http://www.w3.org/ns/prov#used> <{{.RESID}}> .
-`
+	t := `{
+		"@context": {
+		  "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+		  "prov": "http://www.w3.org/ns/prov#",
+		  "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+		},
+		"@graph": [
+		  {
+			"@id": "{{.PID}}",
+			"@type": "prov:Organization",
+			"rdf:name": "{{.PNAME}}",
+			"rdfs:seeAlso": "{{.DOMAIN}}"
+		  },
+		  {
+			"@id": "{{.RESID}}",
+			"@type": "prov:Entity",
+			"prov:wasAttributedTo": {
+			  "@id": "{{.PID}}"
+			},
+			"prov:value": "{{.RESID}}"
+		  },
+		  {
+			"@id": "https://gleaner.io/id/collection/{{.SHA256}}",
+			"@type": "prov:Collection",
+			"prov:hadMember": {
+			  "@id": "{{.RESID}}"
+			}
+		  },
+		  {
+			"@id": "{{.URN}}",
+			"@type": "prov:Entity",
+			"prov:value": "{{.SHA256}}.jsonld"
+		  },
+		  {
+			"@id": "https://gleaner.io/id/run/{{.SHA256}}",
+			"@type": "prov:Activity",
+			"prov:endedAtTime": {
+			  "@value": "{{.DATE}}",
+			  "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+			},
+			"prov:generated": {
+			  "@id": "{{.URN}}"
+			},
+			"prov:used": {
+			  "@id": "https://gleaner.io/id/collection/{{.SHA256}}"
+			}
+		  }
+		]
+	  }`
 
 	return t
 

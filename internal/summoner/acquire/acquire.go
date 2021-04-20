@@ -104,12 +104,20 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
 		// library too)
 
+		// log.Println(urlloc)
+
 		go func(i int, k string) {
 			semaphoreChan <- struct{}{}
+
+			// log.Println(urlloc)
+
+			urlloc = strings.ReplaceAll(urlloc, " ", "")
+			urlloc = strings.ReplaceAll(urlloc, "\n", "")
 
 			var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
+				log.Println(err)
 				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
 			}
 			req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")

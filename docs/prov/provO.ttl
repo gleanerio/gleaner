@@ -1,27 +1,34 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
-@prefix schema: <https://schema.org/> .
 
-# Make JSON-LD with https://frogcat.github.io/ttl2jsonld/demo/
-# Source of the resource
-<https://gleaner.io/id/org/lipd>
-    a prov:Organization ;
-    a schema:Organization .
+# SOME ENITIES: these are static for the most part.  
+# make else where.  
 
-# The resource from the source
-<http://lipdverse.org/Temp12k/1_0_2/Haugtjern.Eide.2009.html>    #  make the URL object was recieved from  OR @id if that is provided
+# Source
+<{{.PID}}>
+    a prov:Organization .
+    # could this be a https://schema.org/Organization then as well?
+
+# INPUT DATA: The first two don't change much, may change how we genereate 
+<{{.RESURL}}>
     a prov:Entity ;
-    prov:value "http://lipdverse.org/Temp12k/1_0_2/Haugtjern.Eide.2009.html" ;  # make this the value of the urn gleaner object store?
-    prov:wasAttributedTo <https://gleaner.io/id/org/lipd> .
+    prov:wasAttributedTo <{{.PID}}> ;
+    prov:value "{{.RESURL}}" .
 
-# Resulting object
-<urn:gleaner:milled:lipd:SHA>  # is this the graph URI?   make something like a dx URI?  or gleaner.io
+# Collection of INPUT DATA
+<https://gleaner.io/id/collection/{{.SHA}}>
+    a prov:Collection ;
+    prov:hadMember <{{.RESURL}}> .
+
+# OUTPUT DATA
+<{{.URN}}>
     a prov:Entity ;
-    prov:value "https://dx.geodex.org/?o=/lipdverse/005a96f740da7fb3fac07936a04a86ad9d03537c.jsonld" .   # make this the value of the urn gleaner object store
+    prov:value "SHA.jsonld" .
 
-# The act
-<https://gleaner.io/id/GLEANERRUNID>
+# The ACT:  Colonel Mustard in the library with a candle stick
+<https://gleaner.io/id/run/{{.SHA}}>
     a prov:Activity ;
-    prov:endedAtTime "2020-01-08T08:00:00Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> ; # just the gleaner run date
-    prov:generated <urn:gleaner:milled:lipd:SHA> ;
-    prov:used <http://lipdverse.org/Temp12k/1_0_2/Haugtjern.Eide.2009.html> .   # or its shahash?
+    prov:endedAtTime "{{.Date}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    prov:generated <{{.URN}}> ;
+    prov:used  <https://gleaner.io/id/collection/{{.SHA}}> .
+
