@@ -15,7 +15,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
@@ -50,14 +50,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 	delay := mcfg["delay"]
 	var dt int64
 	if delay != "" {
-		log.Printf("Delay set to: %s milliseconds", delay)
+		//log.Printf("Delay set to: %s milliseconds", delay)
 		dt, err = strconv.ParseInt(delay, 10, 64)
 		if err != nil {
 			log.Println(err)
 			log.Panic("Could not convert delay from config file to a value")
 		}
 		// set threads to 1
-		log.Println("Delay is not 0, threads set to 1")
+		//log.Println("Delay is not 0, threads set to 1")
 		tc = 1
 	} else {
 		dt = 0

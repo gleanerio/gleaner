@@ -69,11 +69,11 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 		}
 	}
 
-	if mcfg["prov"] == "true" {
-		for d := range ap {
-			graph.AssembleObjs(mc, ap[d], v1)
-		}
-	}
+	// if mcfg["prov"] == "true" {
+	// 	for d := range ap {
+	// 		graph.AssembleObjs(mc, ap[d], v1)
+	// 	}
+	// }
 
 	// Time report
 	et := time.Now()

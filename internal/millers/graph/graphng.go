@@ -9,8 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/gosuri/uiprogress"
 	"github.com/piprate/json-gold/ld"
+	"github.com/schollz/progressbar/v3"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	minio "github.com/minio/minio-go"
@@ -27,8 +27,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	defer close(semaphoreChan)
 	wg := sync.WaitGroup{} // a wait group enables the main process a wait for goroutines to finish
 
-	// Make a common proc and options to share with the upcoming go funcs
-	proc, options := common.JLDProc(v1)
+	proc, options := common.JLDProc(v1) // Make a common proc and options to share with the upcoming go funcs
 
 	// params for list objects calls
 	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
@@ -36,19 +35,13 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	isRecursive := true
 
 	// Spiffy progress line  (do I really want this?)
-	uiprogress.Start()
 	x := 0 // ugh..  why won't len(oc) work..   buffered channel issue I assume?
 	for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
 		x = x + 1
 	}
 	count := x
-	bar1 := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
-	bar1.PrependFunc(func(b *uiprogress.Bar) string {
-		return rightPad2Len("miller", " ", 15)
-	})
-	bar1.Fill = '-'
-	bar1.Head = '>'
-	bar1.Empty = ' '
+
+	bar := progressbar.Default(int64(count))
 
 	for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
 		wg.Add(1)
@@ -62,17 +55,14 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			wg.Done() // tell the wait group that we be done
 			// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
 
-			bar1.Incr()
+			bar.Add(1) //bar1.Incr()
 			<-semaphoreChan
 		}(object)
 	}
 	wg.Wait()
 
-	// uiprogress.Stop()
-
-	// all done..  write the full graph to the object store
-	// log.Printf("Building result graph from: %s/milled-dg/%s", bucketname, prefix)
-
+	// TODO make a versuion of PipeCopy that generates Parquet version of graph
+	// TODO..  then delete milled objects?
 	// log.Printf("Processed prefix: %s", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "milled")
 	sp := strings.SplitAfterN(prefix, "/", 2)

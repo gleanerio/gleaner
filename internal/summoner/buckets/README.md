@@ -2,7 +2,7 @@
 
 ## About
 
-Code here needs to manange the buckets that a crawl goes into. 
+Code here needs to manage the buckets that a crawl goes into. 
 
 Buckets can be moved for archive reasons or simply purged.  
 
@@ -16,14 +16,14 @@ sitemap and do a file index.
 
 We can "honor" for a time too.   N days for example.  
 
-
 Config file section
 
-updatemode: honor   One of honor, ignore, age
+update mode: honor   One of honor, ignore, age
 
 The process is easy
 
-ignore 
+ignore
+
 - remove everything and index
 
 Do we remove all objects?   or move to X.1  then run.  

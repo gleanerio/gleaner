@@ -56,8 +56,6 @@ func GlobalUniqueBNodes(nq string) string {
 		log.Fatal(err)
 	}
 
-	//fmt.Println(m)
-
 	filebytes := []byte(nq)
 
 	for k, v := range m {

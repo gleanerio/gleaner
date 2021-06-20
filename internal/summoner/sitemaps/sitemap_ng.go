@@ -112,7 +112,7 @@ func Get(URL string, options interface{}) (Sitemap, error) {
 		return Sitemap{}, errors.New("URL is not a sitemap or sitemapindex")
 	} else if idxErr != nil {
 		log.Println(idxErr)
-		return smap, nil
+		return smap, errors.New("URL is not a sitemapindex")
 	}
 
 	smap, err = idx.get(data, options)
@@ -165,13 +165,13 @@ var fetch = func(URL string, options interface{}) ([]byte, error) {
 	b, err := ioutil.ReadAll(res.Body)
 	var data []byte
 	if strings.HasSuffix(URL, ".gz") {
-		log.Println("Gziped sitemap")
+		// log.Println("Gziped sitemap")
 		data, err = gUnzipData(b)
 		if err != nil {
 			log.Println(err)
 		}
 	} else {
-		log.Println("Uncompressed XML sitemap")
+		// log.Println("Uncompressed XML sitemap")
 		data = append(data, b...)
 	}
 

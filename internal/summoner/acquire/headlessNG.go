@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/network"
@@ -43,9 +43,9 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemap
 		log.Printf("Headless chrome call to: %s", k)
 
 		for i := range m[k].URL {
-			err := PageRender(v1, minioClient, 45*time.Second, m[k].URL[i].Loc, k)
+			err := PageRender(v1, minioClient, 30*time.Second, m[k].URL[i].Loc, k) // TODO make delay configurable
 			if err != nil {
-				log.Print(err)
+				log.Printf("%s :: %s", m[k].URL[i].Loc, err)
 			}
 		}
 	}
@@ -54,13 +54,6 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemap
 func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url, k string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-
-	// Cookies := []Cookie{
-	// 	{url, "myauth", "myvalue"},
-	// 	{url, "mysetting1", "myvalue1"},
-	// 	{url, "mysetting2", "myvalue2"},
-	// 	{url, "mysetting3", "myvalue3"},
-	// }
 
 	mcfg := v1.GetStringMapString("summoner")
 
@@ -105,18 +98,18 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 		return err
 	}
 
-	// if err = runBatch(
-	// 	// Enable all the domain events that we're interested in.
-	// 	func() error { return c.DOM.Enable(ctx) },
-	// 	func() error { return c.Network.Enable(ctx, nil) },
-	// 	func() error { return c.Page.Enable(ctx) },
-	// 	func() error { return c.Runtime.Enable(ctx) },
+	if err = runBatch(
+		// Enable all the domain events that we're interested in.
+		func() error { return c.DOM.Enable(ctx) },
+		func() error { return c.Network.Enable(ctx, nil) },
+		func() error { return c.Page.Enable(ctx) },
+		func() error { return c.Runtime.Enable(ctx) },
 
-	// 	func() error { return setCookies(ctx, c.Network, Cookies...) },
-	// ); err != nil {
-	// 	fmt.Println(err)
-	// 	return err
-	// }
+		// func() error { return setCookies(ctx, c.Network, Cookies...) },
+	); err != nil {
+		fmt.Println(err)
+		return err
+	}
 
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
@@ -147,7 +140,7 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 		return err
 	}
 
-	fmt.Printf("%s for %s\n", nav.FrameID, url)
+	log.Printf("%s for %s\n", nav.FrameID, url)
 
 	// Parse information from the document by evaluating JavaScript.
 	// const title = document.getElementById('geocodes').innerText;

@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/earthcubearchitecture-project418/gleaner/pkg/summoner/sitemaps"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
 	"github.com/spf13/viper"
 )
 
@@ -37,7 +37,7 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 
 	for k := range domains {
 		if headless == domains[k].Headless {
-			log.Printf("Parsing sitemap: %s\n", domains[k].URL)
+			//log.Printf("Parsing sitemap: %s\n", domains[k].URL)
 			// mapname, _, err := domainNameShort(domains[k].URL)
 			mapname := domains[k].Name // TODO I would like to use this....
 			if err != nil {
@@ -51,7 +51,7 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 
 			var us sitemaps.Sitemap
 			if mcfg["after"] != "" {
-				log.Println("Get After Date")
+				//log.Println("Get After Date")
 				us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
 				if err != nil {
 					log.Println(err)
@@ -59,7 +59,7 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 					// and in the user experience
 				}
 			} else {
-				log.Println("Get with no date")
+				//log.Println("Get with no date")
 				us, err = sitemaps.Get(domains[k].URL, nil)
 				if err != nil {
 					log.Println(err)

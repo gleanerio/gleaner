@@ -35,6 +35,7 @@ func main() {
 	flag.Parse() // parse any command line flags...
 
 	// BEGIN profile section
+
 	// Profiling code (comment out for release builds)
 	// defer profile.Start().Stop()                    // cpu
 	// defer profile.Start(profile.MemProfile).Stop()  // memory
@@ -137,7 +138,9 @@ func cli(mc *minio.Client, v1 *viper.Viper) {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	// Build the org graph
-	organizations.BuildGraph(mc, v1)
+	organizations.BuildGraphMem(mc, v1)
+
+	//os.Exit(0)
 
 	if mcfg["summon"] == "true" {
 		summoner.Summoner(mc, v1)
