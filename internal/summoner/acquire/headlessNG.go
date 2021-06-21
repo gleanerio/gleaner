@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/network"
@@ -38,14 +37,14 @@ type Cookie struct {
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string]sitemaps.Sitemap) {
+func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string][]string) {
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
-		for i := range m[k].URL {
-			err := PageRender(v1, minioClient, 30*time.Second, m[k].URL[i].Loc, k) // TODO make delay configurable
+		for i := range m[k] {
+			err := PageRender(v1, minioClient, 30*time.Second, m[k][i], k) // TODO make delay configurable
 			if err != nil {
-				log.Printf("%s :: %s", m[k].URL[i].Loc, err)
+				log.Printf("%s :: %s", m[k][i], err)
 			}
 		}
 	}

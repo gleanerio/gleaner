@@ -1,11 +1,12 @@
 package acquire
 
 import (
+	"fmt"
 	"log"
-	"net/url"
-	"strings"
 
+	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
+	"github.com/minio/minio-go"
 	"github.com/spf13/viper"
 )
 
@@ -24,8 +25,8 @@ type Sources struct {
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
-func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
-	m := make(map[string]sitemaps.Sitemap) // make a map
+func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][]string {
+	m := make(map[string][]string) // make a map
 
 	var domains []Sources
 	err := v1.UnmarshalKey("sources", &domains)
@@ -37,17 +38,12 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 
 	for k := range domains {
 		if headless == domains[k].Headless {
-			//log.Printf("Parsing sitemap: %s\n", domains[k].URL)
-			// mapname, _, err := domainNameShort(domains[k].URL)
 			mapname := domains[k].Name // TODO I would like to use this....
 			if err != nil {
 				log.Println("Error in domain parsing")
 			}
-			// These are the two lines that change in this branch
-			// var us sitemaps.URLSet
-			// us = sitemaps.IngestSitemap(domains[k].URL)
 
-			log.Println(mcfg)
+			// log.Println(mcfg)
 
 			var us sitemaps.Sitemap
 			if mcfg["after"] != "" {
@@ -68,23 +64,43 @@ func ResourceURLs(v1 *viper.Viper, headless bool) map[string]sitemaps.Sitemap {
 				}
 			}
 
-			// Need to prune the us.URL array against the prov graph
-			// If we request "delta run"  How to do that with JSON-LD object, not
-			// a prov graph (which would need a triplestore)  ?  use golang SPARQL?
+			// Convert the array of sitemap package stuct to simply the URLs in []string
+			var s []string
+			for k := range us.URL {
+				if us.URL[k].Loc != "" { // TODO why did this otherwise add a nil to the array..  ned to check
+					s = append(s, us.URL[k].Loc)
+				}
+			}
+			log.Printf("%s : %d\n", domains[k].Name, len(s))
 
-			log.Printf("%s : %d\n", domains[k].Name, len(us.URL))
+			// TODO if we check for URLs in prov..  do that here..
+			if mcfg["mode"] == "diff" {
+				log.Println("doing a diff call")
+				oa := objects.ProvURLs(v1, mc, "gleaner", fmt.Sprintf("prov/%s", mapname))
 
-			m[mapname] = us
+				d := difference(s, oa)
+
+				m[mapname] = d
+			} else {
+				m[mapname] = s
+			}
 		}
 	}
+
 	return m
 }
 
-func domainNameShort(dn string) (string, string, error) {
-	u, err := url.Parse(dn)
-	if err != nil {
-		log.Printf("Error with domainNameShort: %s ;  %s", dn, err)
+// difference returns the elements in `a` that aren't in `b`.
+func difference(a, b []string) []string {
+	mb := make(map[string]struct{}, len(b))
+	for _, x := range b {
+		mb[x] = struct{}{}
 	}
-
-	return strings.Replace(u.Host, ".", "", -1), u.Scheme, err
+	var diff []string
+	for _, x := range a {
+		if _, found := mb[x]; !found {
+			diff = append(diff, x)
+		}
+	}
+	return diff
 }

@@ -15,14 +15,13 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 )
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	// uiprogress.Start()
 	wg := sync.WaitGroup{}
 
@@ -39,7 +38,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitema
 	// uiprogress.Stop()
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap, k string, wg *sync.WaitGroup) {
+func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup) {
 	mcfg := v1.GetStringMapString("summoner")
 	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
 	if err != nil {
@@ -70,7 +69,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 	wg.Add(1)       // wg from the calling function
 	defer wg.Done() // tell the wait group that we be done
 
-	count := len(m[k].URL)
+	count := len(m[k])
 	// OLD bar
 	// bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
 	// bar.PrependFunc(func(b *uiprogress.Bar) string {
@@ -95,9 +94,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string]sitemaps.Sitemap,
 	// var client http.Client
 
 	// we actually go get the URLs now
-	for i := range m[k].URL {
+	for i := range m[k] {
 		lwg.Add(1)
-		urlloc := m[k].URL[i].Loc
+		urlloc := m[k][i]
 
 		// TODO / WARNING for large site we can exhaust memory with just the creation of the
 		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
