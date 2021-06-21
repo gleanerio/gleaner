@@ -1,19 +1,32 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"sort"
+	"strings"
+	"sync"
 	"time"
 
+	awscred "github.com/aws/aws-sdk-go/aws/credentials"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/knakk/rdf"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"
+	"github.com/xitongsys/parquet-go-source/s3"
+	"github.com/xitongsys/parquet-go/writer"
 )
 
 var viperVal string
@@ -69,27 +82,198 @@ func main() {
 	// func StoreProv(k, sha, urlloc string, mc *minio.Client) error {
 	// err = acquire.StoreProv(v1, mc, k, sha, urlloc)
 
-	// test prov
-
-	// reading and sorting minio bucket
-
+	// -------------- Make org rdf
 	//organizations.BuildGraph(mc, v1)
 	//if err != nil {
 	//log.Println("Org build failed")
 	//log.Println(err)
 	//}
 
-	lo := ListObjects(mc)
+	// -------------- list objects
+	// lo := ListObjects(mc)
+	// for i := range lo {
+	// 	fmt.Printf("%s :: %s \n", lo[i].Name, lo[i].Date)
+	// }
 
-	for i := range lo {
-		fmt.Printf("%s :: %s \n", lo[i].Name, lo[i].Date)
+	// -------------- get the graph
+	// GetGraph(v1)
+
+	// -------------- parquet builder
+	err = Bkt2File(v1, "name", "gleaner", "prov/samplesearth", mc)
+	if err != nil {
+		log.Print(err)
 	}
 
-	// make a parquet file from these
+	foo := []byte("_:b0 <http://schema.org/jobTitle> 'Professor' .")
+	z := bytes.NewBuffer(foo)
 
-	// get the graph
-	GetGraph(v1)
+	err = PrqtRDFToS3(v1, "gleaner", "results/test.parquet", "us-east-1", z)
+	if err != nil {
+		log.Print(err)
+	}
+}
 
+func PrqtRDFToS3(v1 *viper.Viper, bucket, key, region string, rbb *bytes.Buffer) error {
+	mcfg := v1.Sub("minio")
+	//endpoint := fmt.Sprintf("%s:%s", mcfg.GetString("address"), mcfg.GetString("port"))
+	accessKeyID := mcfg.GetString("accesskey")
+	secretAccessKey := mcfg.GetString("secretkey")
+	//useSSL := mcfg.GetBool("ssl")
+
+	// Make a parquet file
+	ctx := context.Background()
+
+	// aws.Config{}
+	// // LOCAL create new S3 file writer
+	fw, err := s3.NewS3FileWriter(ctx, bucket, key, nil, &aws.Config{Region: aws.String(region),
+		Endpoint:         aws.String("http://192.168.86.45:32773"),
+		Credentials:      awscred.NewStaticCredentials(accessKeyID, secretAccessKey, ""),
+		DisableSSL:       aws.Bool(true),
+		S3ForcePathStyle: aws.Bool(true)})
+	if err != nil {
+		log.Println("Can't create s3 file writer", err)
+		return err
+	}
+
+	// TODO..  look at doing a memory file?   and then load to S3 and delete and move on?
+	// https://github.com/xitongsys/parquet-go-source/blob/master/examples/memfs_write.go
+
+	// fw, err := s3.NewS3FileWriter(ctx, bucket, key, nil, &aws.Config{Region: aws.String(region)})
+	// if err != nil {
+	// 	log.Println("Can't open file", err)
+	// 	return err
+	// }
+
+	// set up parquet file
+	pw, err := writer.NewParquetWriter(fw, new(Qset), 4)
+	if err != nil {
+		log.Println("Can't create parquet writer", err)
+		return err
+	}
+
+	pw.RowGroupSize = 128 * 1024 * 1024 //128M
+	pw.PageSize = 8 * 1024              //8K
+	// pw.CompressionType = parquet.CompressionCodec_SNAPPY
+
+	// scanner := bufio.NewScanner(strings.NewReader(r))
+	scanner := bufio.NewScanner(bytes.NewReader(rbb.Bytes()))
+	for scanner.Scan() {
+		rdfb := bytes.NewBufferString(scanner.Text())
+		dec := rdf.NewQuadDecoder(rdfb, rdf.NQuads)
+
+		spog, err := dec.Decode()
+		if err != nil {
+			log.Println("can't decode", err)
+			return err
+		}
+
+		qs := Qset{Subject: spog.Subj.String(), Predicate: spog.Pred.String(), Object: spog.Obj.String(), Graph: spog.Ctx.String()}
+
+		// log.Print(qs)
+
+		if err = pw.Write(qs); err != nil {
+			log.Println("Write error", err)
+			return err
+		}
+
+	}
+	if err := scanner.Err(); err != nil {
+		log.Println("Error during scan")
+		log.Println(err)
+		return err
+	}
+
+	pw.Flush(true)
+
+	if err = pw.WriteStop(); err != nil {
+		log.Println("WriteStop error", err)
+		return err
+	}
+
+	err = fw.Close()
+	if err != nil {
+		log.Println(err)
+		log.Println("Error closing S3 file writer")
+		return err
+	}
+
+	return err
+}
+
+func Bkt2File(v1 *viper.Viper, name, bucket, prefix string, mc *minio.Client) error {
+	log.Println("Start pipe reader / writer sequence")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	pr, pw := io.Pipe()     // TeeReader of use?
+	lwg := sync.WaitGroup{} // work group for the pipe writes...
+	lwg.Add(2)
+
+	// params for list objects calls
+	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
+	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
+	// isRecursive := true
+
+	go func() {
+		defer lwg.Done()
+		defer pw.Close()
+		for object := range mc.ListObjects(ctx, "gleaner", minio.ListObjectsOptions{
+			Prefix:    "summoned/samplesearth",
+			Recursive: true,
+		}) {
+			fo, err := mc.GetObject(ctx, bucket, object.Key, minio.GetObjectOptions{})
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			sb := new(strings.Builder)
+			_, err = io.Copy(sb, fo)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			proc, options := common.JLDProc(v1)
+			nq, err := common.JLD2nq(sb.String(), proc, options)
+			if err != nil {
+				fmt.Println(err)
+			}
+
+			pw.Write([]byte(nq))
+		}
+	}()
+
+	// log.Printf("%s_graph.nq", name)
+
+	// go function to write to minio from pipe
+	// go func() {
+	// 	defer lwg.Done()
+	// 	_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 	}
+	// }()
+
+	// Note: We can also make a file and pipe write to that, keep this code around in case
+	f, err := os.Create(fmt.Sprintf("%s_graph.nq", "test")) // prefix)) // needs a f.Close() later
+	if err != nil {
+		log.Println(err)
+	}
+	// go function to write to file from pipe
+	go func() {
+		defer lwg.Done()
+		if _, err := io.Copy(f, pr); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	lwg.Wait() // wait for the pipe read writes to finish
+	pw.Close()
+	pr.Close()
+
+	f.Close()
+
+	return nil
 }
 
 // GetGraph
