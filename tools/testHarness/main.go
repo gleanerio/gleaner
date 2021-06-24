@@ -20,6 +20,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 	"github.com/knakk/rdf"
@@ -97,7 +98,12 @@ func main() {
 	// }
 
 	// -------------- get the graph
-	// GetGraph(v1)
+	fn, err := GetGraph(mc, v1)
+	if err != nil {
+		log.Print(err)
+	}
+
+	log.Println(fn)
 
 	// -------------- parquet builder
 	//err = Bkt2File(v1, "name", "gleaner", "prov/samplesearth", mc)
@@ -112,6 +118,66 @@ func main() {
 	//if err != nil {
 	//log.Print(err)
 	//}
+}
+
+// GetGraph
+// modify config file with sitegraph entry
+// download URL
+// load to minio
+// generate prov
+// generate org
+func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
+	// read graph info from v1
+	log.Println("sitegraph indexing")
+
+	var domains []acquire.Sources
+	err := v1.UnmarshalKey("sitegraphs", &domains)
+	if err != nil {
+		log.Println(err)
+	}
+
+	for k := range domains {
+		fmt.Println(domains[k].URL)
+
+		d, err := getJSON(domains[k].URL)
+		if err != nil {
+			fmt.Println("error with reading graph JSON")
+		}
+
+		// load graph
+
+		// Upload the file
+		objectName := "summoned/aquadocs/aquadocs.jsonld"
+		_, err = graph.LoadToMinio(d, "gleaner", objectName, mc)
+		if err != nil {
+			return objectName, err
+		}
+
+		// build prov?
+
+		fmt.Println(len(d))
+	}
+
+	return "test", err
+}
+
+func getJSON(url string) (string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("GET error: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("status error: %v", resp.StatusCode)
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("read body: %v", err)
+	}
+
+	return string(data), nil
 }
 
 func PrqtRDFToS3(v1 *viper.Viper, bucket, key, region string, rbb *bytes.Buffer) error {
@@ -275,56 +341,6 @@ func Bkt2File(v1 *viper.Viper, name, bucket, prefix string, mc *minio.Client) er
 	f.Close()
 
 	return nil
-}
-
-// GetGraph
-// modify config file with sitegraph entry
-// download URL
-// load to minio
-// generate prov
-// generate org
-func GetGraph(v1 *viper.Viper) string {
-	// read graph info from v1
-	var domains []acquire.Sources
-	err := v1.UnmarshalKey("graphs", &domains)
-	if err != nil {
-		log.Println(err)
-	}
-
-	for k := range domains {
-		fmt.Println(domains[k].URL)
-
-		d, err := getJSON(domains[k].URL)
-		if err != nil {
-			fmt.Println("error with reading graph JSON")
-		}
-
-		// load graph
-		// build prov?
-
-		fmt.Println(len(d))
-	}
-
-	return ""
-}
-
-func getJSON(url string) (string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", fmt.Errorf("GET error: %v", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("Status error: %v", resp.StatusCode)
-	}
-
-	data, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("Read body: %v", err)
-	}
-
-	return string(data), nil
 }
 
 // ListObjects  return the list of objects from the

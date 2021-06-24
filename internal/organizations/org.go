@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 	"github.com/knakk/rdf"
 	"github.com/xitongsys/parquet-go-source/s3"
@@ -53,22 +54,8 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-	log.Print("Building organization graph from config file")
-
-	var domains []acquire.Sources
-	err := v1.UnmarshalKey("sources", &domains)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = v1.UnmarshalKey("sitegraphs", &domains)
-	if err != nil {
-		log.Println(err)
-	}
-
-	// TODO need to add sitegraphs to ABOVE too
-	// make a function to use in prov too?
-
+	log.Print("Building organization graph (parquet)")
+	domains := objects.SourcesAndGraphs()
 	proc, options := common.JLDProc(v1)
 
 	for k := range domains {
@@ -167,28 +154,8 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-	log.Print("Building organization graph from config file")
-
-	var domains []acquire.Sources
-	var sm []acquire.Sources
-
-	err := v1.UnmarshalKey("sources", &sm)
-	if err != nil {
-		log.Println(err)
-	}
-
-	var sg []acquire.Sources
-
-	err = v1.UnmarshalKey("sitegraphs", &sg)
-	if err != nil {
-		log.Println(err)
-	}
-
-	domains = append(sg, sm...)
-
-	// TODO need to add sitegraphs to ABOVE too
-	// make a function to use in prov too?
-
+	log.Print("Building organization graph (nq)")
+	domains := objects.SourcesAndGraphs()
 	proc, options := common.JLDProc(v1)
 
 	// Sources: Name, Logo, URL, Headless, Pid

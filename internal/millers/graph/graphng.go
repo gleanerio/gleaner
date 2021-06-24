@@ -67,7 +67,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	}
 	wg.Wait()
 
-	// TODO make a versuion of PipeCopy that generates Parquet version of graph
+	// TODO make a version of PipeCopy that generates Parquet version of graph
 	// TODO..  then delete milled objects?
 	// log.Printf("Processed prefix: %s", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "milled")
