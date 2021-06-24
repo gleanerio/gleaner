@@ -32,6 +32,7 @@ require (
 	github.com/vugu/vugu v0.3.3 // indirect
 	github.com/xitongsys/parquet-go v1.6.0 // indirect
 	github.com/xitongsys/parquet-go-source v0.0.0-20201108113611-f372b7d813be // indirect
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/text v0.3.6 // indirect
 )

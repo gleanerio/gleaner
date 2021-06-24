@@ -13,9 +13,9 @@ import (
 	"github.com/earthcubearchitecture-project418/gleaner/internal/check"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 )
 
 var viperVal, sourceVal string
@@ -82,11 +82,11 @@ func main() {
 		delete(configMap, "sources")
 
 		//log.Println(sourceVal)
-		ns := acquire.Sources{}
+		ns := objects.Sources{}
 		json.Unmarshal([]byte(sourceVal), &ns)
 		//log.Println(ns)
 
-		sa := []acquire.Sources{}
+		sa := []objects.Sources{}
 		//s := acquire.Sources{Name: "dmeoname", URL: "https://foo.org/sitemap.xml", Headless: true}
 		//sa = append(sa, s)
 		sa = append(sa, ns)

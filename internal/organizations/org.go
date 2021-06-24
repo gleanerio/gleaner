@@ -13,7 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 	"github.com/knakk/rdf"
 	"github.com/xitongsys/parquet-go-source/s3"
 	"github.com/xitongsys/parquet-go/writer"
@@ -55,7 +54,7 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 	)
 
 	log.Print("Building organization graph (parquet)")
-	domains := objects.SourcesAndGraphs()
+	domains := objects.SourcesAndGraphs(v1)
 	proc, options := common.JLDProc(v1)
 
 	for k := range domains {
@@ -155,7 +154,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 	)
 
 	log.Print("Building organization graph (nq)")
-	domains := objects.SourcesAndGraphs()
+	domains := objects.SourcesAndGraphs(v1)
 	proc, options := common.JLDProc(v1)
 
 	// Sources: Name, Logo, URL, Headless, Pid
@@ -192,7 +191,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 	}
 }
 
-func orggraph(k acquire.Sources) (string, error) {
+func orggraph(k objects.Sources) (string, error) {
 	var doc bytes.Buffer
 
 	t, err := template.New("prov").Parse(t)

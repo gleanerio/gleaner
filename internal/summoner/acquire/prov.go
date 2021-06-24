@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
@@ -83,11 +84,13 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	// pull domains since we need to align k (stupid var for name here) with the PID value
-	var domains []Sources
-	err := v1.UnmarshalKey("sources", &domains)
-	if err != nil {
-		log.Println(err)
-	}
+	// var domains []Sources
+	// err := v1.UnmarshalKey("sources", &domains)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
+	domains := objects.SourcesAndGraphs(v1)
 
 	pid := "unknown"
 	pname := "unknown"

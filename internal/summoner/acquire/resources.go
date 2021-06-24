@@ -11,24 +11,24 @@ import (
 )
 
 // Sources Holds the metadata associated with the sites to harvest
-type Sources struct {
-	Name       string
-	Logo       string
-	URL        string
-	Headless   bool
-	PID        string
-	ProperName string
-	Domain     string
-	// SitemapFormat string
-	// Active        bool
-}
+// type Sources struct {
+// 	Name       string
+// 	Logo       string
+// 	URL        string
+// 	Headless   bool
+// 	PID        string
+// 	ProperName string
+// 	Domain     string
+// 	// SitemapFormat string
+// 	// Active        bool
+// }
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][]string {
 	m := make(map[string][]string) // make a map
 
-	var domains []Sources
+	var domains []objects.Sources
 	err := v1.UnmarshalKey("sources", &domains)
 	if err != nil {
 		log.Println(err)

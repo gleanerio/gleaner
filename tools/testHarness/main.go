@@ -21,6 +21,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 	"github.com/knakk/rdf"
@@ -130,7 +131,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	// read graph info from v1
 	log.Println("sitegraph indexing")
 
-	var domains []acquire.Sources
+	var domains []objects.Sources
 	err := v1.UnmarshalKey("sitegraphs", &domains)
 	if err != nil {
 		log.Println(err)
@@ -144,16 +145,28 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 			fmt.Println("error with reading graph JSON")
 		}
 
-		// load graph
+		st := time.Now()
+		log.Printf("Hash start time: %s \n", st)
+
+		sha := common.GetSHA(d) // Don't normalize big files..
+
+		et := time.Now()
+		diff := et.Sub(st)
+		log.Printf("Hash end time: %s \n", et)
+		log.Printf("Hash run time: %f \n", diff.Minutes())
 
 		// Upload the file
-		objectName := "summoned/aquadocs/aquadocs.jsonld"
+		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(d, "gleaner", objectName, mc)
 		if err != nil {
 			return objectName, err
 		}
 
 		// build prov?
+		err = acquire.StoreProv(v1, mc, domains[k].Name, sha, domains[k].URL)
+		if err != nil {
+			log.Println(err)
+		}
 
 		fmt.Println(len(d))
 	}
