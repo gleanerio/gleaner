@@ -2,13 +2,14 @@ package acquire
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"log"
 	"text/template"
 	"time"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -26,6 +27,9 @@ type ProvData struct {
 }
 
 // StoreProv creates and stores a prov record for each JSON-LD data graph
+// k is the domain / provider
+// sha is the sha of the JSON-LD file summoned
+// urlloc is the URL for the resource (source URL)
 func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	var (
 		buf    bytes.Buffer
@@ -57,7 +61,7 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 
 	// Upload the file with FPutObject
 
-	_, err = mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
 		logger.Printf("%s", objectName)
 		logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.

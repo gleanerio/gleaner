@@ -3,6 +3,7 @@ package graph
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"log"
@@ -13,7 +14,7 @@ import (
 	"github.com/schollz/progressbar/v3"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -30,20 +31,25 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	proc, options := common.JLDProc(v1) // Make a common proc and options to share with the upcoming go funcs
 
 	// params for list objects calls
-	doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
-	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
+	// doneCh := make(chan struct{}) // , N) Create a done channel to control 'ListObjectsV2' go routine.
+	// defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
 
 	// Spiffy progress line  (do I really want this?)
-	x := 0 // ugh..  why won't len(oc) work..   buffered channel issue I assume?
-	for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
-		x = x + 1
+	oc := mc.ListObjects(context.Background(), bucketname, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
+	// count := len(objectCh)
+	var count int
+	for x := range oc {
+		count = count + 1
+		if false {
+			log.Println(x)
+		}
 	}
-	count := x
 
 	bar := progressbar.Default(int64(count))
-
-	for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
+	objectCh := mc.ListObjects(context.Background(), bucketname, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
+	// for object := range mc.ListObjects(context.Background(), bucketname, prefix, isRecursive, doneCh) {
+	for object := range objectCh {
 		wg.Add(1)
 		go func(object minio.ObjectInfo) {
 			semaphoreChan <- struct{}{}
@@ -53,7 +59,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			}
 
 			wg.Done() // tell the wait group that we be done
-			// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
+			// log.Printf("Doc: %s error: %v ", object.Key, err) // why print the status??
 
 			bar.Add(1) //bar1.Incr()
 			<-semaphoreChan
@@ -84,7 +90,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 // func obj2RDF(fo io.Reader, key string, mc *minio.Client) (string, int64, error) {
 func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
 	// object is an object reader
-	fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+	fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err

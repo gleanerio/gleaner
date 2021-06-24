@@ -6,7 +6,7 @@ import (
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/sitemaps"
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 

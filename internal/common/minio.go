@@ -1,12 +1,11 @@
 package common
 
 import (
-	"crypto/tls"
 	"fmt"
 	"log"
-	"net/http"
 
-	minio "github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"
 )
 
@@ -19,8 +18,10 @@ func MinioConnection(v1 *viper.Viper) *minio.Client {
 	secretAccessKey := mcfg.GetString("secretkey")
 	useSSL := mcfg.GetBool("ssl")
 
-	minioClient, err := minio.NewV2(endpoint, accessKeyID, secretAccessKey, useSSL)
-	minioClient.SetCustomTransport(&http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}})
+	minioClient, err := minio.New(endpoint,
+		&minio.Options{Creds: credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+			Secure: useSSL})
+	// minioClient.SetCustomTransport(&http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}})
 	if err != nil {
 		log.Fatalln(err)
 	}

@@ -3,12 +3,13 @@ package common
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"log"
 	"sync"
 
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 )
 
 func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
@@ -26,8 +27,11 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 	go func() {
 		defer lwg.Done()
 		defer pw.Close()
-		for object := range mc.ListObjectsV2(bucket, prefix, isRecursive, doneCh) {
-			fo, err := mc.GetObject(bucket, object.Key, minio.GetObjectOptions{})
+		objectCh := mc.ListObjects(context.Background(), bucket, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
+
+		// for object := range mc.ListObjects(context.Background(), bucket, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive}, doneCh) {
+		for object := range objectCh {
+			fo, err := mc.GetObject(context.Background(), bucket, object.Key, minio.GetObjectOptions{})
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -50,7 +54,7 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
-		_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
+		_, err := mc.PutObject(context.Background(), "gleaner", name, pr, -1, minio.PutObjectOptions{})
 		if err != nil {
 			log.Println(err)
 		}

@@ -20,6 +20,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 	"github.com/knakk/rdf"
 	"github.com/minio/minio-go/v7"
@@ -83,11 +84,11 @@ func main() {
 	// err = acquire.StoreProv(v1, mc, k, sha, urlloc)
 
 	// -------------- Make org rdf
-	//organizations.BuildGraph(mc, v1)
-	//if err != nil {
-	//log.Println("Org build failed")
-	//log.Println(err)
-	//}
+	organizations.BuildGraph(mc, v1)
+	if err != nil {
+		log.Println("Org build failed")
+		log.Println(err)
+	}
 
 	// -------------- list objects
 	// lo := ListObjects(mc)
@@ -99,18 +100,18 @@ func main() {
 	// GetGraph(v1)
 
 	// -------------- parquet builder
-	err = Bkt2File(v1, "name", "gleaner", "prov/samplesearth", mc)
-	if err != nil {
-		log.Print(err)
-	}
+	//err = Bkt2File(v1, "name", "gleaner", "prov/samplesearth", mc)
+	//if err != nil {
+	//log.Print(err)
+	//}
 
-	foo := []byte("_:b0 <http://schema.org/jobTitle> 'Professor' .")
-	z := bytes.NewBuffer(foo)
+	//foo := []byte("_:b0 <http://schema.org/jobTitle> 'Professor' .")
+	//z := bytes.NewBuffer(foo)
 
-	err = PrqtRDFToS3(v1, "gleaner", "results/test.parquet", "us-east-1", z)
-	if err != nil {
-		log.Print(err)
-	}
+	//err = PrqtRDFToS3(v1, "gleaner", "results/test.parquet", "us-east-1", z)
+	//if err != nil {
+	//log.Print(err)
+	//}
 }
 
 func PrqtRDFToS3(v1 *viper.Viper, bucket, key, region string, rbb *bytes.Buffer) error {

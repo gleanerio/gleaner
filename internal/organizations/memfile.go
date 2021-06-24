@@ -3,6 +3,7 @@ package organizations
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -16,7 +17,7 @@ import (
 	"github.com/xitongsys/parquet-go-source/mem"
 	"github.com/xitongsys/parquet-go/writer"
 
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -55,7 +56,7 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 			// contentType := "application/ld+json"
 
 			// Upload the file with FPutObject
-			_, err = mc.PutObject(bucketName, objectName, br, int64(br.Len()), minio.PutObjectOptions{})
+			_, err = mc.PutObject(context.Background(), bucketName, objectName, br, int64(br.Len()), minio.PutObjectOptions{})
 			if err != nil {
 				log.Printf("%s", objectName)
 				log.Fatalln(err) // Fatal?   seriously?  I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.

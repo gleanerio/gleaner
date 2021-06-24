@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/check"

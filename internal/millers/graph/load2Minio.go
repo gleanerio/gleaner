@@ -2,9 +2,10 @@ package graph
 
 import (
 	"bytes"
+	"context"
 	"log"
 
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 )
 
 // LoadToMinio loads jsonld into the specified bucket
@@ -19,7 +20,7 @@ func LoadToMinio(jsonld, bucketName, objectName string, mc *minio.Client) (int64
 
 	//log.Println(bucketName)
 	// Upload the zip file with FPutObject
-	n, err := mc.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+	n, err := mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
 		log.Printf("%s/%s", bucketName, objectName)
 		log.Println(err)
@@ -28,5 +29,5 @@ func LoadToMinio(jsonld, bucketName, objectName string, mc *minio.Client) (int64
 
 	// log.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, n)
 
-	return n, nil
+	return n.Size, nil
 }

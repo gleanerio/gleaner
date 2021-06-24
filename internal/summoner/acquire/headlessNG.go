@@ -17,7 +17,7 @@ import (
 	"github.com/mafredri/cdp/protocol/page"
 	"github.com/mafredri/cdp/protocol/runtime"
 	"github.com/mafredri/cdp/rpcc"
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 	"golang.org/x/sync/errgroup"
 )
@@ -207,7 +207,7 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 		//bucketName := fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 		// Upload the  file with FPutObject
-		n, err := minioClient.PutObject(bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+		n, err := minioClient.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 		if err != nil {
 			log.Printf("%s", objectName)
 			log.Println(err)

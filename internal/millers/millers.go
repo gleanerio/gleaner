@@ -6,8 +6,7 @@ import (
 	"time"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/shapes"
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -62,12 +61,12 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 		}
 	}
 
-	if mcfg["shacl"] == "true" {
-		for d := range as {
-			shapes.ShapeNG(mc, as[d], v1)
-			// shapes.SHACLMillObjects(mc, as[d], v1)
-		}
-	}
+	// if mcfg["shacl"] == "true" {
+	// 	for d := range as {
+	// 		shapes.ShapeNG(mc, as[d], v1)
+	// 		// shapes.SHACLMillObjects(mc, as[d], v1)
+	// 	}
+	// }
 
 	// if mcfg["prov"] == "true" {
 	// 	for d := range ap {

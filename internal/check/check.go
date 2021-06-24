@@ -1,10 +1,11 @@
 package check
 
 import (
+	"context"
 	"fmt"
 	"log"
 
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 )
 
 var bl []string
@@ -18,7 +19,7 @@ func init() {
 
 // ConnCheck check the connections with a list buckets call
 func ConnCheck(mc *minio.Client) error {
-	_, err := mc.ListBuckets()
+	_, err := mc.ListBuckets(context.Background())
 	return err
 }
 
@@ -27,7 +28,7 @@ func Buckets(mc *minio.Client) error {
 	var err error
 
 	for i := range bl {
-		found, err := mc.BucketExists(bl[i])
+		found, err := mc.BucketExists(context.Background(), bl[i])
 		if err != nil {
 			return err
 		}
@@ -47,7 +48,7 @@ func MakeBuckets(mc *minio.Client) error {
 	var err error
 
 	for i := range bl {
-		found, err := mc.BucketExists(bl[i])
+		found, err := mc.BucketExists(context.Background(), bl[i])
 		if err != nil {
 			log.Printf("Existing bucket %s check:%v\n", bl[i], err)
 		}
@@ -55,7 +56,7 @@ func MakeBuckets(mc *minio.Client) error {
 			log.Printf("Gleaner Bucket %s found.\n", bl[i])
 		} else {
 			log.Printf("Gleaner Bucket %s not found, generating\n", bl[i])
-			err = mc.MakeBucket(bl[i], "us-east-1") // location is kinda meaningless here
+			err = mc.MakeBucket(context.Background(), bl[i], minio.MakeBucketOptions{Region: "us-east-1"}) // location is kinda meaningless here
 			if err != nil {
 				log.Printf("Make bucket:%v\n", err)
 			}

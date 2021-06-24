@@ -17,7 +17,7 @@ import (
 	"github.com/xitongsys/parquet-go-source/s3"
 	"github.com/xitongsys/parquet-go/writer"
 
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -61,6 +61,14 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 		log.Println(err)
 	}
 
+	err = v1.UnmarshalKey("sitegraphs", &domains)
+	if err != nil {
+		log.Println(err)
+	}
+
+	// TODO need to add sitegraphs to ABOVE too
+	// make a function to use in prov too?
+
 	proc, options := common.JLDProc(v1)
 
 	for k := range domains {
@@ -90,6 +98,7 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 		}
 
 		// create new S3 file writer
+		// TODO  WTF..  is this hard coded URL doing here?
 		fw, err := s3.NewS3FileWriter(ctx, bucket, key, nil, &aws.Config{Region: aws.String(region),
 			Endpoint:    aws.String("https://192.168.86.45:32773/"),
 			Credentials: credentials.NewStaticCredentials(accessKeyID, secretAccessKey, "")})
@@ -161,15 +170,32 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 	log.Print("Building organization graph from config file")
 
 	var domains []acquire.Sources
-	err := v1.UnmarshalKey("sources", &domains)
+	var sm []acquire.Sources
+
+	err := v1.UnmarshalKey("sources", &sm)
 	if err != nil {
 		log.Println(err)
 	}
+
+	var sg []acquire.Sources
+
+	err = v1.UnmarshalKey("sitegraphs", &sg)
+	if err != nil {
+		log.Println(err)
+	}
+
+	domains = append(sg, sm...)
+
+	// TODO need to add sitegraphs to ABOVE too
+	// make a function to use in prov too?
 
 	proc, options := common.JLDProc(v1)
 
 	// Sources: Name, Logo, URL, Headless, Pid
 	for k := range domains {
+
+		log.Println(domains[k])
+
 		jld, err := orggraph(domains[k])
 		if err != nil {
 			log.Println(err)
@@ -190,7 +216,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 		contentType := "application/ld+json"
 
 		// Upload the file with FPutObject
-		_, err = mc.PutObject(bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
+		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
 		if err != nil {
 			logger.Printf("%s", objectName)
 			logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
