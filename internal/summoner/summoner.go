@@ -33,4 +33,9 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	diff := et.Sub(st)
 	log.Printf("Summoner end time: %s \n", et)
 	log.Printf("Summoner run time: %f \n", diff.Minutes())
+
+	// What do I need to the "run" prov
+	// the URLs indexed  []sgring
+	// the graph generated?  "version" the graph by the build date
+
 }

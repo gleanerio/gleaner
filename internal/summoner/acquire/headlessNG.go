@@ -37,12 +37,12 @@ type Cookie struct {
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string][]string) {
+func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
 		for i := range m[k] {
-			err := PageRender(v1, minioClient, 30*time.Second, m[k][i], k) // TODO make delay configurable
+			err := PageRender(v1, mc, 30*time.Second, m[k][i], k) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], err)
 			}
@@ -50,7 +50,7 @@ func HeadlessNG(v1 *viper.Viper, minioClient *minio.Client, m map[string][]strin
 	}
 }
 
-func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duration, url, k string) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -77,25 +77,33 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 
 	c := cdp.NewClient(conn)
 
+	// Open a DOMContentEventFired client to buffer this event.
+	domContent, err := c.Page.DOMContentEventFired(ctx)
+	if err != nil {
+		return err
+
+	}
+	defer domContent.Close()
+
 	// Give enough capacity to avoid blocking any event listeners
-	abort := make(chan error, 2)
+	//abort := make(chan error, 2)
 
 	// Watch the abort channel.
-	go func() {
-		select {
-		case <-ctx.Done():
-		case err := <-abort:
-			fmt.Printf("aborted: %s\n", err.Error())
-			cancel()
-		}
-	}()
+	//go func() {
+	//select {
+	//case <-ctx.Done():
+	//case err := <-abort:
+	//fmt.Printf("aborted: %s\n", err.Error())
+	//cancel()
+	//}
+	//}()
 
 	// Setup event handlers early because domain events can be sent as
 	// soon as Enable is called on the domain.
-	if err = abortOnErrors(ctx, c, abort); err != nil {
-		fmt.Println(err)
-		return err
-	}
+	//if err = abortOnErrors(ctx, c, abort); err != nil {
+	//fmt.Println(err)
+	//return err
+	//}
 
 	if err = runBatch(
 		// Enable all the domain events that we're interested in.
@@ -111,7 +119,7 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 	}
 
 	// Open a DOMContentEventFired client to buffer this event.
-	domContent, err := c.Page.DOMContentEventFired(ctx)
+	domContent, err = c.Page.DOMContentEventFired(ctx)
 	if err != nil {
 		log.Print(err)
 		return err
@@ -120,10 +128,10 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 
 	// Enable events on the Page domain, it's often preferrable to create
 	// event clients before enabling events so that we don't miss any.
-	if err = c.Page.Enable(ctx); err != nil {
-		log.Print(err)
-		return err
-	}
+	// if err = c.Page.Enable(ctx); err != nil {
+	// 	log.Print(err)
+	// 	return err
+	// }
 
 	// Create the Navigate arguments with the optional Referrer field set.
 	navArgs := page.NewNavigateArgs(url)
@@ -143,29 +151,32 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 
 	// Parse information from the document by evaluating JavaScript.
 	// const title = document.getElementById('geocodes').innerText;
-	// 				const title = document.querySelector('script[id="geocodes"]').innerText;
+	// const title = document.querySelector('script[id="geocodes"]').innerText;
 
-	// const title = document.querySelector('script[type="application/ld+json"]').innerText;
-	//const title = document.querySelector('#jsonld').innerText;
-	// const title = document.querySelector('#geocodes').innerText;
-
-	// expression := `
-	// 	new Promise((resolve, reject) => {
-	// 		setTimeout(() => {
-	// 			const title = document.querySelector('script[id="geocodes"]').innerText;
-	// 			resolve({title});
-	// 		}, 1000);
-	// 	});
-	//`
+	/**
+	const title = document.querySelector('script[type="application/ld+json"]').innerText;
+	const title = document.querySelector('#jsonld').innerText;
+	const title = document.querySelector('#geocodes').innerText;
+	const title = document.querySelector('script[id="geocodes"]').innerText;
+	**/
 
 	expression := `
 		new Promise((resolve, reject) => {
 			setTimeout(() => {
-				const title = document.querySelectorAll('script[type="application/ld+json"]')[0].innerText;
+				const title = document.querySelector('script[type="application/ld+json"]').innerText;
 				resolve({title});
 			}, 1000);
-		});	
+		});
 	`
+
+	// expression := `
+	// 	new Promise((resolve, reject) => {
+	// 		setTimeout(() => {
+	// 			const title = document.querySelectorAll('script[type="application/ld+json"]')[0].innerText;
+	// 			resolve({title});
+	// 		}, 1000);
+	// 	});
+	// `
 
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
@@ -194,6 +205,9 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 		// objectName := fmt.Sprintf("%s.jsonld", bss)
 		// objectName := fmt.Sprintf("%s/%s.jsonld", k, bss)
 		sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+		if err != nil {
+			log.Println(err)
+		}
 
 		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", k, sha)
 
@@ -206,13 +220,18 @@ func PageRender(v1 *viper.Viper, minioClient *minio.Client, timeout time.Duratio
 		bucketName := "gleaner"
 		//bucketName := fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
+		err = StoreProv(v1, mc, k, sha, url)
+		if err != nil {
+			log.Println(err)
+		}
+
 		// Upload the  file with FPutObject
-		n, err := minioClient.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+		n, err := mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 		if err != nil {
 			log.Printf("%s", objectName)
 			log.Println(err)
 		}
-		log.Printf("Uploaded Bucket:%s File:%s Size %d \n", bucketName, objectName, n)
+		log.Printf("Uploaded Bucket:%s File:%s Size %d \n", bucketName, objectName, n.Size)
 	}
 
 	// // Fetch the document root node. We can pass nil here
@@ -251,6 +270,8 @@ func runBatch(fn ...runBatchFunc) error {
 	}
 	return eg.Wait()
 }
+
+// Code below here is not used
 
 // setCookies sets all the provided cookies.
 func setCookies(ctx context.Context, net cdp.Network, cookies ...Cookie) error {
