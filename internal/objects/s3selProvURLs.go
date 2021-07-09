@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// ProvURL returns the URLs we have currently indexed as recorded in the prov records
 func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string) []string {
 
 	opts := minio.SelectObjectOptions{

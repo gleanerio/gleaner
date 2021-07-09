@@ -7,7 +7,7 @@ minio:
   ssl: false
   bucket: gleaner
 gleaner:
-  runid: igsnrunX # this will be the bucket the output is placed in...
+  runid: runX # this will be the bucket the output is placed in...
   summon: true # do we want to visit the web sites and pull down the files
   mill: true
 context:
@@ -19,20 +19,19 @@ contextmaps:
   file: "./jsonldcontext.jsonld"
 summoner:
   after: ""      # "21 May 20 10:00 UTC"   
-  mode: diff  # [time, hash, none] diff: look for difference or full: delete old objects and replace
-  threads: 20
+  mode: full  # full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
+  threads: 5
   delay:  # milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1) 
   headless: http://127.0.0.1:9222  # URL for headless see docs/headless
 millers:
   graph: true
-  shacl: true
-  #geojson: false
-shaclservice:
-  url:  https://1bwb5ptlgh.execute-api.us-east-1.amazonaws.com/dev/verify 
-shapefiles:
-    #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRequired.ttl
-    #- ref: https://raw.githubusercontent.com/geoschemas-org/geoshapes/master/shapegraphs/googleRecommendedCoverageCheck.ttl
-- ref: https://gist.githubusercontent.com/fils/77d40a917a7af8020693678be30e87dd/raw/f2480cd2f304f2bc74143d4a72e72d43727942c4/westerntropicalshape.ttl
+sitegraphs:
+- name: aquadocs
+  url: https://oih.aquadocs.org/aquadocs.json 
+  headless: false
+  pid: https://www.re3data.org/repository/aquadocs
+  properName: AquaDocs
+  domain: https://aquadocs.org 
 sources:
 - name: samplesearth
   url: http://samples.earth/sitemap.xml   # XML version available?
