@@ -111,7 +111,7 @@ func Get(URL string, options interface{}) (Sitemap, error) {
 		log.Println(smapErr)
 		return Sitemap{}, errors.New("URL is not a sitemap or sitemapindex")
 	} else if idxErr != nil {
-		log.Println(idxErr)
+		// log.Println(idxErr)
 		return smap, errors.New("URL is not a sitemapindex")
 	}
 

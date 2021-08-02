@@ -121,16 +121,9 @@ func main() {
 	//}
 }
 
-// GetGraph
-// modify config file with sitegraph entry
-// download URL
-// load to minio
-// generate prov
-// generate org
+// GetGraph downloads pre-built site graphs
 func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
-	// read graph info from v1
-	log.Println("sitegraph indexing")
-
+	// get the sitegraph entry from config file
 	var domains []objects.Sources
 	err := v1.UnmarshalKey("sitegraphs", &domains)
 	if err != nil {
@@ -138,40 +131,53 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	}
 
 	for k := range domains {
-		fmt.Println(domains[k].URL)
+		log.Println(domains[k].URL)
 
 		d, err := getJSON(domains[k].URL)
 		if err != nil {
 			fmt.Println("error with reading graph JSON")
 		}
 
-		st := time.Now()
-		log.Printf("Hash start time: %s \n", st)
+		// TODO, how do we quickly validate the JSON-LD files to make sure it is at least formatted well
 
 		sha := common.GetSHA(d) // Don't normalize big files..
 
-		et := time.Now()
-		diff := et.Sub(st)
-		log.Printf("Hash end time: %s \n", et)
-		log.Printf("Hash run time: %f \n", diff.Minutes())
-
 		// Upload the file
+		log.Print("Uploading file")
 		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(d, "gleaner", objectName, mc)
 		if err != nil {
 			return objectName, err
 		}
 
-		// build prov?
-		err = acquire.StoreProv(v1, mc, domains[k].Name, sha, domains[k].URL)
+		// mill the json-ld to nq and upload to minio
+		// we bypass graph.GraphNG which does a time consuming blank node fix which is not required
+		// when dealing with a single large file.
+		log.Print("Milling graph")
+		//graph.GraphNG(mc, fmt.Sprintf("summoned/%s/", domains[k].Name), v1)
+		proc, options := common.JLDProc(v1) // Make a common proc and options to share with the upcoming go funcs
+		rdf, err := common.JLD2nq(d, proc, options)
 		if err != nil {
-			log.Println(err)
+			return "", err
 		}
 
-		fmt.Println(len(d))
+		milledName := fmt.Sprintf("milled/%s/%s.rdf", domains[k].Name, sha)
+		_, err = graph.LoadToMinio(rdf, "gleaner", milledName, mc)
+		if err != nil {
+			return objectName, err
+		}
+
+		// build prov
+		log.Print("Building prov")
+		err = acquire.StoreProvNG(v1, mc, domains[k].Name, sha, domains[k].URL, "summoned")
+		if err != nil {
+			return objectName, err
+		}
+
+		log.Println(len(d))
 	}
 
-	return "test", err
+	return "", err
 }
 
 func getJSON(url string) (string, error) {

@@ -3,8 +3,10 @@ package acquire
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"text/template"
 	"time"
 
@@ -37,14 +39,14 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-	p, err := ProvOGraph(v1, k, sha, urlloc)
+	p, err := provOGraph(v1, k, sha, urlloc, "milled") // TODO default to milled till I update the rest of the code and remove this version of the function
 	if err != nil {
 		return err
 	}
 
-	//  Normalized sha only valid for JSON-LD  this is? only valid for JSON-LD
+	// Moved to the normalized sha value since normalized sha only valid for JSON-LD
+	provsha := common.GetSHA(p)
 	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
-	provsha := common.GetSHA(p) // Moved to the normalized sha value
 	// if err != nil {
 	// 	logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 	// 	return err
@@ -61,7 +63,6 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	contentType := "application/ld+json"
 
 	// Upload the file with FPutObject
-
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
 		logger.Printf("%s", objectName)
@@ -71,25 +72,55 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	return err
 }
 
-// ProvOGraph is a simpler provo prov function
+func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix string) error {
+	var (
+		buf    bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	)
+
+	p, err := provOGraph(v1, k, sha, urlloc, objprefix)
+	if err != nil {
+		return err
+	}
+
+	// Moved to the normalized sha value since normalized sha only valid for JSON-LD
+	provsha := common.GetSHA(p)
+	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
+	// if err != nil {
+	// 	logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
+	// 	return err
+	// }
+
+	b := bytes.NewBufferString(p)
+
+	objectName := fmt.Sprintf("prov/%s/%s.jsonld", k, provsha) // k is the name of the provider from config
+	usermeta := make(map[string]string)                        // what do I want to know?
+	usermeta["url"] = urlloc
+	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
+
+	bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
+	contentType := "application/ld+json"
+
+	// Upload the file with FPutObject
+	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+	if err != nil {
+		logger.Printf("%s", objectName)
+		logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+	}
+
+	return err
+}
+
+// provOGraph is a simpler provo prov function
 // Against better judgment rather than build triples, I'll just
 // template build them like with the nanoprov function
-func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
+func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, error) {
 
 	// get the time
-	currentTime := time.Now()
-	date := fmt.Sprintf("%s", currentTime.Format("2006-01-02"))
+	currentTime := time.Now() // date := currentTime.Format("2006-01-02")
 
 	// open the config to get the runID later
 	mcfg := v1.GetStringMapString("gleaner")
-
-	// pull domains since we need to align k (stupid var for name here) with the PID value
-	// var domains []Sources
-	// err := v1.UnmarshalKey("sources", &domains)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-
 	domains := objects.SourcesAndGraphs(v1)
 
 	pid := "unknown"
@@ -103,19 +134,31 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 		}
 	}
 
-	// build the struct to pass to the template parser
-
-	// make the URN string // TODO make an extracted function to share with nabu
+	// TODO make an extracted function to share with nabu
+	// make the URN string
 	bucketName := "gleaner"
-	//objectURN := fmt.Sprintf("summoned:%s:%s", k, sha)
-	objectURN := fmt.Sprintf("milled:%s:%s", k, sha)
 
+	var objectURN string
+
+	if strings.Contains(objprefix, "summoned") {
+		objectURN = fmt.Sprintf("summoned:%s:%s", k, sha)
+	} else if strings.Contains(objprefix, "milled") {
+		objectURN = fmt.Sprintf("milled:%s:%s", k, sha)
+	} else {
+		return "", errors.New("No valid prov object prefix")
+	}
+
+	// build the struct to pass to the template parser
 	gp := fmt.Sprintf("urn:%s:%s", bucketName, objectURN)
-	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k, DATE: date, RUNID: mcfg["runid"], URN: gp, PNAME: pname, DOMAIN: domain}
-	tmpl := provTplt()
+	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k,
+		DATE:   currentTime.Format("2006-01-02"),
+		RUNID:  mcfg["runid"],
+		URN:    gp,
+		PNAME:  pname,
+		DOMAIN: domain}
 
 	var doc bytes.Buffer
-	t, err := template.New("prov").Parse(tmpl)
+	t, err := template.New("prov").Parse(provTemplate())
 	if err != nil {
 		panic(err)
 	}
@@ -124,12 +167,10 @@ func ProvOGraph(v1 *viper.Viper, k, sha, urlloc string) (string, error) {
 		panic(err)
 	}
 
-	// log.Print(doc.String())
-
 	return doc.String(), err
 }
 
-func provTplt() string {
+func provTemplate() string {
 
 	t := `{
 		"@context": {

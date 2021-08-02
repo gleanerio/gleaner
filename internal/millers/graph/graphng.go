@@ -108,11 +108,13 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	// TODO
 	// Process the bytes in b to RDF (with randomized blank nodes)
-	rdf, err := common.JLD2nq(string(b.Bytes()), proc, options)
+	// log.Println("JLD2NQ call")
+	rdf, err := common.JLD2nq(b.String(), proc, options)
 	if err != nil {
 		return key, err
 	}
 
+	// log.Println("blank node fix call")
 	rdfubn := GlobalUniqueBNodes(rdf)
 
 	milledkey := strings.ReplaceAll(key, ".jsonld", ".rdf")
@@ -120,12 +122,8 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	// make an object with prefix like  scienceorg-dg/objectname.rdf  (where is had .jsonld before)
 	objectName := fmt.Sprintf("%s/%s", prefix, milledkey)
-	//contentType := "application/ld+json"
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["origfile"] = key
-	//		usermeta["url"] = urlloc
-	//		usermeta["sha1"] = sha
-	//		bucketName := "gleaner-summoned" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 	// Upload the file
 	_, err = LoadToMinio(rdfubn, "gleaner", objectName, mc)

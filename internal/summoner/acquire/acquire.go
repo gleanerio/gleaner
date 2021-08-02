@@ -30,7 +30,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	// for each domain in getDomain and us this one where with a semaphore
 	// to control the loop...
 	for k := range m {
-		log.Printf("Queuing URLs for %s \n", k)
+		// log.Printf("Queuing URLs for %s \n", k)
 		go getDomain(v1, mc, m, k, &wg)
 	}
 
