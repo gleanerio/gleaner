@@ -26,7 +26,7 @@ require (
 	github.com/schollz/progressbar/v3 v3.7.3
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/viper v1.7.1
-	github.com/tidwall/gjson v1.6.1
+	github.com/tidwall/gjson v1.8.1
 	github.com/twinj/uuid v1.0.0
 	github.com/vugu/vgrouter v0.0.0-20200725205318-eeb478c42e5d // indirect
 	github.com/vugu/vugu v0.3.3 // indirect
