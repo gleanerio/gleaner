@@ -6,6 +6,6 @@ mc_cmd() {
 for i in $(mc_cmd $1); do
     echo "--------start----------------"
     echo $i
-    mc cat $1/$i | rapper --count --input ntriples --input-uri "http://gleaner.earthcube.org/" - 
+    mc cat $1/$i | rapper --count --input ntriples --input-uri "http://example.org/" - 
     echo "--------end------------------"
 done

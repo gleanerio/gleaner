@@ -9,7 +9,7 @@ for i in $files ; do
       echo "-------------start-------------"
       echo Next: $i
       # rapper -e -c -i nquads $i 
-      curl -X POST -H 'Content-Type:text/x-nquads' --data-binary @$i http://graph.openknowledge.network/blazegraph/namespace/kb/sparql
+      curl -X POST -H 'Content-Type:text/x-nquads' --data-binary @$i http://example.org/blazegraph/namespace/kb/sparql
       echo "-------------done--------------"
 done
 
