@@ -37,7 +37,7 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 		return err
 	}
 
-	if len(k) == 0 {
+	if len(domains) == 0 {
 		return nil
 	}
 

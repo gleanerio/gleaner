@@ -113,6 +113,7 @@ func main() {
 			log.Println("Error making buckets for setup call")
 			os.Exit(1)
 		}
+
 		log.Println("Buckets generated.  Object store should be ready for runs")
 		os.Exit(0)
 	}

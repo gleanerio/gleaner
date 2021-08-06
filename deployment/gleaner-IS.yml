@@ -1,9 +1,13 @@
 version: '3'
 
-# ${MINIO_ACCESS_KEY}  
-# ${MINIO_SECRET_KEY}
-# ${GLEANER_OBJECTS}
-# ${GLEANER_GRAPH}
+  # This compose file needs variables set either in the shell 
+  # or via a .env file.  See: https://docs.docker.com/compose/environment-variables/
+  # for more details.
+  #
+  # ${MINIO_ACCESS_KEY}  
+  # ${MINIO_SECRET_KEY}
+  # ${GLEANER_OBJECTS}
+  # ${GLEANER_GRAPH}
 
 services:
   triplestore:
@@ -22,15 +26,18 @@ services:
   s3system:
     image: minio/minio:latest
     ports:
+      - 54321:54321
       - 9000:9000
     volumes:
       - ${GLEANER_OBJECTS}:/data
     environment:
       - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+        - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
     networks:
       - traefik_default
-    command: ["server", "/data"]
+    command: ["server", "/data", "--console-address", ":54321"]
 
   headless:
     image: chromedp/headless-shell:latest

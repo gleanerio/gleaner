@@ -50,7 +50,7 @@ func MakeBuckets(mc *minio.Client) error {
 	for i := range bl {
 		found, err := mc.BucketExists(context.Background(), bl[i])
 		if err != nil {
-			log.Printf("Existing bucket %s check:%v\n", bl[i], err)
+			log.Printf("Existing bucket %s check: %v\n", bl[i], err)
 		}
 		if found {
 			log.Printf("Gleaner Bucket %s found.\n", bl[i])
@@ -58,7 +58,7 @@ func MakeBuckets(mc *minio.Client) error {
 			log.Printf("Gleaner Bucket %s not found, generating\n", bl[i])
 			err = mc.MakeBucket(context.Background(), bl[i], minio.MakeBucketOptions{Region: "us-east-1"}) // location is kinda meaningless here
 			if err != nil {
-				log.Printf("Make bucket:%v\n", err)
+				log.Printf("Make bucket: %v\n", err)
 			}
 		}
 	}

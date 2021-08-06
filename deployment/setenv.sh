@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # domains 
 export GLEANER_ADMIN_DOMAIN=admin.local.dev
 export GLEANER_OSS_DOMAIN=oss.local.dev
@@ -16,4 +14,3 @@ export GLEANER_BASE=/tmp/gleaner/
 export GLEANER_TRAEFIK=${GLEANER_BASE}/config
 export GLEANER_OBJECTS=${GLEANER_BASE}/datavol/s3
 export GLEANER_GRAPH=${GLEANER_BASE}/datavol/graph
-
