@@ -16,6 +16,7 @@ import (
 	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 )
 
 var viperVal, sourceVal string
@@ -138,14 +139,24 @@ func cli(mc *minio.Client, v1 *viper.Viper) {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	// Build the org graph
-	organizations.BuildGraphMem(mc, v1)
+	err := organizations.BuildGraphMem(mc, v1)
+	if err != nil {
+		log.Print(err)
+	}
 
-	//os.Exit(0)
+	// Index the sitegraphs first, if any
+	fn, err := acquire.GetGraph(mc, v1)
+	if err != nil {
+		log.Print(err)
+	}
+	log.Println(fn)
 
+	// If configured, summon sources
 	if mcfg["summon"] == "true" {
 		summoner.Summoner(mc, v1)
 	}
 
+	// if configured, process summoned sources fronm JSON-LD to RDF (nq)
 	if mcfg["mill"] == "true" {
 		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
 	}

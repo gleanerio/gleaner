@@ -8,7 +8,6 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
@@ -23,7 +22,7 @@ import (
 
 // BuildGraph makes a graph from the Gleaner config file source
 // load this to a /sources bucket (change this to sources naming convention?)
-func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
+func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 	// var (
 	// 	buf    bytes.Buffer
 	// 	logger = log.New(&buf, "logger: ", log.Lshortfile)
@@ -35,6 +34,11 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 	err := v1.UnmarshalKey("sources", &domains)
 	if err != nil {
 		log.Println(err)
+		return err
+	}
+
+	if len(k) == 0 {
+		return nil
 	}
 
 	proc, options := common.JLDProc(v1)
@@ -45,7 +49,7 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 			dat, err := ioutil.ReadAll(r)
 			if err != nil {
 				log.Printf("error reading data: %v", err)
-				os.Exit(1)
+				return err
 			}
 
 			br := bytes.NewReader(dat)
@@ -62,17 +66,17 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 				log.Fatalln(err) // Fatal?   seriously?  I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 			}
 
-			return nil
+			return err
 		})
 		if err != nil {
 			log.Println("Can't create s3 file writer", err)
-			return
+			return err
 		}
 
 		pw, err := writer.NewParquetWriter(fw, new(Qset), 4)
 		if err != nil {
 			log.Println("Can't create parquet writer", err)
-			return
+			return err
 		}
 
 		pw.RowGroupSize = 128 * 1024 * 1024 //128M
@@ -84,11 +88,13 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 		jld, err := orggraph(domains[k])
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 
 		r, err := common.JLD2nq(jld, proc, options)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 
 		// read rdf string line by line and feed into quad decoder
@@ -101,6 +107,7 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 			spog, err := dec.Decode()
 			if err != nil {
 				log.Println(err)
+				return err
 			}
 
 			qs := Qset{Subject: spog.Subj.String(), Predicate: spog.Pred.String(), Object: spog.Obj.String(), Graph: spog.Ctx.String()}
@@ -109,25 +116,27 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 
 			if err = pw.Write(qs); err != nil {
 				log.Println("Write error", err)
+				return err
 			}
 
 		}
 		if err := scanner.Err(); err != nil {
 			log.Println(err)
+			return err
 		}
 
 		pw.Flush(true)
 
 		if err = pw.WriteStop(); err != nil {
 			log.Println("WriteStop error", err)
-			return
+			return err
 		}
 
 		err = fw.Close()
 		if err != nil {
 			log.Println(err)
 			log.Println("Error closing S3 file writer")
-			return
+			return err
 		}
 
 		// delete, is this needed since we close above and have a closure call?
@@ -136,4 +145,6 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) {
 
 		}
 	}
+
+	return err
 }

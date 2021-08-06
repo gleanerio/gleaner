@@ -3,15 +3,11 @@
 # gleaner-cli 
 # A wrapper script for invoking gleaner-cli with docker
 # Put this script in $PATH as `rgleaner-cli`
-# -getsdo pulls down latest schema.org context
-# -update pulls down the latest version of the gleaner-cli 
-# -cfgtemplate pulls down the latest config template 
-# -getcompose pulls down the latest basic compose file
-# -help displays help message
 
 PROGNAME="$(basename $0)"
 VERSION="v0.0.1"
 
+# Pull down some of the needed docks if called with -init
 if [[ $1 == "-init" ]];
 then 
     curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
@@ -19,6 +15,7 @@ then
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/setenvIS.sh
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/gleaner-IS.yml
     docker pull fils/gleaner:latest
+    echo "See notes at: https://github.com/earthcubearchitecture-project418/gleaner/blob/dev/docs/cliDocker/README.md"
     exit 0
 fi
 
@@ -34,13 +31,9 @@ check_cmd_in_path(){
   which $cmd > /dev/null 2>&1 || error 1 "$cmd not found!"
 }
 
-## put in call to pull down schema.org context. 
-
 # Guards (checks for dependencies)
 check_cmd_in_path docker
 check_cmd_in_path curl
-# check_cmd_in_path docker-machine
-# docker-machine active > /dev/null 2>&1 || error 2 "No active docker-machine VM found."
 
 # Set up mounted volumes, environment, and run our containerized command
 # podman needs --privileged to mount /dev/shm
