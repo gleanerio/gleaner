@@ -77,22 +77,22 @@ func main() {
 	}
 
 	if isFlagPassed("source") {
-		// -source '{"Name":"demo1", "URL":"http://foo.org/sitemap.xml", "Headless":true}'
-
 		configMap := v1.AllSettings()
 		delete(configMap, "sources")
 
 		//log.Println(sourceVal)
 		ns := objects.Sources{}
 		json.Unmarshal([]byte(sourceVal), &ns)
-		//log.Println(ns)
 
 		sa := []objects.Sources{}
+		// Need Logo, PID, PrrperName and Domain
 		//s := acquire.Sources{Name: "dmeoname", URL: "https://foo.org/sitemap.xml", Headless: true}
 		//sa = append(sa, s)
 		sa = append(sa, ns)
 		v1.Set("sources", sa)
 	}
+
+	// TODO need is flag mode
 
 	//var domains []acquire.Sources
 	//err = v1.UnmarshalKey("sources", &domains)

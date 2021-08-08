@@ -19,7 +19,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 
 	"github.com/knakk/rdf"
 	"github.com/minio/minio-go/v7"
@@ -29,7 +28,7 @@ import (
 	"github.com/xitongsys/parquet-go/writer"
 )
 
-var viperVal string
+var viperVal, modeVal string
 var setupVal bool
 
 type BucketObjects struct {
@@ -47,9 +46,10 @@ type Qset struct {
 func init() {
 	log.SetFlags(log.Lshortfile)
 	// log.SetOutput(ioutil.Discard) // turn off all logging
-
+	// flag.StringVar(&sourceVal, "source", "", "Override config file source")
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
+	flag.StringVar(&modeVal, "mode", "mode", "Set the mode")
 }
 
 // Simple test of the nanoprov function
@@ -76,6 +76,15 @@ func main() {
 		}
 	}
 
+	if isFlagPassed("mode") {
+		m := v1.GetStringMap("summoner")
+		m["mode"] = modeVal
+		v1.Set("summoner", m)
+	}
+
+    log.Println(v1)
+	os.Exit(0)
+
 	// Set up the minio connector
 	mc := MinioConnection(v1)
 
@@ -96,12 +105,10 @@ func main() {
 	// }
 
 	// -------------- get the sitegraphs
-	fn, err := acquire.GetGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
-	}
-
-	log.Println(fn)
+	// fn, err := acquire.GetGraph(mc, v1)
+	// if err != nil {
+	// 	log.Print(err)
+	// }
 
 	// -------------- parquet builder
 	//err = Bkt2File(v1, "name", "gleaner", "prov/samplesearth", mc)
