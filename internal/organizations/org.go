@@ -147,7 +147,7 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 
 // BuildGraph makes a graph from the Gleaner config file source
 // load this to a /sources bucket (change this to sources naming convention?)
-func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
+func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
@@ -165,11 +165,13 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 		jld, err := orggraph(domains[k])
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 
 		rdf, err := common.JLD2nq(jld, proc, options)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
 
 		rdfb := bytes.NewBufferString(rdf)
@@ -185,10 +187,12 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) {
 		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
 		if err != nil {
 			logger.Printf("%s", objectName)
-			logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+			return err
 		}
 
 	}
+
+	return nil
 }
 
 func orggraph(k objects.Sources) (string, error) {

@@ -40,6 +40,12 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	)
 
 	p, err := provOGraph(v1, k, sha, urlloc, "milled") // TODO default to milled till I update the rest of the code and remove this version of the function
+
+	// NOTE
+	// Setting the value of the prov reference is a connection to how Nabu and the queries related to prov work.  When Nabu loads from summoned, the
+	// graph value is set and this needs to match what is here.  Else, we load from milled and the same connection has to take place.   Loading from
+	// milled is hard when we are dealing with large sitegraphs.  ??
+
 	if err != nil {
 		return err
 	}

@@ -42,7 +42,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 		log.Printf("Headless chrome call to: %s", k)
 
 		for i := range m[k] {
-			err := PageRender(v1, mc, 30*time.Second, m[k][i], k) // TODO make delay configurable
+			err := PageRender(v1, mc, 60*time.Second, m[k][i], k) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], err)
 			}

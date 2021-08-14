@@ -9,3 +9,9 @@ You can use the -init flag to pull down all the support files you need including
 the Docker Compose file for setting up the object store, a triplestore and 
 the support for headless indexing.  
 
+
+
+
+```
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' clidocker_s3system_1
+```

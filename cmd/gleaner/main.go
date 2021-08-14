@@ -140,7 +140,8 @@ func cli(mc *minio.Client, v1 *viper.Viper) {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	// Build the org graph
-	err := organizations.BuildGraphMem(mc, v1)
+	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
+	err := organizations.BuildGraph(mc, v1)
 	if err != nil {
 		log.Print(err)
 	}
