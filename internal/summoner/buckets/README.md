@@ -1,5 +1,8 @@
 # Buckets
 
+## NOTE
+
+code isn't wired in or working for any purpose yet.  it's a placeholder for a plan
 ## About
 
 Code here needs to manage the buckets that a crawl goes into. 

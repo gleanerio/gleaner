@@ -3,7 +3,6 @@
 # gleaner-cli 
 # A wrapper script for invoking gleaner-cli with docker
 # Put this script in $PATH as `rgleaner-cli`
-
 # TODO 
 # add help with things like config for 
 # go run ../../cmd/gleaner/main.go -cfg eco_local -source '{"Name":"opentopo", "URL":"https://portal.opentopography.org/sitemap.xml", "Headless":false, "PID":"http://doi.org/10.17616/R3J616"}'
