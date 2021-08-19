@@ -1,4 +1,4 @@
-# Gleaner Docker instance
+# Gleaner CLI Docker Image
 
 ## About
 
@@ -11,7 +11,9 @@ the support for headless indexing.
 
 ## Prerequisites
 
-You need Docker installed
+You need Docker installed.  Later, to work with the results and load them into a
+triplestore, you will also need an S3 compatible client.  We will use the Minio
+client, mc, for this.  
 
 ## Steps
 
@@ -37,7 +39,7 @@ fils@ubuntu:~/clidocker# ls -lt
 total 1356
 -rw-r--r-- 1 fils fils    1281 Aug 15 14:07 gleaner-IS.yml
 -rw-r--r-- 1 fils fils     290 Aug 15 14:07 setenvIS.sh
--rw-r--r-- 1 fils fils    1266 Aug 15 14:07 template_v2.0.yaml
+-rw-r--r-- 1 fils fils    1266 Aug 15 14:07 demo.yaml
 -rw-r--r-- 1 fils fils 1371350 Aug 15 14:07 schemaorg-current-https.jsonld
 -rwxr-xr-x 1 fils fils    1852 Aug 15 14:06 gleanerDocker.sh
 ```
@@ -82,7 +84,7 @@ Next we need to setup our object for Gleaner.  Gleaner itself can do this
 task so we will use 
 
 ```bash
-root@ubuntu:~/clidocker# ./gleanerDocker.sh -setup -cfg template_v2.0
+root@ubuntu:~/clidocker# ./gleanerDocker.sh -setup -cfg demo
 main.go:35: EarthCube Gleaner
 main.go:110: Setting up buckets
 check.go:58: Gleaner Bucket gleaner not found, generating
@@ -103,7 +105,7 @@ We can now do a run with the example template file.
 If everything goes well, you should see something like the following:
 
 ```bash
-root@ubuntu:~/clidocker# ./gleanerDocker.sh -cfg template_v2.0
+root@ubuntu:~/clidocker# ./gleanerDocker.sh -cfg demo
 main.go:35: EarthCube Gleaner
 main.go:122: Validating access to object store
 check.go:39: Validated access to object store: gleaner.
@@ -129,24 +131,122 @@ millers.go:81: Miller run time: 0.024649
 
 ```
 
-At this point you have downloaded the JSON-LD documents if all has gone well.
+## Working with results
 
-I need to document loading these into the triplestore.  You can use something like
-the scripts like minio2blaze.sh at https://github.com/earthcubearchitecture-project418/gleaner/tree/master/scripts.
+If all has gone well, at this point you have downloaded the JSON-LD documents into Minio or 
+some other object store.Next we will install a client that we can use to work with these objects.
 
-I need to work up documentation for that though.  Also, those scripts require
-that you have mc installed.  The Minio Client, which can be installed
+Note, there is a web interface exposed on the port mapped in the Docker compose file.
+In the case of these demo that is 9000.  You can access it at
+http://localhost:9000/ with the credentials set in the environment variable file.  
+
+However, to work with these objects it would be better to use a command line tool, like mc.
+The Minio Client, can be installed
 following their [Minio Client Quickstate Guide](https://docs.min.io/docs/minio-client-quickstart-guide.html).
+Be sure to place it somewhere where it can be seen from the command line, ie, make sure it
+is in your PATH variable. 
 
-Let's do a quick stab at it... 
+If you are on Linux this might look something like:
 
-Download the minio2blaze.sh script.
-
-
-
-
-## Notes
-
-```basg
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' clidocker_s3system_1
 ```
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+./mc --help
+```
+
+There is also a [Minio Client Docker image](https://hub.docker.com/r/minio/minio-client/) 
+that you can use as well but it will be more difficult to use with the following scripts due
+to container isolation. 
+
+To man an entry in the mc config use:
+
+```
+mc alias set oih  http://localhost:9000 worldsbestaccesskey worldsbestsecretkey
+```
+
+We should now be able to list our object store.  We have set it up using the alias _oih_.
+
+```
+user@ubuntu:~/clidocker# mc ls oih
+[2021-08-15 14:31:20 UTC]     0B gleaner/
+user@ubuntu:~/clidocker# mc ls oih/gleaner
+[2021-08-19 13:36:04 UTC]     0B milled/
+[2021-08-19 13:36:04 UTC]     0B orgs/
+[2021-08-19 13:36:04 UTC]     0B prov/
+[2021-08-19 13:36:04 UTC]     0B results/
+[2021-08-19 13:36:04 UTC]     0B summoned/
+```
+
+You can explore mc and see how to copy and work with the object store.  
+
+## Loading to the triplestore
+
+As part of our Docker compose file we also spun up a triplestore.  Let's use that now.  
+
+
+Now Download the minio2blaze.sh script.
+
+```bash
+curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/scripts/minio2blaze.sh
+chmod 755 minio2blaze.sh 
+```
+
+The content we need to load into the triplestore needs to be in RDF for Blazegraph.  We also need
+to tell the triplestore how we have encoded that RDF.   If look in the object store at
+
+```
+mc ls oih/gleaner/milled
+[2021-08-19 13:26:52 UTC]     0B samplesearth/
+```
+
+We should see a bucket that is holding the RDF data converted from the JSON-LD.  Let's use this
+in our test.   We can pass this path to the minio2blaze.sh script.  This script will go looking 
+for the mc command we installed above, so be sure it is in a PATH location that script can see.  
+
+```
+./minio2blaze.sh oih/gleaner/milled/samplesearth
+...   lots of results removed 
+```
+
+If all has gone well, we should have RDF in the triplestore.  We started our triplestore as part of
+the docker-compose.yml file.  You can visit the triplestore at http://localhost:9999/blazegraph/#splash
+
+Note, you may have to try other addresses other than _localhost_ if your networking is a bit different with
+Docker.  For me, I had to use a real local IP address for my network, you might also try _0.0.0.0_.
+
+Hopefully you will see something like the following.
+
+![Blazegrah](./images/blaze.png)
+
+We loaded into the default _kb_ namespace, so we should be good there.  We can see that is listed 
+as the active namespace at the _Current Namespace: kb_ report.  
+
+Let's try a simple SPARQL query.  Click on the _Query_ tab to get to the query user interfaced. We
+can use something like:
+
+```
+select * 
+where 
+{ 
+  ?s ?p ?o
+}
+LIMIT 10
+```
+
+A very simple SPARQL to give us the first 10 results from the triplestore.  If all has gone well, 
+we should see something like:
+
+![Blazegrah](./images/simplequery.png)
+
+You can explore more about SPARQL and the wide range of queries you can do with it
+at the W3C [SPARQL 1.1 Query Language](https://www.w3.org/TR/sparql11-query/) reference. 
+
+## Conclusion
+
+We have attempted here to give a quick introduction to the use of Gleaner in a Docker 
+environment.  This is a very simple example, but it should give you an idea of the approach
+used.  This approach can then be combined with other approaches documented to establish a 
+more production oriented implementation.  Most of this documentation will be located
+at the [Gleaner.io GitHub repository](https://github.com/gleanerio) and [Gleaner](https://github.com/earthcubearchitecture-project418/gleaner) repository.
+
+> Note: The plan is to merge the Gleaner.io GitHub repository into the first. 

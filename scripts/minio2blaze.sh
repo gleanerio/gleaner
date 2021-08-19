@@ -1,9 +1,7 @@
 #!/bin/bash
-# A wrapper script for loading RDF into Jena from Minio
-# usage:  load2jena.sh souceBucket targetDataBase targetGraph
-# example:  load2jena.sh local/gleaner-milled/run1 index common 
-# example: ./load2jena.sh local/gleaner-milled/runtwo earthcube runid
-# todo replace the following sections with $1 $2 $3 from above command invoking
+# A wrapper script for loading RDF into Blazegraph from Minio
+# usage:  load2blaze.sh souceBucket
+
 mc_cmd() {
         mc ls $1 | awk '{print $5}'
 }
@@ -12,7 +10,7 @@ mc_cmd() {
 for i in $(mc_cmd $1); do
       echo "-------------start-------------"
       echo Next: $i
-      mc cat $1/$i | curl -X POST -H 'Content-Type:text/x-nquads' --data-binary  @- https://localhost:9999/blazegraph/namespace/kb/sparql
+      mc cat $1/$i | curl -X POST -H 'Content-Type:text/x-nquads' --data-binary  @- http://localhost:9999/blazegraph/namespace/kb/sparql
       echo "-------------done--------------"
 done
 

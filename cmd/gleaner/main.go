@@ -19,7 +19,7 @@ import (
 	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
 )
 
-var viperVal, sourceVal string
+var viperVal, sourceVal, modeVal string
 var setupVal bool
 
 func init() {
@@ -29,6 +29,8 @@ func init() {
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
+	flag.StringVar(&modeVal, "mode", "mode", "Set the mode")
+
 }
 
 func main() {
@@ -76,6 +78,8 @@ func main() {
 		}
 	}
 
+	// Parse a new sources node from command line if present
+	// Use to override config files sources for a single entry run
 	if isFlagPassed("source") {
 		configMap := v1.AllSettings()
 		delete(configMap, "sources")
@@ -85,22 +89,16 @@ func main() {
 		json.Unmarshal([]byte(sourceVal), &ns)
 
 		sa := []objects.Sources{}
-		// Need Logo, PID, PrrperName and Domain
-		//s := acquire.Sources{Name: "dmeoname", URL: "https://foo.org/sitemap.xml", Headless: true}
-		//sa = append(sa, s)
 		sa = append(sa, ns)
 		v1.Set("sources", sa)
 	}
 
-	// TODO need is flag mode
-
-	//var domains []acquire.Sources
-	//err = v1.UnmarshalKey("sources", &domains)
-	//if err != nil {
-	//log.Println(err)
-	//}
-	//log.Println(domains)
-	//os.Exit(0)
+	// Parse a new mode entry from command line if present
+	if isFlagPassed("mode") {
+		m := v1.GetStringMap("summoner")
+		m["mode"] = modeVal
+		v1.Set("summoner", m)
+	}
 
 	// Set up the minio connector
 	mc := common.MinioConnection(v1)

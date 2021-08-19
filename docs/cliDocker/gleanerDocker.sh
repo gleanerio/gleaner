@@ -16,7 +16,7 @@ VERSION="v0.0.1"
 if [[ $1 == "-init" ]];
 then 
     curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
-    curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/configs/template_v2.0.yaml
+    curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/configs/demo.yaml
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/setenvIS.sh
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/gleaner-IS.yml
     docker pull fils/gleaner:latest

@@ -1,0 +1,34 @@
+---
+minio:
+  address: 0.0.0.0
+  port: 9000   
+  accessKey: worldsbestaccesskey
+  secretKey: worldsbestsecretkey
+  ssl: false
+  bucket: gleaner
+gleaner:
+  runid: demorun # Run ID used in prov and a few others
+  summon: true # do we want to visit the web sites and pull down the files
+  mill: true
+context:
+  cache: true
+contextmaps:
+- prefix: "https://schema.org/"
+  file: "./schemaorg-current-https.jsonld"
+- prefix: "http://schema.org/"
+  file: "./schemaorg-current-https.jsonld"
+summoner:
+  after: ""      # "21 May 20 10:00 UTC"   
+  mode: full  # full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
+  threads: 5
+  delay:  # milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1) 
+  headless: http://127.0.0.1:9222  # URL for headless see docs/headless
+millers:
+  graph: true
+sources:
+- name: samplesearth
+  url: https://samples.earth/sitemap.xml
+  headless: false
+  pid: https://www.re3data.org/repository/samplesearth
+  properName: Samples Earth (DEMO Site)
+  domain: https://samples.earth  
