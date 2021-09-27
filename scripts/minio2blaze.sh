@@ -10,6 +10,7 @@ mc_cmd() {
 for i in $(mc_cmd $1); do
       echo "-------------start-------------"
       echo Next: $i
-      mc cat $1/$i | curl -X POST -H 'Content-Type:text/x-nquads' --data-binary  @- "http://localhost:9999/blazegraph/namespace/polder-test/sparql"
+      mc cat $1/$i | curl -X POST -H 'Content-Type:text/x-nquads' --data-binary  @- http://localhost:9999/blazegraph/namespace/kb/sparql
       echo "-------------done--------------"
 done
+

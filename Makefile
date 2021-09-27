@@ -19,9 +19,16 @@ releases: gleaner gleaner.exe gleaner.darwin
 docker:
 	podman build  --tag="nsfearthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile .
 
+docker.darwin:
+	docker build  --tag="nsfearthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile .
+
 dockerpush:
 	podman push localhost/nsfearthcube/gleaner:$(VERSION) fils/gleaner:$(VERSION)
 	podman push localhost/nsfearthcube/gleaner:$(VERSION) fils/gleaner:latest
+
+dockerpush.darwin:
+	docker push localhost/nsfearthcube/gleaner:$(VERSION) fils/gleaner:$(VERSION)
+	docker push localhost/nsfearthcube/gleaner:$(VERSION) fils/gleaner:latest
 
 removeimage:
 	docker rmi --force nsfearthcube/gleaner:$(VERSION)
