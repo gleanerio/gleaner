@@ -201,7 +201,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 					logger.Printf("%s", objectName)
 					logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 				}
-				// logger.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, n)
+				logger.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, int64(b.Len()))
+			} else {
+				logger.Printf("Empty JSON-LD document found. Continuing.")
 			}
 
 			bar.Add(1) // bar.Incr()
