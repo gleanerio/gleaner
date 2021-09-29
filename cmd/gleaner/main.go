@@ -10,13 +10,13 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/check"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/internal/check"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/millers"
+	"github.com/gleanerio/gleaner/internal/objects"
+	"github.com/gleanerio/gleaner/internal/organizations"
+	"github.com/gleanerio/gleaner/internal/summoner"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 )
 
 var viperVal, sourceVal, modeVal string

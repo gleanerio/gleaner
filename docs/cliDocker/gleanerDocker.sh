@@ -20,7 +20,7 @@ then
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/setenvIS.sh
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/gleaner-IS.yml
     docker pull fils/gleaner:latest
-    echo "\n See notes at: https://github.com/earthcubearchitecture-project418/gleaner/blob/dev/docs/cliDocker/README.md \n"
+    echo "\n See notes at: https://github.com/gleanerio/gleaner/blob/dev/docs/cliDocker/README.md \n"
     exit 0
 fi
 

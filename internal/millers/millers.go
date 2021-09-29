@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
+	"github.com/gleanerio/gleaner/internal/millers/graph"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )

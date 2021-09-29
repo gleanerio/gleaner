@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/internal/objects"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"

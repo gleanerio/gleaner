@@ -13,7 +13,7 @@ import (
 	"github.com/piprate/json-gold/ld"
 	"github.com/schollz/progressbar/v3"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )

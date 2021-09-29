@@ -8,7 +8,7 @@ import (
 
 	"github.com/gosuri/uiprogress"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go"
 	"github.com/spf13/viper"
 )

@@ -1,4 +1,4 @@
-module github.com/earthcubearchitecture-project418/gleaner
+module github.com/gleanerio/gleaner
 
 go 1.14
 
