@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -27,9 +26,9 @@ func init() {
 	// log.SetOutput(ioutil.Discard) // turn off all logging
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
-	flag.StringVar(&sourceVal, "source", "", "Override config file source")
+	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
-	flag.StringVar(&modeVal, "mode", "mode", "Set the mode")
+	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
 
 }
 
@@ -64,8 +63,6 @@ func main() {
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
 		v1, err = readConfig(viperVal, map[string]interface{}{
-			"sqlfile": "",
-			"bucket":  "",
 			"minio": map[string]string{
 				"address":   "localhost",
 				"port":      "9000",
@@ -74,8 +71,13 @@ func main() {
 			},
 		})
 		if err != nil {
-			panic(fmt.Errorf("error when reading config: %v", err))
+			log.Printf("error when reading config: %v", err)
+			os.Exit(1)
 		}
+	} else {
+		log.Println("Gleaner must be run with a config file: -cfg CONFIGFILE")
+		flag.Usage()
+		os.Exit(0)
 	}
 
 	// Parse a new sources node from command line if present
