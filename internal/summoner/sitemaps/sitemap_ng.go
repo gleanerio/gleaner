@@ -10,6 +10,7 @@ import (
 	"compress/gzip"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -107,17 +108,19 @@ func Get(URL string, options interface{}) (Sitemap, error) {
 	smap, smapErr := Parse(data)
 
 	if idxErr != nil && smapErr != nil {
-		log.Println(idxErr)
-		log.Println(smapErr)
-		return Sitemap{}, errors.New("URL is not a sitemap or sitemapindex")
+		if idxErr != nil {
+			err = idxErr
+		} else {
+			err = smapErr
+		}
+		return Sitemap{}, fmt.Errorf("URL is not a sitemap or sitemapindex.: %v", err)
 	} else if idxErr != nil {
-		// log.Println(idxErr)
-		return smap, errors.New("URL is not a sitemapindex")
+		return smap, nil
 	}
 
 	smap, err = idx.get(data, options)
 	if err != nil {
-		log.Println(err)
+		log.Println("error getting url", err)
 		return Sitemap{}, err
 	}
 

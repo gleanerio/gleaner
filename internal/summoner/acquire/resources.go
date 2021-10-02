@@ -40,7 +40,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 		if headless == domains[k].Headless {
 			mapname := domains[k].Name // TODO I would like to use this....
 			if err != nil {
-				log.Println("Error in domain parsing")
+				log.Println(domains[k].Name, "Error in domain parsing", err)
 			}
 
 			// log.Println(mcfg)
@@ -50,7 +50,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 				//log.Println("Get After Date")
 				us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
 				if err != nil {
-					log.Println(err)
+					log.Println(domains[k].Name, err)
 					// pass back error and deal with it better in the logs
 					// and in the user experience
 				}
@@ -58,7 +58,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 				//log.Println("Get with no date")
 				us, err = sitemaps.Get(domains[k].URL, nil)
 				if err != nil {
-					log.Println(err)
+					log.Println(domains[k].Name, err)
 					// pass back error and deal with it better in the logs
 					// and in the user experience
 				}
@@ -71,7 +71,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 					s = append(s, us.URL[k].Loc)
 				}
 			}
-			log.Printf("%s : %d\n", domains[k].Name, len(s))
+			log.Printf("crawling %s : %d\n urls", domains[k].Name, len(s))
 
 			// TODO if we check for URLs in prov..  do that here..
 			if mcfg["mode"] == "diff" {
