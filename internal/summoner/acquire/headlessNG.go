@@ -40,6 +40,10 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	mcfg := v1.GetStringMapString("summoner")
 
 	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
@@ -79,7 +83,6 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	}
 	defer domContent.Close()
 
-
 	// Create the Navigate arguments with the optional Referrer field set.
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
@@ -96,14 +99,14 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 
 	log.Printf("%s for %s\n", nav.FrameID, url)
 
-/**
- * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
- * and then tries to find a JSON-LD element on the page, and get its contents.
- *  If it doesn't find one, it will retry three times, with a wait in between. You can see that it
- *  ultimately calls reject() with no arguments if it can't find anything, and that is because
- * I cannot figure out how to get the cdp Runtime to distinguish between a resolved and a rejected
- *  promise - so in this case, we simply do not index a document, and fail silently.
- **/
+	/**
+	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
+	 * and then tries to find a JSON-LD element on the page, and get its contents.
+	 *  If it doesn't find one, it will retry three times, with a wait in between. You can see that it
+	 *  ultimately calls reject() with no arguments if it can't find anything, and that is because
+	 * I cannot figure out how to get the cdp Runtime to distinguish between a resolved and a rejected
+	 *  promise - so in this case, we simply do not index a document, and fail silently.
+	 **/
 	expression := `
 		function getMetadata() {
 			return new Promise((resolve, reject) => {
@@ -175,7 +178,6 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		usermeta := make(map[string]string) // what do I want to know?
 		usermeta["url"] = url
 		usermeta["sha1"] = bss
-		bucketName := "gleaner"
 
 		err = StoreProv(v1, mc, k, sha, url)
 		if err != nil {

@@ -1,12 +1,12 @@
-# Console
+# Gleaner Console  (glcon)
 
 ## About
 
-Console is the start of building an intereface to submit jobs into gleaner with.
+Console is the start of exploring building an interface to submit jobs into gleaner.
 
 ## Notes
 
-console needs to 
+console needs to:
 
 * check setup
 * init a config file

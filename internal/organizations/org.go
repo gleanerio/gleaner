@@ -47,11 +47,88 @@ type Qset struct {
 
 // BuildGraph makes a graph from the Gleaner config file source
 // load this to a /sources bucket (change this to sources naming convention?)
-func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
+func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
+
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
+	log.Print("Building organization graph (nq)")
+	domains := objects.SourcesAndGraphs(v1)
+	proc, options := common.JLDProc(v1)
+
+	// Sources: Name, Logo, URL, Headless, Pid
+	for k := range domains {
+
+		log.Println(domains[k])
+
+		jld, err := orggraph(domains[k])
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		rdf, err := common.JLD2nq(jld, proc, options)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+
+		rdfb := bytes.NewBufferString(rdf)
+
+		// load to minio
+		// orgsha := common.GetSHA(jld)
+		// objectName := fmt.Sprintf("orgs/%s/%s.nq", domains[k].Name, orgsha) // k is the name of the provider from config
+		objectName := fmt.Sprintf("orgs/%s.nq", domains[k].Name) // k is the name of the provider from config
+		contentType := "application/ld+json"
+
+		// Upload the file with FPutObject
+		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
+		if err != nil {
+			logger.Printf("%s", objectName)
+			return err
+		}
+
+	}
+
+	return nil
+}
+
+func orggraph(k objects.Sources) (string, error) {
+	var doc bytes.Buffer
+
+	t, err := template.New("prov").Parse(t)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = t.Execute(&doc, k)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return doc.String(), err
+}
+
+// TODO Parquet test?
+// This is a test, likely should remove as this is likely a post Gleaner activity for
+// something like Nabu or some other tool.
+
+// BuildGraphPQ makes a graph from the Gleaner config file source in Parquet format
+// load this to a /sources bucket (change this to sources naming convention?)
+func TEST_BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
+	var (
+		buf    bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	)
+
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
 	log.Print("Building organization graph (parquet)")
 	domains := objects.SourcesAndGraphs(v1)
@@ -67,11 +144,10 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 
 		// Make a parquet file
 		ctx := context.Background()
-		bucket := "gleaner"                                    // out["bucket"]
 		region := "us-east-1"                                  // out["region"]
 		key := fmt.Sprintf("orgs/%s.parquet", domains[k].Name) //out["object"]
 
-		log.Printf("Write to %s as %s ", bucket, key)
+		log.Printf("Write to %s as %s ", bucketName, key)
 
 		jld, err := orggraph(domains[k])
 		if err != nil {
@@ -85,7 +161,7 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 
 		// create new S3 file writer
 		// TODO  WTF..  is this hard coded URL doing here?
-		fw, err := s3.NewS3FileWriter(ctx, bucket, key, nil, &aws.Config{Region: aws.String(region),
+		fw, err := s3.NewS3FileWriter(ctx, bucketName, key, nil, &aws.Config{Region: aws.String(region),
 			Endpoint:    aws.String("https://192.168.86.45:32773/"),
 			Credentials: credentials.NewStaticCredentials(accessKeyID, secretAccessKey, "")})
 		if err != nil {
@@ -143,70 +219,4 @@ func BuildGraphPQ(mc *minio.Client, v1 *viper.Viper) {
 
 	}
 
-}
-
-// BuildGraph makes a graph from the Gleaner config file source
-// load this to a /sources bucket (change this to sources naming convention?)
-func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
-
-	log.Print("Building organization graph (nq)")
-	domains := objects.SourcesAndGraphs(v1)
-	proc, options := common.JLDProc(v1)
-
-	// Sources: Name, Logo, URL, Headless, Pid
-	for k := range domains {
-
-		log.Println(domains[k])
-
-		jld, err := orggraph(domains[k])
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
-		rdf, err := common.JLD2nq(jld, proc, options)
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-
-		rdfb := bytes.NewBufferString(rdf)
-
-		// load to minio
-		// orgsha := common.GetSHA(jld)
-		// objectName := fmt.Sprintf("orgs/%s/%s.nq", domains[k].Name, orgsha) // k is the name of the provider from config
-		objectName := fmt.Sprintf("orgs/%s.nq", domains[k].Name) // k is the name of the provider from config
-		bucketName := "gleaner"                                  //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
-		contentType := "application/ld+json"
-
-		// Upload the file with FPutObject
-		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
-		if err != nil {
-			logger.Printf("%s", objectName)
-			return err
-		}
-
-	}
-
-	return nil
-}
-
-func orggraph(k objects.Sources) (string, error) {
-	var doc bytes.Buffer
-
-	t, err := template.New("prov").Parse(t)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = t.Execute(&doc, k)
-	if err != nil {
-		log.Println(err)
-	}
-
-	return doc.String(), err
 }

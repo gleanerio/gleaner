@@ -34,6 +34,10 @@ type ProvData struct {
 // sha is the sha of the JSON-LD file summoned
 // urlloc is the URL for the resource (source URL)
 func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
@@ -65,7 +69,6 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
-	bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 	contentType := "application/ld+json"
 
 	// Upload the file with FPutObject
@@ -79,6 +82,10 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 }
 
 func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix string) error {
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
@@ -104,7 +111,6 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
-	bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 	contentType := "application/ld+json"
 
 	// Upload the file with FPutObject
@@ -121,6 +127,9 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 // Against better judgment rather than build triples, I'll just
 // template build them like with the nanoprov function
 func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, error) {
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
 	// get the time
 	currentTime := time.Now() // date := currentTime.Format("2006-01-02")
@@ -142,7 +151,6 @@ func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, erro
 
 	// TODO make an extracted function to share with nabu
 	// make the URN string
-	bucketName := "gleaner"
 
 	var objectURN string
 
@@ -151,7 +159,7 @@ func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, erro
 	} else if strings.Contains(objprefix, "milled") {
 		objectURN = fmt.Sprintf("milled:%s:%s", k, sha)
 	} else {
-		return "", errors.New("No valid prov object prefix")
+		return "", errors.New("no valid prov object prefix")
 	}
 
 	// build the struct to pass to the template parser

@@ -80,6 +80,10 @@ func main() {
 		os.Exit(0)
 	}
 
+	// read config file for minio info (need the bucket to check existence )
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	// Parse a new sources node from command line if present
 	// Use to override config files sources for a single entry run
 	if isFlagPassed("source") {
@@ -108,7 +112,7 @@ func main() {
 	// If requested, set up the buckets
 	if setupVal {
 		log.Println("Setting up buckets")
-		err := check.MakeBuckets(mc)
+		err := check.MakeBuckets(mc, bucketName)
 		if err != nil {
 			log.Println("Error making buckets for setup call")
 			os.Exit(1)
@@ -126,7 +130,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = check.Buckets(mc)
+	err = check.Buckets(mc, bucketName)
 	if err != nil {
 		log.Printf("Can not find bucket. %s ", err)
 		os.Exit(1)

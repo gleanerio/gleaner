@@ -15,6 +15,10 @@ import (
 
 // GetGraph downloads pre-built site graphs
 func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	// get the sitegraph entry from config file
 	var domains []objects.Sources
 	err := v1.UnmarshalKey("sitegraphs", &domains)
@@ -37,7 +41,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		// Upload the file
 		log.Print("Uploading file")
 		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", domains[k].Name, sha)
-		_, err = graph.LoadToMinio(d, "gleaner", objectName, mc)
+		_, err = graph.LoadToMinio(d, bucketName, objectName, mc)
 		if err != nil {
 			return objectName, err
 		}
@@ -54,7 +58,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		}
 
 		milledName := fmt.Sprintf("milled/%s/%s.rdf", domains[k].Name, sha)
-		_, err = graph.LoadToMinio(rdf, "gleaner", milledName, mc)
+		_, err = graph.LoadToMinio(rdf, bucketName, milledName, mc)
 		if err != nil {
 			return objectName, err
 		}

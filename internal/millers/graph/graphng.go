@@ -20,8 +20,10 @@ import (
 
 // GraphNG is a new and improved RDF conversion
 func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
-	bucketname := "gleaner" //  "gleaner-summoned"
-	// prefix := fmt.Sprintf("summoned/%s", suffix)
+
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
 	// My go func controller vars
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control (1 == single thread)
@@ -36,7 +38,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	isRecursive := true
 
 	// Spiffy progress line  (do I really want this?)
-	oc := mc.ListObjects(context.Background(), bucketname, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
+	oc := mc.ListObjects(context.Background(), bucketName, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
 	// count := len(objectCh)
 	var count int
 	for x := range oc {
@@ -47,13 +49,13 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	}
 
 	bar := progressbar.Default(int64(count))
-	objectCh := mc.ListObjects(context.Background(), bucketname, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
+	objectCh := mc.ListObjects(context.Background(), bucketName, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
 	// for object := range mc.ListObjects(context.Background(), bucketname, prefix, isRecursive, doneCh) {
 	for object := range objectCh {
 		wg.Add(1)
 		go func(object minio.ObjectInfo) {
 			semaphoreChan <- struct{}{}
-			_, err := obj2RDF(bucketname, "milled", mc, object, proc, options)
+			_, err := obj2RDF(bucketName, "milled", mc, object, proc, options)
 			if err != nil {
 				log.Println(err) // need to log to an "errors" log file
 			}
@@ -77,7 +79,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
 	log.Printf("Result graph will be at: %s", rslt)
 
-	err := common.PipeCopyNG(rslt, "gleaner", millprefix, mc)
+	err := common.PipeCopyNG(rslt, bucketName, millprefix, mc)
 	if err != nil {
 		log.Printf("Error on pipe copy: %s", err)
 	} else {
@@ -88,9 +90,9 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 }
 
 // func obj2RDF(fo io.Reader, key string, mc *minio.Client) (string, int64, error) {
-func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
+func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
 	// object is an object reader
-	fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
+	fo, err := mc.GetObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -126,7 +128,7 @@ func obj2RDF(bucketname, prefix string, mc *minio.Client, object minio.ObjectInf
 	usermeta["origfile"] = key
 
 	// Upload the file
-	_, err = LoadToMinio(rdfubn, "gleaner", objectName, mc)
+	_, err = LoadToMinio(rdfubn, bucketName, objectName, mc)
 	if err != nil {
 		return objectName, err
 	}

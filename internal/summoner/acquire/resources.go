@@ -26,6 +26,10 @@ import (
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][]string {
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	m := make(map[string][]string) // make a map
 
 	var domains []objects.Sources
@@ -76,7 +80,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 			// TODO if we check for URLs in prov..  do that here..
 			if mcfg["mode"] == "diff" {
 				log.Println("doing a diff call")
-				oa := objects.ProvURLs(v1, mc, "gleaner", fmt.Sprintf("prov/%s", mapname))
+				oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
 
 				d := difference(s, oa)
 

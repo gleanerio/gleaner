@@ -40,6 +40,11 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup) {
+
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	mcfg := v1.GetStringMapString("summoner")
 	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
 	if err != nil {
@@ -178,7 +183,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				usermeta := make(map[string]string) // what do I want to know?
 				usermeta["url"] = urlloc
 				usermeta["sha1"] = sha
-				bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 				// TODO
 				// Make prov based on object name (org and object SHA)
