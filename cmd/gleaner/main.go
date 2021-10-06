@@ -1,8 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -29,7 +29,6 @@ func init() {
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
-
 }
 
 func main() {
@@ -84,19 +83,30 @@ func main() {
 	miniocfg := v1.GetStringMapString("minio")
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
-	// Parse a new sources node from command line if present
-	// Use to override config files sources for a single entry run
+	// Remove all source EXCEPT the one in the source command lind
 	if isFlagPassed("source") {
+		tmp := []objects.Sources{} // tmp slice to hold our desired source
+
+		var domains []objects.Sources
+		err := v1.UnmarshalKey("sources", &domains)
+		if err != nil {
+			log.Println(err)
+		}
+
+		for _, k := range domains {
+			if sourceVal == k.Name {
+				tmp = append(tmp, k)
+			}
+		}
+
+		if len(tmp) == 0 {
+			log.Println("CAUTION:  no sources, did your -source VALUE match a sources.name VALUE in your config file?")
+			os.Exit(0)
+		}
+
 		configMap := v1.AllSettings()
 		delete(configMap, "sources")
-
-		//log.Println(sourceVal)
-		ns := objects.Sources{}
-		json.Unmarshal([]byte(sourceVal), &ns)
-
-		sa := []objects.Sources{}
-		sa = append(sa, ns)
-		v1.Set("sources", sa)
+		v1.Set("sources", tmp)
 	}
 
 	// Parse a new mode entry from command line if present
@@ -188,4 +198,12 @@ func isFlagPassed(name string) bool {
 		}
 	})
 	return found
+}
+
+// func to support remove elements form the source slice
+func remove(s []objects.Sources, i int) []objects.Sources {
+	fmt.Println("removing")
+
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }

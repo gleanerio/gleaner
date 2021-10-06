@@ -79,7 +79,7 @@ func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper,
 	return v, err
 }
 
-// MakeJob generates a new go fun c call for the indexing
+// MakeJob generates a new go func call for the indexing
 func MakeJob(w http.ResponseWriter, r *http.Request) {
 	var v1 *viper.Viper
 	var err error
