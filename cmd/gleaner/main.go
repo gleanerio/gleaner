@@ -38,21 +38,21 @@ func main() {
 	// BEGIN profile section
 
 	// Profiling code (comment out for release builds)
-	// defer profile.Start().Stop()                    // cpu
-	// defer profile.Start(profile.MemProfile).Stop()  // memory
+	 //defer profile.Start().Stop()                    // cpu
+	 //defer profile.Start(profile.MemProfile).Stop()  // memory
 
 	// Tracing code to use with go tool trace
-	// f, err := os.Create("trace.out")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer f.Close()
+	 //f, err := os.Create("trace.out")
+	 //if err != nil {
+		 //panic(err)
+	 //}
+	 //defer f.Close()
 
-	// err = trace.Start(f)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer trace.Stop()
+	 //err = trace.Start(f)
+	 //if err != nil {
+		 //panic(err)
+	 //}
+	 //defer trace.Stop()
 
 	// END profile section
 

@@ -14,6 +14,7 @@ require (
 	github.com/go-ini/ini v1.61.0 // indirect
 	github.com/gosuri/uilive v0.0.4 // indirect
 	github.com/gosuri/uiprogress v0.0.1
+	github.com/kisielk/godepgraph v0.0.0-20190626013829-57a7e4a651a9 // indirect
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/linkeddata/gojsonld v0.0.0-20170418210642-4f5db6791326 // indirect
 	github.com/maaslalani/slides v0.1.0 // indirect
@@ -21,6 +22,7 @@ require (
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/minio/minio-go/v7 v7.0.11 // indirect
 	github.com/piprate/json-gold v0.3.0
+	github.com/pkg/profile v1.6.0 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/rychipman/easylex v0.0.0-20160129204217-49ee7767142f // indirect
 	github.com/schollz/progressbar/v3 v3.7.3
