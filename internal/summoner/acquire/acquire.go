@@ -23,12 +23,11 @@ import (
 
 // ResRetrieve is a function to pull down the data graphs at resources
 func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
-	// uiprogress.Start()
 	wg := sync.WaitGroup{}
 
-	// Why do I pass the wg pointer..   just make a new one
-	// for each domain in getDomain and us this one where with a semaphore
-	// to control the loop...
+	// Why do I pass the wg pointer?   Just make a new one
+	// for each domain in getDomain and us this one here with a semaphore
+	// to control the loop?
 	for k := range m {
 		// log.Printf("Queuing URLs for %s \n", k)
 		go getDomain(v1, mc, m, k, &wg)
@@ -36,7 +35,6 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
-	// uiprogress.Stop()
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup) {
