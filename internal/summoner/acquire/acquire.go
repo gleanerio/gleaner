@@ -142,30 +142,36 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				return
 			}
 
-			var jsonld string
+			var jsonld = ""
+			var contentTypeHeader = resp.Header["Content-Type"]
 
 			// look in the HTML page for <script type=application/ld+json
-			if err == nil && !contains(resp.Header["Content-Type"], "application/json") && !contains(resp.Header["Content-Type"], "application/ld+json") {
+			if err == nil && !contains(contentTypeHeader, "application/json") && !contains(contentTypeHeader, "application/ld+json") {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
 					if val == "application/ld+json" {
-						action, err := isValid(v1, s.Text())
+						valid, err := isValid(v1, s.Text())
 						if err != nil {
-							logger.Printf("ERROR: URL: %s Action: %s  Error: %s", urlloc, action, err)
+							logger.Printf("ERROR: URL: %s, %s", urlloc, err)
 						}
-						jsonld = s.Text()
+						if valid {
+							jsonld = s.Text()
+							logger.Printf("VALID json: %s", jsonld)
+						} else {
+							logger.Printf("invalid json: %s", s.Text())
+						}
 					}
 				})
 			}
 
 			// this should not be here IMHO, but need to support people not setting proper header value
 			// The URL is sending back JSON-LD but incorrectly sending as application/json
-			if err == nil && contains(resp.Header["Content-Type"], "application/json") {
+			if err == nil && contains(contentTypeHeader, "application/json") {
 				jsonld = doc.Text()
 			}
 
 			// The URL is sending back JSON-LD correctly as application/ld+json
-			if err == nil && contains(resp.Header["Content-Type"], "application/ld+json") {
+			if err == nil && contains(contentTypeHeader, "application/ld+json") {
 				jsonld = doc.Text()
 			}
 
@@ -255,23 +261,25 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	return retStr[:overallLen]
 }
 
-func isValid(v1 *viper.Viper, jsonld string) (string, error) {
+func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	proc, options := common.JLDProc(v1)
 
-	var myInterface interface{}
-	action := ""
+	var myInterface map[string]interface{}
 
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
 	if err != nil {
-		action = "json.Unmarshal call"
-		return action, err
+		return false, errors.New(fmt.Sprintf("Error in unmarshaling json: %s", err))
 	}
+
+	if myInterface["@type"] != "Dataset" {
+		return false, nil
+	}
+	log.Println("Found a dataset json")
 
 	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
 	if err != nil {                           // it's wasted cycles.. but if just doing a summon, needs to be done here
-		action = "JSON-LD to RDF call"
-		return action, err
+		return false, errors.New(fmt.Sprintf("Error in JSON-LD to RDF call: %s", err))
 	}
 
-	return action, err
+	return true, nil
 }
