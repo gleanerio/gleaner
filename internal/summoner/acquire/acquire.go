@@ -152,13 +152,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 					if val == "application/ld+json" {
 						valid, err := isValid(v1, s.Text())
 						if err != nil {
-							logger.Printf("ERROR: URL: %s, %s", urlloc, err)
-						}
-						if valid {
+							logger.Printf("error checking for valid json: %s", err)
+						} else if valid {
 							jsonld = s.Text()
-							logger.Printf("VALID json: %s", jsonld)
 						} else {
-							logger.Printf("invalid json: %s", s.Text())
+							logger.Printf("invalid json; continuing")
 						}
 					}
 				})
@@ -183,6 +181,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				objectName := fmt.Sprintf("summoned/%s/%s.jsonld", k, sha)
 				contentType := "application/ld+json"
 				b := bytes.NewBufferString(jsonld)
+				size := int64(b.Len()) // gets set to 0 after upload for some reason
 
 				usermeta := make(map[string]string) // what do I want to know?
 				usermeta["url"] = urlloc
@@ -209,7 +208,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 					logger.Printf("%s", objectName)
 					logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 				}
-				logger.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, int64(b.Len()))
+				logger.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, size)
 			} else {
 				logger.Printf("Empty JSON-LD document found. Continuing.")
 			}
@@ -261,6 +260,32 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	return retStr[:overallLen]
 }
 
+// Looks through a json and tries to find the @type in the right place.
+// There are several places that it could be, a la
+// https://github.com/ESIPFed/science-on-schema.org/blob/cbe618d1896ae8408b3d3575e7be6847129808ab/examples/SO_normalize_javascript.ipynb
+func findType(m map[string]interface{}) (string, error) {
+	objectType, ok := m["@type"]
+	// Could also be at the top level or inside a @graph array
+	if !ok {
+		graph, ok := m["@graph"]
+		if !ok {
+			return "", fmt.Errorf("No type or graph found. Exiting.")
+		}
+		if rec, ok := graph.([]interface{}); ok {
+			for _, k := range rec {
+				return findType(k.(map[string]interface{}))
+			}
+		} else {
+			return "", fmt.Errorf("Got a graph of type %T", graph)
+		}
+	}
+	rval, ok := objectType.(string); if !ok {
+		return "", fmt.Errorf("Found invalid json object for type")
+	}
+	return rval, nil
+}
+
+// Do we want to also validate JSON we get from headless browsers?
 func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	proc, options := common.JLDProc(v1)
 
@@ -268,17 +293,22 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
 	if err != nil {
-		return false, errors.New(fmt.Sprintf("Error in unmarshaling json: %s", err))
+		return false, fmt.Errorf("Error in unmarshaling json: %s", err)
 	}
 
-	if myInterface["@type"] != "Dataset" {
+	// Could be Dataset or SO:Dataset
+	// What other types do we want to accept, if any?
+	objectType, err := findType(myInterface)
+	if err != nil {
+		return false, err
+	}
+	if !strings.Contains(objectType, "Dataset") {
 		return false, nil
 	}
-	log.Println("Found a dataset json")
 
 	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
 	if err != nil {                           // it's wasted cycles.. but if just doing a summon, needs to be done here
-		return false, errors.New(fmt.Sprintf("Error in JSON-LD to RDF call: %s", err))
+		return false, fmt.Errorf("Error in JSON-LD to RDF call: %s", err)
 	}
 
 	return true, nil
