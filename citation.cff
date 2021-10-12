@@ -4,6 +4,15 @@ authors:
   - family-names: Fils
     given-names: Douglas 
     orcid: https://orcid.org/0000-0002-2257-9127
+  - family-names: Minch
+    given-names: Melinda
+    orcid: https://orcid.org/0000-0003-3878-7147
+  - family-names: Valentine 
+    given-names: David
+    orcid: https://orcid.org/0000-0002-5018-048X
+  - family-names: Shepherd
+    given-names: Adam
+    orcid: https://orcid.org/0000-0003-4486-9448
 title: Gleaner, a tool for indexing schema.org structured data on the web
 version: 2.0.24
 doi: 
