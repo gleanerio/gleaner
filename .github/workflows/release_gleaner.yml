@@ -31,5 +31,5 @@ jobs:
           project_path: "./cmd/gleaner"
           binary_name: "gleaner"
           ldflags: "-s -w"
-          extra_files: README.md configs/jsonldcontext.json configs/template_v2.0.yaml configs/README.md
+          extra_files: README.md configs/
   #         extra_files: LICENSE README.md
