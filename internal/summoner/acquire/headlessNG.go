@@ -3,14 +3,11 @@ package acquire
 import (
 	"bytes"
 	"context"
-	"crypto/sha1"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
 	"time"
 
-	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/page"
@@ -27,8 +24,13 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
+		var (
+			buf    bytes.Buffer
+			logger = log.New(&buf, "logger: ", log.Lshortfile)
+		)
+
 		for i := range m[k] {
-			err := PageRender(v1, mc, 60*time.Second, m[k][i], k) // TODO make delay configurable
+			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], err)
 			}
@@ -36,7 +38,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	}
 }
 
-func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, url, k string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -101,7 +103,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 
 	/**
 	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
-	 * and then tries to find a JSON-LD element on the page, and get its contents.
+	 * and then tries to find all of the JSON-LD elements on the page, and get their contents.
 	 *  If it doesn't find one, it will retry three times, with a wait in between. You can see that it
 	 *  ultimately calls reject() with no arguments if it can't find anything, and that is because
 	 * I cannot figure out how to get the cdp Runtime to distinguish between a resolved and a rejected
@@ -110,9 +112,14 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	expression := `
 		function getMetadata() {
 			return new Promise((resolve, reject) => {
-				const element = document.querySelector('script[type="application/ld+json"]');
-				if(element && element.innerText) {
-					const metadata = element.innerText;
+				const elements = document.querySelectorAll('script[type="application/ld+json"]');
+				let metadata = [];
+				elements.forEach(function(element) {
+					if(element && element.innerText) {
+						metadata.push(element.innerText);
+					}
+				})
+				if(metadata.length) {
 					resolve(metadata);
 				}
 				else {
@@ -127,7 +134,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 					.then(resolve)
 					.catch((error) => {
 						if (retriesLeft === 0) {
-						reject("");
+						reject(null);
 						return;
 					}
 
@@ -148,50 +155,30 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		return (err)
 	}
 
+
+	// Rejecting that promise just sends null as its value,
+	// so we need to stop if we got that.
+	if eval.Result.Value == nil {
+		return nil
+	}
+
 	// todo: what are the data types that will always be in this json? we
 	// could create a struct out of them if we want to.
-	var jsonld string
-	if err = json.Unmarshal(eval.Result.Value, &jsonld); err != nil {
+	var jsonlds []string
+	if err = json.Unmarshal(eval.Result.Value, &jsonlds); err != nil {
 		log.Println(err)
 		return (err)
 	}
 
-	if jsonld != "" { // traps out the root domain...   should do this different
-		// get sha1 of the JSONLD..  it's a nice ID
-		fmt.Printf("%s JSON-LD: %s\n\n", url, jsonld)
-
-		h := sha1.New()
-		h.Write([]byte(jsonld))
-		bs := h.Sum(nil)
-		bss := hex.EncodeToString(bs[:])
-
-		sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	for _, jsonld := range jsonlds {
+		valid, err := isValid(v1, jsonld)
 		if err != nil {
-			log.Println(err)
+			log.Printf("error checking for valid json: %s", err)
+		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
+			Upload(v1, mc, logger, bucketName, k, url, jsonld)
+		} else {
+			log.Println("No valid JSON-LD found at", url)
 		}
-
-		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", k, sha)
-
-		contentType := "application/ld+json"
-		b := bytes.NewBufferString(jsonld)
-
-		usermeta := make(map[string]string) // what do I want to know?
-		usermeta["url"] = url
-		usermeta["sha1"] = bss
-
-		err = StoreProv(v1, mc, k, sha, url)
-		if err != nil {
-			log.Println(err)
-		}
-
-		// Upload the  file with FPutObject
-		n, err := mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
-		if err != nil {
-			log.Printf("Error uploading %s: %s", objectName, err)
-		}
-		log.Printf("Uploaded Bucket:%s File:%s Size %d \n", bucketName, objectName, n.Size)
-	} else {
-		log.Println("No JSON-LD found at", url)
 	}
 
 	return nil
