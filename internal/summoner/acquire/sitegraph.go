@@ -27,7 +27,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	}
 
 	for k := range domains {
-		log.Println(domains[k].URL)
+		log.Printf("Processing sitegraph file (this can be slow with little feedback): %s", domains[k].URL)
 
 		d, err := getJSON(domains[k].URL)
 		if err != nil {
@@ -39,7 +39,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		sha := common.GetSHA(d) // Don't normalize big files..
 
 		// Upload the file
-		log.Print("Uploading file")
+		// log.Print("Uploading file")
 		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(d, bucketName, objectName, mc)
 		if err != nil {
@@ -49,7 +49,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		// mill the json-ld to nq and upload to minio
 		// we bypass graph.GraphNG which does a time consuming blank node fix which is not required
 		// when dealing with a single large file.
-		log.Print("Milling graph")
+		// log.Print("Milling graph")
 		//graph.GraphNG(mc, fmt.Sprintf("summoned/%s/", domains[k].Name), v1)
 		proc, options := common.JLDProc(v1) // Make a common proc and options to share with the upcoming go funcs
 		rdf, err := common.JLD2nq(d, proc, options)
@@ -64,13 +64,13 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		}
 
 		// build prov
-		log.Print("Building prov")
+		// log.Print("Building prov")
 		err = StoreProvNG(v1, mc, domains[k].Name, sha, domains[k].URL, "summoned")
 		if err != nil {
 			return objectName, err
 		}
 
-		log.Println(len(d))
+		log.Printf("Loaded: %d", len(d))
 	}
 
 	return "Sitegraph(s) processed", err
