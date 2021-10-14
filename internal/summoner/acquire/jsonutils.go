@@ -11,6 +11,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+/// A utility to keep a list of JSON-LD files that we have found
+// in or on a page
 func addToJsonListIfValid(v1 *viper.Viper, jsonlds []string, new_json string) ([]string, error) {
     valid, err := isValid(v1, new_json)
     if err != nil {
@@ -23,7 +25,7 @@ func addToJsonListIfValid(v1 *viper.Viper, jsonlds []string, new_json string) ([
 }
 
 
-// Do we want to also validate JSON we get from headless browsers?
+/// Validate JSON-LD that we get
 func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
     proc, options := common.JLDProc(v1)
 
