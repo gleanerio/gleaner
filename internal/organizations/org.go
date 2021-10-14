@@ -57,14 +57,14 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 	miniocfg := v1.GetStringMapString("minio")
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
-	log.Print("Building organization graph (nq)")
+	log.Print("Building organization graph.")
 	domains := objects.SourcesAndGraphs(v1)
 	proc, options := common.JLDProc(v1)
 
 	// Sources: Name, Logo, URL, Headless, Pid
 	for k := range domains {
 
-		log.Println(domains[k])
+		// log.Println(domains[k])
 
 		jld, err := orggraph(domains[k])
 		if err != nil {

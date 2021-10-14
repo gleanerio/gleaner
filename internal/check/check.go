@@ -27,7 +27,7 @@ func Buckets(mc *minio.Client, bucket string) error {
 		return fmt.Errorf("unable to locate required bucket:  %s, did you run gleaner with -setup the first to set up buckets?", bucket)
 	}
 	if found {
-		log.Printf("Validated access to object store: %s.\n", bucket)
+		log.Printf("Validated access to object store: %s\n", bucket)
 	}
 	// }
 

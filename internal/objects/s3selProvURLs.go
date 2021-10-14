@@ -52,7 +52,7 @@ func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string)
 		go func(object minio.ObjectInfo) {
 			// oa = append(oa, object.Key) // WARNING  append is not always thread safe..   wg of 1 till I address this
 
-			//log.Printf("Bucket %s  object:%s\n", "gleaer", object.Key)
+			// log.Printf("Bucket %s  object:%s\n", bucket, object.Key)
 
 			reader, err := minioClient.SelectObjectContent(context.Background(), bucket, object.Key, opts)
 			if err != nil {
@@ -80,7 +80,7 @@ func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string)
 
 	}
 
-	log.Printf("%s:%s object count: %d\n", bucket, prefix, len(oa))
+	log.Printf("bucket %s:%s object count: %d\n", bucket, prefix, len(oa))
 
 	return oa
 }

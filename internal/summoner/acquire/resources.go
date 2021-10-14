@@ -3,6 +3,7 @@ package acquire
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
@@ -71,23 +72,22 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 			// Convert the array of sitemap package stuct to simply the URLs in []string
 			var s []string
 			for k := range us.URL {
-				if us.URL[k].Loc != "" { // TODO why did this otherwise add a nil to the array..  ned to check
-					s = append(s, us.URL[k].Loc)
+				if us.URL[k].Loc != "" { // TODO why did this otherwise add a nil to the array..  need to check
+					s = append(s, strings.TrimSpace(us.URL[k].Loc))
 				}
 			}
-			log.Printf("crawling %s : %d\n urls", domains[k].Name, len(s))
 
 			// TODO if we check for URLs in prov..  do that here..
 			if mcfg["mode"] == "diff" {
-				log.Println("doing a diff call")
 				oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
-
 				d := difference(s, oa)
-
 				m[mapname] = d
 			} else {
 				m[mapname] = s
 			}
+
+			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
+
 		}
 	}
 
