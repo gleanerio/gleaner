@@ -13,9 +13,9 @@ import (
 	"github.com/rs/xid"
 	"github.com/spf13/viper"
 
-	"earthcube.org/Project418/gleaner/internal/common"
-	"earthcube.org/Project418/gleaner/internal/millers"
-	"earthcube.org/Project418/gleaner/internal/summoner"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/millers"
+	"github.com/gleanerio/gleaner/internal/summoner"
 )
 
 var viperVal string
