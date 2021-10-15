@@ -8,9 +8,10 @@ on:
 
 jobs:
   build:
+    name: Release Go Binary
+    runs-on: ubuntu-latest
     releases-matrix:
-      name: Release Go Binary
-      runs-on: ubuntu-latest
+
       strategy:
         matrix:
           # build and publish in parallel: linux/amd64
@@ -21,23 +22,23 @@ jobs:
           exclude:
             - goarch: "386"
               goos: darwin
-      steps:
-        - name: Install Go
-          uses: actions/setup-go@v2
-        - name: checkout code
-          uses: actions/checkout@v2
-        - name: donwload schema
-          run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
-        #     - name: Run tests
-        #      run: go test -v -p=1 -timeout=0 ./...
-        - name: build
-          run: go build -o $(BINARY)
-          with:
-            context: ./cmd/gleaner
-          env:
-            GOOS=linux
-            GOARCH=amd64
-            CGO_ENABLED=0
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+      - name: checkout code
+        uses: actions/checkout@v2
+      - name: donwload schema
+        run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
+      #     - name: Run tests
+      #      run: go test -v -p=1 -timeout=0 ./...
+      - name: build
+        run: go build -o $(BINARY)
+        with:
+          context: ./cmd/gleaner
+        env:
+          GOOS=linux
+          GOARCH=amd64
+          CGO_ENABLED=0
   deploy:
     needs: build
     name: Dockerize Gleaner
