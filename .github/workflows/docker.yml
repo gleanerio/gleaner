@@ -2,7 +2,7 @@ name: Dockerize  Gleaner
 on:
   push:
     branches:
-      - master
+      - dockerbuild
 # https://github.com/marketplace/actions/publish-docker
 # https://github.com/docker/build-push-action
 
@@ -10,18 +10,17 @@ jobs:
   build:
     name: Release Go Binary
     runs-on: ubuntu-latest
-    releases-matrix:
 
-      strategy:
-        matrix:
-          # build and publish in parallel: linux/amd64
-          #goos: [linux, windows, darwin]
-          #goarch: [amd64,arm64]
-          goos: [linux]
-          goarch: [amd64]
-          exclude:
-            - goarch: "386"
-              goos: darwin
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/amd64
+        #goos: [linux, windows, darwin]
+        #goarch: [amd64,arm64]
+        goos: [linux]
+        goarch: [amd64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
