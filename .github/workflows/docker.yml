@@ -32,8 +32,7 @@ jobs:
       #      run: go test -v -p=1 -timeout=0 ./...
       - name: build
         run: go build -o $(BINARY)
-        with:
-          context: ./cmd/gleaner
+        working-directory: ./cmd/gleaner
         env:
           GOOS: linux
           GOARCH: amd64
