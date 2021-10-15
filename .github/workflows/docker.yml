@@ -31,7 +31,7 @@ jobs:
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
       - name: build
-        run: go build -o $(BINARY)
+        run: go build -o gleaner
         working-directory: ./cmd/gleaner
         env:
           GOOS: linux
