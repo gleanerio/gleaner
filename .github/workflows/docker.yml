@@ -55,15 +55,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Extract metadata (tags, labels) for Docker
-          id: meta
-          uses: docker/metadata-action@v3
-          with:
-            images: nsfearthcube/gleaner
-            flavor: |
-              latest=true
-            tags: |
-              type=ref,event=tag
-              type=ref,event=branch
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: nsfearthcube/gleaner
+          flavor: |
+            latest=true
+          tags: |
+            type=ref,event=tag
+            type=ref,event=branch
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
