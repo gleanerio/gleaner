@@ -20,6 +20,8 @@ jobs:
             goos: darwin
     steps:
       - uses: actions/checkout@v2
+      - name: donwload schema
+        run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
  #     - name: Run tests
   #      run: go test -v -p=1 -timeout=0 ./...
       - uses: wangyoucao577/go-release-action@v1.20
@@ -30,5 +32,5 @@ jobs:
           project_path: "./cmd/gleaner"
           binary_name: "gleaner"
           ldflags: "-s -w"
-          extra_files: README.md docs/ configs/ scripts/
+          extra_files: README.md docs/ configs/ scripts/ schemaorg-current-https.jsonld
   #         extra_files: LICENSE README.md
