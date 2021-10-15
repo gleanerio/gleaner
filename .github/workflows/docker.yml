@@ -35,9 +35,9 @@ jobs:
         with:
           context: ./cmd/gleaner
         env:
-          GOOS=linux
-          GOARCH=amd64
-          CGO_ENABLED=0
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 0
   deploy:
     needs: build
     name: Dockerize Gleaner
