@@ -10,7 +10,8 @@ jobs:
   build:
     name: Release Go Binary
     runs-on: ubuntu-latest
-
+  outputs:
+    output1: ${{ steps.binary.outputs.file }}
     strategy:
       matrix:
         # build and publish in parallel: linux/amd64
@@ -30,7 +31,8 @@ jobs:
         run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
-      - name: build
+      - id: binary
+        name: build
         run: go build -o gleaner
         working-directory: ./cmd/gleaner
         env:
