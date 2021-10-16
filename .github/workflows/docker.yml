@@ -10,18 +10,17 @@ jobs:
   build:
     name: Release Go Binary
     runs-on: ubuntu-latest
-    releases-matrix:
 
-      strategy:
-        matrix:
-          # build and publish in parallel: linux/amd64
-          #goos: [linux, windows, darwin]
-          #goarch: [amd64,arm64]
-          goos: [linux]
-          goarch: [amd64]
-          exclude:
-            - goarch: "386"
-              goos: darwin
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/amd64
+        #goos: [linux, windows, darwin]
+        #goarch: [amd64,arm64]
+        goos: [linux]
+        goarch: [amd64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
@@ -31,21 +30,22 @@ jobs:
         run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
-      - name: build
-        run: go build -o $(BINARY)
-        with:
-          context: ./cmd/gleaner
+      - id: binary
+        name: build
+        run: |
+          go build -o gleaner
+        working-directory: ./cmd/gleaner
         env:
-          GOOS=linux
-          GOARCH=amd64
-          CGO_ENABLED=0
-  deploy:
-    needs: build
-    name: Dockerize Gleaner
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v2
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: 0
+      #  deploy:
+      #    needs: build
+      #    name: Dockerize Gleaner
+      #    runs-on: ubuntu-latest
+      #    steps:
+      #      - name: Checkout Repo
+      #        uses: actions/checkout@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -72,6 +72,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          file: ./build/Dockerfile
           context: .
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
