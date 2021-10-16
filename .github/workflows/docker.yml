@@ -36,7 +36,6 @@ jobs:
           go build -o gleaner
           pwd
           ls
-          ls -l ./cmd/gleaner/gleaner
         working-directory: ./cmd/gleaner
         env:
           GOOS: linux
