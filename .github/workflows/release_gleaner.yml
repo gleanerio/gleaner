@@ -2,7 +2,8 @@ name: Release Gleaner binaries
 
 on:
    release:
-     types: [created]
+     types: [published]
+#     types: [created]
 
 jobs:
   releases-matrix:
