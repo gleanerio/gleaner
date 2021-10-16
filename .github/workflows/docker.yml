@@ -10,8 +10,8 @@ jobs:
   build:
     name: Release Go Binary
     runs-on: ubuntu-latest
-  outputs:
-    output1: ${{ steps.binary.outputs.file }}
+    outputs:
+      output1: ${{ steps.binary.outputs.file }}
     strategy:
       matrix:
         # build and publish in parallel: linux/amd64
