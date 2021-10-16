@@ -10,8 +10,7 @@ jobs:
   build:
     name: Release Go Binary
     runs-on: ubuntu-latest
-    outputs:
-      output1: ${{ steps.binary.outputs.file }}
+
     strategy:
       matrix:
         # build and publish in parallel: linux/amd64
@@ -33,7 +32,10 @@ jobs:
       #      run: go test -v -p=1 -timeout=0 ./...
       - id: binary
         name: build
-        run: go build -o gleaner
+        run: |
+          go build -o gleaner
+          pwd
+          ls
         working-directory: ./cmd/gleaner
         env:
           GOOS: linux
