@@ -8,6 +8,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/page"
@@ -20,7 +21,7 @@ import (
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
+func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
@@ -30,7 +31,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 		)
 
 		for i := range m[k] {
-			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k) // TODO make delay configurable
+			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], err)
 			}
@@ -38,7 +39,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	}
 }
 
-func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, url, k string) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, url, k string, db *bolt.DB) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -155,7 +156,6 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		return (err)
 	}
 
-
 	// Rejecting that promise just sends null as its value,
 	// so we need to stop if we got that.
 	if eval.Result.Value == nil {
@@ -175,9 +175,24 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		if err != nil {
 			log.Printf("error checking for valid json: %s", err)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
-			Upload(v1, mc, logger, bucketName, k, url, jsonld)
+			sha, err := Upload(v1, mc, logger, bucketName, k, url, jsonld)
+			if err != nil {
+				logger.Printf("Error uploading jsonld to object store: %s: %s", url, err)
+			}
+			// TODO  Is here where to add an entry to the KV store
+			db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(k))
+				err := b.Put([]byte(url), []byte(sha))
+				return err
+			})
 		} else {
-			log.Println("No valid JSON-LD found at", url)
+			log.Println("Empty JSON-LD document found. Continuing.", url)
+			// TODO  Is here where to add an entry to the KV store
+			db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(k))
+				err := b.Put([]byte(url), []byte("NULL")) // no JOSN-LD found at this URL
+				return err
+			})
 		}
 	}
 

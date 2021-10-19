@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/boltdb/bolt"
 	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go/v7"
@@ -26,10 +27,10 @@ import (
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
-func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][]string {
+func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) map[string][]string {
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
 	m := make(map[string][]string) // make a map
 
@@ -77,14 +78,38 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 				}
 			}
 
-			// TODO if we check for URLs in prov..  do that here..
+			//  TODO if we check for URLs in prov..  do that here..
 			if mcfg["mode"] == "diff" {
-				oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+				//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+
+				oa := []string{}
+				db.View(func(tx *bolt.Tx) error {
+					// Assume bucket exists and has keys
+					b := tx.Bucket([]byte(domains[k].Name))
+					c := b.Cursor()
+
+					for key, _ := c.First(); key != nil; key, _ = c.Next() {
+						//fmt.Printf("key=%s, value=%s\n", k, v)
+						oa = append(oa, fmt.Sprintf("%s", key))
+					}
+
+					return nil
+				})
+
 				d := difference(s, oa)
 				m[mapname] = d
 			} else {
 				m[mapname] = s
 			}
+
+			//  TODO if we check for URLs in prov..  do that here..
+			//if mcfg["mode"] == "diff" {
+			//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+			//d := difference(s, oa)
+			//m[mapname] = d
+			//} else {
+			//m[mapname] = s
+			//}
 
 			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
 

@@ -13,13 +13,14 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/boltdb/bolt"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 )
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
 	wg := sync.WaitGroup{}
 
 	// Why do I pass the wg pointer?   Just make a new one
@@ -27,18 +28,27 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	// to control the loop?
 	for k := range m {
 		// log.Printf("Queuing URLs for %s \n", k)
-		go getDomain(v1, mc, m, k, &wg)
+		go getDomain(v1, mc, m, k, &wg, db)
 	}
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup) {
+func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	// read config file
 	miniocfg := v1.GetStringMapString("minio")
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
+	// make the bucket (if it doesn't exist)
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucket([]byte(k))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
 
 	mcfg := v1.GetStringMapString("summoner")
 	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
@@ -121,6 +131,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
 			}
 			req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+			req.Header.Set("Accept", "application/ld+json, text/html")
 
 			resp, err := client.Do(req)
 			if err != nil {
@@ -142,18 +153,15 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			var jsonlds []string
 			var contentTypeHeader = resp.Header["Content-Type"]
 
-			if (
 			// The URL is sending back JSON-LD correctly as application/ld+json
-			contains(contentTypeHeader, "application/ld+json") ||
-
 			// this should not be here IMHO, but need to support people not setting proper header value
 			// The URL is sending back JSON-LD but incorrectly sending as application/json
-			contains(contentTypeHeader, "application/json")){
+			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") {
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
 					logger.Printf("Error processing json response from %s: %s", urlloc, err)
 				}
-			// look in the HTML page for <script type=application/ld+json
+				// look in the HTML page for <script type=application/ld+json
 			} else {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")
@@ -166,23 +174,51 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				})
 			}
 
+			// For incremental indexing I want to know every URL I visit regardless
+			// if there is a valid JSON-LD document or not.   For "full" indexing we
+			// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
+			// and avoid those during incremental calls.
+
+			// even is no JSON-LD packages found, record the event
+			if len(jsonlds) < 1 {
+				db.Update(func(tx *bolt.Tx) error {
+					b := tx.Bucket([]byte(k))
+					err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
+					return err
+				})
+			}
+
 			for _, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
 					logger.Printf("#%d Uploading", i)
-					Upload(v1, mc, logger, bucketName, k, urlloc, jsonld)
+					sha, err := Upload(v1, mc, logger, bucketName, k, urlloc, jsonld)
+					if err != nil {
+						logger.Printf("Error uploading jsonld to object store: %s: %s", urlloc, err)
+					}
+					// TODO  Is here where to add an entry to the KV store
+					db.Update(func(tx *bolt.Tx) error {
+						b := tx.Bucket([]byte(k))
+						err := b.Put([]byte(urlloc), []byte(sha))
+						return err
+					})
 				} else {
 					logger.Printf("Empty JSON-LD document found. Continuing.")
+					// TODO  Is here where to add an entry to the KV store
+					db.Update(func(tx *bolt.Tx) error {
+						b := tx.Bucket([]byte(k))
+						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
+						return err
+					})
 				}
 			}
 
-			bar.Add(1) // bar.Incr()
+			bar.Add(1)                                       // bar.Incr()
+			logger.Printf("#%d thread for %s ", i, urlloc)   // print an message containing the index (won't keep order)
+			time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
 
-			logger.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
 			lwg.Done()
 
-			time.Sleep(time.Duration(dt) * time.Millisecond) // tell the wait group that we be done
-
-			<-semaphoreChan // clear a spot in the semaphore channel
+			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
 		}(i, k)
 
 	}

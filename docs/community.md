@@ -1,7 +1,7 @@
 # Users of Gleaner
 
 
-The follow are some communities using or exploring the use of Gleaner.
+The following are some communities using or exploring the use of Gleaner.
 
 
 
