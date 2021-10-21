@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go build glcon" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="gleaner" />
+    <working_directory value="$PROJECT_DIR$/" />
+    <go_parameters value="-i" />
+    <parameters value="-cfginit" />
+    <EXTENSION ID="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+      </ENTRIES>
+    </EXTENSION>
+    <kind value="DIRECTORY" />
+    <package value="glcon" />
+    <directory value="$PROJECT_DIR$/cmd/glcon" />
+    <filePath value="$PROJECT_DIR$/|$PROJECT_DIR$/cmd/glcon" />
+    <method v="2" />
+  </configuration>
+</component>
