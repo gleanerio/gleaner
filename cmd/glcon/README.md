@@ -26,19 +26,23 @@ Create configuration files for Gleaner and Nabu:
 configuration building:
 
 `glcon -cfginit -cfg name`
-will create a directory in configs, with example configs to modify
+will create a directory in configs, with base configs to modify
+
+`glcon -cfggen -cfg name`
+will generate gleaner and nabu configurations, and make copies 
 
 
 FUTURE (use cobra)
-glcon config init --config=X 
-glcon config generate --config=X
-glcon config validate --config=X
+
+* glcon config init --config=X 
+* glcon config generate --config=X
+* glcon config validate --config=X
 
 TBD
-glcon gleaner check --config=X  
-glcon gleaner run   (fire off a webhook call to the webhook listener in gleaner)
-glcon gleaner doctor
-glcon gleaner newcfg --config=Y
+* glcon gleaner check --config=X  
+* glcon gleaner run   (fire off a webhook call to the webhook listener in gleaner)
+* glcon gleaner doctor
+*  glcon gleaner newcfg --config=Y
 
 
 ## Refs
