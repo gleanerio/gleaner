@@ -37,6 +37,7 @@ func GetNormSHA(jsonld string, v1 *viper.Viper) (string, error) {
 
 	normalizedTriples, err := proc.Normalize(myInterface, options)
 	if err != nil {
+		fmt.Println("Error normalizing jsonld: ", err)
 		return "", err
 	}
 

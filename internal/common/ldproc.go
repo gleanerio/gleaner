@@ -51,6 +51,7 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 		cdl := ld.NewCachingDocumentLoader(nl)
 		cdl.PreloadWithMapping(m)
 		options.DocumentLoader = cdl
+		// todo: check domain config and see whether it should be processed with 1.0 options.ProcessingMode = "json-ld-1.0"
 	}
 
 	// Set a default format..  let this be set later...
