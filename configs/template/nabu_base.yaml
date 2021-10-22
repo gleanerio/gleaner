@@ -8,6 +8,7 @@ minio:
 objects:
   bucket: gleaner
   domain: us-east-1
+  # prefix will be built using the sources.csv, and additional values
   prefix:
   - orgs
   - summoned/obps

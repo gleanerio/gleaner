@@ -1,9 +1,9 @@
 package objects
 
 import (
-	"log"
-
+	//	config "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"github.com/spf13/viper"
+	"log"
 )
 
 type Sources struct {
@@ -24,12 +24,16 @@ func SourcesAndGraphs(v1 *viper.Viper) []Sources {
 	var sm []Sources
 	var sg []Sources
 
+	//err := v1.UnmarshalKey("sitemaps", &sm)
+	//if err != nil {
+	//	log.Println(err)
+	//}
+	//
+	//err = v1.UnmarshalKey("sitegraphs", &sg)
+	//if err != nil {
+	//	log.Println(err)
+	//}
 	err := v1.UnmarshalKey("sources", &sm)
-	if err != nil {
-		log.Println(err)
-	}
-
-	err = v1.UnmarshalKey("sitegraphs", &sg)
 	if err != nil {
 		log.Println(err)
 	}
