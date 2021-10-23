@@ -8,7 +8,7 @@ import (
 // frig frig... do not use lowercase... those are private variables
 type Minio struct {
 	Address   string // `mapstructure:"MINIO_ADDRESS"`
-	Port      string //`mapstructure:"MINIO_PORT"`
+	Port      int    //`mapstructure:"MINIO_PORT"`
 	Ssl       bool   //`mapstructure:"MINIO_USE_SSL"`
 	Accesskey string //`mapstructure:"MINIO_ACCESS_KEY"`
 	Secretkey string // `mapstructure:"MINIO_SECRET_KEY"`

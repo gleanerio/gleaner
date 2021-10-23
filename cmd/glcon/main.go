@@ -57,6 +57,18 @@ var (
 		"sparql":  "",
 		"objects": "",
 	}
+	serversTemplate = map[string]interface{}{
+		"minio": map[string]string{
+			"address":   "localhost",
+			"port":      "9000",
+			"accesskey": "",
+			"secretkey": "",
+		},
+		"sparql": map[string]string{
+			"endpoint": "localhost",
+		},
+		"headless": "",
+	}
 )
 
 func init() {
@@ -148,7 +160,7 @@ func main() {
 		if err != nil {
 			panic(fmt.Errorf("error when reading nabu config: %v", err))
 		}
-		m1, err = readConfig(fileNameWithoutExtTrimSuffix(configBaseFiles["servers"]), path.Join(cfgPath, cfgVal), configTypes.ServersTemplate)
+		m1, err = readConfig(fileNameWithoutExtTrimSuffix(configBaseFiles["servers"]), path.Join(cfgPath, cfgVal), serversTemplate)
 		if err != nil {
 			panic(fmt.Errorf("error when reading  servers config: %v", err))
 		}

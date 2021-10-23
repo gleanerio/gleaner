@@ -8,3 +8,4 @@ output/**
 .DS_Store
 /configs/gleaner
 configs/local/
+*.log

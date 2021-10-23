@@ -13,6 +13,7 @@ var checkCmd = &cobra.Command{
 	Long:  `(not implemented)This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("check called")
+		fmt.Println("Not Implemented")
 	},
 }
 

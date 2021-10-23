@@ -2,6 +2,7 @@ package common
 
 import (
 	"fmt"
+	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"log"
 
 	"github.com/minio/minio-go/v7"
@@ -12,11 +13,15 @@ import (
 // MinioConnection Set up minio and initialize client
 func MinioConnection(v1 *viper.Viper) *minio.Client {
 	//mcfg := v1.GetStringMapString("minio")
-	mcfg := v1.Sub("minio")
-	endpoint := fmt.Sprintf("%s:%s", mcfg.GetString("address"), mcfg.GetString("port"))
-	accessKeyID := mcfg.GetString("accesskey")
-	secretAccessKey := mcfg.GetString("secretkey")
-	useSSL := mcfg.GetBool("ssl")
+	mSub := v1.Sub("minio")
+	mcfg, err := configTypes.ReadMinioConfig(mSub)
+	if err != nil {
+		panic(fmt.Errorf("error when  file minio key: %v", err))
+	}
+	endpoint := fmt.Sprintf("%s:%d", mcfg.Address, mcfg.Port)
+	accessKeyID := mcfg.Accesskey
+	secretAccessKey := mcfg.Secretkey
+	useSSL := mcfg.Ssl
 
 	minioClient, err := minio.New(endpoint,
 		&minio.Options{Creds: credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),

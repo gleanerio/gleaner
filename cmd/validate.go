@@ -13,6 +13,7 @@ var validateCmd = &cobra.Command{
 	Long:  `(not implemented)This should read and validate the gleaner and nabu files`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("validate called")
+		fmt.Println("Not Implemented")
 	},
 }
 

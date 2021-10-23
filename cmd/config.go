@@ -26,15 +26,15 @@ var glrVal, nabuVal, sourcesVal, templateGleaner, templateNabu string
 var configBaseFiles = map[string]string{"gleaner": "gleaner_base.yaml", "sources": "sources.csv",
 	"nabu": "nabu_base.yaml", "servers": "servers.yaml", "readme": "readme.txt"}
 
-var gleanerBaseName = "gleaner"
-var nabuBaseName = "nabu"
+var gleanerFileNameBase = "gleaner"
+var nabuFilenameBase = "nabu"
 
 func init() {
 	rootCmd.AddCommand(configCmd)
 	configCmd.PersistentFlags().StringVar(&templateGleaner, "template_gleaner", configBaseFiles["gleaner"], "Configuration Template or Cofiguration file")
 	configCmd.PersistentFlags().StringVar(&templateNabu, "template_nabu", configBaseFiles["nabu"], "Configuration Template or Cofiguration file")
-	configCmd.PersistentFlags().StringVar(&glrVal, "gleaner", gleanerBaseName+".yaml", "output gleaner file to")
-	configCmd.PersistentFlags().StringVar(&nabuVal, "nabu", nabuBaseName+".yaml", "output nabu file to")
+	configCmd.PersistentFlags().StringVar(&glrVal, "gleaner", gleanerFileNameBase+".yaml", "output gleaner file to")
+	configCmd.PersistentFlags().StringVar(&nabuVal, "nabu", nabuFilenameBase+".yaml", "output nabu file to")
 	configCmd.PersistentFlags().StringVar(&sourcesVal, "sourcemaps", "sources.csv", "sources as csv")
 	rootCmd.MarkPersistentFlagRequired("cfgName")
 	// Here you will define your flags and configuration settings.

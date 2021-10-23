@@ -14,7 +14,7 @@ type Summoner struct {
 }
 
 var SummonerTemplate = map[string]interface{}{
-	"headless": map[string]string{
+	"summoner": map[string]string{
 		"after":    "",     // "21 May 20 10:00 UTC"
 		"mode":     "full", //full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
 		"threads":  "5",
@@ -25,7 +25,7 @@ var SummonerTemplate = map[string]interface{}{
 
 func ReadSummmonerConfig(viperSubtree *viper.Viper) (Summoner, error) {
 	var summoner Summoner
-	for key, value := range sparqlTemplate {
+	for key, value := range SummonerTemplate {
 		viperSubtree.SetDefault(key, value)
 	}
 	viperSubtree.BindEnv("headless", "GLEANER_HEADLESS_ENDPOINT")

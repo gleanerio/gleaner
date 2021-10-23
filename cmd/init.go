@@ -1,7 +1,12 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"io"
+	"log"
+	"os"
+	"path"
 
 	"github.com/spf13/cobra"
 )
@@ -18,6 +23,11 @@ nabu_base. yaml - base configuration for nabu
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("init called")
+		err := initCfg(cfgPath, cfgName, configBaseFiles)
+		if err != nil {
+			fmt.Println(err)
+		}
+
 	},
 }
 
@@ -33,4 +43,47 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) error {
+	fmt.Println("make a config template is there isn't already one")
+	var basePath = path.Join(cfgpath, cfgName)
+	if _, err := os.Stat(basePath); errors.Is(err, os.ErrNotExist) {
+		err := os.MkdirAll(basePath, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	for _, f := range configBaseFiles {
+		var template = path.Join(cfgpath, cfgName, f)
+		var config = path.Join(cfgpath, "template", f)
+		copy(config, template)
+	}
+
+	return nil
+}
+
+func copy(src, dst string) (int64, error) {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return 0, err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return 0, fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return 0, err
+	}
+	defer destination.Close()
+	nBytes, err := io.Copy(destination, source)
+	return nBytes, err
 }
