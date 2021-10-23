@@ -1,8 +1,0 @@
----
-minio:
-  address: 0.0.0.0
-  port: 9000
-  accessKey: worldsbestaccesskey
-  secretKey: worldsbestsecretkey
-  ssl: false
-  bucket: gleaner

@@ -1,5 +1,32 @@
 package config
 
+import (
+	"fmt"
+	"github.com/spf13/viper"
+)
+
 type Sparql struct {
-	endpoint string `mapstructure:"SPARQL_ENDPOINT"`
+	Endpoint string
+}
+
+var sparqlTemplate = map[string]interface{}{
+	"sparql": map[string]string{
+		"endpoint": "http://localhost/blazegraph/namespace/nabu/sparql",
+	},
+}
+
+func ReadSparqlConfig(viperSubtree *viper.Viper) (Sparql, error) {
+	var sparql Sparql
+	for key, value := range sparqlTemplate {
+		viperSubtree.SetDefault(key, value)
+	}
+	viperSubtree.BindEnv("endpoint", "SPARQL_ENDPOINT")
+
+	viperSubtree.AutomaticEnv()
+	// config already read. substree passed
+	err := viperSubtree.Unmarshal(&sparql)
+	if err != nil {
+		panic(fmt.Errorf("error when parsing sparql endpoint config: %v", err))
+	}
+	return sparql, err
 }

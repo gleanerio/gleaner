@@ -4,7 +4,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/config"
+	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"github.com/gocarina/gocsv"
 	"github.com/spf13/viper"
 	"github.com/yunabe/easycsv"
@@ -20,9 +20,9 @@ import (
 //need to add cobra
 // https://github.com/spf13/cobra/blob/master/user_guide.md#using-the-cobra-generator
 
-type Source = config.Sources
-type SourceConfig = config.SourcesConfig
-type MinoConfig = config.Minio
+type Source = configTypes.Sources
+type SourceConfig = configTypes.SourcesConfig
+type MinoConfigType = configTypes.Minio
 
 var minioVal, portVal, accessVal, secretVal, bucketVal, cfgVal, viperVal, cfgPath string
 var glrVal, nabuVal, sourcesVal, templateGleaner, templateNabu string
@@ -32,7 +32,7 @@ var check, cfginit, cfgval, cfgload, cfgrun, cfggen bool
 var configFullPath string
 
 var configBaseFiles = map[string]string{"gleaner": "gleaner_base.yaml", "sources": "sources.csv",
-	"nabu": "nabu_base.yaml", "minio": "minio.yaml", "readme": "readme.txt"}
+	"nabu": "nabu_base.yaml", "servers": "servers.yaml", "readme": "readme.txt"}
 var gleanerBaseName = "gleaner"
 var nabuBaseName = "nabu"
 
@@ -44,24 +44,15 @@ var (
 			"accesskey": "",
 			"secretkey": "",
 		},
-		"gleaner":     "",
-		"context":     "",
-		"contextmaps": "",
-		"summoner":    "",
-		"millers":     ",",
+		"gleaner":     map[string]string{},
+		"context":     map[string]string{},
+		"contextmaps": map[string]string{},
+		"summoner":    map[string]string{},
+		"millers":     map[string]string{},
 		"sources":     "",
 	}
-	//minioTemplate = map[string]interface{}{
-	//	"minio": map[string]string{
-	//		"address":   "localhost",
-	//		"port":      "9000",
-	//		"accesskey": "",
-	//		"secretkey": "",
-	//	},
-	//
-	//}
-	minioTemplate = map[string]interface{}{}
-	nabuTemplate  = map[string]interface{}{
+
+	nabuTemplate = map[string]interface{}{
 		"minio":   "",
 		"sparql":  "",
 		"objects": "",
@@ -157,9 +148,9 @@ func main() {
 		if err != nil {
 			panic(fmt.Errorf("error when reading nabu config: %v", err))
 		}
-		m1, err = readConfigNoDefault(fileNameWithoutExtTrimSuffix(configBaseFiles["minio"]), path.Join(cfgPath, cfgVal))
+		m1, err = readConfig(fileNameWithoutExtTrimSuffix(configBaseFiles["servers"]), path.Join(cfgPath, cfgVal), configTypes.ServersTemplate)
 		if err != nil {
-			panic(fmt.Errorf("error when reading  minio config: %v", err))
+			panic(fmt.Errorf("error when reading  servers config: %v", err))
 		}
 		sources, err = readSourcesGoCSV(configBaseFiles["sources"], path.Join(cfgPath, cfgVal))
 		if err != nil {
@@ -212,9 +203,9 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 func generateCfg(gleaner *viper.Viper, nabu *viper.Viper, minioConfig *viper.Viper, sources []Source, cfgPath string, sourcesVal string) error {
 	var err error
 	//var sm []SourceConfig
-	//var minio MinoConfig
+	var minioCfg MinoConfigType
 
-	var mi interface{}
+	//var mi interface{}
 	var date string
 	currentTime := time.Now()
 	date = currentTime.Format("20060102")
@@ -227,14 +218,34 @@ func generateCfg(gleaner *viper.Viper, nabu *viper.Viper, minioConfig *viper.Vip
 	if err != nil {
 		panic(fmt.Errorf("error when copying sources: %v", err))
 	}
+
+	//****** READ SERVERS CONFIG FILE ***
 	// load minio
-	mi = minioConfig.Get("minio")
-	// no idea why the unmarshall is not working
-	// basically means env substitution needs to be handled by us
-	//err = minioConfig.UnmarshalKey( "minio",&minio)
-	//if err != nil {
-	//	panic(fmt.Errorf("error when writing config: %v", err))
-	//}
+	//mi = minioConfig.Get("minio")
+	//no idea why the unmarshall is not working
+	//basically means env substitution needs to be handled by us
+	// frig frig... do not use lowercase... those are private variables
+	var ms = minioConfig.Sub("minio")
+	//s.BindEnv("address", "MINIO_ADDRESS")
+	//s.BindEnv("port", "MINIO_PORT")
+	//s.BindEnv("ssl", "MINIO_USE_SSL")
+	//s.BindEnv("accesskey", "MINIO_ACCESS_KEY")
+	//s.BindEnv("secretkey", "MINIO_SECRET_KEY")
+	//s.BindEnv("bucket", "MINIO_BUCKET")
+	//s.AutomaticEnv()
+	//err = s.Unmarshal( &minioCfg)
+	minioCfg, err = configTypes.ReadMinioConfig(ms)
+	if err != nil {
+		panic(fmt.Errorf("error when writing config: %v", err))
+	}
+	sparqlSub := minioConfig.Sub("sparql")
+	sparqlCfg, err := configTypes.ReadSparqlConfig(sparqlSub)
+
+	s3Sub := minioConfig.Sub("s3")
+	s3Cfg, err := configTypes.ReadSparqlConfig(s3Sub)
+
+	// since not fully defined in mapping. things are missing
+	//hdlsCfg  := minioConfig.Get("headless")
 
 	fmt.Println("Regnerate gleaner")
 	gleaner.SetConfigType("yaml")
@@ -244,8 +255,11 @@ func generateCfg(gleaner *viper.Viper, nabu *viper.Viper, minioConfig *viper.Vip
 		panic(fmt.Errorf("error when writing config: %v", err))
 	}
 
-	gleaner.Set("minio", mi)
+	gleaner.Set("minio", minioCfg)
 	gleaner.Set("sources", sources)
+
+	//gleaner.Set("summoner.headless", hdlsCfg) // since not fully defined in mapping. things are missing
+
 	// hack to get rid of the sourcetype
 	//err =  gleaner.UnmarshalKey("sitemaps", &sm)
 	//gleaner.Set("sitemaps", sm)
@@ -262,7 +276,9 @@ func generateCfg(gleaner *viper.Viper, nabu *viper.Viper, minioConfig *viper.Vip
 	if err != nil {
 		panic(fmt.Errorf("error when writing config: %v", err))
 	}
-	nabu.Set("minio", mi)
+	nabu.Set("minio", minioCfg)
+	nabu.Set("sparql", sparqlCfg)
+	nabu.Set("objects", s3Cfg)
 	var prefix []string
 	for _, s := range sources {
 		if s.Active {
@@ -363,6 +379,7 @@ func readConfig(filename string, cfgPath string, defaults map[string]interface{}
 	}
 	v.SetConfigName(filename)
 	v.AddConfigPath(cfgPath)
+	//v.BindEnv("headless", "GLEANER_HEADLESS_ENDPOINT")
 	v.AutomaticEnv()
 	err := v.ReadInConfig()
 	return v, err
