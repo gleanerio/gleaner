@@ -28,7 +28,8 @@ require (
 	github.com/rychipman/easylex v0.0.0-20160129204217-49ee7767142f // indirect
 	github.com/schollz/progressbar/v3 v3.7.3
 	github.com/spf13/afero v1.6.0 // indirect
-	github.com/spf13/viper v1.7.1
+	github.com/spf13/cobra v1.2.1
+	github.com/spf13/viper v1.8.1
 	github.com/tidwall/gjson v1.8.1 // indirect
 	github.com/twinj/uuid v1.0.0 // indirect
 	github.com/vugu/vgrouter v0.0.0-20200725205318-eeb478c42e5d // indirect
