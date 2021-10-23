@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -22,21 +23,117 @@ import (
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
 func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+	// NOTE   this function compares to ResRetrieve in acquire.go.  They both approach things
+	// in same ways due to hwo we deal with threading (opportunities).   We don't queue up domains
+	// multiple times since we are dealing with our local resource now in the form of the headless tooling.
+
+	var (
+		buf    bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	)
+
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
-
-		var (
-			buf    bytes.Buffer
-			logger = log.New(&buf, "logger: ", log.Lshortfile)
-		)
+		db.Update(func(tx *bolt.Tx) error {
+			_, err := tx.CreateBucket([]byte(k))
+			if err != nil {
+				return fmt.Errorf("create bucket: %s", err)
+			}
+			return nil
+		})
 
 		for i := range m[k] {
 			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
-				log.Printf("%s :: %s", m[k][i], err)
+				log.Printf("%s :: %s", m[k][i], fmt.Sprintf("%s", err))
 			}
 		}
+
 	}
+
+}
+
+// ThreadedHeadlessNG does not work.. ;)
+func ThreadedHeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+	wg := sync.WaitGroup{}
+
+	var (
+		buf    bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	)
+
+	for k := range m {
+		log.Printf("Headless chrome call to: %s", k)
+
+		// for i := range m[k] {
+		go doCall(v1, mc, logger, 60*time.Second, m, k, &wg, db) // TODO make delay configurable
+		// 	log.Printf("%s :: %s", m[k][i], err)
+		// }
+	}
+
+	time.Sleep(2 * time.Second) // ?? why is this here?
+	wg.Wait()
+
+}
+
+func doCall(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
+
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucket([]byte(k))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
+	tc, err := Threadcount(v1)
+	if err != nil {
+		log.Println(err)
+	}
+	dt, err := Delayrequest(v1)
+	if err != nil {
+		log.Println(err)
+	}
+
+	if dt > 0 {
+		tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
+	}
+
+	log.Printf("Thread count %d delay %d\n", tc, dt)
+
+	// thread vars
+	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
+	defer close(semaphoreChan)
+	lwg := sync.WaitGroup{}
+
+	wg.Add(1)       // wg from the calling function
+	defer wg.Done() // tell the wait group that we be done
+
+	for i := range m[k] {
+		lwg.Add(1)
+		urlloc := m[k][i]
+
+		go func(i int, k string) {
+			//thread management
+			semaphoreChan <- struct{}{}
+
+			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+			if err != nil {
+				log.Printf("%s :: %s", m[k][i], err)
+			}
+
+			// thread management
+			log.Printf("#%d thread for %s ", i, urlloc)      // print an message containing the index (won't keep order)
+			time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
+
+			lwg.Done()
+			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
+
+		}(i, k)
+	}
+
+	lwg.Wait()
+
 }
 
 func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, url, k string, db *bolt.DB) error {
@@ -177,24 +274,30 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			sha, err := Upload(v1, mc, logger, bucketName, k, url, jsonld)
 			if err != nil {
-				logger.Printf("Error uploading jsonld to object store: %s: %s", url, err)
+				logger.Printf("Error uploading jsonld to object store: %s: %s: %s", url, err, sha)
 			}
 			// TODO  Is here where to add an entry to the KV store
-			db.Update(func(tx *bolt.Tx) error {
+			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte(k))
 				err := b.Put([]byte(url), []byte(sha))
-				return err
+				if err != nil {
+					log.Println("Error writing to bolt")
+				}
+				return nil
 			})
 		} else {
 			log.Println("Empty JSON-LD document found. Continuing.", url)
 			// TODO  Is here where to add an entry to the KV store
-			db.Update(func(tx *bolt.Tx) error {
+			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte(k))
 				err := b.Put([]byte(url), []byte("NULL")) // no JOSN-LD found at this URL
-				return err
+				if err != nil {
+					log.Println("Error writing to bolt")
+				}
+				return nil
 			})
 		}
 	}
 
-	return nil
+	return err
 }

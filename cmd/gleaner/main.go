@@ -153,20 +153,21 @@ func main() {
 // func cli(mc *minio.Client, cs utils.Config) {
 func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	mcfg := v1.GetStringMapString("gleaner")
+	scfg := v1.GetStringMapString("summoner")
 
-	// Build the org graph
-	// err := organizations.BuildGraphMem(mc, v1) // parquet testing
+	// Build the org graph(s)
 	err := organizations.BuildGraph(mc, v1)
 	if err != nil {
 		log.Print(err)
 	}
 
-	// Index the sitegraphs first, if any
-	fn, err := acquire.GetGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
+	// Index the sitegraphs first, if any but never in a incremental (diff) call
+	if scfg["mode"] != "diff" {
+		_, err := acquire.GetGraph(mc, v1)
+		if err != nil {
+			log.Print(err)
+		}
 	}
-	log.Println(fn)
 
 	// If configured, summon sources
 	if mcfg["summon"] == "true" {

@@ -21,6 +21,7 @@ require (
 	github.com/minio/minio-go v6.0.14+incompatible
 	github.com/minio/minio-go/v7 v7.0.11
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
+	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4 // indirect
 	github.com/piprate/json-gold v0.3.0
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rs/xid v1.2.1
@@ -33,6 +34,7 @@ require (
 	github.com/xiaost/jsonport v0.0.0-20200402153148-139b207e756f
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20201108113611-f372b7d813be
+	github.com/yterajima/go-sitemap v0.3.0 // indirect
 	go.etcd.io/bbolt v1.3.2 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/sys v0.0.0-20211015200801-69063c4bb744 // indirect

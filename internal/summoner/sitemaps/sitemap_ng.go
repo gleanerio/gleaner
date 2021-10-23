@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"github.com/araddon/dateparse"
+	sitemap "github.com/oxffaa/gopher-parse-sitemap"
 )
 
 // Index is a structure of <sitemapindex>
@@ -46,6 +47,36 @@ type URL struct {
 	ChangeFreq string  `xml:"changefreq"`
 	Priority   float32 `xml:"priority"`
 }
+
+func DomainSitemap(sm string) (Sitemap, error) {
+	// result := make([]string, 0)
+	smsm := Sitemap{}
+	urls := make([]URL, 0)
+	err := sitemap.ParseFromSite(sm, func(e sitemap.Entry) error {
+		entry := URL{}
+		entry.Loc = strings.TrimSpace(e.GetLocation())
+		//TODO why is this failing?  The string doesn't exist..  need to test and trap
+		// 	entry.LastMod = e.GetLastModified().String()
+		// entry.ChangeFreq = strings.TrimSpace(e.GetChangeFrequency())
+		urls = append(urls, entry)
+		return nil
+	})
+
+	smsm.URL = urls
+	return smsm, err
+}
+
+func DomainIndex(sm string) ([]string, error) {
+	result := make([]string, 0)
+	err := sitemap.ParseIndexFromSite(sm, func(e sitemap.IndexEntry) error {
+		result = append(result, strings.TrimSpace(e.GetLocation()))
+		return nil
+	})
+
+	return result, err
+}
+
+// ----------------------   old code below here..  may remove -----------
 
 // GetAfterDate sitemap data from URL returning only those after a date
 func GetAfterDate(URL string, options interface{}, date string) (Sitemap, error) {

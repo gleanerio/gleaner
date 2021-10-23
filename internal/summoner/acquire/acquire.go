@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -50,28 +49,20 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 		return nil
 	})
 
-	mcfg := v1.GetStringMapString("summoner")
-	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
+	tc, err := Threadcount(v1)
 	if err != nil {
 		log.Println(err)
-		log.Panic("Could not convert threads from config file to an int")
+	}
+	dt, err := Delayrequest(v1)
+	if err != nil {
+		log.Println(err)
 	}
 
-	delay := mcfg["delay"]
-	var dt int64
-	if delay != "" {
-		//log.Printf("Delay set to: %s milliseconds", delay)
-		dt, err = strconv.ParseInt(delay, 10, 64)
-		if err != nil {
-			log.Println(err)
-			log.Panic("Could not convert delay from config file to a value")
-		}
-		// set threads to 1
-		//log.Println("Delay is not 0, threads set to 1")
-		tc = 1
-	} else {
-		dt = 0
+	if dt > 0 {
+		tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
 	}
+
+	log.Printf("Thread count %d delay %d\n", tc, dt)
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -81,21 +72,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 	defer wg.Done() // tell the wait group that we be done
 
 	count := len(m[k])
-	// OLD bar
-	// bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
-	// bar.PrependFunc(func(b *uiprogress.Bar) string {
-	// 	return rightPad2Len(k, " ", 15)
-	// })
-	// bar.Fill = '-'
-	// bar.Head = '>'
-	// bar.Empty = ' '
-
 	bar := progressbar.Default(int64(count))
-
-	// if count < 1 {
-	// 	log.Printf("No resources found for %s \n", k)
-	// 	return // should maked this return an error
-	// }
 
 	var (
 		buf    bytes.Buffer
