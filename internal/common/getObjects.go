@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"log"
 
-	minio "github.com/minio/minio-go"
+	"context"
+	minio "github.com/minio/minio-go/v7"
 )
 
 // Entry is a struct holding the json-ld metadata and data (the text)
@@ -22,7 +23,12 @@ func GetMillObjects(mc *minio.Client, prefix string) []Entry {
 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
 	bucketname := "gleaner-summoned"
-	objectCh := mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
+	opts := minio.ListObjectsOptions{
+		Recursive: isRecursive,
+		Prefix:    prefix,
+	}
+	//objectCh := mc.ListObjects(context.Background(), bucketname, prefix, isRecursive, doneCh)
+	objectCh := mc.ListObjects(context.Background(), bucketname, opts)
 
 	var entries []Entry
 
@@ -32,7 +38,7 @@ func GetMillObjects(mc *minio.Client, prefix string) []Entry {
 			return nil
 		}
 
-		fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+		fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
 		if err != nil {
 			log.Println(err)
 			return nil

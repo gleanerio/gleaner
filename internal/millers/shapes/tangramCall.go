@@ -11,9 +11,10 @@ import (
 	"net/http"
 	"strings"
 
+	"context"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/viper"
 )
@@ -23,7 +24,8 @@ func shaclTestNG(v1 *viper.Viper, bucketname, prefix string, mc *minio.Client, o
 	key := object.Key // replace if new function idea works..
 
 	// Read the object bytes (our data graoh)
-	fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+	//fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+	fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -39,7 +41,8 @@ func shaclTestNG(v1 *viper.Viper, bucketname, prefix string, mc *minio.Client, o
 
 	// TODO  this is a waste to read the same bytes N times!   read early and pass a pointer!
 	// Read the object bytes (our data graoh)
-	so, err := mc.GetObject("gleaner", shape.Key, minio.GetObjectOptions{})
+	//so, err := mc.GetObject("gleaner", shape.Key, minio.GetObjectOptions{})
+	so, err := mc.GetObject(context.Background(), "gleaner", shape.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err

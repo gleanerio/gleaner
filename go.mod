@@ -34,6 +34,7 @@ require (
 	github.com/twinj/uuid v1.0.0 // indirect
 	github.com/vugu/vgrouter v0.0.0-20200725205318-eeb478c42e5d // indirect
 	github.com/vugu/vugu v0.3.3 // indirect
+	github.com/xiaost/jsonport v0.0.0-20200402153148-139b207e756f // indirect
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20201108113611-f372b7d813be
 	github.com/yunabe/easycsv v0.0.2

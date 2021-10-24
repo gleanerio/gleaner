@@ -536,6 +536,8 @@ github.com/vugu/vugu v0.3.3/go.mod h1:EuAxLy3HZ+y4vAnohT/peY7IzG3RSdu/QSdyBfdfMg
 github.com/vugu/xxhash v0.0.0-20191111030615-ed24d0179019 h1:8NGiD5gWbVGObr+lnqcbM2rcOQBO6mr+m19BIblCdho=
 github.com/vugu/xxhash v0.0.0-20191111030615-ed24d0179019/go.mod h1:PrBK6+LJXwb+3EnJTHo43Uh4FhjFFwvN4jKk4Zc5zZ8=
 github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2/go.mod h1:UETIi67q53MR2AWcXfiuqkDkRtnGDLqkBTpCHuJHxtU=
+github.com/xiaost/jsonport v0.0.0-20200402153148-139b207e756f h1:4uU6VcQzHShGt0DZlZ5LVHBFxg52tKY5+YGn4FG9psM=
+github.com/xiaost/jsonport v0.0.0-20200402153148-139b207e756f/go.mod h1:bGI1SO4Pjktlioum2qzupYDYC/IxVQrPXilH7edH+4w=
 github.com/xitongsys/parquet-go v1.5.1 h1:GFjQXrFmqI2XvmAaj7k73QtW3eECFVwaLX2/Mv3Fnuo=
 github.com/xitongsys/parquet-go v1.5.1/go.mod h1:xUxwM8ELydxh4edHGegYq1pA8NnMKDx0K/GyB0o2bww=
 github.com/xitongsys/parquet-go v1.6.0 h1:j6YrTVZdQx5yywJLIOklZcKVsCoSD1tqOVRXyTBFSjs=

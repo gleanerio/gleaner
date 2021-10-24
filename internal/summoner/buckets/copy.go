@@ -3,8 +3,10 @@ package buckets
 import (
 	"context"
 	"fmt"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/spf13/viper"
 
-	"github.com/minio/minio-go/v7"
+	minio "github.com/minio/minio-go/v7"
 )
 
 // take the bucket name
@@ -13,13 +15,13 @@ import (
 // copy bucket to bucket.1 now
 // empty bucket
 
-func list() {
-
+func list(v1 *viper.Viper) {
+	mc := common.MinioConnection(v1)
 	ctx, cancel := context.WithCancel(context.Background())
 
 	defer cancel()
 
-	objectCh := minioClient.ListObjects(ctx, "mybucket", minio.ListObjectsOptions{
+	objectCh := mc.ListObjects(ctx, "mybucket", minio.ListObjectsOptions{
 		Prefix:    "myprefix",
 		Recursive: true,
 	})
@@ -33,7 +35,8 @@ func list() {
 
 }
 
-func copy() {
+func copy(v1 *viper.Viper) {
+	mc := common.MinioConnection(v1)
 	// Use-case 1: Simple copy object with no conditions.
 	// Source object
 	srcOpts := minio.CopySrcOptions{
@@ -48,7 +51,7 @@ func copy() {
 	}
 
 	// Copy object call
-	uploadInfo, err := minioClient.CopyObject(context.Background(), dst, src)
+	uploadInfo, err := mc.CopyObject(context.Background(), dstOpts, srcOpts)
 	if err != nil {
 		fmt.Println(err)
 		return

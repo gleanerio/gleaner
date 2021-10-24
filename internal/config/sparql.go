@@ -11,7 +11,10 @@ type Sparql struct {
 
 var sparqlTemplate = map[string]interface{}{
 	"sparql": map[string]string{
-		"endpoint": "http://localhost/blazegraph/namespace/nabu/sparql",
+		"endpoint":     "http://localhost/blazegraph/namespace/nabu/sparql",
+		"authenticate": "False",
+		"username":     "",
+		"password":     "",
 	},
 }
 
@@ -21,6 +24,9 @@ func ReadSparqlConfig(viperSubtree *viper.Viper) (Sparql, error) {
 		viperSubtree.SetDefault(key, value)
 	}
 	viperSubtree.BindEnv("endpoint", "SPARQL_ENDPOINT")
+	viperSubtree.BindEnv("authenticate", "SPARQL_AUTHENTICATE")
+	viperSubtree.BindEnv("username", "SPARQL_USERNAME")
+	viperSubtree.BindEnv("password", "SPARQL_PASSWORD")
 
 	viperSubtree.AutomaticEnv()
 	// config already read. substree passed
