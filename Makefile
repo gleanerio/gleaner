@@ -1,4 +1,5 @@
 BINARY := gleaner
+BINARYIO := glcon
 VERSION :=`cat VERSION`
 .DEFAULT_GOAL := gleaner
 
@@ -14,7 +15,19 @@ gleaner.darwin:
 	cd cmd/$(BINARY) ; \
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 env go build -o $(BINARY)_darwin
 
-releases: gleaner gleaner.exe gleaner.darwin
+glcon:
+	cd cmd/$(BINARYIO) ; \
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o $(BINARYIO)
+
+glcon.exe:
+	cd cmd/$(BINARYIO) ; \
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 env go build -o $(BINARYIO).exe
+
+glcon.darwin:
+	cd cmd/$(BINARYIO) ; \
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 env go build -o $(BINARYIO)_darwin
+
+releases: gleaner gleaner.exe gleaner.darwin glcon glcon.exe glcon.darwin
 
 docker:
 	podman build  --tag="nsfearthcube/gleaner:$(VERSION)"  --file=./build/Dockerfile .

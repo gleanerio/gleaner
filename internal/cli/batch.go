@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package cmd
+package cli
 
 import (
 	"fmt"
@@ -44,7 +44,7 @@ and store to a S3 server:
 }
 
 func init() {
-	runCmd.AddCommand(batchCmd)
+	gleanerCmd.AddCommand(batchCmd)
 
 	// Here you will define your flags and configuration settings.
 

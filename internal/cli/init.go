@@ -1,10 +1,11 @@
-package cmd
+package cli
 
 import (
 	"errors"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"path"
 
@@ -59,7 +60,7 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 		var config = path.Join(cfgpath, "template", f)
 		copy(config, template)
 	}
-
+	DownloadFile(path.Join(cfgpath, cfgName, "schemaorg-current-https.jsonld"), "https://schema.org/version/latest/schemaorg-current-https.jsonld")
 	return nil
 }
 
@@ -86,4 +87,25 @@ func copy(src, dst string) (int64, error) {
 	defer destination.Close()
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+func DownloadFile(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
 }

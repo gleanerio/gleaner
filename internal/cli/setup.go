@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"fmt"
@@ -25,7 +25,7 @@ var setupCmd = &cobra.Command{
 }
 
 func init() {
-	runCmd.AddCommand(setupCmd)
+	gleanerCmd.AddCommand(setupCmd)
 
 	// Here you will define your flags and configuration settings.
 

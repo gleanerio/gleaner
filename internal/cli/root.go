@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"fmt"
@@ -17,17 +17,17 @@ var viperVal *viper.Viper
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "gleaner",
-	Short: "Extracts JSON-LD from web pages exposed in a domains sitemap file. ",
+	Use:   "glcon",
+	Short: "Gleaner Console - Gleaner Extracts JSON-LD from web pages exposed in a domains sitemap file. ",
 	Long: `The gleaner.io stack harvests JSON-LD from webpages using sitemaps and other tools
 store files in S3 (we use minio), uploads triples to be processed by nabu (the next step in the process)
 configuration is now focused on a directory (default: configs/local) with will contain the
 process to configure and run is:
-* gleaner config init --cfgName {default:local}
+* glcon config init --cfgName {default:local}
   edit files, servers.yaml, sources.csv
-* gleaner config generate --cfgName  {default:local}
-* gleaner run setup --cfgName  {default:local}
-* gleaner run  --cfgName  {default:local}
+* glcon config generate --cfgName  {default:local}
+* glcon gleaner setup --cfgName  {default:local}
+* glcon gleaner batch  --cfgName  {default:local}
 * run nabu (better description)
 `,
 	// Uncomment the following line if your bare application
