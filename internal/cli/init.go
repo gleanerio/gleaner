@@ -60,7 +60,9 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 		var config = path.Join(cfgpath, "template", f)
 		copy(config, template)
 	}
-	DownloadFile(path.Join(cfgpath, cfgName, "schemaorg-current-https.jsonld"), "https://schema.org/version/latest/schemaorg-current-https.jsonld")
+	//DownloadFile(path.Join(cfgpath, cfgName, "schemaorg-current-https.jsonld"), "https://schema.org/version/latest/schemaorg-current-https.jsonld")
+	// just use a common one, else the config base needed to be patched every time
+	DownloadFile(path.Join(cfgpath, "schemaorg-current-https.jsonld"), "https://schema.org/version/latest/schemaorg-current-https.jsonld")
 	return nil
 }
 

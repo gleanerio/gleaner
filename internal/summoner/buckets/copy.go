@@ -3,7 +3,7 @@ package buckets
 import (
 	"context"
 	"fmt"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/spf13/viper"
 
 	minio "github.com/minio/minio-go/v7"

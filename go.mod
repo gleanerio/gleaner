@@ -14,6 +14,7 @@ require (
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/deiu/gon3 v0.0.0-20170627184619-f84eb1e0bd62 // indirect
 	github.com/deiu/rdf2go v0.0.0-20180504135839-3c24cc9e7afa // indirect
+
 	github.com/fraugster/parquet-go v0.3.0 // indirect
 	github.com/go-ini/ini v1.61.0 // indirect
 	github.com/gocarina/gocsv v0.0.0-20211020200912-82fc2684cc48
@@ -60,6 +61,6 @@ require (
 )
 
 //replace (
-//    github.com/earthcubearchitecture-project418/gleaner/internal/config => "./internal/config"
-//    github.com/earthcubearchitecture-project418/gleaner/internal/objects => "./internal/objects"
+//    github.com/gleanerio/gleaner/internal/config => "./internal/config"
+//    github.com/gleanerio/gleaner/internal/objects => "./internal/objects"
 //)
