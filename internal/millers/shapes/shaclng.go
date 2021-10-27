@@ -8,8 +8,9 @@ import (
 
 	"github.com/gosuri/uiprogress"
 
+	"context"
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -36,7 +37,12 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	// Spiffy progress line
 	uiprogress.Start()
 	x := 0 // ugh..  why won't len(oc) work..   buffered channel issue I assume?
-	for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
+	opts := minio.ListObjectsOptions{
+		Recursive: isRecursive,
+		Prefix:    prefix,
+	}
+	//for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
+	for range mc.ListObjects(context.Background(), bucketname, opts) {
 		x = x + 1
 	}
 	count := x
@@ -49,9 +55,18 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	bar3.Empty = ' '
 
 	// TODO get the list of shape files in the shape bucket
-	for shape := range mc.ListObjectsV2(bucketname, "shapes", isRecursive, doneCh) {
+	//for shape := range mc.ListObjectsV2(bucketname, "shapes", isRecursive, doneCh) {
+	opts2 := minio.ListObjectsOptions{
+		Recursive: isRecursive,
+		Prefix:    "shapes",
+	}
+	for shape := range mc.ListObjects(context.Background(), bucketname, opts2) {
 		// log.Printf("Checking data graphs against shape graph: %s\n", m[j])
-		for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
+
+		//for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
+		for object := range mc.ListObjects(context.Background(), prefix, minio.ListObjectsOptions{
+			Recursive: isRecursive,
+		}) {
 			wg.Add(1)
 			go func(object minio.ObjectInfo) {
 				semaphoreChan <- struct{}{}

@@ -1,0 +1,16 @@
+---
+minio:
+  address: 0.0.0.0
+  port: 9000
+  accessKey: worldsbestaccesskey
+  secretKey: worldsbestsecretkey
+  ssl: false
+  bucket: gleaner
+sparql:
+  endpoint: http://localhost/blazegraph/namespace/earthcube/sparql
+s3:
+  bucket: gleaner
+  domain: us-east-1
+
+#headless field in gleaner.summoner. not yet implemented
+headless: http://127.0.0.1:9222

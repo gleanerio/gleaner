@@ -5,13 +5,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"io"
 	"io/ioutil"
 	"log"
 	"strings"
 
 	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
 	"github.com/knakk/rdf"
 	"github.com/xitongsys/parquet-go-source/mem"
 	"github.com/xitongsys/parquet-go/writer"
@@ -30,8 +30,9 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 	log.Print("Building organization graph from config file")
 
-	var domains []objects.Sources
-	err := v1.UnmarshalKey("sources", &domains)
+	//var domains []objects.Sources
+	//err := v1.UnmarshalKey("sources", &domains)
+	domains, err := config.ParseSourcesConfig(v1)
 	if err != nil {
 		log.Println(err)
 		return err

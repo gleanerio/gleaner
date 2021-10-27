@@ -2,6 +2,8 @@ package framing
 
 import (
 	"encoding/json"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/spf13/viper"
 	"log"
 	"reflect"
 
@@ -48,8 +50,8 @@ type SpatialFrameRes struct {
 	SpatialCoverages []SpatialCoverage `json:"-"`
 }
 
-func SpatialFrame(jsonld string) []SpatialFrameRes {
-	proc, options := common.JLDProc()
+func SpatialFrame(jsonld string, g1 *viper.Viper) []SpatialFrameRes {
+	proc, options := common.JLDProc(g1)
 
 	// proc := ld.NewJsonLdProcessor()
 	// options := ld.NewJsonLdOptions("")

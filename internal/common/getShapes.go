@@ -2,9 +2,9 @@ package common
 
 import (
 	"bytes"
+	"context"
+	minio "github.com/minio/minio-go/v7"
 	"log"
-
-	minio "github.com/minio/minio-go"
 )
 
 // GetShapeGraphs gets the shape graphs the shacl miller will use.
@@ -15,8 +15,12 @@ func GetShapeGraphs(mc *minio.Client, bucketname string) []Entry {
 	doneCh := make(chan struct{}) // Create a done channel to control 'ListObjectsV2' go routine.
 	defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
-	objectCh := mc.ListObjectsV2(bucketname, "", isRecursive, doneCh)
-
+	opts := minio.ListObjectsOptions{
+		Recursive: isRecursive,
+		//Prefix:    "my-prefixname",
+	}
+	//objectCh := mc.ListObjects(bucketname, "", isRecursive, doneCh)
+	objectCh := mc.ListObjects(context.Background(), bucketname, opts)
 	var entries []Entry
 
 	for object := range objectCh {
@@ -25,7 +29,8 @@ func GetShapeGraphs(mc *minio.Client, bucketname string) []Entry {
 			return nil
 		}
 
-		fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+		//fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+		fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
 		if err != nil {
 			log.Println(err)
 			return nil

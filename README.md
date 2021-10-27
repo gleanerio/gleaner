@@ -49,10 +49,10 @@ Gleaner uses [Go Modules](https://blog.golang.org/using-go-modules) so all depen
 at compile time.  So a simple;
 
 ```bash
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o gleaner
+GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -o gleanerio
 ```
 
-in cmd/gleaner will be enough to resolve dependencies and build the binary.  
+in root there will be enough to resolve dependencies and build the binary.  
 There is also a Makefile with basic commands if you have and use Make.  Note
 the docker push will need to be edited to support your setup.
 

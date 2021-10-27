@@ -6,3 +6,6 @@ cmd/gleaner/gleaner.exe
 cmd/gleaner/gleaner_darwin
 output/**
 .DS_Store
+/configs/gleaner
+configs/local/
+*.log

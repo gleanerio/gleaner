@@ -3,6 +3,8 @@ package buckets
 import (
 	"context"
 	"fmt"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/spf13/viper"
 	"log"
 
 	"github.com/minio/minio-go/v7"
@@ -10,19 +12,26 @@ import (
 
 // empty a bucket (prefix) and remove it
 
-func remove() {
-
-	objectsCh := make(chan string)
+func remove(v1 *viper.Viper) {
+	mc := common.MinioConnection(v1)
+	//objectsCh := make(chan string)
+	objectsCh := make(chan minio.ObjectInfo)
 
 	// Send object names that are needed to be removed to objectsCh
 	go func() {
 		defer close(objectsCh)
 		// List all objects from a bucket-name with a matching prefix.
-		for object := range minioClient.ListObjects(context.Background(), "my-bucketname", "my-prefixname", true, nil) {
+		opts := minio.ListObjectsOptions{
+			Recursive: true,
+			Prefix:    "my-prefixname",
+		}
+		//for object := range mc.ListObjects(context.Background(), "my-bucketname", "my-prefixname", true, nil) {
+		for object := range mc.ListObjects(context.Background(), "my-bucketname", opts) {
 			if object.Err != nil {
 				log.Fatalln(object.Err)
 			}
-			objectsCh <- object.Key
+			//objectsCh <- object.Key
+			objectsCh <- object
 		}
 
 	}()
@@ -31,11 +40,12 @@ func remove() {
 		GovernanceBypass: true,
 	}
 
-	for rErr := range minioClient.RemoveObjects(context.Background(), "my-bucketname", objectsCh, opts) {
+	for rErr := range mc.RemoveObjects(context.Background(), "my-bucketname", objectsCh, opts) {
+
 		fmt.Println("Error detected during deletion: ", rErr)
 	}
 
-	err = minioClient.RemoveBucket(context.Background(), "mybucket")
+	err := mc.RemoveBucket(context.Background(), "mybucket")
 	if err != nil {
 		fmt.Println(err)
 		return
