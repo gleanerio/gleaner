@@ -2,9 +2,10 @@ package acquire
 
 import (
 	"fmt"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"log"
 	"strings"
+
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 
 	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"

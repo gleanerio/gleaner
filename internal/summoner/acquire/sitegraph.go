@@ -2,14 +2,14 @@ package acquire
 
 import (
 	"fmt"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"io/ioutil"
 	"log"
 	"net/http"
 
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
-	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
