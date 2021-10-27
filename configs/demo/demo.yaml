@@ -7,7 +7,7 @@ minio:
   ssl: false
   bucket: gleaner
 gleaner:
-  runid: runX # this will be the bucket the output is placed in...
+  runid: demorun # Run ID used in prov and a few others
   summon: true # do we want to visit the web sites and pull down the files
   mill: true
 context:
@@ -25,14 +25,7 @@ summoner:
   headless: http://127.0.0.1:9222  # URL for headless see docs/headless
 millers:
   graph: true
-sitegraphs:
-- name: aquadocs
-  url: https://oih.aquadocs.org/aquadocs.json 
-  headless: false
-  pid: https://www.re3data.org/repository/aquadocs
-  properName: AquaDocs
-  domain: https://aquadocs.org 
-sources:
+sitemaps:
 - name: samplesearth
   url: https://samples.earth/sitemap.xml
   headless: false

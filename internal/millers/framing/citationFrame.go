@@ -2,6 +2,8 @@ package framing
 
 import (
 	"encoding/json"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/spf13/viper"
 	"log"
 )
 
@@ -13,8 +15,8 @@ type CitationFrameRes struct {
 	// URL         string `json:"schema:url"`
 }
 
-func CitationFrame(jsonld string) []CitationFrameRes {
-	proc, options := common.JLDProc()
+func CitationFrame(jsonld string, g1 *viper.Viper) []CitationFrameRes {
+	proc, options := common.JLDProc(g1)
 
 	// proc := ld.NewJsonLdProcessor()
 	// options := ld.NewJsonLdOptions("")

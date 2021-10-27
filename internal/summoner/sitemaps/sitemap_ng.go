@@ -113,14 +113,14 @@ func Get(URL string, options interface{}) (Sitemap, error) {
 		} else {
 			err = smapErr
 		}
-		return Sitemap{}, fmt.Errorf("URL is not a sitemap or sitemapindex.: %v", err)
+		return Sitemap{}, fmt.Errorf("URL %v is not a sitemap or sitemapindex.: %v", URL, err)
 	} else if idxErr != nil {
 		return smap, nil
 	}
 
 	smap, err = idx.get(data, options)
 	if err != nil {
-		log.Println("error getting url", err)
+		log.Println("error getting url", URL, err)
 		return Sitemap{}, err
 	}
 

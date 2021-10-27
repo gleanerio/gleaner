@@ -28,7 +28,8 @@ func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, objec
 	key := object.Key // replace if new function idea works..
 
 	// Read the object bytes (our data graoh)
-	fo, err := mc.GetObject(bucket, object.Key, minio.GetObjectOptions{})
+	//fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
+	fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -44,7 +45,8 @@ func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, objec
 
 	// TODO  this is a waste to read the same bytes N times!   read early and pass a pointer!
 	// Read the object bytes (our data graoh)
-	so, err := mc.GetObject(bucketName, shape.Key, minio.GetObjectOptions{})
+	//so, err := mc.GetObject("gleaner", shape.Key, minio.GetObjectOptions{})
+	so, err := mc.GetObject(context.Background(), "gleaner", shape.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err

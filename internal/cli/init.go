@@ -1,0 +1,111 @@
+package cli
+
+import (
+	"errors"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path"
+
+	"github.com/spf13/cobra"
+)
+
+// initCmd represents the init command
+var initCmd = &cobra.Command{
+	Use:   "init",
+	Short: "This initialize a config directory which are used create config files",
+	Long: `config init creates template configuration files. :
+servers.yaml - configuration file for services
+sources.csv - a csv listing of sources that are uses to generate lists of files to harvest
+gleaner_base.yaml - base configuration file for gleaner
+nabu_base. yaml - base configuration for nabu
+`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println("init called")
+		err := initCfg(cfgPath, cfgName, configBaseFiles)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+	},
+}
+
+func init() {
+	configCmd.AddCommand(initCmd)
+
+	// Here you will define your flags and configuration settings.
+
+	// Cobra supports Persistent Flags which will work for this command
+	// and all subcommands, e.g.:
+	// initCmd.PersistentFlags().String("foo", "", "A help for foo")
+
+	// Cobra supports local flags which will only run when this command
+	// is called directly, e.g.:
+	// initCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) error {
+	fmt.Println("make a config template is there isn't already one")
+	var basePath = path.Join(cfgpath, cfgName)
+	if _, err := os.Stat(basePath); errors.Is(err, os.ErrNotExist) {
+		err := os.MkdirAll(basePath, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	for _, f := range configBaseFiles {
+		var template = path.Join(cfgpath, cfgName, f)
+		var config = path.Join(cfgpath, "template", f)
+		copy(config, template)
+	}
+	DownloadFile(path.Join(cfgpath, cfgName, "schemaorg-current-https.jsonld"), "https://schema.org/version/latest/schemaorg-current-https.jsonld")
+	return nil
+}
+
+func copy(src, dst string) (int64, error) {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return 0, err
+	}
+
+	if !sourceFileStat.Mode().IsRegular() {
+		return 0, fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(dst)
+	if err != nil {
+		return 0, err
+	}
+	defer destination.Close()
+	nBytes, err := io.Copy(destination, source)
+	return nBytes, err
+}
+
+func DownloadFile(filepath string, url string) error {
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	return err
+}

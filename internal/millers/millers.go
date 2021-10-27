@@ -2,6 +2,7 @@ package millers
 
 import (
 	"fmt"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"log"
 	"time"
 
@@ -26,8 +27,9 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	log.Printf("Miller start time: %s \n", st) // Log the time at start for the record
 
 	// Put the sources in the config file into a struct
-	var domains []Sources
-	err := v1.UnmarshalKey("sources", &domains)
+	//var domains []Sources
+	//err := v1.UnmarshalKey("sources", &domains)
+	domains, err := config.ParseSourcesConfig(v1)
 	if err != nil {
 		log.Println(err)
 	}

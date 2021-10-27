@@ -2,6 +2,7 @@ package acquire
 
 import (
 	"fmt"
+	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,6 +14,10 @@ import (
 	"github.com/spf13/viper"
 )
 
+type Sources = configTypes.Sources
+
+const siteGraphType = "sitegraph"
+
 // GetGraph downloads pre-built site graphs
 func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	// read config file
@@ -20,11 +25,14 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
 	// get the sitegraph entry from config file
-	var domains []objects.Sources
-	err := v1.UnmarshalKey("sitegraphs", &domains)
+	var domains []Sources
+	//err := v1.UnmarshalKey("sitegraphs", &domains)
+
+	sources, err := configTypes.ParseSourcesConfig(v1)
 	if err != nil {
 		log.Println(err)
 	}
+	domains = configTypes.GetSourceByType(sources, siteGraphType)
 
 	for k := range domains {
 		log.Printf("Processing sitegraph file (this can be slow with little feedback): %s", domains[k].URL)

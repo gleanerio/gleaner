@@ -8,8 +8,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
+	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
 	"github.com/gorilla/mux"
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
 	"github.com/rs/xid"
 	"github.com/spf13/viper"
 

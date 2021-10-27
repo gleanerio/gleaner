@@ -2,6 +2,7 @@ package acquire
 
 import (
 	"fmt"
+	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"log"
 	"strings"
 
@@ -23,6 +24,8 @@ import (
 // 	// SitemapFormat string
 // 	// Active        bool
 // }
+//type Sources = configTypes.Sources
+const siteMapType = "sitemap"
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
@@ -33,8 +36,10 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 
 	m := make(map[string][]string) // make a map
 
-	var domains []objects.Sources
-	err := v1.UnmarshalKey("sources", &domains)
+	//var domains []Sources
+	//err := v1.UnmarshalKey("sources", &domains)
+	domains, err := configTypes.ParseSourcesConfig(v1)
+	domains = configTypes.GetSourceByType(domains, siteMapType)
 	if err != nil {
 		log.Println(err)
 	}
