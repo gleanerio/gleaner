@@ -210,11 +210,12 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 	}
 
 	w := bufio.NewWriter(f)
-	_, err = w.WriteString(buf.String())
+	bc, err := w.WriteString(buf.String())
 	if err != nil {
 		log.Println("Error writing a file")
 	}
 	w.Flush()
+	log.Printf("Wrote log size %d", bc)
 
 }
 
