@@ -2,9 +2,9 @@ package cli
 
 import (
 	"fmt"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/check"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/check"
+	"github.com/gleanerio/gleaner/internal/common"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -43,7 +43,16 @@ func setup(filename string, cfgPath string, cfgName string) {
 	var err error
 
 	v1, err = configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
-
+	if err != nil {
+		log.Printf("Error reading gleaner config %s ", err)
+		os.Exit(1)
+	}
+	ms := v1.Sub("minio")
+	m1, err2 := configTypes.ReadMinioConfig(ms)
+	if err2 != nil {
+		log.Printf("Error reading gleaner config %s ", err)
+		os.Exit(1)
+	}
 	mc := common.MinioConnection(v1)
 
 	// Validate Minio is up  TODO:  validate all expected containers are up
@@ -55,13 +64,13 @@ func setup(filename string, cfgPath string, cfgName string) {
 	}
 	// If requested, set up the buckets
 	log.Println("Setting up buckets")
-	err = check.MakeBuckets(mc)
+	err = check.MakeBuckets(mc, m1.Bucket)
 	if err != nil {
 		log.Println("Error making buckets for setup call")
 		os.Exit(1)
 	}
 
-	err = check.Buckets(mc)
+	err = check.Buckets(mc, m1.Bucket)
 	if err != nil {
 		log.Printf("Can not find bucket. %s ", err)
 		os.Exit(1)

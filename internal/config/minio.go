@@ -12,6 +12,7 @@ type Minio struct {
 	Ssl       bool   //`mapstructure:"MINIO_USE_SSL"`
 	Accesskey string //`mapstructure:"MINIO_ACCESS_KEY"`
 	Secretkey string // `mapstructure:"MINIO_SECRET_KEY"`
+	Bucket    string
 }
 
 var MinioTemplate = map[string]interface{}{
@@ -20,6 +21,7 @@ var MinioTemplate = map[string]interface{}{
 		"port":      "9000",
 		"accesskey": "",
 		"secretkey": "",
+		"bucket":    "",
 	},
 }
 
