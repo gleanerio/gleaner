@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -53,8 +54,11 @@ func main() {
 	// url := "http://dx.doi.org/10.7288/V4/MAGIC/15032" // magic
 	url := "https://dev.rvdata.us/search/fileset/100142" // rvdata
 	k := "demo"
-
-	err = acquire.PageRender(v1, mc, 45*time.Second, url, k)
+	var (
+		buf    bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	)
+	err = acquire.PageRender(v1, mc, logger, 45*time.Second, url, k)
 	if err != nil {
 		panic(fmt.Errorf("error when reading config: %v", err))
 	}
