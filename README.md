@@ -6,7 +6,6 @@ Gleaner is a tool for extracting JSON-LD from web pages. You provide Gleaner a l
 
  ![Basic Gleaner](./docs/images/gleaner_activity_diagram.png)
 
-
 The image above gives an overview of the basic workflow of Gleaner. There are four main sections to the image.
 
 ## Providers
@@ -18,8 +17,6 @@ The image above gives an overview of the basic workflow of Gleaner. There are fo
 ## Storage
 
 ## Interfaces
-
-
 
 At present the best document for running gleaner can be found at the 
 Ocean InfoHub pages for [Gleaner](https://book.oceaninfohub.org/indexing/qstart.html).
