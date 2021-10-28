@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"time"
 
@@ -43,13 +44,16 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	defer cancel()
 
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
-	mcfg := v1.GetStringMapString("summoner")
+	//mcfg := v1.GetStringMapString("summoner")
+	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
-	devt := devtool.New(mcfg["headless"])
+	//devt := devtool.New(mcfg["headless"])
+	devt := devtool.New(mcfg.Headless)
 	pt, err := devt.Get(ctx, devtool.Page)
 	if err != nil {
 		pt, err = devt.Create(ctx)
@@ -154,7 +158,6 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		log.Println(err)
 		return (err)
 	}
-
 
 	// Rejecting that promise just sends null as its value,
 	// so we need to stop if we got that.

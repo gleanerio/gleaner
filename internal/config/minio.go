@@ -36,6 +36,8 @@ func ReadMinioConfig(minioSubtress *viper.Viper) (Minio, error) {
 	minioSubtress.BindEnv("ssl", "MINIO_USE_SSL")
 	minioSubtress.BindEnv("accesskey", "MINIO_ACCESS_KEY")
 	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
+	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
+	minioSubtress.BindEnv("bucket", "MINIO_BUCKET")
 	minioSubtress.AutomaticEnv()
 	// config already read. substree passed
 	err := minioSubtress.Unmarshal(&minioCfg)
@@ -43,4 +45,14 @@ func ReadMinioConfig(minioSubtress *viper.Viper) (Minio, error) {
 		panic(fmt.Errorf("error when parsing minio config: %v", err))
 	}
 	return minioCfg, err
+}
+
+func GetBucketName(v1 *viper.Viper) (string, error) {
+	minSubtree := v1.Sub("minio")
+	miniocfg, err := ReadMinioConfig(minSubtree)
+	if err != nil {
+		panic(err)
+	}
+	bucketName := miniocfg.Bucket //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	return bucketName, err
 }

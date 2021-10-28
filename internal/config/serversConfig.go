@@ -10,11 +10,16 @@ var serversTemplate = map[string]interface{}{
 		"port":      "9000",
 		"accesskey": "",
 		"secretkey": "",
+		"bucket":    "",
 	},
 	"sparql": map[string]string{
 		"endpoint": "localhost",
 	},
 	"headless": "",
+	"s3": map[string]string{
+		"bucket": "gleaner",
+		"domain": "us-east-1",
+	},
 }
 
 func ReadServersConfig(filename string, cfgDir string) (*viper.Viper, error) {

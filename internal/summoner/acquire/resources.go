@@ -32,8 +32,9 @@ const siteMapType = "sitemap"
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][]string {
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1) //   get the top level bucket for all of gleaner operations from config file
 
 	m := make(map[string][]string) // make a map
 
@@ -45,7 +46,9 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 		log.Println(err)
 	}
 
-	mcfg := v1.GetStringMapString("summoner")
+	//mcfg := v1.GetStringMapString("summoner")
+	var mcfg configTypes.Summoner
+	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	for k := range domains {
 		if headless == domains[k].Headless {
@@ -57,9 +60,11 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 			// log.Println(mcfg)
 
 			var us sitemaps.Sitemap
-			if mcfg["after"] != "" {
+			//if mcfg["after"] != "" {
+			if mcfg.After != "" {
 				//log.Println("Get After Date")
-				us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
+				//us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
+				us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg.After)
 				if err != nil {
 					log.Println(domains[k].Name, err)
 					// pass back error and deal with it better in the logs
@@ -84,7 +89,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 			}
 
 			// TODO if we check for URLs in prov..  do that here..
-			if mcfg["mode"] == "diff" {
+			//if mcfg["mode"] == "diff" {
+			if mcfg.Mode == "diff" {
 				oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
 				d := difference(s, oa)
 				m[mapname] = d
@@ -92,7 +98,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 				m[mapname] = s
 			}
 
-			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
+			//log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
+			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg.Mode)
 
 		}
 	}

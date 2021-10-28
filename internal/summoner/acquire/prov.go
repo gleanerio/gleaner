@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"strings"
 	"text/template"
@@ -35,9 +36,9 @@ type ProvData struct {
 // urlloc is the URL for the resource (source URL)
 func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
@@ -83,9 +84,9 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 
 func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix string) error {
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 	var (
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)

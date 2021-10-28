@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -36,22 +36,28 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup) {
 
-	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//// read config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
-	mcfg := v1.GetStringMapString("summoner")
-	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
+	//mcfg := v1.GetStringMapString("summoner")
+	var mcfg configTypes.Summoner
+	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+	//tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
+	tc := mcfg.Threads
 	if err != nil {
 		log.Println(err)
 		log.Panic("Could not convert threads from config file to an int")
 	}
 
-	delay := mcfg["delay"]
+	delay := mcfg.Delay
 	var dt int64
-	if delay != "" {
+	//if delay != "" {
+	if delay != 0 {
 		//log.Printf("Delay set to: %s milliseconds", delay)
-		dt, err = strconv.ParseInt(delay, 10, 64)
+		//dt, err = strconv.ParseInt(delay, 10, 64)
+		dt = delay
 		if err != nil {
 			log.Println(err)
 			log.Panic("Could not convert delay from config file to a value")
@@ -142,18 +148,18 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			var jsonlds []string
 			var contentTypeHeader = resp.Header["Content-Type"]
 
-			if (
+			if
 			// The URL is sending back JSON-LD correctly as application/ld+json
 			contains(contentTypeHeader, "application/ld+json") ||
 
-			// this should not be here IMHO, but need to support people not setting proper header value
-			// The URL is sending back JSON-LD but incorrectly sending as application/json
-			contains(contentTypeHeader, "application/json")){
+				// this should not be here IMHO, but need to support people not setting proper header value
+				// The URL is sending back JSON-LD but incorrectly sending as application/json
+				contains(contentTypeHeader, "application/json") {
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
 					logger.Printf("Error processing json response from %s: %s", urlloc, err)
 				}
-			// look in the HTML page for <script type=application/ld+json
+				// look in the HTML page for <script type=application/ld+json
 			} else {
 				doc.Find("script").Each(func(i int, s *goquery.Selection) {
 					val, _ := s.Attr("type")

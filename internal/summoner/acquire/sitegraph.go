@@ -21,8 +21,8 @@ const siteGraphType = "sitegraph"
 // GetGraph downloads pre-built site graphs
 func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	bucketName, err := configTypes.GetBucketName(v1) //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
 	// get the sitegraph entry from config file
 	var domains []Sources
@@ -39,7 +39,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 
 		d, err := getJSON(domains[k].URL)
 		if err != nil {
-			fmt.Println("error with reading graph JSON")
+			fmt.Println("error with reading graph JSON: " + domains[k].URL)
 		}
 
 		// TODO, how do we quickly validate the JSON-LD files to make sure it is at least formatted well

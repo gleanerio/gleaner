@@ -14,17 +14,16 @@ require (
 	github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f // indirect
 	github.com/deiu/gon3 v0.0.0-20170627184619-f84eb1e0bd62 // indirect
 	github.com/deiu/rdf2go v0.0.0-20180504135839-3c24cc9e7afa // indirect
-
 	github.com/fraugster/parquet-go v0.3.0 // indirect
 	github.com/go-ini/ini v1.61.0 // indirect
 	github.com/gocarina/gocsv v0.0.0-20211020200912-82fc2684cc48
 	github.com/gorilla/mux v1.8.0
 	github.com/gosuri/uilive v0.0.4 // indirect
-	github.com/gosuri/uiprogress v0.0.1 // indirect
+	github.com/gosuri/uiprogress v0.0.1
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0 // indirect
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 // indirect
 	github.com/jonboulle/clockwork v0.1.0 // indirect
-	github.com/jszwec/csvutil v1.5.1
+	github.com/jszwec/csvutil v1.5.1 // indirect
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/mafredri/cdp v0.31.0
 	github.com/mattn/go-runewidth v0.0.10 // indirect
@@ -47,10 +46,10 @@ require (
 	github.com/vugu/vgrouter v0.0.0-20200725205318-eeb478c42e5d // indirect
 	github.com/vugu/vugu v0.3.3 // indirect
 	github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 // indirect
-	github.com/xiaost/jsonport v0.0.0-20200402153148-139b207e756f
+	github.com/xiaost/jsonport v0.0.0-20200402153148-139b207e756f // indirect
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20201108113611-f372b7d813be
-	github.com/yunabe/easycsv v0.0.2
+	github.com/yunabe/easycsv v0.0.2 // indirect
 	go.etcd.io/bbolt v1.3.2 // indirect
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect

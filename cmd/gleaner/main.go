@@ -67,6 +67,7 @@ func main() {
 				"port":      "9000",
 				"accesskey": "",
 				"secretkey": "",
+				"bucket":    "",
 			},
 		})
 		if err != nil {
