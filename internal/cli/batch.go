@@ -17,12 +17,12 @@ package cli
 
 import (
 	"fmt"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/internal/common"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/millers"
+	"github.com/gleanerio/gleaner/internal/organizations"
+	"github.com/gleanerio/gleaner/internal/summoner"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	"log"
 	"path"
 

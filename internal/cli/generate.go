@@ -2,7 +2,7 @@ package cli
 
 import (
 	"fmt"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
