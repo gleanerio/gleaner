@@ -11,7 +11,7 @@ import (
 
 // as read from csv
 type Sources struct {
-	SourceType string
+	SourceType string `default:"sitemap"`
 	Name       string
 	Logo       string
 	URL        string
@@ -19,7 +19,7 @@ type Sources struct {
 	PID        string
 	ProperName string
 	Domain     string
-	Active     bool
+	Active     bool `default:"true"`
 	// SitemapFormat string
 	// Active        bool
 }
@@ -39,7 +39,7 @@ type SourcesConfig struct {
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype": "",
+		"sourcetype": "sitemap",
 		"name":       "",
 		"url":        "",
 		"logo":       "",
@@ -50,6 +50,13 @@ var SourcesTemplate = map[string]interface{}{
 	},
 }
 
+func populateDefaults(s Sources) Sources {
+	if s.SourceType == "" {
+		s.SourceType = "sitemap"
+	}
+	return s
+
+}
 func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 	var sources []Sources
 	var err error
@@ -88,6 +95,9 @@ func ParseSourcesConfig(g1 *viper.Viper) ([]Sources, error) {
 	err := g1.UnmarshalKey(subtreeKey, &cfg)
 	if err != nil {
 		panic(fmt.Errorf("error when parsing %v config: %v", subtreeKey, err))
+	}
+	for i, s := range cfg {
+		cfg[i] = populateDefaults(s)
 	}
 	return cfg, err
 }
