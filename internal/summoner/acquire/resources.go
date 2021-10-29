@@ -40,10 +40,12 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 	//var domains []Sources
 	//err := v1.UnmarshalKey("sources", &domains)
 	domains, err := configTypes.ParseSourcesConfig(v1)
+	log.Println(domains)
 	domains = configTypes.GetSourceByType(domains, siteMapType)
 	if err != nil {
 		log.Println(err)
 	}
+	log.Println(domains)
 
 	mcfg := v1.GetStringMapString("summoner")
 
