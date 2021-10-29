@@ -27,6 +27,17 @@ func ReadServersConfig(filename string, cfgDir string) (*viper.Viper, error) {
 	for key, value := range serversTemplate {
 		v.SetDefault(key, value)
 	}
+	v.BindEnv("minio.address", "MINIO_ADDRESS")
+	v.BindEnv("minio.port", "MINIO_PORT")
+	v.BindEnv("minio.ssl", "MINIO_USE_SSL")
+	v.BindEnv("minio.accesskey", "MINIO_ACCESS_KEY")
+	v.BindEnv("minio.secretkey", "MINIO_SECRET_KEY")
+	v.BindEnv("minio.bucket", "MINIO_BUCKET")
+	v.BindEnv("sparql.endpoint", "SPARQL_ENDPOINT")
+	v.BindEnv("sparql.authenticate", "SPARQL_AUTHENTICATE")
+	v.BindEnv("sparql.username", "SPARQL_USERNAME")
+	v.BindEnv("sparql.password", "SPARQL_PASSWORD")
+	v.BindEnv("s3.domain", "S3_DOMAIN")
 
 	v.SetConfigName(fileNameWithoutExtTrimSuffix(filename))
 	v.AddConfigPath(cfgDir)
