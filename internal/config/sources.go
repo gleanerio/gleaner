@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/gocarina/gocsv"
 	"github.com/spf13/viper"
+	"io"
 	"log"
 	"os"
 	"path"
+	"strings"
 )
 
 // as read from csv
@@ -54,6 +56,8 @@ func populateDefaults(s Sources) Sources {
 	if s.SourceType == "" {
 		s.SourceType = "sitemap"
 	}
+	// fix issues, too. Space from CSV causing url errors
+	s.URL = strings.TrimSpace(s.URL)
 	return s
 
 }
@@ -69,11 +73,17 @@ func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 	// remember to close the file at the end of the program
 	defer f.Close()
 
+	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
+		//return csv.NewReader(in)
+		return gocsv.LazyCSVReader(in) // Allows use of quotes in CSV
+	})
+
 	if err := gocsv.Unmarshal(f, &sources); err != nil {
 		fmt.Println("error:", err)
 	}
 
-	for _, u := range sources {
+	for i, u := range sources {
+		sources[i] = populateDefaults(u)
 		fmt.Printf("%+v\n", u)
 	}
 	return sources, err

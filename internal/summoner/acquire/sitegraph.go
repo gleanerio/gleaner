@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
+	"strings"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
@@ -84,10 +86,31 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	return "Sitegraph(s) processed", err
 }
 
-func getJSON(url string) (string, error) {
-	resp, err := http.Get(url)
+func getJSON(urlloc string) (string, error) {
+
+	urlloc = strings.TrimSpace(urlloc)
+	//resp, err := http.Get(url)
+	//if err != nil {
+	//	return "", fmt.Errorf("GET error: %v", err)
+	//}
+	/*  https://oih.aquadocs.org/aquadocs.json  fialing with a 403.
+	// this is to http 1.1 spec: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
+	*/
+
+	var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
+	req, err := http.NewRequest("GET", urlloc, nil)
 	if err != nil {
-		return "", fmt.Errorf("GET error: %v", err)
+		log.Println(err)
+	}
+	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+	u, err := url.Parse(urlloc)
+	if err != nil {
+		log.Fatal(err)
+	}
+	req.Header.Set("Host", u.Hostname())
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf(" error on %s : %s  ", urlloc, err) // print an message containing the index (won't keep order)
 	}
 	defer resp.Body.Close()
 
