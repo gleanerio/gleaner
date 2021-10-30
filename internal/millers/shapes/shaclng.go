@@ -1,15 +1,16 @@
 package shapes
 
 import (
+	"context"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gosuri/uiprogress"
 	"log"
 	"strings"
 	"sync"
 
-	"github.com/gosuri/uiprogress"
-
 	"github.com/gleanerio/gleaner/internal/common"
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
@@ -17,8 +18,9 @@ import (
 func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
 	loadShapeFiles(mc, v1) // TODO, this should be done in main
 
@@ -43,7 +45,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		Prefix:    prefix,
 	}
 	//for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
-	for range mc.ListObjects(context.Background(), bucketname, opts) {
+	for range mc.ListObjects(context.Background(), bucketName, opts) {
 		x = x + 1
 	}
 	count := x
@@ -61,7 +63,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		Recursive: isRecursive,
 		Prefix:    "shapes",
 	}
-	for shape := range mc.ListObjects(context.Background(), bucketname, opts2) {
+	for shape := range mc.ListObjects(context.Background(), bucketName, opts2) {
 		// log.Printf("Checking data graphs against shape graph: %s\n", m[j])
 
 		//for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
@@ -107,7 +109,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
 	log.Printf("Result graph will be at: %s", rslt)
 
-	err := common.PipeCopyNG(rslt, bucketName, millprefix, mc)
+	err = common.PipeCopyNG(rslt, bucketName, millprefix, mc)
 	if err != nil {
 		log.Printf("Error on pipe copy: %s", err)
 	} else {

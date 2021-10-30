@@ -5,16 +5,16 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/config"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/knakk/rdf"
+	"github.com/xitongsys/parquet-go-source/mem"
+	"github.com/xitongsys/parquet-go/writer"
 	"io"
 	"io/ioutil"
 	"log"
 	"strings"
-
-	"github.com/gleanerio/gleaner/internal/common"
-	"github.com/gleanerio/gleaner/internal/config"
-	"github.com/knakk/rdf"
-	"github.com/xitongsys/parquet-go-source/mem"
-	"github.com/xitongsys/parquet-go/writer"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
@@ -29,8 +29,9 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 	// )
 
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
 	log.Print("Building organization graph from config file")
 
