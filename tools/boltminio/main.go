@@ -6,6 +6,8 @@ import (
 	"log"
 	"time"
 
+	bolt "go.etcd.io/bbolt"
+
 	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	"github.com/minio/minio-go/v7"
@@ -13,7 +15,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var viperVal string
+var viperVal, modeVal string
 var setupVal bool
 
 type BucketObjects struct {
@@ -31,9 +33,10 @@ type Qset struct {
 func init() {
 	log.SetFlags(log.Lshortfile)
 	// log.SetOutput(ioutil.Discard) // turn off all logging
-
+	// flag.StringVar(&sourceVal, "source", "", "Override config file source")
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
+	flag.StringVar(&modeVal, "mode", "mode", "Set the mode")
 }
 
 func main() {
@@ -71,27 +74,27 @@ func main() {
 	// log.Println(len(ru["samplesearth"].URL))
 	// log.Println(len(hru["samplesearth"].URL))
 
-	d := "oceanexperts" // domain to test  obis marinetraining oceanexperts
+	d := "marinetraining" // domain to test  obis marinetraining oceanexperts
 
 	var u []string
 	for k := range ru[d] {
 		u = append(u, ru[d][k])
 	}
 
-	fmt.Println("print sitemap urls -----------------------------------------------")
-	for k := range u {
-		fmt.Println(u[k])
-	}
+	// fmt.Println("print sitemap urls -----------------------------------------------")
+	// for k := range u {
+	// 	fmt.Println(u[k])
+	// }
 
 	// // TEST
 	// u = append(u, "this is a test")
 
 	// s3select prov call
 	oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", d))
-	fmt.Println("print s3select urls -----------------------------------------------")
-	for k := range oa {
-		fmt.Println(oa[k])
-	}
+	// fmt.Println("print s3select urls -----------------------------------------------")
+	// for k := range oa {
+	// 	fmt.Println(oa[k])
+	// }
 
 	diff := difference(u, oa)
 
@@ -101,6 +104,13 @@ func main() {
 	for k := range diff {
 		fmt.Println(diff[k])
 	}
+
+	db, err := bolt.Open("my.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
 
 }
 

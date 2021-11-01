@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/boltdb/bolt"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 
@@ -61,15 +62,7 @@ func main() {
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
-		v1, err = readConfig(viperVal, map[string]interface{}{
-			"minio": map[string]string{
-				"address":   "localhost",
-				"port":      "9000",
-				"accesskey": "",
-				"secretkey": "",
-				"bucket":    "",
-			},
-		})
+		v1, err = readConfig(viperVal, map[string]interface{}{})
 		if err != nil {
 			log.Printf("error when reading config: %v", err)
 			os.Exit(1)
@@ -140,39 +133,48 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Check our bucket is ready
 	err = check.Buckets(mc, bucketName)
 	if err != nil {
 		log.Printf("Can not find bucket. %s ", err)
 		os.Exit(1)
 	}
 
-	cli(mc, v1)
+	// setup the KV store to hold a record of indexed resources
+	db, err := bolt.Open("gleaner.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	cli(mc, v1, db)
 }
 
 // func cli(mc *minio.Client, cs utils.Config) {
-func cli(mc *minio.Client, v1 *viper.Viper) {
+func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	mcfg := v1.GetStringMapString("gleaner")
+	scfg := v1.GetStringMapString("summoner")
 
-	// Build the org graph
-	// err := organizations.BuildGraphMem(mc, v1) // parquet testing
+	// Build the org graph(s)
 	err := organizations.BuildGraph(mc, v1)
 	if err != nil {
 		log.Print(err)
 	}
 
-	// Index the sitegraphs first, if any
-	fn, err := acquire.GetGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
+	// Index the sitegraphs first, if any but never in a incremental (diff) call
+	if scfg["mode"] != "diff" {
+		_, err := acquire.GetGraph(mc, v1)
+		if err != nil {
+			log.Print(err)
+		}
 	}
-	log.Println(fn)
 
 	// If configured, summon sources
 	if mcfg["summon"] == "true" {
-		summoner.Summoner(mc, v1)
+		summoner.Summoner(mc, v1, db)
 	}
 
-	// if configured, process summoned sources fronm JSON-LD to RDF (nq)
+	// if configured, process summoned sources from JSON-LD to RDF (nq)
 	if mcfg["mill"] == "true" {
 		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
 	}

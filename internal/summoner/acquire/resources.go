@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/boltdb/bolt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
 	"github.com/gleanerio/gleaner/internal/objects"
@@ -30,7 +31,7 @@ const siteMapType = "sitemap"
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
-func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][]string {
+func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) map[string][]string {
 	// read config file
 	//miniocfg := v1.GetStringMapString("minio")
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
@@ -60,27 +61,50 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 			// log.Println(mcfg)
 
 			var us sitemaps.Sitemap
-			//if mcfg["after"] != "" {
-			if mcfg.After != "" {
-				//log.Println("Get After Date")
-				//us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
-				us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg.After)
+
+			idxr, err := sitemaps.DomainIndex(domains[k].URL)
+			if err != nil {
+				log.Println("Error reading this source")
+				log.Println(err)
+				// os.Exit(0)  // TODO this function needs to return an error and talk with others
+			}
+
+			if len(idxr) < 1 {
+				log.Println("We are not a sitemap index, check to see if we are a sitemap")
+				us, err = sitemaps.DomainSitemap(domains[k].URL)
 				if err != nil {
-					log.Println(domains[k].Name, err)
-					// pass back error and deal with it better in the logs
-					// and in the user experience
+					fmt.Println(err)
 				}
 			} else {
-				//log.Println("Get with no date")
-				us, err = sitemaps.Get(domains[k].URL, nil)
-				if err != nil {
-					log.Println(domains[k].Name, err)
-					// pass back error and deal with it better in the logs
-					// and in the user experience
+				log.Println("Walk the sitemap index for sitemaps")
+				for _, idxv := range idxr {
+					subset, err := sitemaps.DomainSitemap(idxv)
+					us.URL = append(us.URL, subset.URL...)
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
 			}
 
-			// Convert the array of sitemap package stuct to simply the URLs in []string
+			// if mcfg["after"] != "" {
+			// 	//log.Println("Get After Date")
+			// 	us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
+			// 	if err != nil {
+			// 		log.Println(domains[k].Name, err)
+			// 		// pass back error and deal with it better in the logs
+			// 		// and in the user experience
+			// 	}
+			// } else {
+			// 	//log.Println("Get with no date")
+			// 	us, err = sitemaps.Get(domains[k].URL, nil)
+			// 	if err != nil {
+			// 		log.Println(domains[k].Name, err)
+			// 		// pass back error and deal with it better in the logs
+			// 		// and in the user experience
+			// 	}
+			// }
+
+			// Convert the array of sitemap package struct to simply the URLs in []string
 			var s []string
 			for k := range us.URL {
 				if us.URL[k].Loc != "" { // TODO why did this otherwise add a nil to the array..  need to check
@@ -88,18 +112,40 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) map[string][
 				}
 			}
 
-			// TODO if we check for URLs in prov..  do that here..
-			//if mcfg["mode"] == "diff" {
-			if mcfg.Mode == "diff" {
-				oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+			//  TODO if we check for URLs in prov..  do that here..
+			if mcfg["mode"] == "diff" {
+				//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+
+				oa := []string{}
+				db.View(func(tx *bolt.Tx) error {
+					// Assume bucket exists and has keys
+					b := tx.Bucket([]byte(domains[k].Name))
+					c := b.Cursor()
+
+					for key, _ := c.First(); key != nil; key, _ = c.Next() {
+						//fmt.Printf("key=%s, value=%s\n", k, v)
+						oa = append(oa, fmt.Sprintf("%s", key))
+					}
+
+					return nil
+				})
+
 				d := difference(s, oa)
 				m[mapname] = d
 			} else {
 				m[mapname] = s
 			}
 
-			//log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
-			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg.Mode)
+			//  TODO if we check for URLs in prov..  do that here..
+			//if mcfg["mode"] == "diff" {
+			//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+			//d := difference(s, oa)
+			//m[mapname] = d
+			//} else {
+			//m[mapname] = s
+			//}
+
+			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
 
 		}
 	}
