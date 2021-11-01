@@ -8,7 +8,7 @@ import (
 	"github.com/boltdb/bolt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
-	"github.com/gleanerio/gleaner/internal/objects"
+	// "github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
@@ -35,7 +35,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	// read config file
 	//miniocfg := v1.GetStringMapString("minio")
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-	bucketName, err := configTypes.GetBucketName(v1) //   get the top level bucket for all of gleaner operations from config file
+	// bucketName, err := configTypes.GetBucketName(v1) //   get the top level bucket for all of gleaner operations from config file
 
 	m := make(map[string][]string) // make a map
 
@@ -113,7 +113,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			}
 
 			//  TODO if we check for URLs in prov..  do that here..
-			if mcfg["mode"] == "diff" {
+			if mcfg.Mode == "diff" {
 				//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
 
 				oa := []string{}
@@ -145,7 +145,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			//m[mapname] = s
 			//}
 
-			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg["mode"])
+			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg.Mode)
 
 		}
 	}
