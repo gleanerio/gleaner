@@ -3,7 +3,9 @@ package shapes
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"io"
 	"io/ioutil"
 	"log"
@@ -13,7 +15,7 @@ import (
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
-	minio "github.com/minio/minio-go"
+	minio "github.com/minio/minio-go/v7"
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/viper"
 )
@@ -22,14 +24,15 @@ import (
 func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, object, shape minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
 
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
 	key := object.Key // replace if new function idea works..
 
 	// Read the object bytes (our data graoh)
 	//fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
-	fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
+	fo, err := mc.GetObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err

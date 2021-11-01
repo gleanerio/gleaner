@@ -6,7 +6,10 @@ import (
 )
 
 type Sparql struct {
-	Endpoint string
+	Endpoint     string
+	Authenticate bool
+	Username     string
+	Password     string
 }
 
 var sparqlTemplate = map[string]interface{}{

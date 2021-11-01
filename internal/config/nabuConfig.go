@@ -23,6 +23,7 @@ func ReadNabuConfig(filename string, cfgPath string) (*viper.Viper, error) {
 	v.BindEnv("minio.ssl", "MINIO_USE_SSL")
 	v.BindEnv("minio.accesskey", "MINIO_ACCESS_KEY")
 	v.BindEnv("minio.secretkey", "MINIO_SECRET_KEY")
+	v.BindEnv("minio.bucket", "MINIO_BUCKET")
 	v.AutomaticEnv()
 	err := v.ReadInConfig()
 	return v, err

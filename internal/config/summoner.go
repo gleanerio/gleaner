@@ -9,7 +9,7 @@ type Summoner struct {
 	After    string
 	Mode     string // full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
 	Threads  int
-	Delay    int    // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
+	Delay    int64  // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
 	Headless string // URL for headless see docs/headless
 }
 

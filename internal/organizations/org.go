@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"strings"
 	"text/template"
@@ -54,8 +55,9 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 	)
 
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, _ := configTypes.GetBucketName(v1)
 
 	log.Print("Building organization graph.")
 	domains := objects.SourcesAndGraphs(v1)

@@ -16,7 +16,16 @@ var gleanerTemplate = map[string]interface{}{
 	"contextmaps": map[string]string{},
 	"summoner":    map[string]string{},
 	"millers":     map[string]string{},
-	"sources":     map[string]string{},
+	"sources": map[string]string{
+		"sourcetype": "sitemap",
+		"name":       "",
+		"url":        "",
+		"logo":       "",
+		"headless":   "",
+		"pid":        "",
+		"propername": "",
+		"domain":     "",
+	},
 }
 
 func ReadGleanerConfig(filename string, cfgDir string) (*viper.Viper, error) {

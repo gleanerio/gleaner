@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"io"
 	"log"
 	"strings"
@@ -22,9 +23,9 @@ import (
 func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 
 	// read config file
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 	// My go func controller vars
 	semaphoreChan := make(chan struct{}, 10) // a blocking channel to keep concurrency under control (1 == single thread)
 	defer close(semaphoreChan)
@@ -75,11 +76,12 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	millprefix := strings.ReplaceAll(prefix, "summoned", "milled")
 	sp := strings.SplitAfterN(prefix, "/", 2)
 	mcfg := v1.GetStringMapString("gleaner")
+
 	rslt := fmt.Sprintf("results/%s/%s_graph.nq", mcfg["runid"], sp[1])
 	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
 	log.Printf("Result graph will be at: %s", rslt)
 
-	err := common.PipeCopyNG(rslt, bucketName, millprefix, mc)
+	err = common.PipeCopyNG(rslt, bucketName, millprefix, mc)
 	if err != nil {
 		log.Printf("Error on pipe copy: %s", err)
 	} else {
