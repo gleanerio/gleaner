@@ -8,7 +8,8 @@ import (
 	"github.com/boltdb/bolt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
-	// "github.com/gleanerio/gleaner/internal/objects"
+>>>>>>>>> Temporary merge branch 2
+	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
