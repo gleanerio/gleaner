@@ -2,9 +2,9 @@ package common
 
 import (
 	"fmt"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
 	"log"
 
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"

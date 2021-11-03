@@ -1,13 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"log"
 	"time"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 
 	"github.com/spf13/viper"
 )
@@ -53,8 +54,11 @@ func main() {
 	// url := "http://dx.doi.org/10.7288/V4/MAGIC/15032" // magic
 	url := "https://dev.rvdata.us/search/fileset/100142" // rvdata
 	k := "demo"
-
-	err = acquire.PageRender(v1, mc, 45*time.Second, url, k)
+	var (
+		buf    bytes.Buffer
+		logger = log.New(&buf, "logger: ", log.Lshortfile)
+	)
+	err = acquire.PageRender(v1, mc, logger, 45*time.Second, url, k)
 	if err != nil {
 		panic(fmt.Errorf("error when reading config: %v", err))
 	}

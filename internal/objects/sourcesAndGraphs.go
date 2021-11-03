@@ -1,9 +1,10 @@
 package objects
 
 import (
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
-	"github.com/spf13/viper"
 	"log"
+
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/spf13/viper"
 )
 
 //type Sources struct {

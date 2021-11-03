@@ -14,6 +14,8 @@ type Objects struct {
 
 var ObjectTemplate = map[string]interface{}{
 	"objects": map[string]string{
+		"bucket":    "gleaner",
+		"domain":    "us-east-1",
 		"endpoint":  "http://localhost/blazegraph/namespace/nabu/sparql",
 		"prefix":    "",
 		"prefixoff": "",
@@ -25,7 +27,7 @@ func ReadS3Config(viperSubtree *viper.Viper) (Objects, error) {
 	for key, value := range sparqlTemplate {
 		viperSubtree.SetDefault(key, value)
 	}
-	viperSubtree.BindEnv("bucket", "S3_BUCKET")
+	viperSubtree.BindEnv("bucket", "MINIO_BUCKET")
 	viperSubtree.BindEnv("domain", "S3_DOMAIN")
 	viperSubtree.AutomaticEnv()
 	// config already read. substree passed

@@ -5,28 +5,33 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/config"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/knakk/rdf"
+	"github.com/xitongsys/parquet-go-source/mem"
+	"github.com/xitongsys/parquet-go/writer"
 	"io"
 	"io/ioutil"
 	"log"
 	"strings"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/knakk/rdf"
-	"github.com/xitongsys/parquet-go-source/mem"
-	"github.com/xitongsys/parquet-go/writer"
-
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
-// BuildGraph makes a graph from the Gleaner config file source
+// TEST_BuildGraph makes a graph from the Gleaner config file source
 // load this to a /sources bucket (change this to sources naming convention?)
-func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
+func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 	// var (
 	// 	buf    bytes.Buffer
 	// 	logger = log.New(&buf, "logger: ", log.Lshortfile)
 	// )
+
+	// read config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
 	log.Print("Building organization graph from config file")
 
@@ -57,7 +62,6 @@ func BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 			// load to minio
 			objectName := fmt.Sprintf("orgs/%s.parquet", domains[k].Name) // k is the name of the provider from config
-			bucketName := "gleaner"                                       //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 			// contentType := "application/ld+json"
 
 			// Upload the file with FPutObject

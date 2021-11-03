@@ -8,13 +8,14 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner"
 	"github.com/gorilla/mux"
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/xid"
 	"github.com/spf13/viper"
+
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/millers"
+	"github.com/gleanerio/gleaner/internal/summoner"
 )
 
 var viperVal string
@@ -78,7 +79,7 @@ func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper,
 	return v, err
 }
 
-// MakeJob generates a new go fun c call for the indexing
+// MakeJob generates a new go func call for the indexing
 func MakeJob(w http.ResponseWriter, r *http.Request) {
 	var v1 *viper.Viper
 	var err error

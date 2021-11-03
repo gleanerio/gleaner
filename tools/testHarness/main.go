@@ -17,8 +17,8 @@ import (
 	awscred "github.com/aws/aws-sdk-go/aws/credentials"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/organizations"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/organizations"
 
 	"github.com/knakk/rdf"
 	"github.com/minio/minio-go/v7"
@@ -82,7 +82,7 @@ func main() {
 		v1.Set("summoner", m)
 	}
 
-    log.Println(v1)
+	log.Println(v1)
 	os.Exit(0)
 
 	// Set up the minio connector

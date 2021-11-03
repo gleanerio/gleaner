@@ -1,25 +1,28 @@
 package shapes
 
 import (
+	"context"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gosuri/uiprogress"
 	"log"
 	"strings"
 	"sync"
 
-	"github.com/gosuri/uiprogress"
-
-	"context"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 )
 
 // ShapeNG is a new and improved RDF conversion
 func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
-	bucketname := "gleaner"
+
+	// read config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
 
 	loadShapeFiles(mc, v1) // TODO, this should be done in main
-	// m := common.GetShapeGraphs(mc, "gleaner") // TODO: beware static bucket lists, put this in the config
 
 	// My go func controller vars
 	semaphoreChan := make(chan struct{}, 30) // a blocking channel to keep concurrency under control (1 == single thread)
@@ -42,7 +45,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		Prefix:    prefix,
 	}
 	//for range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh)
-	for range mc.ListObjects(context.Background(), bucketname, opts) {
+	for range mc.ListObjects(context.Background(), bucketName, opts) {
 		x = x + 1
 	}
 	count := x
@@ -60,7 +63,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		Recursive: isRecursive,
 		Prefix:    "shapes",
 	}
-	for shape := range mc.ListObjects(context.Background(), bucketname, opts2) {
+	for shape := range mc.ListObjects(context.Background(), bucketName, opts2) {
 		// log.Printf("Checking data graphs against shape graph: %s\n", m[j])
 
 		//for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
@@ -71,12 +74,12 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			go func(object minio.ObjectInfo) {
 				semaphoreChan <- struct{}{}
 				//status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
-				_, err := shaclTestNG(v1, bucketname, "verified", mc, object, shape, proc, options)
+				_, err := shaclTestNG(v1, bucketName, "verified", mc, object, shape, proc, options)
 				if err != nil {
 					log.Println(err) // need to log to an "errors" log file
 				}
 
-				// _, err := obj2RDF(bucketname, prefix, mc, object, proc, options)
+				// _, err := obj2RDF(bucketName, prefix, mc, object, proc, options)
 
 				wg.Done() // tell the wait group that we be done
 				// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
@@ -91,13 +94,12 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	// uiprogress.Stop()
 
 	// // all done..  write the full graph to the object store
-	// log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketname, prefix)
-	// mcfg := v1.GetStringMapString("gleaner")
+	// log.Printf("Saving full graph to  gleaner milled:  Ref: %s/%s", bucketName, prefix)
 
 	// //pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
 	// // TODO fix this with correct variables
 	// pipeCopyNG(mcfg["runid"], "gleaner-milled", fmt.Sprintf("%s-sg", prefix), mc)
-	// log.Printf("Saving datagraph to:  %s/%s", bucketname, prefix)
+	// log.Printf("Saving datagraph to:  %s/%s", bucketName, prefix)
 
 	// log.Printf("Processed prefix: %s", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "verified")
@@ -107,7 +109,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
 	log.Printf("Result graph will be at: %s", rslt)
 
-	err := common.PipeCopyNG(rslt, "gleaner", millprefix, mc)
+	err = common.PipeCopyNG(rslt, bucketName, millprefix, mc)
 	if err != nil {
 		log.Printf("Error on pipe copy: %s", err)
 	} else {
@@ -164,7 +166,7 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 // 	// go function to write to minio from pipe
 // 	go func() {
 // 		defer lwg.Done()
-// 		_, err := mc.PutObject("gleaner", name, pr, -1, minio.PutObjectOptions{})
+// 		_, err := mc.PutObject(bucketName, name, pr, -1, minio.PutObjectOptions{})
 // 		if err != nil {
 // 			log.Println(err)
 // 		}

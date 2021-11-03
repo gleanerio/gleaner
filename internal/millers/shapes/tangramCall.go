@@ -3,7 +3,9 @@ package shapes
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"io"
 	"io/ioutil"
 	"log"
@@ -11,21 +13,26 @@ import (
 	"net/http"
 	"strings"
 
-	"context"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/millers/graph"
+	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/gleanerio/gleaner/internal/millers/graph"
 	minio "github.com/minio/minio-go/v7"
 	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/viper"
 )
 
 // Call the SHACL service container (or cloud instance) // TODO: service URL needs to be in the config file!
-func shaclTestNG(v1 *viper.Viper, bucketname, prefix string, mc *minio.Client, object, shape minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
+func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, object, shape minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
+
+	// read config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
+
 	key := object.Key // replace if new function idea works..
 
 	// Read the object bytes (our data graoh)
 	//fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
-	fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
+	fo, err := mc.GetObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if err != nil {
 		fmt.Println(err)
 		return "", err
@@ -99,10 +106,10 @@ func shaclTestNG(v1 *viper.Viper, bucketname, prefix string, mc *minio.Client, o
 	usermeta["origfile"] = key
 	//		usermeta["url"] = urlloc
 	//		usermeta["sha1"] = sha
-	//		bucketName := "gleaner-summoned" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
+	//		bucket := "gleaner-summoned" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
 
 	// Upload the file
-	_, err = graph.LoadToMinio(rdfubn, "gleaner", objectName, mc)
+	_, err = graph.LoadToMinio(rdfubn, bucketName, objectName, mc)
 	if err != nil {
 		return objectName, err
 	}

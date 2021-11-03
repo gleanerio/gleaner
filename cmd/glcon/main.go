@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/earthcubearchitecture-project418/gleaner/internal/cli"
-)
+import "github.com/gleanerio/gleaner/internal/cli"
 
 func main() {
 	cli.Execute()

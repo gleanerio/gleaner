@@ -2,7 +2,7 @@ package cli
 
 import (
 	"fmt"
-	configTypes "github.com/earthcubearchitecture-project418/gleaner/internal/config"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
@@ -110,7 +110,10 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 	sparqlCfg, err := configTypes.ReadSparqlConfig(sparqlSub)
 
 	s3Sub := servers.Sub("s3")
-	s3Cfg, err := configTypes.ReadSparqlConfig(s3Sub)
+	s3Cfg, err := configTypes.ReadS3Config(s3Sub)
+	//s3Cfg.Bucket =  servers.GetString("minio.bucket")
+	//s3Cfg := servers.Sub("s3")
+	//servers.Set("s3.bucket", servers.GetString("minio.bucket"))
 
 	// since not fully defined in mapping. things are missing
 	//hdlsCfg  :=  servers.Get("headless")
@@ -147,6 +150,7 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 	nabu.Set("minio", minioCfg)
 	nabu.Set("sparql", sparqlCfg)
 	nabu.Set("objects", s3Cfg)
+	//nabu.Set("objects", servers.Get("s3"))
 	var prefix []string
 	for _, s := range sources {
 		if s.Active {

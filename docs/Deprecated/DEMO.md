@@ -8,9 +8,9 @@ docker and how to install it for your system at https://www.docker.com/
 ## Downloads
 
 * Pull down the docker config from 
-https://github.com/earthcubearchitecture-project418/gleaner/tree/master/deployments   We will use the 
+https://github.com/gleanerio/gleaner/tree/master/deployments   We will use the 
 gleaner-base.yml
-* Pull down the "starterpack.zip" from https://github.com/earthcubearchitecture-project418/gleaner/releases
+* Pull down the "starterpack.zip" from https://github.com/gleanerio/gleaner/releases
 * Pull down the copy of gleaner for your system from the distribution page
 * The minio S3 client mc is also needed.  https://min.io/download
 	* You will likely need to "chmod +x mc" that client

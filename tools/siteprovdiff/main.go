@@ -6,8 +6,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/earthcubearchitecture-project418/gleaner/internal/objects"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/internal/objects"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"
@@ -36,7 +36,6 @@ func init() {
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file")
 }
 
-// Simple test of the nanoprov function
 func main() {
 	flag.Parse() // parse any command line flags...
 
@@ -63,29 +62,44 @@ func main() {
 	// Set up the minio connector
 	mc := MinioConnection(v1)
 
+	// read config file
+	miniocfg := v1.GetStringMapString("minio")
+	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+
 	ru := acquire.ResourceURLs(v1, mc, false)
 	// hru := acquire.ResourceURLs(v1, true)
 	// log.Println(len(ru["samplesearth"].URL))
 	// log.Println(len(hru["samplesearth"].URL))
 
+	d := "oceanexperts" // domain to test  obis marinetraining oceanexperts
+
 	var u []string
-	for k := range ru["samplesearth"] {
-		u = append(u, ru["samplesearth"][k])
+	for k := range ru[d] {
+		u = append(u, ru[d][k])
 	}
 
-	// TEST
-	u = append(u, "this is a test")
+	fmt.Println("print sitemap urls -----------------------------------------------")
+	for k := range u {
+		fmt.Println(u[k])
+	}
+
+	// // TEST
+	// u = append(u, "this is a test")
 
 	// s3select prov call
-	oa := objects.ProvURLs(v1, mc, "gleaner", "prov/samplesearth")
-	// for k := range oa {
-	// 	fmt.Println(oa[k])
-	// }
+	oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", d))
+	fmt.Println("print s3select urls -----------------------------------------------")
+	for k := range oa {
+		fmt.Println(oa[k])
+	}
 
-	fmt.Printf("Len sitemap: %d   Len prov: %d   Len diff: %d \n", len(u), len(oa), len(d))
+	diff := difference(u, oa)
 
-	for k := range d {
-		fmt.Println(d[k])
+	fmt.Printf("Len sitemap: %d   Len prov: %d   Len diff: %d \n", len(u), len(oa), len(diff))
+
+	fmt.Println("print diff urls -----------------------------------------------")
+	for k := range diff {
+		fmt.Println(diff[k])
 	}
 
 }

@@ -3,55 +3,76 @@ package acquire
 import (
 	"bufio"
 	"bytes"
-	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+
 	"github.com/PuerkitoBio/goquery"
-	"github.com/earthcubearchitecture-project418/gleaner/internal/common"
+	"github.com/boltdb/bolt"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 )
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
-	// uiprogress.Start()
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
 	wg := sync.WaitGroup{}
 
-	// Why do I pass the wg pointer..   just make a new one
-	// for each domain in getDomain and us this one where with a semaphore
-	// to control the loop...
+	// Why do I pass the wg pointer?   Just make a new one
+	// for each domain in getDomain and us this one here with a semaphore
+	// to control the loop?
 	for k := range m {
 		// log.Printf("Queuing URLs for %s \n", k)
-		go getDomain(v1, mc, m, k, &wg)
+		go getDomain(v1, mc, m, k, &wg, db)
 	}
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
-	// uiprogress.Stop()
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup) {
-	mcfg := v1.GetStringMapString("summoner")
-	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
-	if err != nil {
-		log.Println(err)
-		log.Panic("Could not convert threads from config file to an int")
-	}
+func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
 
-	delay := mcfg["delay"]
+	//// read config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	bucketName, err := configTypes.GetBucketName(v1)
+
+	//mcfg := v1.GetStringMapString("summoner")
+	var mcfg configTypes.Summoner
+	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+	//tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
+	tc := mcfg.Threads
+	// make the bucket (if it doesn't exist)
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucket([]byte(k))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
+	// tc, err := Threadcount(v1)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+	// dt, err := Delayrequest(v1)
+	// if err != nil {
+	// 	log.Println(err)
+	// }
+
+	delay := mcfg.Delay
 	var dt int64
-	if delay != "" {
+	//if delay != "" {
+	if delay != 0 {
 		//log.Printf("Delay set to: %s milliseconds", delay)
-		dt, err = strconv.ParseInt(delay, 10, 64)
+		//dt, err = strconv.ParseInt(delay, 10, 64)
+		dt = delay
 		if err != nil {
 			log.Println(err)
 			log.Panic("Could not convert delay from config file to a value")
@@ -61,184 +82,172 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 		tc = 1
 	} else {
 		dt = 0
-	}
+		if dt > 0 {
+			tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
+		}
 
-	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
-	defer close(semaphoreChan)
-	lwg := sync.WaitGroup{}
+		log.Printf("Thread count %d delay %d\n", tc, dt)
 
-	wg.Add(1)       // wg from the calling function
-	defer wg.Done() // tell the wait group that we be done
+		semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
+		defer close(semaphoreChan)
+		lwg := sync.WaitGroup{}
 
-	count := len(m[k])
-	// OLD bar
-	// bar := uiprogress.AddBar(count).PrependElapsed().AppendCompleted()
-	// bar.PrependFunc(func(b *uiprogress.Bar) string {
-	// 	return rightPad2Len(k, " ", 15)
-	// })
-	// bar.Fill = '-'
-	// bar.Head = '>'
-	// bar.Empty = ' '
+		wg.Add(1)       // wg from the calling function
+		defer wg.Done() // tell the wait group that we be done
 
-	bar := progressbar.Default(int64(count))
+		count := len(m[k])
+		bar := progressbar.Default(int64(count))
 
-	// if count < 1 {
-	// 	log.Printf("No resources found for %s \n", k)
-	// 	return // should maked this return an error
-	// }
+		var (
+			buf    bytes.Buffer
+			logger = log.New(&buf, "logger: ", log.Lshortfile)
+		)
 
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
+		// var client http.Client
 
-	// var client http.Client
+		// we actually go get the URLs now
+		for i := range m[k] {
+			lwg.Add(1)
+			urlloc := m[k][i]
 
-	// we actually go get the URLs now
-	for i := range m[k] {
-		lwg.Add(1)
-		urlloc := m[k][i]
-
-		// TODO / WARNING for large site we can exhaust memory with just the creation of the
-		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
-		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
-		// library too)
-
-		// log.Println(urlloc)
-
-		go func(i int, k string) {
-			semaphoreChan <- struct{}{}
+			// TODO / WARNING for large site we can exhaust memory with just the creation of the
+			// go routines. 1 million =~ 4 GB  So we need to control how many routines we
+			// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
+			// library too)
 
 			// log.Println(urlloc)
 
-			urlloc = strings.ReplaceAll(urlloc, " ", "")
-			urlloc = strings.ReplaceAll(urlloc, "\n", "")
+			go func(i int, k string) {
+				semaphoreChan <- struct{}{}
 
-			var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
-			req, err := http.NewRequest("GET", urlloc, nil)
-			if err != nil {
-				log.Println(err)
-				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-			}
-			req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+				// log.Println(urlloc)
 
-			resp, err := client.Do(req)
-			if err != nil {
-				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                              // tell the wait group that we be done
-				<-semaphoreChan
-				return
-			}
-			defer resp.Body.Close()
+				urlloc = strings.ReplaceAll(urlloc, " ", "")
+				urlloc = strings.ReplaceAll(urlloc, "\n", "")
 
-			doc, err := goquery.NewDocumentFromResponse(resp)
-			if err != nil {
-				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                              // tell the wait group that we be done
-				<-semaphoreChan
-				return
-			}
-
-			var jsonld string
-
-			// look in the HTML page for <script type=application/ld+json
-			if err == nil && !contains(resp.Header["Content-Type"], "application/json") && !contains(resp.Header["Content-Type"], "application/ld+json") {
-				doc.Find("script").Each(func(i int, s *goquery.Selection) {
-					val, _ := s.Attr("type")
-					if val == "application/ld+json" {
-						action, err := isValid(v1, s.Text())
-						if err != nil {
-							logger.Printf("ERROR: URL: %s Action: %s  Error: %s", urlloc, action, err)
-						}
-						jsonld = s.Text()
-					}
-				})
-			}
-
-			// this should not be here IMHO, but need to support people not setting proper header value
-			// The URL is sending back JSON-LD but incorrectly sending as application/json
-			if err == nil && contains(resp.Header["Content-Type"], "application/json") {
-				jsonld = doc.Text()
-			}
-
-			// The URL is sending back JSON-LD correctly as application/ld+json
-			if err == nil && contains(resp.Header["Content-Type"], "application/ld+json") {
-				jsonld = doc.Text()
-			}
-
-			if jsonld != "" { // traps out the root domain...   should do this different
-				sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
-				if err != nil {
-					logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
-				}
-				objectName := fmt.Sprintf("summoned/%s/%s.jsonld", k, sha)
-				contentType := "application/ld+json"
-				b := bytes.NewBufferString(jsonld)
-
-				usermeta := make(map[string]string) // what do I want to know?
-				usermeta["url"] = urlloc
-				usermeta["sha1"] = sha
-				bucketName := "gleaner" //   fmt.Sprintf("gleaner-summoned/%s", k) // old was just k
-
-				// TODO
-				// Make prov based on object name (org and object SHA)
-				// DO this by writing a nanopub object to Minio..   then collect them up into a graph later...
-				// I need:  re3 of source, url of json-ld, sha of jsonld, date
-				// RESID  string SHA256 string RE3    string SOURCE string DATE   string
-				// sha points to object
-				// source to where I got it from
-				// also need what I searc for and display as the URL to link to
-				// need to revidw the subject and diurl I am using in the UI
-
-				err = StoreProv(v1, mc, k, sha, urlloc)
+				var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
+				req, err := http.NewRequest("GET", urlloc, nil)
 				if err != nil {
 					log.Println(err)
+					logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
 				}
+				req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+				req.Header.Set("Accept", "application/ld+json, text/html")
 
-				// Upload the file with FPutObject
-				_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+				resp, err := client.Do(req)
 				if err != nil {
-					logger.Printf("%s", objectName)
-					logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+					logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
+					lwg.Done()                                              // tell the wait group that we be done
+					<-semaphoreChan
+					return
 				}
-				logger.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, int64(b.Len()))
-			} else {
-				logger.Printf("Empty JSON-LD document found. Continuing.")
-			}
+				defer resp.Body.Close()
 
-			bar.Add(1) // bar.Incr()
+				doc, err := goquery.NewDocumentFromResponse(resp)
+				if err != nil {
+					logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
+					lwg.Done()                                              // tell the wait group that we be done
+					<-semaphoreChan
+					return
+				}
 
-			logger.Printf("#%d thread for %s ", i, urlloc) // print an message containing the index (won't keep order)
-			lwg.Done()
+				var jsonlds []string
+				var contentTypeHeader = resp.Header["Content-Type"]
 
-			time.Sleep(time.Duration(dt) * time.Millisecond) // tell the wait group that we be done
+				// if
+				// The URL is sending back JSON-LD correctly as application/ld+json
+				// this should not be here IMHO, but need to support people not setting proper header value
+				// The URL is sending back JSON-LD but incorrectly sending as application/json
+				if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") {
+					jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
+					if err != nil {
+						logger.Printf("Error processing json response from %s: %s", urlloc, err)
+					}
+					// look in the HTML page for <script type=application/ld+json
+				} else {
+					doc.Find("script").Each(func(i int, s *goquery.Selection) {
+						val, _ := s.Attr("type")
+						if val == "application/ld+json" {
+							jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
+							if err != nil {
+								logger.Printf("Error processing script tag in %s: %s", urlloc, err)
+							}
+						}
+					})
+				}
 
-			<-semaphoreChan // clear a spot in the semaphore channel
-		}(i, k)
+				// For incremental indexing I want to know every URL I visit regardless
+				// if there is a valid JSON-LD document or not.   For "full" indexing we
+				// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
+				// and avoid those during incremental calls.
+
+				// even is no JSON-LD packages found, record the event
+				if len(jsonlds) < 1 {
+					db.Update(func(tx *bolt.Tx) error {
+						b := tx.Bucket([]byte(k))
+						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
+						return err
+					})
+				}
+
+				for _, jsonld := range jsonlds {
+					if jsonld != "" { // traps out the root domain...   should do this different
+						logger.Printf("#%d Uploading", i)
+						sha, err := Upload(v1, mc, logger, bucketName, k, urlloc, jsonld)
+						if err != nil {
+							logger.Printf("Error uploading jsonld to object store: %s: %s", urlloc, err)
+						}
+						// TODO  Is here where to add an entry to the KV store
+						db.Update(func(tx *bolt.Tx) error {
+							b := tx.Bucket([]byte(k))
+							err := b.Put([]byte(urlloc), []byte(sha))
+							return err
+						})
+					} else {
+						logger.Printf("Empty JSON-LD document found. Continuing.")
+						// TODO  Is here where to add an entry to the KV store
+						db.Update(func(tx *bolt.Tx) error {
+							b := tx.Bucket([]byte(k))
+							err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
+							return err
+						})
+					}
+				}
+
+				bar.Add(1)                                       // bar.Incr()
+				logger.Printf("#%d thread for %s ", i, urlloc)   // print an message containing the index (won't keep order)
+				time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
+
+				lwg.Done()
+
+				<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
+			}(i, k)
+
+		}
+
+		lwg.Wait()
+
+		// TODO write this to minio in the run ID bucket
+		// return the logger buffer or write to a mutex locked bytes buffer
+		f, err := os.Create(fmt.Sprintf("./%s.log", k))
+		if err != nil {
+			log.Println("Error writing a file")
+		}
+
+		w := bufio.NewWriter(f)
+		bc, err := w.WriteString(buf.String())
+		if err != nil {
+			log.Println("Error writing a file")
+		}
+		w.Flush()
+		log.Printf("Wrote log size %d", bc)
 
 	}
-
-	lwg.Wait()
-
-	// TODO write this to minio in the run ID bucket
-	// return the logger buffer or write to a mutex locked bytes buffer
-	f, err := os.Create(fmt.Sprintf("./%s.log", k))
-	if err != nil {
-		log.Println("Error writing a file")
-	}
-
-	w := bufio.NewWriter(f)
-	_, err = w.WriteString(buf.String())
-	if err != nil {
-		log.Println("Error writing a file")
-	}
-	w.Flush()
-
 }
 
 func contains(arr []string, str string) bool {
 	for _, a := range arr {
-		// if a == str {
+
 		if strings.Contains(a, str) {
 			return true
 		}
@@ -251,25 +260,4 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	padCountInt = 1 + ((overallLen - len(padStr)) / len(padStr))
 	var retStr = s + strings.Repeat(padStr, padCountInt)
 	return retStr[:overallLen]
-}
-
-func isValid(v1 *viper.Viper, jsonld string) (string, error) {
-	proc, options := common.JLDProc(v1)
-
-	var myInterface interface{}
-	action := ""
-
-	err := json.Unmarshal([]byte(jsonld), &myInterface)
-	if err != nil {
-		action = "json.Unmarshal call"
-		return action, err
-	}
-
-	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
-	if err != nil {                           // it's wasted cycles.. but if just doing a summon, needs to be done here
-		action = "JSON-LD to RDF call"
-		return action, err
-	}
-
-	return action, err
 }

@@ -7,7 +7,8 @@
 # add help with things like config for 
 # go run ../../cmd/gleaner/main.go -cfg eco_local -source '{"Name":"opentopo", "URL":"https://portal.opentopography.org/sitemap.xml", "Headless":false, "PID":"http://doi.org/10.17616/R3J616"}'
 
-
+# This code pulls fils/gleaner:latest   However, if that breaks things you might want to exchange latest for a specific version.  See 
+# https://hub.docker.com/repository/docker/fils/gleaner for specific version numbers available. 
 
 PROGNAME="$(basename $0)"
 VERSION="v0.0.1"
@@ -20,7 +21,7 @@ then
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/setenvIS.sh
     curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/deployment/gleaner-IS.yml
     docker pull fils/gleaner:latest
-    echo "\n See notes at: https://github.com/earthcubearchitecture-project418/gleaner/blob/dev/docs/cliDocker/README.md \n"
+    echo "\n See notes at: https://github.com/gleanerio/gleaner/blob/dev/docs/cliDocker/README.md \n"
     exit 0
 fi
 

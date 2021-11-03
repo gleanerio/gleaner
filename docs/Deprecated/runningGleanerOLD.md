@@ -14,7 +14,7 @@ If you are interested in publishing this sort of data, take a look at the ESIP h
 
 To start this guide you will need a few things first.  One is a computer with Docker installed.  Docker is a popular tool for creating and using containers.  Containers are packaged applications like databases, games or web servers.  The Docker runtime providers a cross platform environment to run this common container images.  Images are downloaded from the net and can be maintained and updated.  Containers can be run in large cloud based environments with sophisticated orchestration systems or on your local computer.  For this example we will be running on a rather simple Linux based server provided by NSF's XSEDE environment.  However, any personal computer will do just fine.   You can download Docekr your PC or Mac at https://www.docker.com/products/docker-desktop and Linux users can typically just use your distro's package management system.
 
-Once you have Docker installed and verified its operation you will need to download the Gleaner "Stater Pack".  Reference the Gleaner releases at https://github.com/earthcubearchitecture-project418/gleaner/releases to download the needed files for this guide.   In particular the starterpack.zip located in the assets section of the releases.   
+Once you have Docker installed and verified its operation you will need to download the Gleaner "Stater Pack".  Reference the Gleaner releases at https://github.com/gleanerio/gleaner/releases to download the needed files for this guide.   In particular the starterpack.zip located in the assets section of the releases.   
 
 Gleaner is a command line application, so you will need a terminal program on your computer and be comfortable issuing basic commands.  
 
@@ -36,14 +36,14 @@ docker swarm leave
 
 ### Starter Pack 
 
-To provide you a set of files and scripts to bootstrap the process we have created a starter pack ZIP file.  Let's make a directory and download the starter pack.  Visit the web site at  https://github.com/earthcubearchitecture-project418/gleaner/releases  and find the latest release.  In the assets drop down section you will find links to the various assets of that release.  We will need the starterpack.zip file.  
+To provide you a set of files and scripts to bootstrap the process we have created a starter pack ZIP file.  Let's make a directory and download the starter pack.  Visit the web site at  https://github.com/gleanerio/gleaner/releases  and find the latest release.  In the assets drop down section you will find links to the various assets of that release.  We will need the starterpack.zip file.  
 
 Here we will use wget to download the file, but you could use curl or just web browser to download this file.   Be sure to visit the release page at GitHub and not just use the command from below as this will likely be out of date with the current release versions.
 
 ```bash
 root@gleaner:~# mkdir gleanerRuns
 root@gleaner:~# cd gleanerRuns/
-root@gleaner:~/gleanerRuns# wget https://github.com/earthcubearchitecture-project418/gleaner/releases/download/2.0.11/starterpack.zip
+root@gleaner:~/gleanerRuns# wget https://github.com/gleanerio/gleaner/releases/download/2.0.11/starterpack.zip
 [...]
 Saving to: ‘starterpack.zip’
 [...]
@@ -105,7 +105,7 @@ Those of you more familiar with Docker might note you could copy this file to a 
 
 ## Docker Compose command
 
-We are not ready to set up the containers we need running to support Gleaner.  In the starter pack there is a file called docker-compose.yml.  It's a bit large for this document but you can view the version on GitHub at:  https://github.com/earthcubearchitecture-project418/gleaner/blob/master/docs/starterpack/docker-compose.yml
+We are not ready to set up the containers we need running to support Gleaner.  In the starter pack there is a file called docker-compose.yml.  It's a bit large for this document but you can view the version on GitHub at:  https://github.com/gleanerio/gleaner/blob/master/docs/starterpack/docker-compose.yml
 
 This file contains the instructions Docker will use to download and run the various container images we need.  If you look at the file you will see 6 images.  Their labels and a short description follow;
 
@@ -282,7 +282,7 @@ The url value needs to point to the URL for the site map XML file.  This will be
 
 The headless value should be set to false unless you know this site uses JavaScript to place the JSON-LD into the page.  This is true of some sites and it is supported but not currently auto-detected.  So you will need to know this and set it.  For most place, this will be false. 
 
-You can have as many sources as you wish.  For an example look the configure file for the CDF Semantic Network at: https://github.com/earthcubearchitecture-project418/CDFSemanticNetwork/blob/master/configs/cdf.yaml
+You can have as many sources as you wish.  For an example look the configure file for the CDF Semantic Network at: https://github.com/gleanerio/CDFSemanticNetwork/blob/master/configs/cdf.yaml
 
 For this demo we will use the site map for Open Core data.  However, I would prefer to get a better and smaller example source that could highlight various capabilities and edge cases for this package.  
 

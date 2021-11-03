@@ -5,11 +5,11 @@ minio:
   accessKey: worldsbestaccesskey
   secretKey: worldsbestsecretkey
   ssl: false
-  bucket: gleaner
+  bucket: gleaner # can be overridden with MINIO_BUCKET
 sparql:
   endpoint: http://localhost/blazegraph/namespace/earthcube/sparql
 s3:
-  bucket: gleaner
+  bucket: gleaner # sync with above... can be overridden with MINIO_BUCKET... get's zapped if it's not here.
   domain: us-east-1
 
 #headless field in gleaner.summoner. not yet implemented

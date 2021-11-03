@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"github.com/gocarina/gocsv"
 	"github.com/spf13/viper"
+	"io"
 	"log"
 	"os"
 	"path"
+	"strings"
 )
 
 // as read from csv
 type Sources struct {
-	SourceType string
+	SourceType string `default:"sitemap"`
 	Name       string
 	Logo       string
 	URL        string
@@ -19,7 +21,7 @@ type Sources struct {
 	PID        string
 	ProperName string
 	Domain     string
-	Active     bool
+	Active     bool `default:"true"`
 	// SitemapFormat string
 	// Active        bool
 }
@@ -39,7 +41,7 @@ type SourcesConfig struct {
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype": "",
+		"sourcetype": "sitemap",
 		"name":       "",
 		"url":        "",
 		"logo":       "",
@@ -50,6 +52,15 @@ var SourcesTemplate = map[string]interface{}{
 	},
 }
 
+func populateDefaults(s Sources) Sources {
+	if s.SourceType == "" {
+		s.SourceType = "sitemap"
+	}
+	// fix issues, too. Space from CSV causing url errors
+	s.URL = strings.TrimSpace(s.URL)
+	return s
+
+}
 func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 	var sources []Sources
 	var err error
@@ -62,11 +73,17 @@ func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 	// remember to close the file at the end of the program
 	defer f.Close()
 
+	gocsv.SetCSVReader(func(in io.Reader) gocsv.CSVReader {
+		//return csv.NewReader(in)
+		return gocsv.LazyCSVReader(in) // Allows use of quotes in CSV
+	})
+
 	if err := gocsv.Unmarshal(f, &sources); err != nil {
 		fmt.Println("error:", err)
 	}
 
-	for _, u := range sources {
+	for i, u := range sources {
+		sources[i] = populateDefaults(u)
 		fmt.Printf("%+v\n", u)
 	}
 	return sources, err
@@ -88,6 +105,9 @@ func ParseSourcesConfig(g1 *viper.Viper) ([]Sources, error) {
 	err := g1.UnmarshalKey(subtreeKey, &cfg)
 	if err != nil {
 		panic(fmt.Errorf("error when parsing %v config: %v", subtreeKey, err))
+	}
+	for i, s := range cfg {
+		cfg[i] = populateDefaults(s)
 	}
 	return cfg, err
 }

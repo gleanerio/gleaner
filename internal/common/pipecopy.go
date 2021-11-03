@@ -54,7 +54,7 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
-		_, err := mc.PutObject(context.Background(), "gleaner", name, pr, -1, minio.PutObjectOptions{})
+		_, err := mc.PutObject(context.Background(), bucket, name, pr, -1, minio.PutObjectOptions{})
 		if err != nil {
 			log.Println(err)
 		}
