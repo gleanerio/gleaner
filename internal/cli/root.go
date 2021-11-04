@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/boltdb/bolt"
 	"github.com/spf13/viper"
 )
 
@@ -14,6 +15,7 @@ var cfgFile, cfgName, cfgPath string
 var minioVal, portVal, accessVal, secretVal, bucketVal string
 var sslVal bool
 var viperVal *viper.Viper
+var db *bolt.DB
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -70,6 +72,7 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+
 	viperVal := viper.New()
 	if cfgFile != "" {
 		// Use config file from the flag.
@@ -92,5 +95,12 @@ func initConfig() {
 	if err := viperVal.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viperVal.ConfigFileUsed())
 	}
+	// setup the KV store to hold a record of indexed resources
+	var err error
+	db, err = bolt.Open("gleaner.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
 }

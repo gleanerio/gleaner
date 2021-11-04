@@ -17,6 +17,7 @@ package cli
 
 import (
 	"fmt"
+	"github.com/boltdb/bolt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/internal/millers"
@@ -39,7 +40,7 @@ and store to a S3 server:
 --mode`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("batch called")
-		cli(glrVal, cfgPath, cfgName, modeVal)
+		cli(glrVal, cfgPath, cfgName, modeVal, db)
 	},
 }
 
@@ -57,7 +58,7 @@ func init() {
 	// batchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func cli(filename string, cfgPath string, cfgName string, mode string) {
+func cli(filename string, cfgPath string, cfgName string, mode string, db *bolt.DB) {
 
 	v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	if err != nil {
@@ -83,7 +84,7 @@ func cli(filename string, cfgPath string, cfgName string, mode string) {
 
 	// If configured, summon sources
 	if mcfg["summon"] == "true" {
-		summoner.Summoner(mc, v1)
+		summoner.Summoner(mc, v1, db)
 	}
 
 	// if configured, process summoned sources fronm JSON-LD to RDF (nq)
