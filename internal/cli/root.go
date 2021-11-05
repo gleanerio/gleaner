@@ -28,7 +28,7 @@ process to configure and run is:
 * glcon config init --cfgName {default:local}
   edit files, servers.yaml, sources.csv
 * glcon config generate --cfgName  {default:local}
-* glcon gleaner setup --cfgName  {default:local}
+* glcon gleaner Setup --cfgName  {default:local}
 * glcon gleaner batch  --cfgName  {default:local}
 * run nabu (better description)
 `,
@@ -95,7 +95,7 @@ func initConfig() {
 	if err := viperVal.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viperVal.ConfigFileUsed())
 	}
-	// setup the KV store to hold a record of indexed resources
+	// Setup the KV store to hold a record of indexed resources
 	var err error
 	db, err = bolt.Open("gleaner.db", 0600, nil)
 	if err != nil {

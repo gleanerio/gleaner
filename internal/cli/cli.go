@@ -24,6 +24,8 @@ import (
 	"github.com/gleanerio/gleaner/internal/organizations"
 	"github.com/gleanerio/gleaner/internal/summoner"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+	"github.com/minio/minio-go/v7"
+	"github.com/spf13/viper"
 	"log"
 	"path"
 
@@ -40,7 +42,7 @@ and store to a S3 server:
 --mode`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("batch called")
-		cli(glrVal, cfgPath, cfgName, modeVal, db)
+		Batch(glrVal, cfgPath, cfgName, modeVal)
 	},
 }
 
@@ -58,19 +60,29 @@ func init() {
 	// batchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func cli(filename string, cfgPath string, cfgName string, mode string, db *bolt.DB) {
+func Batch(filename string, cfgPath string, cfgName string, mode string) {
 
 	v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	if err != nil {
 		panic(err)
 	}
 	mc := common.MinioConnection(v1)
+	// setup the KV store to hold a record of indexed resources
+	db, err := bolt.Open(path.Join(cfgPath, cfgName, "gleaner.db"), 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
 
+	Cli(mc, v1, db)
+}
+
+func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	// Build the org graph
 	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
-	err = organizations.BuildGraph(mc, v1)
+	err := organizations.BuildGraph(mc, v1)
 	if err != nil {
 		log.Print(err)
 	}

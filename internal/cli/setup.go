@@ -13,14 +13,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// setupCmd represents the setup command
+// setupCmd represents the Setup command
 var setupCmd = &cobra.Command{
-	Use:   "setup",
-	Short: "setup gleaner process",
+	Use:   "Setup",
+	Short: "Setup gleaner process",
 	Long:  `connects to S3 store, creates buckets, `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("setup called")
-		setup(glrVal, cfgPath, cfgName)
+		fmt.Println("Setup called")
+		Setup(glrVal, cfgPath, cfgName)
 	},
 }
 
@@ -38,7 +38,7 @@ func init() {
 	// setupCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func setup(filename string, cfgPath string, cfgName string) {
+func Setup(filename string, cfgPath string, cfgName string) {
 	var v1 *viper.Viper
 	var err error
 
@@ -66,7 +66,7 @@ func setup(filename string, cfgPath string, cfgName string) {
 	log.Println("Setting up buckets")
 	err = check.MakeBuckets(mc, m1.Bucket)
 	if err != nil {
-		log.Println("Error making buckets for setup call")
+		log.Println("Error making buckets for Setup call")
 		os.Exit(1)
 	}
 

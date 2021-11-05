@@ -7,16 +7,17 @@ import (
 	"os"
 
 	"github.com/boltdb/bolt"
-	"github.com/minio/minio-go/v7"
+	//	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 
 	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/common"
-	"github.com/gleanerio/gleaner/internal/millers"
+	//	"github.com/gleanerio/gleaner/internal/millers"
 	"github.com/gleanerio/gleaner/internal/objects"
-	"github.com/gleanerio/gleaner/internal/organizations"
-	"github.com/gleanerio/gleaner/internal/summoner"
-	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+	//	"github.com/gleanerio/gleaner/internal/organizations"
+	//	"github.com/gleanerio/gleaner/internal/summoner"
+	//	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/internal/cli"
 )
 
 var viperVal, sourceVal, modeVal string
@@ -147,38 +148,39 @@ func main() {
 	}
 	defer db.Close()
 
-	cli(mc, v1, db)
+	//cli(mc, v1, db)
+	cli.Cli(mc, v1, db) // move to a common call
 }
 
 // func cli(mc *minio.Client, cs utils.Config) {
-func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
-	mcfg := v1.GetStringMapString("gleaner")
-	scfg := v1.GetStringMapString("summoner")
-
-	// Build the org graph(s)
-	err := organizations.BuildGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
-	}
-
-	// Index the sitegraphs first, if any but never in a incremental (diff) call
-	if scfg["mode"] != "diff" {
-		_, err := acquire.GetGraph(mc, v1)
-		if err != nil {
-			log.Print(err)
-		}
-	}
-
-	// If configured, summon sources
-	if mcfg["summon"] == "true" {
-		summoner.Summoner(mc, v1, db)
-	}
-
-	// if configured, process summoned sources from JSON-LD to RDF (nq)
-	if mcfg["mill"] == "true" {
-		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
-	}
-}
+//func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
+//	mcfg := v1.GetStringMapString("gleaner")
+//	scfg := v1.GetStringMapString("summoner")
+//
+//	// Build the org graph(s)
+//	err := organizations.BuildGraph(mc, v1)
+//	if err != nil {
+//		log.Print(err)
+//	}
+//
+//	// Index the sitegraphs first, if any but never in a incremental (diff) call
+//	if scfg["mode"] != "diff" {
+//		_, err := acquire.GetGraph(mc, v1)
+//		if err != nil {
+//			log.Print(err)
+//		}
+//	}
+//
+//	// If configured, summon sources
+//	if mcfg["summon"] == "true" {
+//		summoner.Summoner(mc, v1, db)
+//	}
+//
+//	// if configured, process summoned sources from JSON-LD to RDF (nq)
+//	if mcfg["mill"] == "true" {
+//		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
+//	}
+//}
 
 func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
 	v := viper.New()
