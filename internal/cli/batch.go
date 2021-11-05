@@ -17,15 +17,11 @@ package cli
 
 import (
 	"fmt"
-	"github.com/boltdb/bolt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	"github.com/gleanerio/gleaner/internal/millers"
-	"github.com/gleanerio/gleaner/internal/organizations"
-	"github.com/gleanerio/gleaner/internal/summoner"
-	"github.com/gleanerio/gleaner/internal/summoner/acquire"
-	"github.com/minio/minio-go/v7"
-	"github.com/spf13/viper"
+	"github.com/gleanerio/gleaner/internal/run"
+	bolt "go.etcd.io/bbolt"
+
 	"log"
 	"path"
 
@@ -74,33 +70,5 @@ func Batch(filename string, cfgPath string, cfgName string, mode string) {
 	}
 	defer db.Close()
 
-	Cli(mc, v1, db)
-}
-
-func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
-	mcfg := v1.GetStringMapString("gleaner")
-
-	// Build the org graph
-	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
-	err := organizations.BuildGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
-	}
-
-	// Index the sitegraphs first, if any
-	fn, err := acquire.GetGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
-	}
-	log.Println(fn)
-
-	// If configured, summon sources
-	if mcfg["summon"] == "true" {
-		summoner.Summoner(mc, v1, db)
-	}
-
-	// if configured, process summoned sources fronm JSON-LD to RDF (nq)
-	if mcfg["mill"] == "true" {
-		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
-	}
+	run.Cli(mc, v1, db)
 }

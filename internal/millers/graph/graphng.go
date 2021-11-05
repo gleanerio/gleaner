@@ -58,7 +58,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			semaphoreChan <- struct{}{}
 			_, err := obj2RDF(bucketName, "milled", mc, object, proc, options)
 			if err != nil {
-				log.Println(err) // need to log to an "errors" log file
+				log.Printf("obj2RDF %s", err) // need to log to an "errors" log file
 			}
 
 			wg.Done() // tell the wait group that we be done
@@ -94,9 +94,13 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 // func obj2RDF(fo io.Reader, key string, mc *minio.Client) (string, int64, error) {
 func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
 	// object is an object reader
+	stat, err := mc.StatObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
+	if stat.Size > 100000 {
+		fmt.Printf("retrieving a large object (%d) (this may be slow) %s \n ", stat.Size, object.Key)
+	}
 	fo, err := mc.GetObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if err != nil {
-		fmt.Println(err)
+		fmt.Printf("minio.getObject %s", err)
 		return "", err
 	}
 
@@ -107,7 +111,7 @@ func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	_, err = io.Copy(bw, fo)
 	if err != nil {
-		log.Println(err)
+		log.Printf("error copying: %s", err)
 	}
 
 	// TODO

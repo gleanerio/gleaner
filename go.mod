@@ -23,14 +23,12 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20211010230925-397910c5e371
-	go.etcd.io/bbolt v1.3.2
+	go.etcd.io/bbolt v1.3.6
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 )
 
-//replace (
-//    github.com/gleanerio/gleaner/internal/config => "./internal/config"
-//    github.com/gleanerio/gleaner/internal/objects => "./internal/objects"
-//)
+// just using bolt github.com/boltdb/bolt would be ok... but it complains if we mix.
+//replace  github.com/boltdb/bolt v1.3.1 => "go.etcd.io/bbolt" v1.3.6
 
 require (
 	github.com/boltdb/bolt v1.3.1
