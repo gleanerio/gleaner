@@ -149,7 +149,7 @@ func main() {
 	defer db.Close()
 
 	//cli(mc, v1, db)
-	cli.Cli(mc, v1, db) // move to a common call
+	cli.Cli(mc, v1, db) // move to a common call in batch.go
 }
 
 // func cli(mc *minio.Client, cs utils.Config) {
