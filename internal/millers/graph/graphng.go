@@ -96,7 +96,7 @@ func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInf
 	// object is an object reader
 	stat, err := mc.StatObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if stat.Size > 100000 {
-		fmt.Printf("retrieving a large object (%d) (this may be slow) %s \n ", stat.Size, object.Key)
+		log.Printf("retrieving a large object (%d) (this may be slow) %s \n ", stat.Size, object.Key)
 	}
 	fo, err := mc.GetObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if err != nil {
