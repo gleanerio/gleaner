@@ -65,7 +65,8 @@ union followed by a
 go mod tidy
 ```
 
-following the merge.  
+following the merge.   Once you have resolved the conflict and done 
+tidy can add, if needed, the go.mod and go.sum files and commit.  
 
 ### Branches
 
