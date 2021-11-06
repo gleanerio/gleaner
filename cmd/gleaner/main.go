@@ -153,7 +153,7 @@ func main() {
 // func cli(mc *minio.Client, cs utils.Config) {
 func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	mcfg := v1.GetStringMapString("gleaner")
-	scfg := v1.GetStringMapString("summoner")
+	// scfg := v1.GetStringMapString("summoner")
 
 	// Build the org graph(s)
 	err := organizations.BuildGraph(mc, v1)
@@ -161,9 +161,9 @@ func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 		log.Print(err)
 	}
 
-	// Index the sitegraphs first, if any but never in a incremental (diff) call
-	if scfg["mode"] != "diff" {
-		_, err := acquire.GetGraph(mc, v1)
+	// Index the sitegraphs first (if summon true)  (really should be sent into a go func to run by themselves and move on to the rest of work)
+	if mcfg["summon"] == "true" {
+		_, err = acquire.GetGraph(mc, v1, db)
 		if err != nil {
 			log.Print(err)
 		}
