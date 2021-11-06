@@ -6,26 +6,26 @@ import (
 )
 
 // gleanerCmd represents the run command
-var gleanerCmd = &cobra.Command{
-	Use:   "gleaner",
-	Short: "command to execute gleaner processes",
-	Long: `run gleaner process to extract JSON-LD from pages using sitemaps, conver to triples
-and store to a S3 server:
+var NabuCmd = &cobra.Command{
+	Use:   "nabu",
+	Short: "command to execute nabu processes",
+	Long: `run naub process to upload triples and prune results
 --cfgName
 --mode
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("gleaner called")
+		fmt.Println("nabu called")
 	},
 }
-var sourceVal, modeVal string
+
+var prefixVal string
 
 func init() {
-	rootCmd.AddCommand(gleanerCmd)
+	rootCmd.AddCommand(NabuCmd)
 
 	// Here you will define your flags and configuration settings.
-	gleanerCmd.Flags().StringVar(&modeVal, "mode", "mode", "Set the mode")
-
+	NabuCmd.Flags().StringVar(&nabuVal, "cfg", "nabu", "Configuration file")
+	NabuCmd.Flags().StringVar(&prefixVal, "prefix", "", "Prefix to override config file setting")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// gleanerCmd.PersistentFlags().String("foo", "", "A help for foo")

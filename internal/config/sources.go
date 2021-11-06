@@ -121,3 +121,27 @@ func GetSourceByType(sources []Sources, key string) []Sources {
 	}
 	return sourcesSlice
 }
+
+func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
+
+	var prefixes []string
+	for _, s := range sources {
+
+		switch s.SourceType {
+
+		case "sitemap":
+			prefixes = append(prefixes, "milled/"+s.Name)
+			if includeProv {
+				prefixes = append(prefixes, "prov/"+s.Name)
+			}
+
+		case "sitegraph":
+			prefixes = append(prefixes, "summoned/"+s.Name)
+			if includeProv {
+				prefixes = append(prefixes, "prov/"+s.Name)
+			}
+
+		}
+	}
+	return prefixes
+}
