@@ -2,7 +2,7 @@ package acquire
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"

@@ -2,7 +2,7 @@ package common
 
 import (
 	"bytes"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"context"
 	minio "github.com/minio/minio-go/v7"

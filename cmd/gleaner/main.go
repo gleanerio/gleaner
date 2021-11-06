@@ -3,11 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gleanerio/gleaner/internal/config"
-	"github.com/gleanerio/gleaner/pkg"
-	"log"
 	"os"
 	"path/filepath"
+	"time"
+
+	"github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/pkg"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
@@ -20,8 +22,25 @@ var viperVal, sourceVal, modeVal string
 var setupVal bool
 
 func init() {
-	log.SetFlags(log.Lshortfile)
-	// log.SetOutput(ioutil.Discard) // turn off all logging
+	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
+
+	// name the file with the date and time
+	const layout = "2006-01-02-15-04-05"
+	t := time.Now()
+	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
+
+	LogFile := lf // log to custom file
+	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Panic(err)
+		return
+	}
+
+	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
+	log.SetReportCaller(true)              // include file name and line number
+	log.SetOutput(logFile)
+
+	//log.SetLevel(log.WarnLevel) // Only log the warning severity or above.
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
@@ -93,7 +112,7 @@ func main() {
 		}
 
 		if len(tmp) == 0 {
-			log.Println("CAUTION:  no sources, did your -source VALUE match a sources.name VALUE in your config file?")
+			log.Println("CAUTION:  no matching source, did your -source VALUE match a sources.name VALUE in your config file?")
 			os.Exit(0)
 		}
 
@@ -153,22 +172,23 @@ func main() {
 	}
 	defer db.Close()
 
+	// Defer a function to be called on successful ending.  Note, if gleaner crashes, this will NOT
+	// get called, do consideration must be taken in such a cases.  Some errors in such cases should
+	// be sent to stdout to be captured by docker, k8s, Airflow etc in case they are being used.
+
+	defer func() {
+		fmt.Println("Calling cleanUp on a successful run")
+		cleanUp()
+	}()
+
 	//cli(mc, v1, db)
 	pkg.Cli(mc, v1, db) // move to a common call in batch.go
 }
 
-//func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
-//	v := viper.New()
-//	for key, value := range defaults {
-//		v.SetDefault(key, value)
-//	}
-//	v.SetConfigName(filename)
-//	v.SetConfigType("yaml")
-//	v.AddConfigPath(".")
-//	v.AutomaticEnv()
-//	err := v.ReadInConfig()
-//	return v, err
-//}
+func cleanUp() {
+	// copy log to s3 logs prefix  (make sure log files are unique by time or other)
+	fmt.Println("On success, will, if flagged, copy the log file to object store and delete it")
+}
 
 func isFlagPassed(name string) bool {
 	found := false

@@ -9,11 +9,11 @@ import (
 	"github.com/gleanerio/gleaner/internal/config"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/knakk/rdf"
+	log "github.com/sirupsen/logrus"
 	"github.com/xitongsys/parquet-go-source/mem"
 	"github.com/xitongsys/parquet-go/writer"
 	"io"
 	"io/ioutil"
-	"log"
 	"strings"
 
 	"github.com/minio/minio-go/v7"

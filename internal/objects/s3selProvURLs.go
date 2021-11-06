@@ -3,8 +3,8 @@ package objects
 import (
 	"bytes"
 	"context"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"strings"
 	"sync"
 

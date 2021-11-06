@@ -6,8 +6,8 @@ import (
 	"context"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"strings"
 	"sync"
 

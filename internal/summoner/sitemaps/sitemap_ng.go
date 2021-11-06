@@ -7,7 +7,7 @@ package sitemaps
 
 import (
 	"encoding/xml"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 
 	sitemap "github.com/oxffaa/gopher-parse-sitemap"

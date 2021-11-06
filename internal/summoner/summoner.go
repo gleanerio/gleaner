@@ -1,7 +1,7 @@
 package summoner
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"

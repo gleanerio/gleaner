@@ -1,7 +1,7 @@
 package summoner
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 
 	"github.com/minio/minio-go/v7"

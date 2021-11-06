@@ -5,7 +5,7 @@ import (
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gosuri/uiprogress"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 	"sync"
 

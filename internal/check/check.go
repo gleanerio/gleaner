@@ -3,7 +3,7 @@ package check
 import (
 	"context"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/minio/minio-go/v7"
 )

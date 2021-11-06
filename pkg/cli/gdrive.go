@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 // initCmd represents the init command
