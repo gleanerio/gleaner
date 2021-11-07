@@ -10,7 +10,7 @@ import (
 var pruneCmd = &cobra.Command{
 	Use:   "prune",
 	Short: "nabu prune command",
-	Long:  `(not implemented)This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
+	Long:  `Prune graphs in triplestore not in objectVal store`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("check called")
 		run.NabuPrune(nabuConfig)
