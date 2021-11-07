@@ -7,16 +7,16 @@ minio:
   ssl: false
   bucket: gleaner
 gleaner:
-  runid: demorun # Run ID used in prov and a few others
+  runid: runX # this will be the bucket the output is placed in...
   summon: true # do we want to visit the web sites and pull down the files
   mill: true
 context:
   cache: true
 contextmaps:
 - prefix: "https://schema.org/"
-  file: "./schemaorg-current-https.jsonld"
+  file: "./configs/schemaorg-current-https.jsonld"
 - prefix: "http://schema.org/"
-  file: "./schemaorg-current-https.jsonld"
+  file: "./configs/schemaorg-current-https.jsonld"
 summoner:
   after: ""      # "21 May 20 10:00 UTC"   
   mode: full  # full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
@@ -25,11 +25,18 @@ summoner:
   headless: http://127.0.0.1:9222  # URL for headless see docs/headless
 millers:
   graph: true
-sources:
-- type: sitemap
-  name: samplesearth
-  url: https://samples.earth/sitemap.xml
-  headless: false
-  pid: https://www.re3data.org/repository/samplesearth
-  properName: Samples Earth (DEMO Site)
-  domain: https://samples.earth  
+# will be built from sources.csv
+#sitegraphs:
+#- name: aquadocs
+#  url: https://oih.aquadocs.org/aquadocs.json
+#  headless: false
+#  pid: http://hdl.handle.net/1834/41372
+#  properName: AquaDocs
+#  domain: https://aquadocs.org
+#sitemaps:
+#- name: samplesearth
+#  url: https://samples.earth/sitemap.xml
+#  headless: false
+#  pid: https://www.re3data.org/repository/samplesearth
+#  properName: Samples Earth (DEMO Site)
+#  domain: https://samples.earth
