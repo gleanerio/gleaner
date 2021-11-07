@@ -13,7 +13,7 @@ var pruneCmd = &cobra.Command{
 	Long:  `Prune graphs in triplestore not in objectVal store`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("check called")
-		run.NabuPrune(nabuConfig)
+		run.NabuPrune(nabuViperVal)
 	},
 }
 
