@@ -32,8 +32,9 @@ require (
 
 require (
 	github.com/boltdb/bolt v1.3.1
-	github.com/gleanerio/nabu v0.0.0@dv-dev_glcon
+	github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef // indirect
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 )
+
 // local replace. gleaner and nabu at same level
-//replace  github.com/gleanerio/nabu v0.0.0  => "../nabu"
+//replace  github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef  => "../nabu"

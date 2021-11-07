@@ -179,6 +179,8 @@ github.com/gleanerio/nabu v0.0.0-20211106042809-2247748584ac h1:gfbWKMvM0J+zeepJ
 github.com/gleanerio/nabu v0.0.0-20211106042809-2247748584ac/go.mod h1:jrMMU4JNSSRGcSlF+Q6rqXixZlbISYttEu/jKrwqYZM=
 github.com/gleanerio/nabu v0.0.0-20211106043408-d9461398dd94 h1:EL6DZsSaeM6kjfnxMd+dwPWT+WyLwo/OEpd2G6Jh8s8=
 github.com/gleanerio/nabu v0.0.0-20211106043408-d9461398dd94/go.mod h1:jrMMU4JNSSRGcSlF+Q6rqXixZlbISYttEu/jKrwqYZM=
+github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef h1:fJ3fh3AFktjmXd+FIv1lYyds80/n3Ao2DMNQfD8azJQ=
+github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef/go.mod h1:tGRxO9CPE3nh9CFvnejJVhoF9GRBqgfOfQbOT+VODJA=
 github.com/glycerine/go-unsnap-stream v0.0.0-20181221182339-f9677308dec2/go.mod h1:/20jfyN9Y5QPEAprSgKAUr+glWDY39ZiUEAYOEv5dsE=
 github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31/go.mod h1:Ogl1Tioa0aV7gstGFO7KhffUsb9M4ydbEbbxpcEDc24=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
