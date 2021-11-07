@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	nabuConf "github.com/gleanerio/nabu/run/config"
+	nConfig "github.com/gleanerio/nabu/run/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
@@ -70,7 +70,7 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 		fmt.Println(err)
 		panic(err)
 	}
-	nabu, err = nabuConf.ReadNabuConfig(configBaseFiles["nabu"], configDir)
+	nabu, err = nConfig.ReadNabuConfig(configBaseFiles["nabu"], configDir)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)

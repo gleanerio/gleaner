@@ -2,26 +2,29 @@ package cli
 
 import (
 	"fmt"
-
+	run "github.com/gleanerio/nabu/pkg"
 	"github.com/spf13/cobra"
 )
 
+var objectVal string
+
 // checkCmd represents the check command
-var pruneCmd = &cobra.Command{
-	Use:   "prune",
-	Short: "nabu prune command",
-	Long:  `(not implemented)This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
+var objectCmd = &cobra.Command{
+	Use:   "object ",
+	Short: "nabu object command",
+	Long:  `Load a graph object to triplestore`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("check called")
-		fmt.Println("Not Implemented")
+		fmt.Println("nabu object called")
+
+		run.NabuObject(nabuViperVal, bucketVal, objectVal)
 	},
 }
 
 func init() {
-	NabuCmd.AddCommand(pruneCmd)
+	NabuCmd.AddCommand(prefixCmd)
 
 	// Here you will define your flags and configuration settings.
-
+	NabuCmd.Flags().StringVar(&objectVal, "object", "", "object")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// checkCmd.PersistentFlags().String("foo", "", "A help for foo")

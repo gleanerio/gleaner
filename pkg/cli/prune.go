@@ -2,23 +2,23 @@ package cli
 
 import (
 	"fmt"
-
+	run "github.com/gleanerio/nabu/pkg"
 	"github.com/spf13/cobra"
 )
 
 // checkCmd represents the check command
-var prefixCmd = &cobra.Command{
-	Use:   "prefix ",
-	Short: "nabu prefix command",
+var pruneCmd = &cobra.Command{
+	Use:   "prune",
+	Short: "nabu prune command",
 	Long:  `(not implemented)This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("check called")
-		fmt.Println("Not Implemented")
+		run.NabuPrune(nabuConfig)
 	},
 }
 
 func init() {
-	NabuCmd.AddCommand(prefixCmd)
+	NabuCmd.AddCommand(pruneCmd)
 
 	// Here you will define your flags and configuration settings.
 

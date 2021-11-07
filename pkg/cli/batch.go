@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	"github.com/gleanerio/gleaner/internal/run"
+	"github.com/gleanerio/gleaner/pkg"
 	bolt "go.etcd.io/bbolt"
 
 	"log"
@@ -70,5 +70,5 @@ func Batch(filename string, cfgPath string, cfgName string, mode string) {
 	}
 	defer db.Close()
 
-	run.Cli(mc, v1, db)
+	pkg.Cli(mc, v1, db)
 }

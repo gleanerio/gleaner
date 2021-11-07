@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/pkg"
 	"log"
 	"os"
 	"path/filepath"
@@ -13,8 +14,6 @@ import (
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/objects"
-
-	"github.com/gleanerio/gleaner/internal/run"
 )
 
 var viperVal, sourceVal, modeVal string
@@ -117,7 +116,7 @@ func main() {
 	if setupVal {
 		log.Println("Setting up buckets")
 		//err := check.MakeBuckets(mc, bucketName)
-		err = run.Setup(mc, v1)
+		err = pkg.Setup(mc, v1)
 		if err != nil {
 			log.Println("Error making buckets for setup call")
 			os.Exit(1)
@@ -128,7 +127,7 @@ func main() {
 	}
 
 	// Validate Minio access
-	err = run.PreflightChecks(mc, v1)
+	err = pkg.PreflightChecks(mc, v1)
 	if err != nil {
 		log.Printf("Preflight Check failed. Make sure the minio server is running, accessible and has been setup. %s ", err)
 		os.Exit(1)
@@ -155,7 +154,7 @@ func main() {
 	defer db.Close()
 
 	//cli(mc, v1, db)
-	run.Cli(mc, v1, db) // move to a common call in batch.go
+	pkg.Cli(mc, v1, db) // move to a common call in batch.go
 }
 
 //func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {

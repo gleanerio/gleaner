@@ -3,7 +3,10 @@ package cli
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
+
+var nabuConfig *viper.Viper
 
 // gleanerCmd represents the run command
 var NabuCmd = &cobra.Command{
@@ -24,8 +27,9 @@ func init() {
 	rootCmd.AddCommand(NabuCmd)
 
 	// Here you will define your flags and configuration settings.
-	NabuCmd.Flags().StringVar(&nabuVal, "cfg", "nabu", "Configuration file")
+	//NabuCmd.Flags().StringVar(&nabuVal, "cfg", "nabu", "Configuration file")
 	NabuCmd.Flags().StringVar(&prefixVal, "prefix", "", "Prefix to override config file setting")
+
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// gleanerCmd.PersistentFlags().String("foo", "", "A help for foo")
