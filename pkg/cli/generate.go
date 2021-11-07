@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	nConfig "github.com/gleanerio/nabu/run/config"
+	nConfig "github.com/gleanerio/nabu/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
