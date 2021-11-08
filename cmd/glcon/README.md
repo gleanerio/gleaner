@@ -49,7 +49,6 @@ Environmental variable substition will occur:
 	minioSubtress.BindEnv("ssl", "MINIO_USE_SSL")
 	minioSubtress.BindEnv("accesskey", "MINIO_ACCESS_KEY")
 	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
-	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
 	minioSubtress.BindEnv("bucket", "MINIO_BUCKET")
 	viperSubtree.BindEnv("domain", "S3_DOMAIN")
 	viperSubtree.BindEnv("endpoint", "SPARQL_ENDPOINT")

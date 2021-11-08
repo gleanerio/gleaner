@@ -4,10 +4,10 @@ import (
 	"log"
 	"time"
 
-	"github.com/boltdb/bolt"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
+	bolt "go.etcd.io/bbolt"
 )
 
 // Summoner pulls the resources from the data facilities

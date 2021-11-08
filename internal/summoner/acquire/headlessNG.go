@@ -10,7 +10,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/boltdb/bolt"
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/page"
@@ -18,6 +17,7 @@ import (
 	"github.com/mafredri/cdp/rpcc"
 	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
+	bolt "go.etcd.io/bbolt"
 )
 
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.

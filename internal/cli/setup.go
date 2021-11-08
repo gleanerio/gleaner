@@ -2,9 +2,9 @@ package cli
 
 import (
 	"fmt"
-	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/run"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// setupCmd represents the setup command
+// setupCmd represents the Setup command
 var setupCmd = &cobra.Command{
 	Use:   "setup",
 	Short: "setup gleaner process",
@@ -47,36 +47,8 @@ func setup(filename string, cfgPath string, cfgName string) {
 		log.Printf("Error reading gleaner config %s ", err)
 		os.Exit(1)
 	}
-	ms := v1.Sub("minio")
-	m1, err2 := configTypes.ReadMinioConfig(ms)
-	if err2 != nil {
-		log.Printf("Error reading gleaner config %s ", err)
-		os.Exit(1)
-	}
+
 	mc := common.MinioConnection(v1)
 
-	// Validate Minio is up  TODO:  validate all expected containers are up
-	log.Println("Validating access to object store")
-	err = check.ConnCheck(mc)
-	if err != nil {
-		log.Printf("Connection issue, make sure the minio server is running and accessible. %s ", err)
-		os.Exit(1)
-	}
-	// If requested, set up the buckets
-	log.Println("Setting up buckets")
-	err = check.MakeBuckets(mc, m1.Bucket)
-	if err != nil {
-		log.Println("Error making buckets for setup call")
-		os.Exit(1)
-	}
-
-	err = check.Buckets(mc, m1.Bucket)
-	if err != nil {
-		log.Printf("Can not find bucket. %s ", err)
-		os.Exit(1)
-	}
-
-	log.Println("Buckets generated.  Object store should be ready for runs")
-	os.Exit(0)
-
+	run.Setup(mc, v1)
 }

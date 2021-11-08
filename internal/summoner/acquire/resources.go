@@ -5,8 +5,8 @@ import (
 	"log"
 	"strings"
 
-	"github.com/boltdb/bolt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	bolt "go.etcd.io/bbolt"
 
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go/v7"
@@ -22,7 +22,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 
 	domains, err := configTypes.ParseSourcesConfig(v1)
 	log.Println(domains)
-	domains = configTypes.GetSourceByType(domains, siteMapType)
+	domains = configTypes.GetActiveSourceByType(domains, siteMapType)
 	if err != nil {
 		log.Println(err)
 	}

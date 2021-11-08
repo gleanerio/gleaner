@@ -29,7 +29,9 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	// Put the sources in the config file into a struct
 	//var domains []Sources
 	//err := v1.UnmarshalKey("sources", &domains)
-	domains, err := config.ParseSourcesConfig(v1)
+
+	//domains, err := config.GetSources(v1)
+	domains, err := config.GetActiveSources(v1)
 	if err != nil {
 		log.Println(err)
 	}

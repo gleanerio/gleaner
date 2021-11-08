@@ -55,6 +55,19 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 			log.Println(err)
 		}
 	}
+
+	// do not overwrite the source.csv or servers.yaml
+	_, err := os.Stat(path.Join(cfgpath, cfgName, configBaseFiles["sources"]))
+	if err == nil {
+		copy(path.Join(cfgpath, cfgName, configBaseFiles["sources"]), path.Join(cfgpath, cfgName, configBaseFiles["sources"]+"_latest"))
+		delete(configBaseFiles, "sources")
+	}
+	_, err = os.Stat(path.Join(cfgpath, cfgName, configBaseFiles["servers"]))
+	if err == nil {
+		copy(path.Join(cfgpath, cfgName, configBaseFiles["servers"]), path.Join(cfgpath, cfgName, configBaseFiles["servers"]+"_latest"))
+		delete(configBaseFiles, "servers")
+	}
+	// copy files listed in config.go: configBaseFiles
 	for _, f := range configBaseFiles {
 		var template = path.Join(cfgpath, cfgName, f)
 		var config = path.Join(cfgpath, "template", f)

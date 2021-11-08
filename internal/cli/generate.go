@@ -86,6 +86,13 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 		panic(fmt.Errorf("error when copying sources: %v", err))
 	}
 
+	fmt.Println("make copy of servers.yaml")
+	original = path.Join(configDir, configBaseFiles["servers"])
+	config = path.Join(configDir, date+configBaseFiles["servers"])
+	_, err = copy(original, config)
+	if err != nil {
+		panic(fmt.Errorf("error when copying servers.yaml: %v", err))
+	}
 	//****** READ SERVERS CONFIG FILE ***
 	// load minio
 	//mi =  servers.Get("minio")
