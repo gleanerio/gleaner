@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	nConfig "github.com/gleanerio/nabu/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
@@ -12,6 +13,8 @@ import (
 type Source = configTypes.Sources
 type SourceConfig = configTypes.SourcesConfig
 type MinoConfigType = configTypes.Minio
+
+var Prov, Org bool
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
@@ -32,8 +35,9 @@ A copy of the files (one per DAY) is saved.
 
 func init() {
 	configCmd.AddCommand(generateCmd)
-	// Here you will define your flags and configuration settings.
-
+	// Here you will define your flags and configuration settings
+	generateCmd.Flags().BoolVar(&Prov, "prov", true, "include prov/source buckets in nabu conf")
+	generateCmd.Flags().BoolVar(&Org, "org", true, "include orgs bucket in nabu conf")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// generateCmd.PersistentFlags().String("foo", "", "A help for foo")
@@ -66,7 +70,7 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 		fmt.Println(err)
 		panic(err)
 	}
-	nabu, err = configTypes.ReadNabuConfig(configBaseFiles["nabu"], configDir)
+	nabu, err = nConfig.ReadNabuConfig(configBaseFiles["nabu"], configDir)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
@@ -156,22 +160,58 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 	}
 	nabu.Set("minio", minioCfg)
 	nabu.Set("sparql", sparqlCfg)
-	nabu.Set("objects", s3Cfg)
+	//nabu.Set("objects", s3Cfg)
+	////nabu.Set("objects", servers.Get("s3"))
+	//var prefix []string
+	//for _, s := range sources {
+	//	if s.Active {
+	//		prefix = append(prefix, s.Name)
+	//	}
+	//}
+	//nabu.Set("objects.prefix", prefix)
+	//var prefixOff []string
+	//for _, s := range sources {
+	//	if !s.Active {
+	//		prefixOff = append(prefixOff, s.Name)
+	//	}
+	//}
+	//nabu.Set("objects.prefixOff", prefixOff)
+
 	//nabu.Set("objects", servers.Get("s3"))
-	var prefix []string
+	//var prefix []string
+	//for _, s := range sources {
+	//	if s.Active {
+	//		prefix = append(prefix, s.Name)
+	//	}
+	//}
+	//s3Cfg.Prefix= prefix
+	var prefixSources []Source
+
 	for _, s := range sources {
 		if s.Active {
-			prefix = append(prefix, s.Name)
+			prefixSources = append(prefixSources, s)
 		}
 	}
-	nabu.Set("objects.prefix", prefix)
-	var prefixOff []string
+	s3Cfg.Prefix = configTypes.SourceToNabuPrefix(prefixSources, Prov)
+	if Org {
+		s3Cfg.Prefix = append(s3Cfg.Prefix, "org") // TODO: add flags for prov and or
+	}
+
+	//var prefixOff []string
+	//for _, s := range sources {
+	//	if !s.Active {
+	//		prefixOff = append(prefixOff, s.Name)
+	//	}
+	//}
+	//s3Cfg.PrefixOff =prefixOff
+	var prefixOffSources []Source
 	for _, s := range sources {
 		if !s.Active {
-			prefixOff = append(prefixOff, s.Name)
+			prefixOffSources = append(prefixOffSources, s)
 		}
 	}
-	nabu.Set("objects.prefixOff", prefixOff)
+	s3Cfg.PrefixOff = configTypes.SourceToNabuPrefix(prefixOffSources, Prov)
+	nabu.Set("objects", s3Cfg)
 	//nabu.Set("sitemaps", sources)
 	//// hack to get rid of the sourcetype
 	//err =  nabu.UnmarshalKey("sitemaps", &sm)

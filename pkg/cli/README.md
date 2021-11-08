@@ -3,9 +3,11 @@ config
   init
   generate
   validate
-run
+gleaner
   setup
   batch
   check
 
---TDB
+nabu What Nabu should do: tika, txtai, object, prefix, prune
+  prefix
+  prune

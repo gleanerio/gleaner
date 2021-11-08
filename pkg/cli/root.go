@@ -11,10 +11,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-var cfgFile, cfgName, cfgPath string
+var cfgFile, cfgName, cfgPath, nabuName, gleanerName string
 var minioVal, portVal, accessVal, secretVal, bucketVal string
 var sslVal bool
-var viperVal *viper.Viper
+var gleanerViperVal, nabuViperVal *viper.Viper
+
 var db *bolt.DB
 
 // rootCmd represents the base command when called without any subcommands
@@ -55,6 +56,8 @@ func init() {
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgPath, "cfgPath", "configs", "base location for config files (default is configs/)")
 	rootCmd.PersistentFlags().StringVar(&cfgName, "cfgName", "local", "config file (default is local so configs/local)")
+	rootCmd.PersistentFlags().StringVar(&gleanerName, "gleanerName", "gleaner", "config file (default is local so configs/local)")
+	rootCmd.PersistentFlags().StringVar(&nabuName, "nabuName", "nabu", "config file (default is local so configs/local)")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "cfg", "", "compatibility/overload: full path to config file (default location gleaner in configs/local)")
 
 	// minio env variables
@@ -73,27 +76,44 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 
-	viperVal := viper.New()
+	gleanerViperVal = viper.New()
 	if cfgFile != "" {
 		// Use config file from the flag.
-		viperVal.SetConfigFile(cfgFile)
+		gleanerViperVal.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
 		home, err := os.UserHomeDir()
 		cobra.CheckErr(err)
 
 		// Search config in home directory with name ".gleaner" (without extension).
-		viperVal.AddConfigPath(home)
-		viperVal.AddConfigPath(path.Join(cfgPath, cfgName))
-		viperVal.SetConfigType("yaml")
-		viperVal.SetConfigName("gleaner")
+		gleanerViperVal.AddConfigPath(home)
+		gleanerViperVal.AddConfigPath(path.Join(cfgPath, cfgName))
+		gleanerViperVal.SetConfigType("yaml")
+		gleanerViperVal.SetConfigName("gleaner")
 	}
+	nabuViperVal = viper.New()
+	if cfgFile != "" {
+		// Use config file from the flag.
+		nabuViperVal.SetConfigFile(cfgFile)
+	} else {
+		// Find home directory.
+		home, err := os.UserHomeDir()
+		cobra.CheckErr(err)
 
+		// Search config in home directory with name ".gleaner" (without extension).
+		nabuViperVal.AddConfigPath(home)
+		nabuViperVal.AddConfigPath(path.Join(cfgPath, cfgName))
+		nabuViperVal.SetConfigType("yaml")
+		nabuViperVal.SetConfigName("nabu")
+	}
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viperVal.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viperVal.ConfigFileUsed())
+	if err := gleanerViperVal.ReadInConfig(); err == nil {
+		fmt.Fprintln(os.Stderr, "Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
+	}
+	if err := nabuViperVal.ReadInConfig(); err == nil {
+		fmt.Fprintln(os.Stderr, "Using nabu config file:", nabuViperVal.ConfigFileUsed())
 	}
 	// Setup the KV store to hold a record of indexed resources
 	var err error
