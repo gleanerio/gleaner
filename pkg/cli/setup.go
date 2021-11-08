@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	"github.com/gleanerio/gleaner/internal/run"
+	"github.com/gleanerio/gleaner/pkg"
 	"github.com/spf13/viper"
 	"log"
 	"os"
@@ -50,5 +50,5 @@ func setup(filename string, cfgPath string, cfgName string) {
 
 	mc := common.MinioConnection(v1)
 
-	run.Setup(mc, v1)
+	pkg.Setup(mc, v1)
 }

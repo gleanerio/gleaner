@@ -1,4 +1,4 @@
-package run
+package pkg
 
 import (
 	"github.com/gleanerio/gleaner/internal/check"
