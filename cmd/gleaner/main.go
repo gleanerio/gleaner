@@ -3,20 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"os"
+	"path/filepath"
 
-	"github.com/boltdb/bolt"
-	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
+	bolt "go.etcd.io/bbolt"
 
-	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/common"
-	"github.com/gleanerio/gleaner/internal/millers"
 	"github.com/gleanerio/gleaner/internal/objects"
-	"github.com/gleanerio/gleaner/internal/organizations"
-	"github.com/gleanerio/gleaner/internal/summoner"
-	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+
+	"github.com/gleanerio/gleaner/internal/run"
 )
 
 var viperVal, sourceVal, modeVal string
@@ -62,7 +60,8 @@ func main() {
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
-		v1, err = readConfig(viperVal, map[string]interface{}{})
+		//v1, err = readConfig(viperVal, map[string]interface{}{})
+		v1, err = config.ReadGleanerConfig(filepath.Base(viperVal), filepath.Dir(viperVal))
 		if err != nil {
 			log.Printf("error when reading config: %v", err)
 			os.Exit(1)
@@ -74,8 +73,9 @@ func main() {
 	}
 
 	// read config file for minio info (need the bucket to check existence )
-	miniocfg := v1.GetStringMapString("minio")
-	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//miniocfg := v1.GetStringMapString("minio")
+	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	//bucketName, err := configTypes.GetBucketName(v1)
 
 	// Remove all source EXCEPT the one in the source command lind
 	if isFlagPassed("source") {
@@ -116,7 +116,8 @@ func main() {
 	// If requested, set up the buckets
 	if setupVal {
 		log.Println("Setting up buckets")
-		err := check.MakeBuckets(mc, bucketName)
+		//err := check.MakeBuckets(mc, bucketName)
+		err = run.Setup(mc, v1)
 		if err != nil {
 			log.Println("Error making buckets for setup call")
 			os.Exit(1)
@@ -127,18 +128,24 @@ func main() {
 	}
 
 	// Validate Minio access
-	err = check.ConnCheck(mc)
+	err = run.PreflightChecks(mc, v1)
 	if err != nil {
-		log.Printf("Connection issue, make sure the minio server is running and accessible. %s ", err)
+		log.Printf("Preflight Check failed. Make sure the minio server is running, accessible and has been setup. %s ", err)
 		os.Exit(1)
 	}
 
-	// Check our bucket is ready
-	err = check.Buckets(mc, bucketName)
-	if err != nil {
-		log.Printf("Can not find bucket. %s ", err)
-		os.Exit(1)
-	}
+	//err = check.ConnCheck(mc)
+	//if err != nil {
+	//	log.Printf("Connection issue, make sure the minio server is running and accessible. %s ", err)
+	//	os.Exit(1)
+	//}
+	//
+	//// Check our bucket is ready
+	//err = check.Buckets(mc, bucketName)
+	//if err != nil {
+	//	log.Printf("Can not find bucket. %s ", err)
+	//	os.Exit(1)
+	//}
 
 	// setup the KV store to hold a record of indexed resources
 	db, err := bolt.Open("gleaner.db", 0600, nil)
@@ -147,51 +154,22 @@ func main() {
 	}
 	defer db.Close()
 
-	cli(mc, v1, db)
+	//cli(mc, v1, db)
+	run.Cli(mc, v1, db) // move to a common call in batch.go
 }
 
-// func cli(mc *minio.Client, cs utils.Config) {
-func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
-	mcfg := v1.GetStringMapString("gleaner")
-	scfg := v1.GetStringMapString("summoner")
-
-	// Build the org graph(s)
-	err := organizations.BuildGraph(mc, v1)
-	if err != nil {
-		log.Print(err)
-	}
-
-	// Index the sitegraphs first, if any but never in a incremental (diff) call
-	if scfg["mode"] != "diff" {
-		_, err := acquire.GetGraph(mc, v1)
-		if err != nil {
-			log.Print(err)
-		}
-	}
-
-	// If configured, summon sources
-	if mcfg["summon"] == "true" {
-		summoner.Summoner(mc, v1, db)
-	}
-
-	// if configured, process summoned sources from JSON-LD to RDF (nq)
-	if mcfg["mill"] == "true" {
-		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
-	}
-}
-
-func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
-	v := viper.New()
-	for key, value := range defaults {
-		v.SetDefault(key, value)
-	}
-	v.SetConfigName(filename)
-	v.SetConfigType("yaml")
-	v.AddConfigPath(".")
-	v.AutomaticEnv()
-	err := v.ReadInConfig()
-	return v, err
-}
+//func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
+//	v := viper.New()
+//	for key, value := range defaults {
+//		v.SetDefault(key, value)
+//	}
+//	v.SetConfigName(filename)
+//	v.SetConfigType("yaml")
+//	v.AddConfigPath(".")
+//	v.AutomaticEnv()
+//	err := v.ReadInConfig()
+//	return v, err
+//}
 
 func isFlagPassed(name string) bool {
 	found := false

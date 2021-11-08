@@ -1,4 +1,29 @@
+Demonstration to run against samples.earth
 
+### demo.yaml is a hand generated file
+```
+gleaner -cfg configs/demo/demo
+```
+Note: no .yaml extension  at the end of the file
+
+```
+glcon gleaner batch -cfgFile  configs/demo/demo
+```
+### gleaner configuration directory mode
+```
+gleaner -cfg configs/demo/gleaner
+```
+
+```
+glcon gleaner batch -cfgName  demo
+```
+Note: No filename needed. assumed to be gleaner
+
+### Autogenerating a configuration.
+
+```
+glcon config init  -cfgName  myDemo
+```
 Edit:
 * sources
 * mino
@@ -9,6 +34,9 @@ add the cofiguraiton parameters for servers
 edit sources.csv
 * use a spreadsheet to edit
 
+```
+glcon config generate  -cfgName  myDemo
+```
 
 Possible environment Variables
 

@@ -39,7 +39,7 @@ func SourcesAndGraphs(v1 *viper.Viper) []Sources {
 	//err := v1.UnmarshalKey("sources", &sm)
 	// use config
 
-	domains, err = configTypes.ParseSourcesConfig(v1)
+	domains, err = configTypes.GetSources(v1)
 	if err != nil {
 		log.Println(err)
 	}

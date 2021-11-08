@@ -30,14 +30,15 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	var domains []Sources
 	//err := v1.UnmarshalKey("sitegraphs", &domains)
 
-	sources, err := configTypes.ParseSourcesConfig(v1)
+	sources, err := configTypes.GetSources(v1)
 	if err != nil {
 		log.Println(err)
 	}
-	domains = configTypes.GetSourceByType(sources, siteGraphType)
+	domains = configTypes.GetActiveSourceByType(sources, siteGraphType)
 
 	for k := range domains {
 		log.Printf("Processing sitegraph file (this can be slow with little feedback): %s", domains[k].URL)
+		log.Printf("Downloading sitegraph file: %s", domains[k].URL)
 
 		d, err := getJSON(domains[k].URL)
 		if err != nil {
@@ -49,13 +50,14 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		sha := common.GetSHA(d) // Don't normalize big files..
 
 		// Upload the file
-		// log.Print("Uploading file")
+		log.Printf("Sitegraph file downloaded. Uploading to %s: %s", bucketName, domains[k].URL)
+
 		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(d, bucketName, objectName, mc)
 		if err != nil {
 			return objectName, err
 		}
-
+		log.Printf("Sitegraph file uploaded to %s. Uploaded : %s", bucketName, domains[k].URL)
 		// mill the json-ld to nq and upload to minio
 		// we bypass graph.GraphNG which does a time consuming blank node fix which is not required
 		// when dealing with a single large file.
@@ -67,11 +69,13 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 			return "", err
 		}
 
+		log.Printf("Processed Sitegraph being uploaded to %s: %s", bucketName, domains[k].URL)
 		milledName := fmt.Sprintf("milled/%s/%s.rdf", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(rdf, bucketName, milledName, mc)
 		if err != nil {
 			return objectName, err
 		}
+		log.Printf("Processed Sitegraph Upload to %s complete: %s", bucketName, domains[k].URL)
 
 		// build prov
 		// log.Print("Building prov")
