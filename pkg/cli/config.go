@@ -24,7 +24,7 @@ nabu uploads and manages data processed by gleaner to a sparql triplestore
 var glrVal, nabuVal, sourcesVal, templateGleaner, templateNabu string
 
 var configBaseFiles = map[string]string{"gleaner": "gleaner_base.yaml", "sources": "sources.csv", "sources_min": "sources_min.csv",
-	"nabu": "nabu_base.yaml", "servers": "servers.yaml", "readme": "readme.txt"}
+	"nabu": "nabu_base.yaml", "servers": "servers.yaml", "readme": "readme.txt", "configdoc": "GleanerConfig.md"}
 
 var gleanerFileNameBase = "gleaner"
 var nabuFilenameBase = "nabu"

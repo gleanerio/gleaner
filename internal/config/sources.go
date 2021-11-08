@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gocarina/gocsv"
 	"github.com/spf13/viper"
@@ -147,7 +148,6 @@ func GetActiveSourceByType(sources []Sources, key string) []Sources {
 	return sourcesSlice
 }
 
-
 func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 
 	var prefixes []string
@@ -170,4 +170,37 @@ func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 		}
 	}
 	return prefixes
+}
+
+func PruneSources(v1 *viper.Viper, useSources []string) (*viper.Viper, error) {
+	var finalSources []Sources
+	allSources, err := GetSources(v1)
+	if err != nil {
+		log.Fatal("error retrieving sources: %s", err)
+	}
+	for _, s := range allSources {
+		if contains(useSources, s.Name) {
+			s.Active = true // we assume you want to run this, even if disabled, normally
+			finalSources = append(finalSources, s)
+		}
+	}
+	if len(finalSources) > 0 {
+		v1.Set("sources", finalSources)
+		return v1, err
+	} else {
+
+		return v1, errors.New("cannot find a source with the name ")
+	}
+
+}
+
+// contains checks if a string is present in a slice
+func contains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
 }
