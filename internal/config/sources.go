@@ -93,7 +93,7 @@ func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 // use full gleaner viper. v1.Sub("sources") fails because it is an array.
 // If we need to override with env variables, then we might need to grab this patch https://github.com/spf13/viper/pull/509/files
 
-func ParseSourcesConfig(g1 *viper.Viper) ([]Sources, error) {
+func GetSources(g1 *viper.Viper) ([]Sources, error) {
 	var subtreeKey = "sources"
 	var cfg []Sources
 	//for key, value := range SourcesTemplate {
@@ -112,10 +112,35 @@ func ParseSourcesConfig(g1 *viper.Viper) ([]Sources, error) {
 	return cfg, err
 }
 
+func GetActiveSources(g1 *viper.Viper) ([]Sources, error) {
+	var activeSources []Sources
+
+	sources, err := GetSources(g1)
+	if err != nil {
+		return nil, err
+	}
+	for _, s := range sources {
+		if s.Active == true {
+			activeSources = append(activeSources, s)
+		}
+	}
+	return activeSources, err
+}
+
 func GetSourceByType(sources []Sources, key string) []Sources {
 	var sourcesSlice []Sources
 	for _, s := range sources {
 		if s.SourceType == key {
+			sourcesSlice = append(sourcesSlice, s)
+		}
+	}
+	return sourcesSlice
+}
+
+func GetActiveSourceByType(sources []Sources, key string) []Sources {
+	var sourcesSlice []Sources
+	for _, s := range sources {
+		if s.SourceType == key && s.Active == true {
 			sourcesSlice = append(sourcesSlice, s)
 		}
 	}
