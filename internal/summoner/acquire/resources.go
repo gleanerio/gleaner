@@ -40,9 +40,9 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 
 	//var domains []Sources
 	//err := v1.UnmarshalKey("sources", &domains)
-	domains, err := configTypes.ParseSourcesConfig(v1)
+	domains, err := configTypes.GetSources(v1)
 	log.Println(domains)
-	domains = configTypes.GetSourceByType(domains, siteMapType)
+	domains = configTypes.GetActiveSourceByType(domains, siteMapType)
 	if err != nil {
 		log.Println(err)
 	}

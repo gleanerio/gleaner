@@ -37,7 +37,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 	//var domains []objects.Sources
 	//err := v1.UnmarshalKey("sources", &domains)
-	domains, err := config.ParseSourcesConfig(v1)
+	domains, err := config.GetSources(v1)
 	if err != nil {
 		log.Println(err)
 		return err

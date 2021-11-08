@@ -30,11 +30,11 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	var domains []Sources
 	//err := v1.UnmarshalKey("sitegraphs", &domains)
 
-	sources, err := configTypes.ParseSourcesConfig(v1)
+	sources, err := configTypes.GetSources(v1)
 	if err != nil {
 		log.Println(err)
 	}
-	domains = configTypes.GetSourceByType(sources, siteGraphType)
+	domains = configTypes.GetActiveSourceByType(sources, siteGraphType)
 
 	for k := range domains {
 		log.Printf("Processing sitegraph file (this can be slow with little feedback): %s", domains[k].URL)
