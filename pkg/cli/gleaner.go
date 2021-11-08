@@ -7,8 +7,9 @@ import (
 
 // gleanerCmd represents the run command
 var gleanerCmd = &cobra.Command{
-	Use:   "gleaner",
-	Short: "command to execute gleaner processes",
+	Use:              "gleaner",
+	TraverseChildren: true,
+	Short:            "command to execute gleaner processes",
 	Long: `run gleaner process to extract JSON-LD from pages using sitemaps, conver to triples
 and store to a S3 server:
 --cfgName
@@ -18,13 +19,11 @@ and store to a S3 server:
 		fmt.Println("gleaner called")
 	},
 }
-var sourceVal, modeVal string
+var modeVal string
 
 func init() {
 	rootCmd.AddCommand(gleanerCmd)
-
 	// Here you will define your flags and configuration settings.
-	gleanerCmd.Flags().StringVar(&modeVal, "mode", "mode", "Set the mode")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
