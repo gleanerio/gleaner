@@ -159,6 +159,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				// this should not be here IMHO, but need to support people not setting proper header value
 				// The URL is sending back JSON-LD but incorrectly sending as application/json
 				if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") {
+					logger.Printf("%s as %s", urlloc, contentTypeHeader)
 					jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 					if err != nil {
 						logger.Printf("Error processing json response from %s: %s", urlloc, err)

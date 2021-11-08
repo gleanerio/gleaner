@@ -147,6 +147,7 @@ func GetActiveSourceByType(sources []Sources, key string) []Sources {
 	return sourcesSlice
 }
 
+
 func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 
 	var prefixes []string
