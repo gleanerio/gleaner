@@ -30,6 +30,8 @@ import (
 )
 
 var sourceVal string
+var summonVal bool
+var millVal bool
 
 // batchCmd represents the batch command
 var batchCmd = &cobra.Command{
@@ -57,6 +59,8 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	batchCmd.Flags().StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	batchCmd.Flags().StringVar(&modeVal, "mode", "mode", "Set the mode")
+	batchCmd.Flags().BoolVar(&summonVal, "summon", false, "override summon value with True")
+	batchCmd.Flags().BoolVar(&millVal, "mill", false, "override mill value with True")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// batchCmd.PersistentFlags().String("foo", "", "A help for foo")
@@ -79,7 +83,18 @@ func Batch(filename string, cfgPath string, cfgName string, mode string, runSour
 		log.Fatal(err)
 	}
 	defer db.Close()
-
+	//var gln = v1.Sub("gleaner")
+	gln := v1.GetStringMapString("gleaner")
+	if millVal {
+		//gln.Set("mill", "true")
+		gln["mill"] = "true"
+		v1.Set("gleaner", gln)
+	}
+	if summonVal {
+		//gln.Set("summon", "true")
+		gln["summon"] = "true"
+		v1.Set("gleaner", gln)
+	}
 	if len(runSources) > 0 {
 
 		v1, err = configTypes.PruneSources(v1, runSources)
