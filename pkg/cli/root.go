@@ -20,8 +20,9 @@ var db *bolt.DB
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "glcon",
-	Short: "Gleaner Console - Gleaner Extracts JSON-LD from web pages exposed in a domains sitemap file. ",
+	Use:              "glcon",
+	TraverseChildren: true,
+	Short:            "Gleaner Console - Gleaner Extracts JSON-LD from web pages exposed in a domains sitemap file. ",
 	Long: `The gleaner.io stack harvests JSON-LD from webpages using sitemaps and other tools
 store files in S3 (we use minio), uploads triples to be processed by nabu (the next step in the process)
 configuration is now focused on a directory (default: configs/local) with will contain the

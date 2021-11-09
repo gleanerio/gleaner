@@ -73,6 +73,10 @@ Fields:
 8. Domain: 
 9. PID: a unique identifier for the source. Perfered that is is a research id.
 10. Logo: while no longer used, logo of the source
+##### Override sources.csv
+pass --sourcemaps to generate:
+
+`glcon config generate --cfgName test --sourcemaps "My Sources.csv" `
 
 ### generate the configuraiton files
 ```

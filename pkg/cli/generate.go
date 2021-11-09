@@ -55,7 +55,8 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 	var sources []Source
 
 	var configDir = path.Join(cfgPath, cfgName)
-	sources, err = configTypes.ReadSourcesCSV(configBaseFiles["sources"], configDir)
+
+	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
