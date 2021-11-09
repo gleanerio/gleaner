@@ -8,8 +8,9 @@ import (
 
 // configCmd represents the config command
 var configCmd = &cobra.Command{
-	Use:   "config",
-	Short: "commands to intialize, and generate tools: gleaner and nabu",
+	Use:              "config",
+	TraverseChildren: true,
+	Short:            "commands to intialize, and generate tools: gleaner and nabu",
 	Long: `This command is used to initialize configuration files for the gleaner.io ecosystem. 
 gleaner harvests and converts JSON-LD files from sites. 
 nabu uploads and manages data processed by gleaner to a sparql triplestore
@@ -35,7 +36,7 @@ func init() {
 	configCmd.PersistentFlags().StringVar(&templateNabu, "template_nabu", configBaseFiles["nabu"], "Configuration Template or Cofiguration file")
 	configCmd.PersistentFlags().StringVar(&glrVal, "gleaner", gleanerFileNameBase+".yaml", "output gleaner file to")
 	configCmd.PersistentFlags().StringVar(&nabuVal, "nabu", nabuFilenameBase+".yaml", "output nabu file to")
-	configCmd.PersistentFlags().StringVar(&sourcesVal, "sourcemaps", "sources.csv", "sources as csv")
+	configCmd.PersistentFlags().StringVar(&sourcesVal, "sourcemaps", configBaseFiles["sources"], "sources as csv")
 	rootCmd.MarkPersistentFlagRequired("cfgName")
 	// Here you will define your flags and configuration settings.
 
