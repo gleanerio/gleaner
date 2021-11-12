@@ -15,7 +15,7 @@ var gdriveCmd = &cobra.Command{
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("gdrive called")
-		srv, err := acquire.GetDriveCredentials("AIzaSyB7e8ewIkapa2_Eyj-IL9zYP4oG-77Y8J0")
+		var srv, err = acquire.GetDriveCredentials("")
 		//srv, err := googledrive.GetDriveCredentials("")
 		if err != nil {
 			fmt.Println(err)
