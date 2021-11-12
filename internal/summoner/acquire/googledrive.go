@@ -8,10 +8,13 @@ import (
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
 	"github.com/spf13/viper"
+	"google.golang.org/api/googleapi"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -109,6 +112,8 @@ func GetDriveCredentials(apiKey string) (srv *drive.Service, err error) {
 		}
 		client := getClient(config)
 		srv, err = drive.NewService(ctx, option.WithHTTPClient(client))
+
+		srv.UserAgent = "EarthCube_DataBot/1.0"
 		if err != nil {
 			log.Fatalf("Unable to retrieve Drive client: %v", err)
 		}
@@ -136,59 +141,109 @@ func GetDriveCredentials(apiKey string) (srv *drive.Service, err error) {
 	//}
 }
 
-func GetFileList(srv *drive.Service, parentFolder string, isSharedDrive bool, sharedDriveId string) (*drive.FileList,
+func GetFileList(srv *drive.Service, parentFolder string, isSharedDrive bool, sharedDriveId string) ([]*drive.File,
 	error) {
-	var r *drive.FileList
+	var files []*drive.File
 	var err error
 	var parentQuery = fmt.Sprintf("'%s' in parents", parentFolder)
-	if isSharedDrive {
-		r, err = srv.Files.List().Q(parentQuery).IncludeTeamDriveItems(true).DriveId(sharedDriveId).IncludeItemsFromAllDrives(true).SupportsTeamDrives(true).Corpora("drive").SupportsAllDrives(true).
-			Fields("nextPageToken, files(id, name)").Do()
-		if err != nil {
-			log.Fatalf("Unable to retrieve files: %v", err)
-		}
-	} else {
-		//r, err = srv.Files.List().IncludeItemsFromAllDrives(true).SupportsAllDrives(true).PageSize(10).
-		//	Fields("nextPageToken, files(id, name)").Do()
-		r, err = srv.Files.List().Q(parentQuery).IncludeItemsFromAllDrives(true).SupportsAllDrives(true).
-			Fields("nextPageToken, files(id, name)").Do()
+	pageToken := ""
 
+	for {
+		var q *drive.FilesListCall
+		if isSharedDrive {
+
+			q = srv.Files.List().Q(parentQuery).IncludeTeamDriveItems(true).DriveId(sharedDriveId).IncludeItemsFromAllDrives(true).SupportsTeamDrives(true).Corpora("drive").SupportsAllDrives(true).
+				Fields("nextPageToken, files(id, name)")
+			if err != nil {
+				log.Fatalf("Unable to retrieve files: %v", err)
+			}
+		} else {
+			//r, err = srv.Files.List().IncludeItemsFromAllDrives(true).SupportsAllDrives(true).PageSize(10).
+			//	Fields("nextPageToken, files(id, name)").Do()
+			q = srv.Files.List().Q(parentQuery).IncludeItemsFromAllDrives(true).SupportsAllDrives(true).
+				Fields("nextPageToken, files(id, name)")
+
+			if err != nil {
+				log.Fatalf("Unable to retrieve files: %v", err)
+			}
+		}
+		if pageToken != "" {
+			q = q.PageToken(pageToken)
+		}
+		r, err := q.Do()
 		if err != nil {
-			log.Fatalf("Unable to retrieve files: %v", err)
+			fmt.Printf("An error occurred: %v\n", err)
+			return files, err
+		}
+		files = append(files, r.Files...)
+		pageToken = r.NextPageToken
+		if pageToken == "" {
+			break
 		}
 	}
 
 	fmt.Println("Files:")
-	if len(r.Files) == 0 {
+	if len(files) == 0 {
 		fmt.Println("No files found.")
 	} else {
-		for _, i := range r.Files {
+		for _, i := range files {
 			fmt.Printf("%s (%s)\n", i.Name, i.Id)
 		}
 	}
-	return r, nil
+	return files, nil
 }
 
+/*
+We get this:
+but your computer or network may be sending automated queries. To protect our users, we can't process your request right now.
+ https://support.google.com/websearch/answer/86640
+
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"/><title>
+Sorry...</title><style> body { font-family: verdana, arial, sans-serif; background-color: #fff; color: #000; }</style></head><body><div><table><tr><td><b><font face=sans-serif size=10><font color=#4285f4>G</font><font color=#ea4335>o</font><font color=#fbbc05>o</font><font color=#4285f4>g</font><font color=#34a853>l</font><font color=#ea4335>e</font></font></b></td><td style="text-align: left; vertical-align: bottom; padding-bottom: 15px; width: 50%"><div style="border-bottom: 1px solid #dfdfdf;">Sorry...</div></td></tr></table></div><div style="margin-left: 4em;"><h1>We're sorry...</h1><p>... but your computer or network may be sending automated queries. To protect our users, we can't process your request right now.</p></div><div style="margin-left: 4em;">See <a href="https://support.google.com/websearch/answer/86640">Google Help</a> for more information.<br/><br/></div><div style="text-align: center; border-top: 1px solid #dfdfdf;"><a href="https://www.google.com">Google Home</a></div></body></html>
+
+*/
 func GetFileFromGDrive(srv *drive.Service, fileId string) (*drive.File, string, error) {
+
+	var fileContents string
 	file, err := srv.Files.Get(fileId).Do()
-	if err != nil {
-		log.Fatalf("Unable to retrieve files: %v", err)
-		return file, "", err
+	if e, ok := err.(*googleapi.Error); ok {
+		log.Printf("Unable to retrieve info about file %s: %v", fileId, e)
+		return file, "", e
 	}
+	count := 0
+	for {
+		fileResp, err := srv.Files.Get(fileId).Download()
+		if e, ok := err.(*googleapi.Error); ok {
+			if e.Code == 403 {
+				if count > 10 {
+					log.Printf("403 10 times, giving up : %v", e)
+					return file, "", err
+				} else {
+					count = count + 1
+					log.Printf("403 waiting : %v", e)
+					time.Sleep(2 * time.Second)
+				}
 
-	fileResp, err := srv.Files.Get(fileId).Download()
-	if err != nil {
-		log.Fatalf("Unable to retrieve files: %v", err)
-		return file, "", err
+			} else {
+				log.Printf("Unable to retrieve file %s: %v", file.Name, e)
+				return file, "", e
+			}
+		} else {
+			b, err := ioutil.ReadAll(fileResp.Body)
+			if err != nil {
+				log.Printf("Unable to convert downloaded fil%s: %v", file.Name, err)
+				return file, "", err
+			}
+			fileContents = string(b)
+			break
+		}
 	}
-	b, err := ioutil.ReadAll(fileResp.Body)
-	return file, string(b), nil
-
+	return file, fileContents, nil
 }
 
 func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	bucketName, err := configTypes.GetBucketName(v1) //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-
+	rd := rand.New(rand.NewSource(999))
 	// get the sitegraph entry from config file
 	var domains []Sources
 	//err := v1.UnmarshalKey("sitegraphs", &domains)
@@ -213,9 +268,9 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		}
 		l, err := GetFileList(srv, s.GoogleParentFolderId, false, "")
 
-		for _, f := range l.Files {
+		for _, f := range l {
 			//results = append(results,f)
-			o, err := gfileProcessing(mc, v1, srv, f, s.Name, bucketName)
+			o, err := gfileProcessing(mc, v1, srv, f, s.Name, bucketName, rd.Int())
 			if err != nil {
 				continue
 			}
@@ -227,9 +282,9 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	return m, err
 }
 
-func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *drive.File, sourceName string, bucketName string) (string, error) {
+func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *drive.File, sourceName string, bucketName string, randowmWait int) (string, error) {
 	var fileId = f.Id
-
+	time.Sleep(time.Duration(randowmWait) * time.Millisecond)
 	_, contents, err := GetFileFromGDrive(srv, fileId)
 	if err != nil {
 		fmt.Printf("error with reading  JSON '%s' from google drive:%s ", f.Name, sourceName)
