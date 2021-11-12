@@ -35,6 +35,7 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 		log.Println(fn)
 		// summon sitemaps
 		summoner.Summoner(mc, v1, db)
+		acquire.GetFromGDrive(mc, v1)
 	}
 
 	// if configured, process summoned sources fronm JSON-LD to RDF (nq)

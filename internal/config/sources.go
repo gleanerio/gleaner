@@ -14,15 +14,18 @@ import (
 
 // as read from csv
 type Sources struct {
-	SourceType string `default:"sitemap"`
-	Name       string
-	Logo       string
-	URL        string
-	Headless   bool
-	PID        string
-	ProperName string
-	Domain     string
-	Active     bool `default:"true"`
+	SourceType           string `default:"sitemap"`
+	Name                 string
+	Logo                 string
+	URL                  string
+	Headless             bool
+	PID                  string
+	ProperName           string
+	Domain               string
+	Active               bool   `default:"true"`
+	GoogleApiKeyEnv      string // do not want someones google api key exposed.
+	GoogleParentFolderId string
+	Other                map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
 }
@@ -42,14 +45,16 @@ type SourcesConfig struct {
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype": "sitemap",
-		"name":       "",
-		"url":        "",
-		"logo":       "",
-		"headless":   "",
-		"pid":        "",
-		"propername": "",
-		"domain":     "",
+		"sourcetype":           "sitemap",
+		"name":                 "",
+		"url":                  "",
+		"logo":                 "",
+		"headless":             "",
+		"pid":                  "",
+		"propername":           "",
+		"domain":               "",
+		"GoogleApiKeyEnv":      "",
+		"GoogleParentFolderId": "",
 	},
 }
 
