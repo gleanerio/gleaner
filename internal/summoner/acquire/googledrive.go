@@ -11,9 +11,10 @@ import (
 	"google.golang.org/api/googleapi"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
+	"path/filepath"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -25,6 +26,28 @@ import (
 )
 
 const googleDriveType = "googledrive"
+
+/*
+Access files from a google drive.
+Following keys in the source are needed:
+  googleapikeyenv: GOOGLEAPIAUTH
+  url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+
+
+
+googleapikeyenv:
+This is a path and name to a file. There could be multiple services, each with different groups.
+suggested path: configs/credentials/{file}.json
+
+This should be a Service Credential JSON file, otherwise the original user needs to run glcon config gdrive.
+
+Google Folder:
+Files are associated with parent folder:
+https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+googleparentfolderid is: 1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+We put the full URL in the url field.
+
+*/
 
 // Retrieve a token, saves the token, then returns the generated client.
 func getClient(config *oauth2.Config) *http.Client {
@@ -94,34 +117,36 @@ func saveToken(path string, token *oauth2.Token) {
 	json.NewEncoder(f).Encode(token)
 }
 
-func GetDriveCredentials(apiKey string) (srv *drive.Service, err error) {
+func GetDriveCredentials(authFilename string) (srv *drive.Service, err error) {
 	ctx := context.Background()
 
-	if apiKey == "" {
+	if authFilename == "" {
 		b, err := ioutil.ReadFile("configs/credentials.json")
 		//b, err := ioutil.ReadFile("configs/client_secret_255488082803-v2kja4qjaonb85gp8lv59333hpnt3n45.apps.googleusercontent.com.json")
 
 		if err != nil {
-			log.Fatalf("Unable to read client secret file: %v", err)
+			log.Printf("Unable to read client secret file: %v", err)
 		}
 
 		// If modifying these scopes, delete your previously saved token.json.
 		config, err := google.ConfigFromJSON(b, drive.DriveMetadataReadonlyScope)
 		if err != nil {
-			log.Fatalf("Unable to parse client secret file to config: %v", err)
+			log.Printf("Unable to parse client secret file to config: %v", err)
 		}
 		client := getClient(config)
 		srv, err = drive.NewService(ctx, option.WithHTTPClient(client))
 
 		srv.UserAgent = "EarthCube_DataBot/1.0"
 		if err != nil {
-			log.Fatalf("Unable to retrieve Drive client: %v", err)
+			log.Printf("Unable to retrieve Drive client: %v", err)
 		}
 		return srv, err
 	} else {
-		srv, err = drive.NewService(ctx, option.WithAPIKey(apiKey))
+		// service credentials
+
+		srv, err = drive.NewService(ctx, option.WithCredentialsFile(authFilename))
 		if err != nil {
-			log.Fatalf("Unable to retrieve Drive client: %v", err)
+			log.Printf("Unable to retrieve Drive client: %v", err)
 		}
 		return srv, err
 	}
@@ -243,7 +268,6 @@ func GetFileFromGDrive(srv *drive.Service, fileId string) (*drive.File, string, 
 
 func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	bucketName, err := configTypes.GetBucketName(v1) //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-	rd := rand.New(rand.NewSource(999))
 	// get the sitegraph entry from config file
 	var domains []Sources
 	//err := v1.UnmarshalKey("sitegraphs", &domains)
@@ -256,21 +280,21 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	//var results []*drive.File
 	var results []string
 	for _, s := range domains {
-		apiKey := os.Getenv(s.GoogleApiKeyEnv)
-		if apiKey == "" {
-			log.Fatalf("googledrive missing api key: %s", s.Name)
-			continue
-		}
-		srv, err := GetDriveCredentials(apiKey)
+		serviceJson := os.Getenv(s.GoogleServiceJsonEnv)
+
+		srv, err := GetDriveCredentials(serviceJson)
 		if err != nil {
-			log.Fatalf("googledrive api key access failed: %s : %s", s.Name, err)
+			log.Printf("googledrive api key access failed: %s : %s", s.Name, err)
 			continue
 		}
-		l, err := GetFileList(srv, s.GoogleParentFolderId, false, "")
+		u, _ := url.Parse(s.URL)
+		fn := filepath.Base(u.Path)
+		log.Printf("reading google folder id: %s", fn)
+		l, err := GetFileList(srv, fn, false, "")
 
 		for _, f := range l {
 			//results = append(results,f)
-			o, err := gfileProcessing(mc, v1, srv, f, s.Name, bucketName, rd.Int())
+			o, err := gfileProcessing(mc, v1, srv, f, s.Name, bucketName)
 			if err != nil {
 				continue
 			}
@@ -282,9 +306,8 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	return m, err
 }
 
-func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *drive.File, sourceName string, bucketName string, randowmWait int) (string, error) {
+func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *drive.File, sourceName string, bucketName string) (string, error) {
 	var fileId = f.Id
-	time.Sleep(time.Duration(randowmWait) * time.Millisecond)
 	_, contents, err := GetFileFromGDrive(srv, fileId)
 	if err != nil {
 		fmt.Printf("error with reading  JSON '%s' from google drive:%s ", f.Name, sourceName)
