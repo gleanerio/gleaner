@@ -22,9 +22,8 @@ type Sources struct {
 	PID                  string
 	ProperName           string
 	Domain               string
-	Active               bool   `default:"true"`
-	GoogleApiKeyEnv      string // do not want someones google api key exposed.
-	GoogleParentFolderId string
+	Active               bool                   `default:"true"`
+	GoogleServiceJsonEnv string                 // do not want someones google api key exposed.
 	Other                map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
@@ -53,8 +52,7 @@ var SourcesTemplate = map[string]interface{}{
 		"pid":                  "",
 		"propername":           "",
 		"domain":               "",
-		"GoogleApiKeyEnv":      "",
-		"GoogleParentFolderId": "",
+		"googleservicejsonenv": "",
 	},
 }
 
