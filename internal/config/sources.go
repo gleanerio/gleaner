@@ -14,17 +14,17 @@ import (
 
 // as read from csv
 type Sources struct {
-	SourceType           string `default:"sitemap"`
-	Name                 string
-	Logo                 string
-	URL                  string
-	Headless             bool
-	PID                  string
-	ProperName           string
-	Domain               string
-	Active               bool                   `default:"true"`
-	GoogleServiceJsonEnv string                 // do not want someones google api key exposed.
-	Other                map[string]interface{} `mapstructure:",remain"`
+	SourceType     string `default:"sitemap"`
+	Name           string
+	Logo           string
+	URL            string
+	Headless       bool
+	PID            string
+	ProperName     string
+	Domain         string
+	Active         bool                   `default:"true"`
+	CredentialsEnv string                 // do not want someones google api key exposed.
+	Other          map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
 }
@@ -44,15 +44,15 @@ type SourcesConfig struct {
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype":           "sitemap",
-		"name":                 "",
-		"url":                  "",
-		"logo":                 "",
-		"headless":             "",
-		"pid":                  "",
-		"propername":           "",
-		"domain":               "",
-		"googleservicejsonenv": "",
+		"sourcetype":     "sitemap",
+		"name":           "",
+		"url":            "",
+		"logo":           "",
+		"headless":       "",
+		"pid":            "",
+		"propername":     "",
+		"domain":         "",
+		"credentialsenv": "",
 	},
 }
 
@@ -169,7 +169,11 @@ func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 			if includeProv {
 				prefixes = append(prefixes, "prov/"+s.Name)
 			}
-
+		case "googledrive":
+			prefixes = append(prefixes, "milled/"+s.Name)
+			if includeProv {
+				prefixes = append(prefixes, "prov/"+s.Name)
+			}
 		}
 	}
 	return prefixes

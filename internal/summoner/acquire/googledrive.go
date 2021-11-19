@@ -30,12 +30,12 @@ const googleDriveType = "googledrive"
 /*
 Access files from a google drive.
 Following keys in the source are needed:
-  googleapikeyenv: GOOGLEAPIAUTH
+  credentialsenv: GOOGLEAPIAUTH
   url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
 
 
 
-googleapikeyenv:
+credentialsenv:
 This is a path and name to a file. There could be multiple services, each with different groups.
 suggested path: configs/credentials/{file}.json
 
@@ -280,7 +280,7 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	//var results []*drive.File
 	var results []string
 	for _, s := range domains {
-		serviceJson := os.Getenv(s.GoogleServiceJsonEnv)
+		serviceJson := os.Getenv(s.CredentialsEnv)
 
 		srv, err := GetDriveCredentials(serviceJson)
 		if err != nil {
