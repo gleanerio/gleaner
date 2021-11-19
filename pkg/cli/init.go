@@ -17,7 +17,7 @@ var initCmd = &cobra.Command{
 	Use:   "init",
 	Short: "This initialize a config directory which are used create config files",
 	Long: `config init creates template configuration files. :
-servers.yaml - configuration file for services
+localConfig.yaml - configuration file for services
 sources.csv - a csv listing of sources that are uses to generate lists of files to harvest
 gleaner_base.yaml - base configuration file for gleaner
 nabu_base. yaml - base configuration for nabu
@@ -67,10 +67,16 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 		copy(path.Join(cfgpath, "template", configBaseFiles["servers"]), path.Join(cfgpath, cfgName, configBaseFiles["servers"]+"_latest"))
 		delete(configBaseFiles, "servers")
 	}
+	if err == nil {
+		var configdoc = path.Join(cfgpath, cfgName, configBaseFiles["configdoc"])
+		var doc = path.Join("docs", configBaseFiles["configdoc"])
+		copy(doc, configdoc)
+		delete(configBaseFiles, "configdoc")
+	}
 	// copy files listed in config.go: configBaseFiles
 	for _, f := range configBaseFiles {
 		var template = path.Join(cfgpath, cfgName, f)
-		var config = path.Join(cfgpath, "template", f)
+		var config = path.Join("configs", "template", f)
 		copy(config, template)
 	}
 	//DownloadFile(path.Join(cfgpath, cfgName, "schemaorg-current-https.jsonld"), "https://schema.org/version/latest/schemaorg-current-https.jsonld")
