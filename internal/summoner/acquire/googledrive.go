@@ -280,8 +280,8 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	//var results []*drive.File
 	var results []string
 	for _, s := range domains {
-		serviceJson := os.Getenv(s.CredentialsEnv)
-
+		//serviceJson := os.Getenv(s.CredentialsFile) // just use separate files for all credentials
+		serviceJson := s.CredentialsFile
 		srv, err := GetDriveCredentials(serviceJson)
 		if err != nil {
 			log.Printf("googledrive api key access failed: %s : %s", s.Name, err)
