@@ -223,6 +223,21 @@ sources:
     domain: https://aquadocs.org
     active: false
 ```
+A google drive
+```yaml
+sources:
+   - sourcetype: googledrive
+     name: ecrr_submitted
+     logo: https://www.earthcube.org/sites/default/files/doc-repository/logo_earthcube_full_horizontal.png
+     url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+     headless: false
+     pid: ""
+     propername: Earthcube Resource Registry
+     domain: http://www.earthcube.org/resourceregistry/
+     active: true
+     GoogleServiceJsonEnv: GOOGLEAPIAUTH
+     # see below. Enviroment variable name that contains filename of service_account.json authentication
+```
 These are the sources we wish to pull and process. 
 Each source has a type, and 8 entries though at this time we no longer use the "logo" value. 
 It was used in the past to provide a page showing all the sources and 
@@ -236,6 +251,33 @@ The url value needs to point to the URL for the site map XML file.  This will be
 The headless value should be set to false unless you know this site uses JavaScript to place the JSON-LD into the page.  This is true of some sites and it is supported but not currently auto-detected.  So you will need to know this and set it.  For most place, this will be false. 
 
 You can have as many sources as you wish.  For an example look the configure file for the CDF Semantic Network at: https://github.com/gleanerio/CDFSemanticNetwork/blob/master/configs/cdf.yaml
+
+### Google Drive
+The key GoogleServiceJson Env points to a env variable name that contains the path to service_account.json file
+`setenv GOOGLEAPIAUTH "configs/credentials/gleaner-331805-030e15e1d9c4.json"`
+
+Create service credentials
+https://developers.google.com/workspace/guides/create-credentials
+
+save in credentials/{filename}
+
+The URL will be the folder you see in google drive.
+
+A google drive
+```yaml
+sources:
+   - sourcetype: googledrive
+     name: ecrr_submitted
+     logo: https://www.earthcube.org/sites/default/files/doc-repository/logo_earthcube_full_horizontal.png
+     url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+     headless: false
+     pid: ""
+     propername: Earthcube Resource Registry
+     domain: http://www.earthcube.org/resourceregistry/
+     active: true
+     GoogleServiceJsonEnv: GOOGLEAPIAUTH
+     # see below. Enviroment variable name that contains filename of service_account.json authentication
+```
 
 
 
