@@ -28,7 +28,7 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 	// If configured, summon sources
 	if mcfg["summon"] == "true" {
 		// Index the sitegraphs first, if any
-		fn, err := acquire.GetGraph(mc, v1)
+		fn, err := acquire.GetGraph(mc, v1, db)
 		if err != nil {
 			log.Print(err)
 		}

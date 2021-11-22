@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/boltdb/bolt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	bolt "go.etcd.io/bbolt"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
@@ -23,7 +23,7 @@ const siteGraphType = "sitegraph"
 
 // GetGraph downloads pre-built site graphs
 func GetGraph(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) (string, error) {
-	// read config file
+	// read config file. to determine the run type, and other parameters
 	var mcfg configTypes.Summoner
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 	if err != nil {

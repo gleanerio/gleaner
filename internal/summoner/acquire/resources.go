@@ -20,7 +20,7 @@ const siteMapType = "sitemap"
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) map[string][]string {
 	m := make(map[string][]string) // make a map
 
-	domains, err := configTypes.ParseSourcesConfig(v1)
+	domains, err := configTypes.GetSources(v1)
 	log.Println(domains)
 	domains = configTypes.GetActiveSourceByType(domains, siteMapType)
 	if err != nil {
