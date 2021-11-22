@@ -157,18 +157,48 @@ func main() {
 	pkg.Cli(mc, v1, db) // move to a common call in batch.go
 }
 
-//func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
-//	v := viper.New()
-//	for key, value := range defaults {
-//		v.SetDefault(key, value)
-//	}
-//	v.SetConfigName(filename)
-//	v.SetConfigType("yaml")
-//	v.AddConfigPath(".")
-//	v.AutomaticEnv()
-//	err := v.ReadInConfig()
-//	return v, err
-//}
+// func cli(mc *minio.Client, cs utils.Config) {
+func cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
+	mcfg := v1.GetStringMapString("gleaner")
+	// scfg := v1.GetStringMapString("summoner")
+
+	// Build the org graph(s)
+	err := organizations.BuildGraph(mc, v1)
+	if err != nil {
+		log.Print(err)
+	}
+
+	// Index the sitegraphs first (if summon true)  (really should be sent into a go func to run by themselves and move on to the rest of work)
+	if mcfg["summon"] == "true" {
+		_, err = acquire.GetGraph(mc, v1, db)
+		if err != nil {
+			log.Print(err)
+		}
+	}
+
+	// If configured, summon sources
+	if mcfg["summon"] == "true" {
+		summoner.Summoner(mc, v1, db)
+	}
+
+	// if configured, process summoned sources from JSON-LD to RDF (nq)
+	if mcfg["mill"] == "true" {
+		millers.Millers(mc, v1) // need to remove rundir and then fix the compile
+	}
+}
+
+func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
+	v := viper.New()
+	for key, value := range defaults {
+		v.SetDefault(key, value)
+	}
+	v.SetConfigName(filename)
+	v.SetConfigType("yaml")
+	v.AddConfigPath(".")
+	v.AutomaticEnv()
+	err := v.ReadInConfig()
+	return v, err
+}
 
 func isFlagPassed(name string) bool {
 	found := false

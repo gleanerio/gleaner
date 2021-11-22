@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/boltdb/bolt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
 	"github.com/gleanerio/gleaner/internal/common"
@@ -21,14 +22,20 @@ type Sources = configTypes.Sources
 const siteGraphType = "sitegraph"
 
 // GetGraph downloads pre-built site graphs
-func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
+func GetGraph(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) (string, error) {
 	// read config file
-	//miniocfg := v1.GetStringMapString("minio")
-	bucketName, err := configTypes.GetBucketName(v1) //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	var mcfg configTypes.Summoner
+	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+	if err != nil {
+		log.Println(err)
+	}
 
-	// get the sitegraph entry from config file
-	var domains []Sources
-	//err := v1.UnmarshalKey("sitegraphs", &domains)
+	bucketName, err := configTypes.GetBucketName(v1) //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	if err != nil {
+		log.Println(err)
+	}
+
+	var domains []Sources // get the sitegraph entry from config file
 
 	sources, err := configTypes.GetSources(v1)
 	if err != nil {
@@ -39,6 +46,41 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	for k := range domains {
 		log.Printf("Processing sitegraph file (this can be slow with little feedback): %s", domains[k].URL)
 		log.Printf("Downloading sitegraph file: %s", domains[k].URL)
+
+		// make the bucket (if it doesn't exist)
+		db.Update(func(tx *bolt.Tx) error {
+			_, err := tx.CreateBucket([]byte(domains[k].Name))
+			if err != nil {
+				return fmt.Errorf("create bucket: %s", err)
+			}
+			return nil
+		})
+
+		// TODO  issue 44 at this point I need to see if we are diff and remove items have already
+		log.Println(domains)
+
+		if mcfg.Mode == "diff" {
+			// sitegraphs are a single thing, if we have them we simply want to break out of the for loop
+
+			e := false
+			db.View(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(domains[k].Name))
+				value := b.Get([]byte(domains[k].URL))
+				if value != nil {
+					fmt.Println("key exists and in diff mode we will not proceed")
+					e = true
+				}
+				return err
+			})
+
+			if e {
+				break
+			} else {
+				log.Println("We don't have a record of this sitegraph being downloaded, downloading now")
+			}
+
+		}
+		// end of check
 
 		d, err := getJSON(domains[k].URL)
 		if err != nil {
@@ -78,11 +120,22 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		log.Printf("Processed Sitegraph Upload to %s complete: %s", bucketName, domains[k].URL)
 
 		// build prov
-		// log.Print("Building prov")
+		log.Printf("Building sitegraph prov: %s :: %s", domains[k].Name, domains[k].URL)
 		err = StoreProvNG(v1, mc, domains[k].Name, sha, domains[k].URL, "summoned")
 		if err != nil {
 			return objectName, err
 		}
+
+		// issue 44  Add the URL if we did pull it down
+		db.Update(func(tx *bolt.Tx) error {
+			b := tx.Bucket([]byte(domains[k].Name))
+			log.Printf("%s    %s", domains[k].URL, sha)
+			err := b.Put([]byte(domains[k].URL), []byte(sha))
+			if err != nil {
+				log.Println(err)
+			}
+			return err
+		})
 
 		log.Printf("Loaded: %d", len(d))
 	}
@@ -101,7 +154,7 @@ func getJSON(urlloc string) (string, error) {
 	// this is to http 1.1 spec: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host
 	*/
 
-	var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
+	var client http.Client
 	req, err := http.NewRequest("GET", urlloc, nil)
 	if err != nil {
 		log.Println(err)

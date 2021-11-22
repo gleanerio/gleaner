@@ -49,6 +49,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 	//tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
 	tc := mcfg.Threads
+
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucket([]byte(k))

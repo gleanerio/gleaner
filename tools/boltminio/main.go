@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	bolt "go.etcd.io/bbolt"
+	"github.com/boltdb/bolt"
 
 	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
@@ -41,9 +41,16 @@ func init() {
 
 func main() {
 	flag.Parse() // parse any command line flags...
+	var err error
+
+	db, err := bolt.Open("my.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
 
 	var v1 *viper.Viper
-	var err error
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
@@ -69,7 +76,7 @@ func main() {
 	miniocfg := v1.GetStringMapString("minio")
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 
-	ru := acquire.ResourceURLs(v1, mc, false)
+	ru := acquire.ResourceURLs(v1, mc, false, db)
 	// hru := acquire.ResourceURLs(v1, true)
 	// log.Println(len(ru["samplesearth"].URL))
 	// log.Println(len(hru["samplesearth"].URL))
@@ -104,13 +111,6 @@ func main() {
 	for k := range diff {
 		fmt.Println(diff[k])
 	}
-
-	db, err := bolt.Open("my.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer db.Close()
 
 }
 

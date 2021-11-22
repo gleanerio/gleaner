@@ -13,34 +13,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Sources Holds the metadata associated with the sites to harvest
-// type Sources struct {
-// 	Name       string
-// 	Logo       string
-// 	URL        string
-// 	Headless   bool
-// 	PID        string
-// 	ProperName string
-// 	Domain     string
-// 	// SitemapFormat string
-// 	// Active        bool
-// }
-//type Sources = configTypes.Sources
 const siteMapType = "sitemap"
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) map[string][]string {
-	// read config file
-	//miniocfg := v1.GetStringMapString("minio")
-	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-	// bucketName, err := configTypes.GetBucketName(v1) //   get the top level bucket for all of gleaner operations from config file
-
 	m := make(map[string][]string) // make a map
 
-	//var domains []Sources
-	//err := v1.UnmarshalKey("sources", &domains)
-	domains, err := configTypes.GetSources(v1)
+	domains, err := configTypes.ParseSourcesConfig(v1)
 	log.Println(domains)
 	domains = configTypes.GetActiveSourceByType(domains, siteMapType)
 	if err != nil {
@@ -48,18 +28,15 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	}
 	log.Println(domains)
 
-	//mcfg := v1.GetStringMapString("summoner")
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	for k := range domains {
 		if headless == domains[k].Headless {
-			mapname := domains[k].Name // TODO I would like to use this....
+			mapname := domains[k].Name
 			if err != nil {
 				log.Println(domains[k].Name, "Error in domain parsing", err)
 			}
-
-			// log.Println(mcfg)
 
 			var us sitemaps.Sitemap
 
@@ -67,7 +44,6 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			if err != nil {
 				log.Println("Error reading this source")
 				log.Println(err)
-				// os.Exit(0)  // TODO this function needs to return an error and talk with others
 			}
 
 			if len(idxr) < 1 {
@@ -87,6 +63,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 				}
 			}
 
+			// NOTE:  DF - I think using "lastmod " in sitemap is not worth the time and effort
+			// feel free to raise an issue to the contrary :)
 			// if mcfg["after"] != "" {
 			// 	//log.Println("Get After Date")
 			// 	us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
@@ -113,7 +91,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 				}
 			}
 
-			//  TODO if we check for URLs in prov..  do that here..
+			//  TODO if we check for URLs in kv..  do that here..
 			if mcfg.Mode == "diff" {
 				//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
 
@@ -137,17 +115,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 				m[mapname] = s
 			}
 
-			//  TODO if we check for URLs in prov..  do that here..
-			//if mcfg["mode"] == "diff" {
-			//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
-			//d := difference(s, oa)
-			//m[mapname] = d
-			//} else {
-			//m[mapname] = s
-			//}
-
 			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg.Mode)
-
 		}
 	}
 
