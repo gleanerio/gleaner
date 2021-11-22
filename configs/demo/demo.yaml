@@ -32,4 +32,5 @@ sources:
   headless: false
   pid: https://www.re3data.org/repository/samplesearth
   properName: Samples Earth (DEMO Site)
-  domain: https://samples.earth  
+  domain: https://samples.earth
+  active: true

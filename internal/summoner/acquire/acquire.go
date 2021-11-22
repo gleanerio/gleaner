@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"sync"
@@ -158,7 +159,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				// The URL is sending back JSON-LD correctly as application/ld+json
 				// this should not be here IMHO, but need to support people not setting proper header value
 				// The URL is sending back JSON-LD but incorrectly sending as application/json
-				if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") {
+				if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
 					logger.Printf("%s as %s", urlloc, contentTypeHeader)
 					jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 					if err != nil {
@@ -271,4 +272,12 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 	padCountInt = 1 + ((overallLen - len(padStr)) / len(padStr))
 	var retStr = s + strings.Repeat(padStr, padCountInt)
 	return retStr[:overallLen]
+}
+
+func fileExtensionIsJson(rawUrl string) bool {
+	u, _ := url.Parse(rawUrl)
+	if strings.HasSuffix(u.Path, ".json") || strings.HasSuffix(u.Path, ".jsonld") {
+		return true
+	}
+	return false
 }

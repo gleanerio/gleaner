@@ -10,3 +10,4 @@ output/**
 configs/local/
 *.log
 **/*.log
+**/credentials/

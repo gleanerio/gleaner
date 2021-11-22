@@ -1,2 +1,2 @@
 ﻿hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
-3,sitemap,TRUE,samplesearth,Samples Earth (DEMO Site),https://samples.earth/sitemap.xml,FALSE,https://samples.earth,https://www.re3data.org/repository/samplesearth,https://samples.earth/img/earth.svg
+,sitemap,TRUE,samplesearth,Samples Earth (DEMO Site),https://samples.earth/sitemap.xml,FALSE,https://samples.earth,https://www.re3data.org/repository/samplesearth,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png
