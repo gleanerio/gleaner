@@ -7,7 +7,8 @@ import (
 	"github.com/spf13/viper"
 	"io"
 	"log"
-	"os"
+
+	"github.com/utahta/go-openuri"
 	"path"
 	"strings"
 )
@@ -68,8 +69,18 @@ func populateDefaults(s Sources) Sources {
 func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 	var sources []Sources
 	var err error
-	var fn = path.Join(cfgPath, filename)
-	f, err := os.Open(fn)
+	var fn = ""
+	// if it's a url
+	if strings.HasPrefix(filename, "https://") || strings.HasPrefix(filename, "http://") {
+		fn = filename
+	} else if strings.HasPrefix(filename, "/") {
+		// its a full path
+		fn = filename
+	} else {
+		fn = path.Join(cfgPath, filename)
+	}
+
+	f, err := openuri.Open(fn)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,33 +1,36 @@
-# Gleaner Configuration file
+# Configure Using glcon and Templates
 
-This assumes that you have a container stack running
+You do not need to have a container stack running to run    `glcon config`
+But run `glcon gleaner` and `glcon nabu`, you will need to. 
 
-```
-s3 store
-triple store
-headless
-```
-## Gleaner Configuration generation
-The suggested method of creating a configuration file is to use  glcon command can intialize a configuration directory, and allow for the generation of
-configuration files for gleaner and nabu. Download a glcon release from github
-The pattern is to intiialize a configuration directory, edit files, and generate new configurations
-### initialize a configuraiton directory
+## OVERVIEW glcon Configuration generation
+`glcon config` is used to create configuration files for gleaner and nabu
+The pattern is to intiialize a configuration directory, edit files, and generate new 
+configuration files for gleaner and nabu. Inside a configuration, you will need to edit a localConfiguration file
+Edit/add sources in a csv listing, and generate the configurations.
+
+### initialize a configuration directory
+use  glcon command can intialize a configuration directory, and allow for the generation of gleaner and nabu configurations
+
 ```
 glcon config init -cfgName test
 ```
+
 initializes a configuration in configs with name of 'test'
 Inside you will find
 ```
 test % ls
 gleaner_base.yaml	readme.txt		sources.csv
-nabu_base.yaml		servers.yaml
+nabu_base.yaml		localConfig.yaml 
+README_Configure_Template.md
 ```
 
-### Edit the files
-Usually, you will only need to edit the servers.yaml and sources.csv
-The servers.yaml
+## EDIT the files
 
-#### Servers.yaml
+Usually, you will only need to edit the [localConfig.yaml](./localConfig.yaml) and sources.csv
+The localConfig.yaml
+
+#### localConfig.yaml
 ```yaml
 ---
 minio:
@@ -45,14 +48,23 @@ s3:
 
 #headless field in gleaner.summoner
 headless: http://127.0.0.1:9222
+sourcesSource:
+   type: csv
+   location: sources.csv
 ```
+
 First, in the "mino:" section make sure the accessKey and secretKey here match the access keys for your minio.
 These can be overridden with the environent variables:
 * "MINIO_ACCESS_KEY"
 * "MINIO_SECRET_KEY"
 
-#### sources.csv
-This is designed to be edited in a spreadsheet, or dumped as csv from a google spreadsheet
+#### sourcesSource
+[sources.csv](./sources_custom.csv) is utilized to generate the information needed to retrieve (summon), process (mill), upload (prefix), and cull old records (prune)
+This is done in order to facilitate the managing a list of sources, in a spreadsheet, rather than a yamil file.
+a csv file with the fields below
+
+
+This is designed to be edited in a spreadsheet, or exported by url as csv from a google spreadsheet
 
 ```csv
 hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
@@ -63,7 +75,7 @@ hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
 
 Fields: 
 1. hack:a hack to make the fields are properly read.
-2. SourceType : [sitemap, sitegraph] type of source
+2. SourceType : [sitemap, sitegraph, googledrive] type of source
 3. Active: [TRUE,FALSE] is source active. 
 4. Name: short name of source. It should be one word (no space) and be lower case.
 5. ProperName: Long name of source that will be added to organization record for provenance
@@ -73,22 +85,51 @@ Fields:
 8. Domain: 
 9. PID: a unique identifier for the source. Perfered that is is a research id.
 10. Logo: while no longer used, logo of the source
-##### Override sources.csv
+11. googleapikeyenv: (ONLY NEEDED FOR type:googledrive) environment variable pointing to a google api key.
+12. any additional feilds you wish. This might be used to generate information about sources for a website.
+
+#### Configuration of your source
+You configure the source in the localConfig.yaml (or override via the command line)
+```yaml
+# looks for Mysources.csv in configuration directory
+sourcesSource:
+   type: csv
+   location: Mysources.csv
+```
+This can also be a remote url starting with http:// or https://
+```yaml
+# pulls from a google sheet
+sourcesSource:
+   type: csv
+   location: https://docs.google.com/spreadsheets/d/{key}/gviz/tq?tqx=out:csv&sheet={sheet_name}
+```
+
+If you start the name with a '/' a full path to the file is assumed.
+```yaml
+# file outside of local configuration directory
+sourcesSource:
+   type: csv
+   location: /home/user/ourSources.csv
+```
+##### Override Sources via the CLI
 pass --sourcemaps to generate:
 
 `glcon config generate --cfgName test --sourcemaps "My Sources.csv" `
 
-### generate the configuraiton files
+## GENERATE the configuration files
 ```
 glcon generate -cfgName test
 ```
-This will generate files 'gleaner' and 'yaml'  and make copies of the existing configuration files
+This will generate files  ['gleaner'](./gleaner) and  ['nabu'](./nabu) and make copies of the existing configuration files
 
-The full details are discussed below
 
-## Gleaner Configuration
 
-So now we are ready to review the Gleaner configuration file named gleaner.  There is actually quite a bit in this file, but for this starting demo only a few things we need to worry about.  The default file will look like:
+
+## Some Gleaner Configuration details
+This is a summary of a few portions of the configuration files generated.
+More details are at: [GleanerConfiguration.md](../docs/GleanerConfiguration.md) 
+
+Open the file ['gleaner'](./gleaner), and you will see  is actually quite a bit information this file, but for this starting demo only a few things we need to worry about.  The default file will look like:
 
 ```yaml
 ---
@@ -142,7 +183,8 @@ sources:
 
 A few things we need to look at.
 
-First, in the "mino:" section make sure the accessKey and secretKey here match the ones you have and set via your demo.env file. 
+First, in the "mino:" section make sure the accessKey and secretKey here are the ones you utlize.
+Note: blank these out, and used environment variables (TODO:Need to describe them)
 
 Next, lets look at the "gleaner:" section.  We can set the runid to something.  This is the ID for a run and it allows you to later make different runs and keep the resulting graphs organized.  It can be set to any lower case string with no spaces. 
 
@@ -152,6 +194,7 @@ Now look at the "miller:"  section when lets of pick what milling to do.   Curre
 
 The final section we need to look at is the "sources:" section.   
 Here is where the fun is.  While there are two types, sitegraph and sitemaps we will normally use sitemap type. 
+There is a third type that involves configuring and pulling from a
 
 A standard sitemap is below:
 ```yaml

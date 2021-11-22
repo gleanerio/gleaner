@@ -10,7 +10,7 @@ It creates configuration files, can setup the triplestore, run gleaner and run n
 
 ## Workflow
 1. User initializes configuration directory: `glcon config init --cfgName name`
-2. user edits files in directory
+2. user edits files in directory 
 3. user generates configuration: `glcon config generate --cfgName name`
 4. User runs gleaner setup: `glcon gleaner setup --cfgName name`
 5. user runs gleaner: `glcon gleaner batch --cfgName name`

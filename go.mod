@@ -36,6 +36,7 @@ require (
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	google.golang.org/api v0.60.0
+	github.com/utahta/go-openuri v0.1.0
 )
 
 // local replace. gleaner and nabu at same level

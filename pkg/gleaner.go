@@ -17,7 +17,7 @@ import (
 func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 
 	mcfg := v1.GetStringMapString("gleaner")
-
+	//mcfg := v1.Sub("gleaner") /// with overrides from batch ends up being nil
 	// Build the org graph
 	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
 	err := organizations.BuildGraph(mc, v1)

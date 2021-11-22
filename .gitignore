@@ -10,5 +10,5 @@ output/**
 configs/local/
 *.log
 **/*.log
-**/credentials.json
-configs/credentials/**
+**/credentials/
+
