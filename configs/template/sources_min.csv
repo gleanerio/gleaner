@@ -1,4 +1,0 @@
-﻿hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
-1,sitegraph,FALSE,aquadocs,AquaDocs,https://oih.aquadocs.org/aquadocs.json ,FALSE,https://aquadocs.org,http://hdl.handle.net/1834/41372,
-3,sitemap,TRUE,opentopography,OpenTopography,https://opentopography.org/sitemap.xml,FALSE,http://www.opentopography.org/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
-,sitemap,TRUE,iris,IRIS,http://ds.iris.edu/files/sitemap.xml,FALSE,http://iris.edu,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png

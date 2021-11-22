@@ -14,3 +14,12 @@ s3:
 
 #headless field in gleaner.summoner
 headless: http://127.0.0.1:9222
+sourcesSource:
+  type: csv
+  location: sources.csv
+# this can be a remote csv
+#  type: csv
+#  location: https://docs.google.com/spreadsheets/d/{key}/gviz/tq?tqx=out:csv&sheet={sheet_name}
+# TBD -- Just use the sources in the gleaner file.
+#  type: yaml
+#  location: gleaner.yaml
