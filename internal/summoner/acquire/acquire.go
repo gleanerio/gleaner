@@ -120,7 +120,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			go func(i int, k string) {
 				semaphoreChan <- struct{}{}
 
-				// log.Println(urlloc)
+				logger.Println(urlloc)
 
 				urlloc = strings.ReplaceAll(urlloc, " ", "")
 				urlloc = strings.ReplaceAll(urlloc, "\n", "")
@@ -182,13 +182,23 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
 				// and avoid those during incremental calls.
 
-				// even is no JSON-LD packages found, record the event
+				// even is no JSON-LD packages found, record the event of checking this URL
 				if len(jsonlds) < 1 {
+					// TODO is her where I then try headless, and scope the following for into an else?
+					log.Printf("Direct access failed, trying headless for  %s ", urlloc)
+					err := PageRender(v1, mc, logger, 60*time.Second, urlloc, k, db) // TODO make delay configurable
+
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(k))
 						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
 						return err
 					})
+					if err != nil {
+						logger.Printf("%s :: %s", urlloc, err)
+					}
+
+				} else {
+					log.Printf("Direct access worked for  %s ", urlloc)
 				}
 
 				for _, jsonld := range jsonlds {

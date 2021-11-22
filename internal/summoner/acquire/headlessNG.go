@@ -5,10 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"sync"
 	"time"
+
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
@@ -201,7 +202,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		return err
 	}
 
-	log.Printf("%s for %s\n", nav.FrameID, url)
+	logger.Printf("%s for %s\n", nav.FrameID, url)
 
 	/**
 	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,

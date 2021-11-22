@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -12,14 +11,13 @@ import (
 )
 
 func main() {
-
-	// source := "https://geoconnex.us/sitemap.xml"
-	source := "https://samples.earth/iow/ca_gages_pids__0.xml"
+	source := "https://geoconnex.us/sitemap.xml"
+	//source := "https://samples.earth/iow/ca_gages_pids__0.xml"
 	// source := "https://samples.earth/sitemap.xml"
 
 	// Look for robots.txt
 	if strings.HasSuffix(source, "robots.txt") {
-		fmt.Println("robots.txt support coming soon")
+		//fmt.Println("robots.txt support coming soon")
 		os.Exit(0)
 	}
 
@@ -37,7 +35,7 @@ func main() {
 			fmt.Println(v)
 		}
 	} else {
-		log.Println(idxr)
+		//log.Println(idxr)
 		for _, idxv := range idxr {
 			fmt.Println(idxv)
 			smr, err := DomainSitemap(idxv)
@@ -49,13 +47,12 @@ func main() {
 			}
 		}
 	}
-
 }
 
 func DomainSitemap(sm string) (sitemaps.Sitemap, error) {
 	// result := make([]string, 0)
-	log.Println(sm)
-	log.Println("----------------")
+	//log.Println(sm)
+	//log.Println("----------------")
 	smsm := sitemaps.Sitemap{}
 	urls := make([]sitemaps.URL, 0)
 	err := sitemap.ParseFromSite(sm, func(e sitemap.Entry) error {
@@ -68,7 +65,7 @@ func DomainSitemap(sm string) (sitemaps.Sitemap, error) {
 		return nil
 	})
 
-	log.Println(err)
+	//log.Println(err)
 
 	smsm.URL = urls
 	return smsm, err
