@@ -5,11 +5,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"log"
 	"strings"
 	"text/template"
 	"time"
+
+	configTypes "github.com/gleanerio/gleaner/internal/config"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/objects"
@@ -98,7 +99,7 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 	}
 
 	// Moved to the normalized sha value since normalized sha only valid for JSON-LD
-	provsha := common.GetSHA(p)
+	provsha := common.GetSHA(urlloc) // change from sha of prov JOSN-lD to sha of URL
 	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
 	// if err != nil {
 	// 	logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)

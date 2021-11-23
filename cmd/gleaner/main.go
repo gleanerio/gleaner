@@ -3,11 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gleanerio/gleaner/internal/config"
-	"github.com/gleanerio/gleaner/pkg"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/millers"
+	"github.com/gleanerio/gleaner/internal/organizations"
+	"github.com/gleanerio/gleaner/internal/summoner"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+	"github.com/gleanerio/gleaner/pkg"
+	"github.com/minio/minio-go/v7"
 
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
