@@ -67,10 +67,10 @@ a csv file with the fields below
 This is designed to be edited in a spreadsheet, or exported by url as csv from a google spreadsheet
 
 ```csv
-hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
-1,sitegraph,FALSE,aquadocs,AquaDocs,https://oih.aquadocs.org/aquadocs.json ,FALSE,https://aquadocs.org,http://hdl.handle.net/1834/41372,
-3,sitemap,TRUE,opentopography,OpenTopography,https://opentopography.org/sitemap.xml,FALSE,http://www.opentopography.org/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
-,sitemap,TRUE,iris,IRIS,http://ds.iris.edu/files/sitemap.xml,FALSE,http://iris.edu,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png
+hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo,CredentialsFile
+1,sitegraph,FALSE,aquadocs,AquaDocs,https://oih.aquadocs.org/aquadocs.json ,FALSE,https://aquadocs.org,http://hdl.handle.net/1834/41372,,
+3,sitemap,TRUE,opentopography,OpenTopography,https://opentopography.org/sitemap.xml,FALSE,http://www.opentopography.org/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png,
+,sitemap,TRUE,iris,IRIS,http://ds.iris.edu/files/sitemap.xml,FALSE,http://iris.edu,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png,
 ```
 
 Fields: 
@@ -85,7 +85,7 @@ Fields:
 8. Domain: 
 9. PID: a unique identifier for the source. Perfered that is is a research id.
 10. Logo: while no longer used, logo of the source
-11. googleapikeyenv: (ONLY NEEDED FOR type:googledrive) environment variable pointing to a google api key.
+11. CredentialsFile: (ONLY NEEDED FOR type:googledrive) environment variable pointing to a google api key.
 12. any additional feilds you wish. This might be used to generate information about sources for a website.
 
 #### Configuration of your source
@@ -111,10 +111,6 @@ sourcesSource:
    type: csv
    location: /home/user/ourSources.csv
 ```
-##### Override Sources via the CLI
-pass --sourcemaps to generate:
-
-`glcon config generate --cfgName test --sourcemaps "My Sources.csv" `
 
 ## GENERATE the configuration files
 ```
@@ -196,7 +192,7 @@ The final section we need to look at is the "sources:" section.
 Here is where the fun is.  While there are two types, sitegraph and sitemaps we will normally use sitemap type. 
 There is a third type that involves configuring and pulling from a
 
-A standard sitemap is below:
+A standard [sitemap](./SourceSitemap.md) is below:
 ```yaml
 sources:
   - sourcetype: sitemap
@@ -222,6 +218,22 @@ sources:
     propername: AquaDocs
     domain: https://aquadocs.org
     active: false
+```
+
+A [google Drive](./SourceGoogleDrive.md)
+```yaml
+sources:
+- sourcetype: googledrive
+  name: ecrr_submitted
+  logo: https://www.earthcube.org/sites/default/files/doc-repository/logo_earthcube_full_horizontal.png
+  url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+  headless: false
+  pid: ""
+  propername: Earthcube Resource Registry
+  domain: http://www.earthcube.org/resourceregistry/
+  active: true
+  credentialsfile: configs/credentials/gleaner-331805-030e15e1d9c4.json
+  other: {}
 ```
 These are the sources we wish to pull and process. 
 Each source has a type, and 8 entries though at this time we no longer use the "logo" value. 
