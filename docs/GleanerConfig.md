@@ -8,83 +8,12 @@ triple store
 headless
 ```
 ## Gleaner Configuration generation
-The suggested method of creating a configuration file is to use  glcon command can intialize a configuration directory, and allow for the generation of
-configuration files for gleaner and nabu. Download a glcon release from github
-The pattern is to intiialize a configuration directory, edit files, and generate new configurations
-### initialize a configuraiton directory
-```
-glcon init -cfgName test
-```
-intializes a configuraiton in configs with name of 'test'
-Inside you will find
-```
-test % ls
-gleaner_base.yaml	readme.txt		sources.csv
-nabu_base.yaml		servers.yaml
-```
-
-### Edit the files
-Usually, you will only need to edit the servers.yaml and sources.csv
-The servers.yaml
-
-#### Servers.yaml
-```yaml
----
-minio:
-  address: 0.0.0.0 # can be overridden with MINIO_ADDRESS
-  port: 9000 # can be overridden with MINIO_PORT
-  accessKey: worldsbestaccesskey # can be overridden with MINIO_ACCESS_KEY
-  secretKey: worldsbestsecretkey # can be overridden with MINIO_SECRET_KEY
-  ssl: false # can be overridden with MINIO_SSL
-  bucket: gleaner # can be overridden with MINIO_BUCKET
-sparql:
-  endpoint: http://localhost/blazegraph/namespace/earthcube/sparql
-s3:
-  bucket: gleaner # sync with above... can be overridden with MINIO_BUCKET... get's zapped if it's not here.
-  domain: us-east-1
-
-#headless field in gleaner.summoner
-headless: http://127.0.0.1:9222
-```
-First, in the "mino:" section make sure the accessKey and secretKey here match the access keys for your minio.
-These can be overridden with the environent variables:
-* "MINIO_ACCESS_KEY"
-* "MINIO_SECRET_KEY"
-
-#### sources.csv
-This is designed to be edited in a spreadsheet, or dumped as csv from a google spreadsheet
-
-```csv
-hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
-1,sitegraph,FALSE,aquadocs,AquaDocs,https://oih.aquadocs.org/aquadocs.json ,FALSE,https://aquadocs.org,http://hdl.handle.net/1834/41372,
-3,sitemap,TRUE,opentopography,OpenTopography,https://opentopography.org/sitemap.xml,FALSE,http://www.opentopography.org/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
-,sitemap,TRUE,iris,IRIS,http://ds.iris.edu/files/sitemap.xml,FALSE,http://iris.edu,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png
-```
-
-Fields: 
-1. hack:a hack to make the fields are properly read.
-2. SourceType : [sitemap, sitegraph] type of source
-3. Active: [TRUE,FALSE] is source active. 
-4. Name: short name of source. It should be one word (no space) and be lower case.
-5. ProperName: Long name of source that will be added to organization record for provenance
-6. URL: URL of sitemap or sitegraph.
-7. Headless: [FALSE,TRUE] should be set to false unless you know this site uses JavaScript to place the JSON-LD into the page.  This is true of some sites and it is supported but not currently auto-detected.  So you will need to know this and set it.  For most place, this will be false.
-   if the json-ld is generated in a page dynamically, then use , TRUE
-8. Domain: 
-9. PID: a unique identifier for the source. Perfered that is is a research id.
-10. Logo: while no longer used, logo of the source
-
-### generate the configuraiton files
-```
-glcon generate -cfgName test
-```
-This will generate files 'gleaner' and 'yaml'  and make copies of the existing configuration files
-
-The full details are discussed below
+Files can be generated using glcon. Described in [README_CONFIGURE_Template](./README_Configure_Template.md)
 
 ## Gleaner Configuration
 
-So now we are ready to review the Gleaner configuration file named gleaner.  There is actually quite a bit in this file, but for this starting demo only a few things we need to worry about.  The default file will look like:
+When generated, the Gleaner configuration file named `gleaner` in the configs/{config} directory, but any name with a .yaml ending is acceptable.
+There is actually quite a bit in this file, but for this starting demo only a few things we need to worry about.  The default file will look like:
 
 ```yaml
 ---
@@ -149,7 +78,8 @@ Now look at the "miller:"  section when lets of pick what milling to do.   Curre
 The final section we need to look at is the "sources:" section.   
 Here is where the fun is.  While there are two types, sitegraph and sitemaps we will normally use sitemap type. 
 
-A standard sitemap is below:
+
+A standard [sitemap](./SourceSitemap.md) is below:
 ```yaml
 sources:
   - sourcetype: sitemap
@@ -163,7 +93,7 @@ sources:
       active: true
 ```
 
-A sitegraph 
+A sitegraph
 ```yaml
 sources:
   - sourcetype: sitegraph
@@ -175,6 +105,22 @@ sources:
     propername: AquaDocs
     domain: https://aquadocs.org
     active: false
+```
+
+A [Google Drive](./SourceGoogleDrive.md)
+```yaml
+sources:
+- sourcetype: googledrive
+  name: ecrr_submitted
+  logo: https://www.earthcube.org/sites/default/files/doc-repository/logo_earthcube_full_horizontal.png
+  url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+  headless: false
+  pid: ""
+  propername: Earthcube Resource Registry
+  domain: http://www.earthcube.org/resourceregistry/
+  active: true
+  credentialsfile: configs/credentials/gleaner-331805-030e15e1d9c4.json
+  other: {}
 ```
 These are the sources we wish to pull and process. 
 Each source has a type, and 8 entries though at this time we no longer use the "logo" value. 
