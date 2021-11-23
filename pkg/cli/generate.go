@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -29,7 +30,8 @@ A copy of the files (one per DAY) is saved.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("generate called")
-		generateCfg(cfgPath, cfgName, sourcesVal)
+		//generateCfg(cfgPath, cfgName, sourcesVal) // sources moved into localConfig
+		generateCfg(cfgPath, cfgName)
 	},
 }
 
@@ -48,7 +50,7 @@ func init() {
 }
 
 // need to have more options.
-func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
+func generateCfg(cfgPath string, cfgName string) error {
 	var err error
 	var minioCfg MinoConfigType
 	var gleaner, nabu, servers *viper.Viper
@@ -56,11 +58,6 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 
 	var configDir = path.Join(cfgPath, cfgName)
 
-	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
 	servers, err = configTypes.ReadServersConfig(configBaseFiles["servers"], configDir)
 	if err != nil {
 		fmt.Println(err)
@@ -77,23 +74,35 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 		panic(err)
 	}
 
+	sourcesVal := servers.GetString("sourcesSource.location")
+	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
+	if err != nil {
+		fmt.Println(err)
+		panic(err)
+	}
+
 	//var mi interface{}
 	var date string
 	currentTime := time.Now()
 	date = currentTime.Format("20060102")
 	// sources
 	// need a check to see if it is an absolute path, so read not needed, and
-	fmt.Println("make copy of sources")
-	var original = path.Join(configDir, sourcesVal)
-	var config = path.Join(configDir, date+sourcesVal)
-	_, err = copy(original, config)
-	if err != nil {
-		panic(fmt.Errorf("error when copying sources: %v", err))
+	if !(strings.HasPrefix(sourcesVal, "https://") || strings.HasPrefix(sourcesVal, "http://")) {
+		fmt.Println("make copy of sources")
+		var original = path.Join(configDir, sourcesVal)
+		if strings.HasPrefix(sourcesVal, "/") { // how do we test filesystem agnostic
+			original = sourcesVal
+		}
+		var config = path.Join(configDir, date+sourcesVal)
+		_, err = copy(original, config)
+		if err != nil {
+			panic(fmt.Errorf("error when copying sources: %v", err))
+		}
 	}
 
 	fmt.Println("make copy of servers.yaml")
-	original = path.Join(configDir, configBaseFiles["servers"])
-	config = path.Join(configDir, date+configBaseFiles["servers"])
+	original := path.Join(configDir, configBaseFiles["servers"])
+	config := path.Join(configDir, date+configBaseFiles["servers"])
 	_, err = copy(original, config)
 	if err != nil {
 		panic(fmt.Errorf("error when copying servers.yaml: %v", err))
