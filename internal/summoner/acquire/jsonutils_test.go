@@ -53,4 +53,30 @@ func TestAddToJsonListIfValid(t *testing.T) {
     })
 }
 
-// TODO: test Upload by mocking out a bunch of stuff like MinioClient
+func TestContextStringFix(t *testing.T) {
+    var contextObjectJson = `{
+        "@context": {
+            "@vocab":"http://schema.org/"
+        },
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+    var contextStringJson = `{
+        "@context": "http://schema.org/",
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+    t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
+        result, err := fixContextString(contextStringJson)
+        assert.JSONEq(t, contextObjectJson, result)
+        assert.Nil(t, err)
+    })
+
+    t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
+        result, err := fixContextString(contextObjectJson)
+        assert.Equal(t, contextObjectJson, result)
+        assert.Nil(t, err)
+    })
+}

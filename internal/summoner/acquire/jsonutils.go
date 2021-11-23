@@ -10,6 +10,8 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
+	"github.com/tidwall/gjson"
+	"github.com/tidwall/sjson"
 )
 
 /// A utility to keep a list of JSON-LD files that we have found
@@ -44,7 +46,25 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	return true, nil
 }
 
-func Upload(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, bucketName string, site string, urlloc string, jsonld string) (string, error) {
+// Our first json fixup in existence.
+// If the top-level JSON-LD context is a string instead of an object,
+// this function corrects it.
+func fixContextString(jsonld string) (string, error) {
+	var err error
+	jsonContext := gjson.Get(jsonld, "@context")
+
+	switch jsonContext.Value().(type) {
+		case string:
+			jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": jsonContext.String()})
+	}
+	return jsonld, err
+}
+
+func Upload(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, bucketName string, site string,  urlloc string, jsonld string) (string, error) {
+	jsonld, err := fixContextString(jsonld)
+	if err != nil {
+		logger.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
+	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 	if err != nil {
 		logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)

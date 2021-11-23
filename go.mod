@@ -4,13 +4,10 @@ go 1.14
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
-	github.com/apache/thrift v0.14.1 // indirect
-	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/aws/aws-sdk-go v1.41.12
 	github.com/chromedp/chromedp v0.6.5
 	github.com/gocarina/gocsv v0.0.0-20211020200912-82fc2684cc48
 	github.com/gorilla/mux v1.8.0
-	github.com/gosuri/uilive v0.0.4 // indirect
 	github.com/gosuri/uiprogress v0.0.1
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/mafredri/cdp v0.32.0
@@ -34,9 +31,11 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
+	github.com/tidwall/gjson v1.10.2
+	github.com/tidwall/sjson v1.2.3
+	github.com/utahta/go-openuri v0.1.0
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	google.golang.org/api v0.60.0
-	github.com/utahta/go-openuri v0.1.0
 )
 
 // local replace. gleaner and nabu at same level
