@@ -5,7 +5,7 @@ The following are some communities using or exploring the use of Gleaner.
 
 
 
-## <img src="./images/geocodes.png" width="100" >
+## <img src="./images/geocodes.png" width="125" >  EarthCube GeoCODES
 
 [https://geocodes.earthcube.org/](https://geocodes.earthcube.org/)
 
@@ -13,13 +13,13 @@ GeoCODES is an NSF Earthcube program effort to better enable cross-domain discov
 
 
 ## <img src="./images/oih.png" width="30" > Ocean InfoHub 
-
+ 
 [https://oceaninfohub.org/](https://oceaninfohub.org/)
 
 The Ocean InfoHub (OIH) Project aims to improve access to global oceans information, data and knowledge products for management and sustainable development.The OIH will link and anchor a network of regional and thematic nodes that will improve online access to and synthesis of existing global, regional and national data, information and knowledge resources, including existing clearinghouse mechanisms. The project will not be establishing a new database, but will be supporting discovery and interoperability of existing information systems.The OIH Project is a three-year project funded by the Government of Flanders, Kingdom of Belgium, and implemented by the IODE Project Office of the IOC/UNESCO.
+ 
 
-
-## Polder: Polar Data Discovery Enhancement Research
+## <img src="./images/polder.png" width="100" >: Polar Data Discovery Enhancement Research
 
 [https://polder.info/](https://polder.info/)
 
@@ -34,7 +34,7 @@ This is a rapidly moving field and POLDER is working to find the best path forwa
 The Canadian Consortium for Arctic Data Interoperability (CCADI) is an initiative to develop an integrated Canadian arctic data management system that will facilitate information discovery, establish sharing standards, enable interoperability among existing data infrastructures, and that will be co-designed with, and accessible to, a broad user base. Key to the CCADI vision are: standards and mechanisms for metadata, data and semantic interoperability; a distributed data exchange platform; streamlined data services with common entry, access, search, match, analysis, visualization and output tools; an intellectual property and sensitive data service; and data stewardship capacity.
  
 
-## <img src="./images/IOW.png" width="100" > Internet of Water (planned)
+## <img src="./images/IOW.png" width="100" > Internet of Water 
 
 [Geoconnex](https://internetofwater.org/geoconnex/)
 

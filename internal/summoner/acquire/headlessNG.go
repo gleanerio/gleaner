@@ -157,7 +157,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
-			log.Print(err)
+			logger.Print(err)
 			return err
 		}
 	}
@@ -183,7 +183,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
 	if err != nil {
-		log.Print(err)
+		logger.Print(err)
 		return err
 	}
 	defer domContent.Close()
@@ -192,13 +192,13 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
 	if err != nil {
-		log.Print(err)
+		logger.Print(err)
 		return err
 	}
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
-		log.Print(err)
+		logger.Print(err)
 		return err
 	}
 
@@ -254,7 +254,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
-		log.Println(err)
+		logger.Printf("%s error: %s", url, err)
 		return (err)
 	}
 

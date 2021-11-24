@@ -88,7 +88,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
 		}
 
-		log.Printf("Thread count %d delay %d\n", tc, dt)
+		//log.Printf("Thread count %d delay %d\n", tc, dt)
 
 		semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 		defer close(semaphoreChan)
@@ -187,7 +187,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				// even is no JSON-LD packages found, record the event of checking this URL
 				if len(jsonlds) < 1 {
 					// TODO is her where I then try headless, and scope the following for into an else?
-					log.Printf("Direct access failed, trying headless for  %s ", urlloc)
+					//log.Printf("Direct access failed, trying headless for  %s ", urlloc)
 					err := PageRender(v1, mc, logger, 60*time.Second, urlloc, k, db) // TODO make delay configurable
 
 					db.Update(func(tx *bolt.Tx) error {
@@ -199,9 +199,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 						logger.Printf("%s :: %s", urlloc, err)
 					}
 
-				} else {
-					log.Printf("Direct access worked for  %s ", urlloc)
 				}
+
+				//else {
+				//log.Printf("Direct access worked for  %s ", urlloc)
+				//}
 
 				for _, jsonld := range jsonlds {
 					if jsonld != "" { // traps out the root domain...   should do this different

@@ -53,7 +53,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 					fmt.Println(err)
 				}
 			} else {
-				log.Println("Walk the sitemap index for sitemaps")
+				log.Println("Walk the sitemap(s) and collect the URLs")
 				for _, idxv := range idxr {
 					subset, err := sitemaps.DomainSitemap(idxv)
 					us.URL = append(us.URL, subset.URL...)
@@ -65,23 +65,6 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 
 			// NOTE:  DF - I think using "lastmod " in sitemap is not worth the time and effort
 			// feel free to raise an issue to the contrary :)
-			// if mcfg["after"] != "" {
-			// 	//log.Println("Get After Date")
-			// 	us, err = sitemaps.GetAfterDate(domains[k].URL, nil, mcfg["after"])
-			// 	if err != nil {
-			// 		log.Println(domains[k].Name, err)
-			// 		// pass back error and deal with it better in the logs
-			// 		// and in the user experience
-			// 	}
-			// } else {
-			// 	//log.Println("Get with no date")
-			// 	us, err = sitemaps.Get(domains[k].URL, nil)
-			// 	if err != nil {
-			// 		log.Println(domains[k].Name, err)
-			// 		// pass back error and deal with it better in the logs
-			// 		// and in the user experience
-			// 	}
-			// }
 
 			// Convert the array of sitemap package struct to simply the URLs in []string
 			var s []string
@@ -118,6 +101,9 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			log.Printf("%s sitemap size is : %d queuing: %d mode: %s \n", domains[k].Name, len(s), len(m[mapname]), mcfg.Mode)
 		}
 	}
+
+	// is the map of domains and URLs we will work with.
+	// at this point, make a record of them in the object store to check against later
 
 	return m
 }
