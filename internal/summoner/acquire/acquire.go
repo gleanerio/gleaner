@@ -165,15 +165,12 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 					if err != nil {
 						logger.Printf("Error processing json response from %s: %s", urlloc, err)
 					}
-					// look in the HTML page for <script type=application/ld+json
+					// look in the HTML page for <script type=application/ld+json>
 				} else {
-					doc.Find("script").Each(func(i int, s *goquery.Selection) {
-						val, _ := s.Attr("type")
-						if val == "application/ld+json" {
-							jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
-							if err != nil {
-								logger.Printf("Error processing script tag in %s: %s", urlloc, err)
-							}
+					doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
+						jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
+						if err != nil {
+							logger.Printf("Error processing script tag in %s: %s", urlloc, err)
 						}
 					})
 				}
@@ -201,8 +198,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 				} else {
 					log.Printf("Direct access worked for  %s ", urlloc)
 				}
-
-				for _, jsonld := range jsonlds {
+				for i, jsonld := range jsonlds {
 					if jsonld != "" { // traps out the root domain...   should do this different
 						logger.Printf("#%d Uploading", i)
 						sha, err := Upload(v1, mc, logger, bucketName, k, urlloc, jsonld)
