@@ -73,7 +73,6 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	summoner.Summoner(mc, v1, db)
 	ru := acquire.ResourceURLs(v1, mc, false, db)
 	// hru := acquire.ResourceURLs(v1, true)
 	// log.Println(len(ru["samplesearth"].URL))
