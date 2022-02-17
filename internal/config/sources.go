@@ -194,7 +194,7 @@ func PruneSources(v1 *viper.Viper, useSources []string) (*viper.Viper, error) {
 	var finalSources []Sources
 	allSources, err := GetSources(v1)
 	if err != nil {
-		log.Fatal("error retrieving sources: %s", err)
+		log.Fatal("error retrieving sources: ", err)
 	}
 	for _, s := range allSources {
 		if contains(useSources, s.Name) {
