@@ -240,13 +240,6 @@ func contains(arr []string, str string) bool {
 	return false
 }
 
-func rightPad2Len(s string, padStr string, overallLen int) string {
-	var padCountInt int
-	padCountInt = 1 + ((overallLen - len(padStr)) / len(padStr))
-	var retStr = s + strings.Repeat(padStr, padCountInt)
-	return retStr[:overallLen]
-}
-
 func fileExtensionIsJson(rawUrl string) bool {
 	u, _ := url.Parse(rawUrl)
 	if strings.HasSuffix(u.Path, ".json") || strings.HasSuffix(u.Path, ".jsonld") {
