@@ -26,12 +26,12 @@ var v1 = viper.New()
 func TestIsValid(t *testing.T) {
     t.Run("It returns true for valid JSON-LD", func(t *testing.T) {
         result, err := isValid(v1, validJson)
-        assert.Equal(t, result, true)
+        assert.Equal(t, true, result)
         assert.Nil(t, err)
     })
     t.Run("It returns false and throws an error for invalid JSON-LD", func(t *testing.T) {
         result, err := isValid(v1, invalidJson)
-        assert.Equal(t, result, false)
+        assert.Equal(t, false, result)
         assert.NotNil(t, err)
     })
 
@@ -43,12 +43,12 @@ func TestAddToJsonListIfValid(t *testing.T) {
 
     t.Run("It appends valid json to the array", func(t *testing.T) {
         result, err := addToJsonListIfValid(v1, original, validJson)
-        assert.Equal(t, result, []string{"test", validJson})
+        assert.Equal(t, []string{"test", validJson}, result)
         assert.Nil(t, err)
     })
     t.Run("It does not append invalid json to the array", func(t *testing.T) {
         result, err := addToJsonListIfValid(v1, original, invalidJson)
-        assert.Equal(t, result, original)
+        assert.Equal(t, original, result)
         assert.NotNil(t, err)
     })
 }

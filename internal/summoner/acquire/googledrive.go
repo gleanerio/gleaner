@@ -302,7 +302,7 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		}
 	}
 	var count = len(results)
-	m := fmt.Sprintf("GoogleDrives %f files processed", count)
+	m := fmt.Sprintf("GoogleDrives %d files processed", count)
 	return m, err
 }
 

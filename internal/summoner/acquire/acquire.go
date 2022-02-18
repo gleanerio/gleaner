@@ -37,13 +37,31 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	wg.Wait()
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
-
-	//// read config file
+func getConfig(v1 *viper.Viper)(string, int, int64, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
+	fmt.Println(bucketName, err)
+	if err != nil {
+		return bucketName, 0, 0, err
+	}
 
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+	tc := mcfg.Threads
+	delay := mcfg.Delay
+
+	if err != nil {
+		return bucketName, tc, delay, err
+	}
+
+	if delay != 0 {
+		tc = 1
+	}
+
+	log.Printf("Thread count %d delay %d\n", tc, delay)
+	return bucketName, tc, delay, nil
+}
+
+func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
@@ -54,18 +72,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 		return nil
 	})
 
-	tc := mcfg.Threads
-	delay := mcfg.Delay
-
-	if delay != 0 {
-		if err != nil {
-			log.Println(err)
-			log.Panic("Could not convert delay from config file to a value")
-		}
-		tc = 1
+	bucketName, tc, delay, err := getConfig(v1)
+	if err != nil {
+		log.Panic("Error reading config file", err)
 	}
-
-	log.Printf("Thread count %d delay %d\n", tc, delay)
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -82,7 +92,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-	// var client http.Client
 
 	// we actually go get the URLs now
 	for i := range m[k] {
