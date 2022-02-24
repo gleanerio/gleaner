@@ -162,6 +162,15 @@ func GetActiveSourceByType(sources []Sources, key string) []Sources {
 	return sourcesSlice
 }
 
+func GetSourceByName(sources []Sources, name string) (Sources, error) {
+	for _, s := range sources {
+		if s.Name == name {
+			return s, nil
+		}
+	}
+	return Sources{}, fmt.Errorf("Unable to find a source with name %s", name)
+}
+
 func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 
 	var prefixes []string

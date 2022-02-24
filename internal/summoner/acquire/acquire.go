@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -14,6 +15,7 @@ import (
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
+	"github.com/samclarke/robotstxt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
@@ -28,9 +30,9 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	// Why do I pass the wg pointer?   Just make a new one
 	// for each domain in getDomain and us this one here with a semaphore
 	// to control the loop?
-	for k := range m {
-		// log.Printf("Queuing URLs for %s \n", k)
-		go getDomain(v1, mc, m, k, &wg, db)
+	for domain, urls := range m {
+		log.Printf("Queuing URLs for %s \n", domain)
+		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
@@ -61,11 +63,57 @@ func getConfig(v1 *viper.Viper)(string, int, int64, error) {
 	return bucketName, tc, delay, nil
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
+// Inspects the robots.txt file on the domain we are crawling. If a crawl delay
+// is specified, retrieves it for us so we can respect it for this particular domain.
+func getDomainCrawlDelay(v1 *viper.Viper, sourceName string)(int64) {
+
+	// first get the domain url for our source
+	sourcesConfig, err := configTypes.GetSources(v1)
+	domain, err := configTypes.GetSourceByName(sourcesConfig, sourceName)
+	if err != nil {
+		log.Printf("error getting domain url for %s : %s  ", sourceName, err)
+		return 0
+	}
+
+	robotsUrl := domain.Domain + "/robots.txt"
+
+	// now get its robots.txt
+	var client http.Client
+	req, err := http.NewRequest("GET", robotsUrl, nil)
+	if err != nil {
+		log.Printf("error creating http request: %s  ",  err)
+		return 0
+	}
+	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+	req.Header.Set("Accept", "text/plain, text/html")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Printf("error fetching robots.txt for %s : %s  ", domain, err)
+		return 0
+	}
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("error reading response for robots.txt from %s : %s ", domain, err)
+		return 0
+	}
+
+	robots, err := robotstxt.Parse(string(bodyBytes), robotsUrl)
+	if err != nil {
+		log.Printf("error parsing robots.txt for %s : %s  ", domain, err)
+		return 0
+	}
+
+	// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
+	return int64(robots.CrawlDelay("EarthCube_DataBot/1.0") / time.Millisecond)
+}
+
+func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte(k))
+		_, err := tx.CreateBucket([]byte(sourceName))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
 		}
@@ -77,6 +125,17 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 		log.Panic("Error reading config file", err)
 	}
 
+	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
+	// If our default delay is less than what is set there, bump up the delay for this
+	// domain to respect the robots.txt setting.
+	crawlDelay := getDomainCrawlDelay(v1, sourceName)
+	log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
+
+	if(delay < crawlDelay) {
+		delay = crawlDelay
+		tc = 1 // any delay means going down to one thread.
+	}
+
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
@@ -84,7 +143,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 	wg.Add(1)       // wg from the calling function
 	defer wg.Done() // tell the wait group that we be done
 
-	count := len(m[k])
+	count := len(urls)
 	bar := progressbar.Default(int64(count))
 
 	var (
@@ -94,9 +153,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 
 
 	// we actually go get the URLs now
-	for i := range m[k] {
+	for i, urlloc := range urls {
 		lwg.Add(1)
-		urlloc := m[k][i]
 
 		// TODO / WARNING for large site we can exhaust memory with just the creation of the
 		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
@@ -105,7 +163,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 
 		// log.Println(urlloc)
 
-		go func(i int, k string) {
+		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
 
 			logger.Println(urlloc)
@@ -171,10 +229,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.Printf("Direct access failed, trying headless for  %s ", urlloc)
-				err := PageRender(v1, mc, logger, 60*time.Second, urlloc, k, db) // TODO make delay configurable
+				err := PageRender(v1, mc, logger, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
 
 				db.Update(func(tx *bolt.Tx) error {
-					b := tx.Bucket([]byte(k))
+					b := tx.Bucket([]byte(sourceName))
 					err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
 					return err
 				})
@@ -188,13 +246,13 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
 					logger.Printf("#%d Uploading", i)
-					sha, err := Upload(v1, mc, logger, bucketName, k, urlloc, jsonld)
+					sha, err := Upload(v1, mc, logger, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
 						logger.Printf("Error uploading jsonld to object store: %s: %s", urlloc, err)
 					}
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(k))
+						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(sha))
 						return err
 					})
@@ -202,7 +260,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 					logger.Printf("Empty JSON-LD document found. Continuing.")
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(k))
+						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
 						return err
 					})
@@ -216,7 +274,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 			lwg.Done()
 
 			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
-		}(i, k)
+		}(i, sourceName)
 
 	}
 
@@ -224,7 +282,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k strin
 
 	// TODO write this to minio in the run ID bucket
 	// return the logger buffer or write to a mutex locked bytes buffer
-	f, err := os.Create(fmt.Sprintf("./%s.log", k))
+	f, err := os.Create(fmt.Sprintf("./%s.log", sourceName))
 	if err != nil {
 		log.Println("Error writing a file")
 	}
