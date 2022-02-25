@@ -65,7 +65,7 @@ func getConfig(v1 *viper.Viper)(string, int, int64, error) {
 
 // Inspects the robots.txt file on the domain we are crawling. If a crawl delay
 // is specified, retrieves it for us so we can respect it for this particular domain.
-func getDomainCrawlDelay(v1 *viper.Viper, sourceName string)(int64) {
+func getDomainCrawlDelay(v1 *viper.Viper, sourceName string, client http.Client)(int64) {
 
 	// first get the domain url for our source
 	sourcesConfig, err := configTypes.GetSources(v1)
@@ -78,7 +78,6 @@ func getDomainCrawlDelay(v1 *viper.Viper, sourceName string)(int64) {
 	robotsUrl := domain.Domain + "/robots.txt"
 
 	// now get its robots.txt
-	var client http.Client
 	req, err := http.NewRequest("GET", robotsUrl, nil)
 	if err != nil {
 		log.Printf("error creating http request: %s  ",  err)
@@ -125,10 +124,12 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		log.Panic("Error reading config file", err)
 	}
 
+	var client http.Client
+
 	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
 	// If our default delay is less than what is set there, bump up the delay for this
 	// domain to respect the robots.txt setting.
-	crawlDelay := getDomainCrawlDelay(v1, sourceName)
+	crawlDelay := getDomainCrawlDelay(v1, sourceName, client)
 	log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
 
 	if(delay < crawlDelay) {
@@ -171,7 +172,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			urlloc = strings.ReplaceAll(urlloc, " ", "")
 			urlloc = strings.ReplaceAll(urlloc, "\n", "")
 
-			var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
 				log.Println(err)

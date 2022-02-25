@@ -79,13 +79,14 @@ func TestGetDomainCrawlDelay(t *testing.T) {
 	for key, value := range conf {
 		viper.Set(key, value)
 	}
+	var client http.Client
 
 	t.Run("It returns the crawl delay when specified", func(t *testing.T) {
-		assert.Equal(t, int64(10000), getDomainCrawlDelay(viper, "test"))
+		assert.Equal(t, int64(10000), getDomainCrawlDelay(viper, "test", client))
 	})
 
 	t.Run("It returns 0 if there is an error", func(t *testing.T) {
-		assert.Equal(t, int64(0), getDomainCrawlDelay(viper, "bad-value"))
+		assert.Equal(t, int64(0), getDomainCrawlDelay(viper, "bad-value", client))
 	})
 
 }
