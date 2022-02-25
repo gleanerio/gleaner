@@ -2,6 +2,8 @@ package acquire
 
 import
 (
+	"net/http"
+	"net/http/httptest"
     "testing"
     "github.com/stretchr/testify/assert"
     "github.com/spf13/viper"
@@ -52,4 +54,38 @@ func TestGetConfig(t *testing.T) {
 		assert.Equal(t, int64(0), delay)
 		assert.Nil(t, err)
 	})
+}
+
+func TestGetDomainCrawlDelay(t *testing.T) {
+	var robots = `User-agent: *
+		Disallow: /cgi-bin
+		Disallow: /forms
+		Disallow: /api/gi-cat
+		Disallow: /rocs/archives-catalog
+		Crawl-delay: 10`
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, req *http.Request) {
+	    w.Write([]byte(robots))
+    })
+	// generate a test server so we can capture and inspect the request
+	testServer := httptest.NewServer(mux)
+	defer func() { testServer.Close() }()
+
+	conf := map[string]interface{}{"sources": map[string]interface{}{"name": "test", "domain": testServer.URL }}
+
+	var viper = viper.New()
+	for key, value := range conf {
+		viper.Set(key, value)
+	}
+
+	t.Run("It returns the crawl delay when specified", func(t *testing.T) {
+		assert.Equal(t, int64(10000), getDomainCrawlDelay(viper, "test"))
+	})
+
+	t.Run("It returns 0 if there is an error", func(t *testing.T) {
+		assert.Equal(t, int64(0), getDomainCrawlDelay(viper, "bad-value"))
+	})
+
 }

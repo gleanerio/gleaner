@@ -89,19 +89,19 @@ func getDomainCrawlDelay(v1 *viper.Viper, sourceName string)(int64) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("error fetching robots.txt for %s : %s  ", domain, err)
+		log.Printf("error fetching robots.txt at %s : %s  ", robotsUrl, err)
 		return 0
 	}
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("error reading response for robots.txt from %s : %s ", domain, err)
+		log.Printf("error reading response for robots.txt at %s : %s ", robotsUrl, err)
 		return 0
 	}
 
 	robots, err := robotstxt.Parse(string(bodyBytes), robotsUrl)
 	if err != nil {
-		log.Printf("error parsing robots.txt for %s : %s  ", domain, err)
+		log.Printf("error parsing robots.txt at %s : %s  ", robotsUrl, err)
 		return 0
 	}
 
