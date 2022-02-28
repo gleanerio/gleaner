@@ -16,17 +16,20 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	st := time.Now()
 	log.Printf("Summoner start time: %s \n", st) // Log the time at start for the record
 
-	// Get a list of resource URLs that do and don't required headless processing
-	ru := acquire.ResourceURLs(v1, mc, false, db)
-	hru := acquire.ResourceURLs(v1, mc, true, db)
+	// Get a list of resource URLs that do and don't require headless processing
+	ru, err := acquire.ResourceURLs(v1, mc, false, db)
 
-	// TODO  These can be go funcs that run all at the same time..
-	if len(ru) > 0 {
-		acquire.ResRetrieve(v1, mc, ru, db)
+	if err != nil {
+		log.Printf("Error getting urls that do not require headless processing: %s", err)
+	} else if len(ru) > 0 {
+		//acquire.ResRetrieve(v1, mc, ru, db) // TODO  These can be go funcs that run all at the same time..
 	}
+	hru, err := acquire.ResourceURLs(v1, mc, true, db)
 
-	if len(hru) > 0 {
-		acquire.HeadlessNG(v1, mc, hru, db)
+	if err != nil {
+		log.Printf("Error getting urls that require headless processing: %s", err)
+	} else if len(hru) > 0 {
+		//acquire.HeadlessNG(v1, mc, hru, db)
 	}
 
 	// Time report

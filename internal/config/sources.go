@@ -15,6 +15,7 @@ import (
 
 // as read from csv
 type Sources struct {
+	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, and robots
 	SourceType      string `default:"sitemap"`
 	Name            string
 	Logo            string
@@ -161,6 +162,17 @@ func GetActiveSourceByType(sources []Sources, key string) []Sources {
 	}
 	return sourcesSlice
 }
+
+func GetActiveSourceByHeadless(sources []Sources, headless bool) []Sources {
+	var sourcesSlice []Sources
+	for _, s := range sources {
+		if s.Headless == headless && s.Active == true {
+			sourcesSlice = append(sourcesSlice, s)
+		}
+	}
+	return sourcesSlice
+}
+
 
 func GetSourceByName(sources []Sources, name string) (Sources, error) {
 	for _, s := range sources {

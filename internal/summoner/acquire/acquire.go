@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -15,7 +14,6 @@ import (
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
-	"github.com/samclarke/robotstxt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
@@ -65,7 +63,7 @@ func getConfig(v1 *viper.Viper)(string, int, int64, error) {
 
 // Inspects the robots.txt file on the domain we are crawling. If a crawl delay
 // is specified, retrieves it for us so we can respect it for this particular domain.
-func getDomainCrawlDelay(v1 *viper.Viper, sourceName string, client http.Client)(int64) {
+func getDomainCrawlDelay(v1 *viper.Viper, sourceName string)(int64) {
 
 	// first get the domain url for our source
 	sourcesConfig, err := configTypes.GetSources(v1)
@@ -77,32 +75,7 @@ func getDomainCrawlDelay(v1 *viper.Viper, sourceName string, client http.Client)
 
 	robotsUrl := domain.Domain + "/robots.txt"
 
-	// now get its robots.txt
-	req, err := http.NewRequest("GET", robotsUrl, nil)
-	if err != nil {
-		log.Printf("error creating http request: %s  ",  err)
-		return 0
-	}
-	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
-	req.Header.Set("Accept", "text/plain, text/html")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("error fetching robots.txt at %s : %s  ", robotsUrl, err)
-		return 0
-	}
-	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Printf("error reading response for robots.txt at %s : %s ", robotsUrl, err)
-		return 0
-	}
-
-	robots, err := robotstxt.Parse(string(bodyBytes), robotsUrl)
-	if err != nil {
-		log.Printf("error parsing robots.txt at %s : %s  ", robotsUrl, err)
-		return 0
-	}
+	robots, err := getRobotsTxt(robotsUrl)
 
 	// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
 	return int64(robots.CrawlDelay("EarthCube_DataBot/1.0") / time.Millisecond)
@@ -129,7 +102,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
 	// If our default delay is less than what is set there, bump up the delay for this
 	// domain to respect the robots.txt setting.
-	crawlDelay := getDomainCrawlDelay(v1, sourceName, client)
+	crawlDelay := getDomainCrawlDelay(v1, sourceName)
 	log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
 
 	if(delay < crawlDelay) {
