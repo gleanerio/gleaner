@@ -139,19 +139,17 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 
 	// we actually go get the URLs now
-	for i, urlloc := range urls {
+	for i := range urls {
 		lwg.Add(1)
+		urlloc := urls[i]
 
 		// TODO / WARNING for large site we can exhaust memory with just the creation of the
 		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
 		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
 		// library too)
 
-		// log.Println(urlloc)
-
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
-
 			logger.Println("Indexing", urlloc)
 
 			urlloc = strings.ReplaceAll(urlloc, " ", "")
