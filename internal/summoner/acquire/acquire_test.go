@@ -56,7 +56,7 @@ func TestGetConfig(t *testing.T) {
 	})
 }
 
-func TestGetDomainCrawlDelay(t *testing.T) {
+func TestGetRobotsForDomain(t *testing.T) {
 	var robots = `User-agent: *
 		Disallow: /cgi-bin
 		Disallow: /forms
@@ -79,14 +79,17 @@ func TestGetDomainCrawlDelay(t *testing.T) {
 	for key, value := range conf {
 		viper.Set(key, value)
 	}
-	var client http.Client
 
-	t.Run("It returns the crawl delay when specified", func(t *testing.T) {
-		assert.Equal(t, int64(10000), getDomainCrawlDelay(viper, "test", client))
+	t.Run("It returns an object representing robots.txt when specified", func(t *testing.T) {
+		robots, err := getRobotsForDomain(viper, "test")
+		assert.NotNil(t, robots)
+		assert.Nil(t, err)
 	})
 
-	t.Run("It returns 0 if there is an error", func(t *testing.T) {
-		assert.Equal(t, int64(0), getDomainCrawlDelay(viper, "bad-value", client))
+	t.Run("It returns nil if there is an error", func(t *testing.T) {
+		robots, err := getRobotsForDomain(viper, "bad-value")
+		assert.Nil(t, robots)
+		assert.NotNil(t, err)
 	})
 
 }

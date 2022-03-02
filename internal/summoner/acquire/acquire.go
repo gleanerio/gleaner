@@ -14,12 +14,15 @@ import (
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
+    "github.com/samclarke/robotstxt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
 )
+
+const EarthCubeAgent = "EarthCube_DataBot/1.0"
 
 // ResRetrieve is a function to pull down the data graphs at resources
 func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
@@ -61,24 +64,24 @@ func getConfig(v1 *viper.Viper)(string, int, int64, error) {
 	return bucketName, tc, delay, nil
 }
 
-// Inspects the robots.txt file on the domain we are crawling. If a crawl delay
-// is specified, retrieves it for us so we can respect it for this particular domain.
-func getDomainCrawlDelay(v1 *viper.Viper, sourceName string)(int64) {
-
+func getRobotsForDomain(v1 *viper.Viper, sourceName string) (*robotstxt.RobotsTxt, error) {
 	// first get the domain url for our source
 	sourcesConfig, err := configTypes.GetSources(v1)
 	domain, err := configTypes.GetSourceByName(sourcesConfig, sourceName)
 	if err != nil {
 		log.Printf("error getting domain url for %s : %s  ", sourceName, err)
-		return 0
+		return nil, err
 	}
 
 	robotsUrl := domain.Domain + "/robots.txt"
 
 	robots, err := getRobotsTxt(robotsUrl)
+	if err != nil {
+		log.Printf("error getting robots.txt for %s : %s  ", sourceName, err)
+		return nil, err
+	}
 
-	// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
-	return int64(robots.CrawlDelay("EarthCube_DataBot/1.0") / time.Millisecond)
+	return robots, nil
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
@@ -99,15 +102,24 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	var client http.Client
 
-	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
-	// If our default delay is less than what is set there, bump up the delay for this
-	// domain to respect the robots.txt setting.
-	crawlDelay := getDomainCrawlDelay(v1, sourceName)
-	log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
+	robots, err := getRobotsForDomain(v1, sourceName)
 
-	if(delay < crawlDelay) {
-		delay = crawlDelay
-		tc = 1 // any delay means going down to one thread.
+	if err != nil {
+		log.Printf("Error getting robots.txt for %s; continuing without it.", sourceName)
+	}
+
+	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
+	if(robots != nil) {
+		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
+		crawlDelay := int64(robots.CrawlDelay(EarthCubeAgent) / time.Millisecond)
+		log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
+
+		// If our default delay is less than what is set there, bump up the delay for this
+		// domain to respect the robots.txt setting.
+		if(delay < crawlDelay) {
+			delay = crawlDelay
+			tc = 1 // any delay means going down to one thread.
+		}
 	}
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
@@ -140,17 +152,24 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
 
-			logger.Println(urlloc)
+			logger.Println("Indexing", urlloc)
 
 			urlloc = strings.ReplaceAll(urlloc, " ", "")
 			urlloc = strings.ReplaceAll(urlloc, "\n", "")
+
+			if robots != nil {
+			    allowed, _ := robots.IsAllowed(EarthCubeAgent, urlloc)
+			    if !allowed {
+			        logger.Printf("Declining to index %s because it is disallowed by robots.txt", urlloc)
+			    }
+			}
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
 				log.Println(err)
 				logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
 			}
-			req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
+			req.Header.Set("User-Agent", EarthCubeAgent)
 			req.Header.Set("Accept", "application/ld+json, text/html")
 
 			resp, err := client.Do(req)

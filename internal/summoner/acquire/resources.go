@@ -65,7 +65,27 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 
 	for _, domain := range robotsDomains {
 		mapname := domain.Name
+		var urls []string
 		// first, get the robots file and parse it
+		robots, err := getRobotsTxt(domain.URL)
+		if err != nil {
+			log.Println("Error getting sitemap location from robots.txt for: ", mapname, err)
+			return m, err
+		}
+		for _, sitemap := range robots.Sitemaps() {
+			sitemapUrls, err := getSitemapURLList(sitemap)
+			if err != nil {
+				log.Println("Error getting sitemap urls for: ", mapname, err)
+				return m, err
+			}
+			urls = append(urls, sitemapUrls...)
+		}
+		if mcfg.Mode == "diff" {
+			urls = excludeAlreadySummoned(mapname, urls, db)
+		}
+		m[mapname] = urls
+		m[mapname] = urls
+		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]),  mcfg.Mode)
 	}
 
 	// todo now do the same, except for robots domains - get the sitemaps out of those text files
