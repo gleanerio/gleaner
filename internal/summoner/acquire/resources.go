@@ -84,7 +84,6 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			urls = excludeAlreadySummoned(mapname, urls, db)
 		}
 		m[mapname] = urls
-		m[mapname] = urls
 		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]),  mcfg.Mode)
 	}
 
