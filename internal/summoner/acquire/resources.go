@@ -88,10 +88,6 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]),  mcfg.Mode)
 	}
 
-	// todo now do the same, except for robots domains - get the sitemaps out of those text files
-	// and exclude excluded path urls
-
-	log.Println(m)
 	return m, nil
 }
 

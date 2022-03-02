@@ -22,14 +22,14 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	if err != nil {
 		log.Printf("Error getting urls that do not require headless processing: %s", err)
 	} else if len(ru) > 0 {
-		//acquire.ResRetrieve(v1, mc, ru, db) // TODO  These can be go funcs that run all at the same time..
+		acquire.ResRetrieve(v1, mc, ru, db) // TODO  These can be go funcs that run all at the same time..
 	}
 	hru, err := acquire.ResourceURLs(v1, mc, true, db)
 
 	if err != nil {
 		log.Printf("Error getting urls that require headless processing: %s", err)
 	} else if len(hru) > 0 {
-		//acquire.HeadlessNG(v1, mc, hru, db)
+		acquire.HeadlessNG(v1, mc, hru, db)
 	}
 
 	// Time report
