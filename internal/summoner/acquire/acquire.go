@@ -71,7 +71,12 @@ func getRobotsForDomain(v1 *viper.Viper, sourceName string) (*robotstxt.RobotsTx
 		return nil, err
 	}
 
-	robotsUrl := domain.Domain + "/robots.txt"
+	var robotsUrl string
+	if domain.SourceType == "robots" {
+		robotsUrl = domain.URL
+	} else {
+		robotsUrl = domain.Domain + "/robots.txt"
+	}
 
 	robots, err := getRobotsTxt(robotsUrl)
 	if err != nil {
