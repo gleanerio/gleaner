@@ -41,7 +41,6 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 
 func getConfig(v1 *viper.Viper)(string, int, int64, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
-	fmt.Println(bucketName, err)
 	if err != nil {
 		return bucketName, 0, 0, err
 	}
