@@ -156,9 +156,12 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			urlloc = strings.ReplaceAll(urlloc, "\n", "")
 
 			if robots != nil {
-			    allowed, _ := robots.IsAllowed(EarthCubeAgent, urlloc)
+			    allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
 			    if !allowed {
-			        logger.Printf("Declining to index %s because it is disallowed by robots.txt", urlloc)
+			        logger.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", urlloc, err)
+			        lwg.Done()                                              // tell the wait group that we be done
+					<-semaphoreChan
+			        return
 			    }
 			}
 
