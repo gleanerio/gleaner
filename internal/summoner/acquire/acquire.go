@@ -36,7 +36,6 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
-	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 }
 
