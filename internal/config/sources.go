@@ -29,6 +29,7 @@ type Sources struct {
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
+	HeadlessWait int // is loading is slow, wait
 }
 
 // add needed for file
@@ -42,6 +43,7 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
+	HeadlessWait int // is loading is slow, wait
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -55,6 +57,7 @@ var SourcesTemplate = map[string]interface{}{
 		"propername":      "",
 		"domain":          "",
 		"credentialsfile": "",
+		"headlesswait":    "0",
 	},
 }
 
@@ -172,7 +175,6 @@ func GetActiveSourceByHeadless(sources []Sources, headless bool) []Sources {
 	}
 	return sourcesSlice
 }
-
 
 func GetSourceByName(sources []Sources, name string) (Sources, error) {
 	for _, s := range sources {

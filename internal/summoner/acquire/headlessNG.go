@@ -45,7 +45,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		})
 
 		for i := range m[k] {
-			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+			err := PageRender(v1, mc, logger, 180*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], fmt.Sprintf("%s", err))
 			}
@@ -150,6 +150,10 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	//mcfg := v1.GetStringMapString("summoner")
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
+	srcs, err := configTypes.GetSources(v1)
+
+	srcfg, err := configTypes.GetSourceByName(srcs, k)
+
 	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
 	//devt := devtool.New(mcfg["headless"])
 	devt := devtool.New(mcfg.Headless)
@@ -157,7 +161,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
-			log.Print(err)
+			log.Print(" Headless Error creating page:", err)
 			return err
 		}
 	}
@@ -195,6 +199,10 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		log.Print(err)
 		return err
 	}
+	// need to wait
+	if srcfg.HeadlessWait > 0 {
+		time.Sleep(time.Duration(srcfg.HeadlessWait) * time.Second)
+	}
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
@@ -231,7 +239,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 			});
 		}
 
-		function retry(fn, retriesLeft = 3, interval = 1000) {
+		function retry(fn, retriesLeft = 3, interval = 3000) {
 			return new Promise((resolve, reject) => {
 				fn()
 					.then(resolve)
@@ -250,7 +258,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 
 		retry(getMetadata);
 	`
-
+	// change the interval above from 1000 to 3000
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
