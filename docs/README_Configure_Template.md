@@ -189,8 +189,7 @@ The miller and summon sections are true and we will leave them that way.  It mea
 Now look at the "miller:"  section when lets of pick what milling to do.   Currently it is set with only graph set to true.  Let's leave it that way for now.  This means Gleaner will only attempt to make graph and not also run validation or generate prov reports for the process.  
 
 The final section we need to look at is the "sources:" section.   
-Here is where the fun is.  While there are two types, sitegraph and sitemaps we will normally use sitemap type. 
-There is a third type that involves configuring and pulling from a
+Here is where the fun is.  While the most common type of source is a `sitemap`, there are other types available, and examples of each are below.
 
 A standard [sitemap](./SourceSitemap.md) is below:
 ```yaml
@@ -234,6 +233,23 @@ sources:
   active: true
   credentialsfile: configs/credentials/gleaner-331805-030e15e1d9c4.json
   other: {}
+```
+
+A csv
+```
+TODO: I know this exists but I don't know what it looks like
+```
+
+A robots.txt url (which can have links to multiple sitemaps)
+```yaml
+sources:
+- name: npdc
+  sourcetype: robots
+  headless: false
+  url: https://npdc.nl/robots.txt
+  properName: Netherlands Polar Data Center
+  domain: https://npdc.nl
+  active: false
 ```
 These are the sources we wish to pull and process. 
 Each source has a type, and 8 entries though at this time we no longer use the "logo" value. 

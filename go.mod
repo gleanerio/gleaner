@@ -31,6 +31,7 @@ require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
+	github.com/samclarke/robotstxt v0.0.0-20171127213916-2817654b7988
 	github.com/tidwall/gjson v1.10.2
 	github.com/tidwall/sjson v1.2.3
 	github.com/utahta/go-openuri v0.1.0
