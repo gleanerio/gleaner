@@ -14,9 +14,9 @@ import (
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
-    "github.com/samclarke/robotstxt"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
+	"github.com/samclarke/robotstxt"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
@@ -40,7 +40,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	wg.Wait()
 }
 
-func getConfig(v1 *viper.Viper)(string, int, int64, error) {
+func getConfig(v1 *viper.Viper) (string, int, int64, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
 	if err != nil {
 		return bucketName, 0, 0, err
@@ -113,14 +113,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 
 	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
-	if(robots != nil) {
+	if robots != nil {
 		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
 		crawlDelay := int64(robots.CrawlDelay(EarthCubeAgent) / time.Millisecond)
 		log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
 
 		// If our default delay is less than what is set there, bump up the delay for this
 		// domain to respect the robots.txt setting.
-		if(delay < crawlDelay) {
+		if delay < crawlDelay {
 			delay = crawlDelay
 			tc = 1 // any delay means going down to one thread.
 		}
@@ -141,7 +141,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
 
-
 	// we actually go get the URLs now
 	for i := range urls {
 		lwg.Add(1)
@@ -160,13 +159,13 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			urlloc = strings.ReplaceAll(urlloc, "\n", "")
 
 			if robots != nil {
-			    allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
-			    if !allowed {
-			        logger.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", urlloc, err)
-			        lwg.Done()                                              // tell the wait group that we be done
+				allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
+				if !allowed {
+					logger.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", urlloc, err)
+					lwg.Done() // tell the wait group that we be done
 					<-semaphoreChan
-			        return
-			    }
+					return
+				}
 			}
 
 			req, err := http.NewRequest("GET", urlloc, nil)
@@ -227,19 +226,22 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.Printf("Direct access failed, trying headless for  %s ", urlloc)
 				err := PageRender(v1, mc, logger, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
-
+				if err != nil {
+					logger.Printf("PageRender %s :: %s", urlloc, err)
+				}
 				db.Update(func(tx *bolt.Tx) error {
 					b := tx.Bucket([]byte(sourceName))
 					err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
 					return err
 				})
 				if err != nil {
-					logger.Printf("%s :: %s", urlloc, err)
+					logger.Printf("DB Update %s :: %s", urlloc, err)
 				}
 
-			} else {
-				log.Printf("Direct access worked for  %s ", urlloc)
-			}
+			} //else {
+			//log.Printf("Direct access worked for  %s ", urlloc)
+			//}
+
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
 					logger.Printf("#%d Uploading", i)
@@ -264,8 +266,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				}
 			}
 
-			bar.Add(1)                                       // bar.Incr()
-			logger.Printf("#%d thread for %s ", i, urlloc)   // print an message containing the index (won't keep order)
+			bar.Add(1)                                          // bar.Incr()
+			logger.Printf("#%d thread for %s ", i, urlloc)      // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
 
 			lwg.Done()
