@@ -175,6 +175,8 @@ github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeME
 github.com/gleanerio/gleaner v0.0.0-20211103190335-f9d8811ee43b/go.mod h1:Xx/8sK0tqQRLSYLsyTR9NeLTGKpwmUOIFat0ilWqguw=
 github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef h1:fJ3fh3AFktjmXd+FIv1lYyds80/n3Ao2DMNQfD8azJQ=
 github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef/go.mod h1:tGRxO9CPE3nh9CFvnejJVhoF9GRBqgfOfQbOT+VODJA=
+github.com/gleanerio/nabu v0.0.0-20211214151422-eda9e525f196 h1:FKElPrSdat0cCsax9JRzcRH6iRYQKT9cubLPxBAulYA=
+github.com/gleanerio/nabu v0.0.0-20211214151422-eda9e525f196/go.mod h1:8R1VJxKnob6bLfnTs45X2eFWsUfyarzg/o9D6wqM/WQ=
 github.com/glycerine/go-unsnap-stream v0.0.0-20181221182339-f9677308dec2/go.mod h1:/20jfyN9Y5QPEAprSgKAUr+glWDY39ZiUEAYOEv5dsE=
 github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31/go.mod h1:Ogl1Tioa0aV7gstGFO7KhffUsb9M4ydbEbbxpcEDc24=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
@@ -349,6 +351,7 @@ github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfV
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/k0kubun/go-ansi v0.0.0-20180517002512-3bf9e2903213/go.mod h1:vNUNkEQ1e29fT/6vq2aBdFsgNPmy8qMdSay1npru+Sw=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
+github.com/kisielk/godepgraph v0.0.0-20190626013829-57a7e4a651a9/go.mod h1:Gb5YEgxqiSSVrXKWQxDcKoCM94NO5QAwOwTaVmIUAMI=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
 github.com/klauspost/compress v1.9.7/go.mod h1:RyIbtBH6LamlWaDj8nUwkbUhJ87Yi3uG0guNDohfE1A=
 github.com/klauspost/compress v1.10.5/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=

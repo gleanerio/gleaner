@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"log"
 	"sync"
 	"time"
@@ -33,7 +34,10 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
-
+	smncfg, err := configTypes.ReadSummmonerConfig(v1)
+	if err != nil {
+		log.Printf("error getting sources :: %s", fmt.Sprintf("%s", err))
+	}
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 		db.Update(func(tx *bolt.Tx) error {
@@ -44,8 +48,17 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 			return nil
 		})
 
+		if err != nil {
+			log.Printf("error getting source: %s :: %s", k, fmt.Sprintf("%s", err))
+		}
+		// if we delay... we can also wait longer
+		wait := 60 * time.Second
+		if smncfg.Delay > 0 {
+			wait = time.Duration(smncfg.Delay) * 60 * time.Second
+		}
+
 		for i := range m[k] {
-			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+			err := PageRender(v1, mc, logger, wait, m[k][i], k, db)
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], fmt.Sprintf("%s", err))
 			}
@@ -138,6 +151,59 @@ func doCall(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.
 
 }
 
+///* slow loading pages.
+//first hack was a delay
+//next hack is a wait until idle from here; https://github.com/chromedp/chromedp/issues/431
+//or here: https://github.com/Aleksandr-Kai/articles_parser/blob/18c4cd2c90600e0eb7b628853a3959995e514dbd/pkg/browserapp/browser.go
+//*/
+//func navigateAndWaitFor(url string, eventName string) chromedp.ActionFunc {
+//	return func(ctx context.Context) error {
+//		_, _, _, err := page.Navigate(url).Do(ctx)
+//		if err != nil {
+//			return err
+//		}
+//
+//		return waitFor(ctx, eventName)
+//		return nil
+//	}
+//}
+//// waitFor blocks until eventName is received.
+//// Examples of events you can wait for:
+////     init, DOMContentLoaded, firstPaint,
+////     firstContentfulPaint, firstImagePaint,
+////     firstMeaningfulPaintCandidate,
+////     load, networkAlmostIdle, firstMeaningfulPaint, networkIdle
+////
+//// This is not super reliable, I've already found incidental cases where
+//// networkIdle was sent before load. It's probably smart to see how
+//// puppeteer implements this exactly.
+//func waitFor(ctx context.Context, eventName string) error {
+//	ch := make(chan struct{})
+//	cctx, cancel := context.WithCancel(ctx)
+//	chromedp.ListenTarget(cctx, func(ev interface{}) {
+//		switch e := ev.(type) {
+//		//case *page.EventLifecycleEvent:
+//		case *page.LifecycleEventClient:
+//			if e.Name == eventName {
+//				cancel()
+//				close(ch)
+//			}
+//		}
+//	})
+//	select {
+//	case <-ch:
+//		return nil
+//	case <-ctx.Done():
+//		return ctx.Err()
+//	}
+//
+//}
+///* end wait code
+// */
+/*
+
+ */
+
 func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, url, k string, db *bolt.DB) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -150,6 +216,10 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	//mcfg := v1.GetStringMapString("summoner")
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
+	srcs, err := configTypes.GetSources(v1)
+
+	srcfg, err := configTypes.GetSourceByName(srcs, k)
+
 	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
 	//devt := devtool.New(mcfg["headless"])
 	devt := devtool.New(mcfg.Headless)
@@ -157,7 +227,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
-			log.Print(err)
+			log.Print(" Headless Error creating page:", err)
 			return err
 		}
 	}
@@ -188,12 +258,26 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	}
 	defer domContent.Close()
 
+	// Try LoadEventFired event... DOMContentEventFired  returns no data. client to buffer this event.
+	//  never gets fired.
+	//domContent, err := c.Page.LoadEventFired(ctx)
+	//if err != nil {
+	//	log.Print(err)
+	//	return err
+	//}
+	//defer domContent.Close()
+
 	// Create the Navigate arguments with the optional Referrer field set.
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
+	//nav, err := navigateAndWaitFor(url, "networkIdle")
 	if err != nil {
 		log.Print(err)
 		return err
+	}
+	// need to wait
+	if srcfg.HeadlessWait > 0 {
+		time.Sleep(time.Duration(srcfg.HeadlessWait) * time.Second)
 	}
 
 	// Wait until we have a DOMContentEventFired event.
@@ -212,6 +296,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 	 * I cannot figure out how to get the cdp Runtime to distinguish between a resolved and a rejected
 	 *  promise - so in this case, we simply do not index a document, and fail silently.
 	 **/
+	// TODO: change  interval = 3000 to multipler of headless wait.
 	expression := `
 		function getMetadata() {
 			return new Promise((resolve, reject) => {
@@ -231,7 +316,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 			});
 		}
 
-		function retry(fn, retriesLeft = 3, interval = 1000) {
+		function retry(fn, retriesLeft = 3, interval = 3000) {
 			return new Promise((resolve, reject) => {
 				fn()
 					.then(resolve)
@@ -250,7 +335,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 
 		retry(getMetadata);
 	`
-
+	// change the interval above from 1000 to 3000
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
