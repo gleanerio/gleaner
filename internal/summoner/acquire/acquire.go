@@ -2,12 +2,13 @@ package acquire
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
@@ -132,11 +133,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	count := len(urls)
 	bar := progressbar.Default(int64(count))
-
-	//var (
-	//	buf    bytes.Buffer
-	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
-	//)
 
 	// we actually go get the URLs now
 	for i := range urls {
@@ -275,22 +271,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 
 	lwg.Wait()
-
-	// TODO :  replaced logger with logrus..
-	// write this to minio in the run ID bucket
-	// return the logger buffer or write to a mutex locked bytes buffer
-	//f, err := os.Create(fmt.Sprintf("./%s.log", sourceName))
-	//if err != nil {
-	//	log.Println("Error writing a file")
-	//}
-
-	//w := bufio.NewWriter(f)
-	//bc, err := w.WriteString(buf.String())
-	//if err != nil {
-	//	log.Println("Error writing a file")
-	//}
-	//w.Flush()
-	//log.Printf("Wrote log size %d", bc)
 
 }
 

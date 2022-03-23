@@ -6,16 +6,15 @@ import (
 	"context"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"strings"
 	"sync"
 
-	"github.com/piprate/json-gold/ld"
-	"github.com/schollz/progressbar/v3"
-
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
+	"github.com/piprate/json-gold/ld"
 	"github.com/spf13/viper"
 )
 
@@ -38,7 +37,8 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	// defer close(doneCh)           // Indicate to our routine to exit cleanly upon return.
 	isRecursive := true
 
-	// Spiffy progress line  (do I really want this?)
+	// Need count for Spiffy progress line  (do I really want this?)
+	// there has got to be a better way to get the count of objects in an object store
 	oc := mc.ListObjects(context.Background(), bucketName, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
 	// count := len(objectCh)
 	var count int
@@ -49,6 +49,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		}
 	}
 
+	// Old style bar is "ok" since done in sequence?
 	bar := progressbar.Default(int64(count))
 	objectCh := mc.ListObjects(context.Background(), bucketName, minio.ListObjectsOptions{Prefix: prefix, Recursive: isRecursive})
 	// for object := range mc.ListObjects(context.Background(), bucketname, prefix, isRecursive, doneCh) {
