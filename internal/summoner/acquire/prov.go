@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 	"text/template"
 	"time"
@@ -39,10 +39,10 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	//miniocfg := v1.GetStringMapString("minio")
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	bucketName, err := configTypes.GetBucketName(v1)
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
+	//var (
+	//	buf    bytes.Buffer
+	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	//)
 
 	p, err := provOGraph(v1, k, sha, urlloc, "milled") // TODO default to milled till I update the rest of the code and remove this version of the function
 
@@ -59,7 +59,7 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	provsha := common.GetSHA(p)
 	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
 	// if err != nil {
-	// 	logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
+	// 	log.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 	// 	return err
 	// }
 
@@ -75,8 +75,8 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	// Upload the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		logger.Printf("%s", objectName)
-		logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Printf("%s", objectName)
+		log.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 
 	return err
@@ -87,10 +87,10 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 	//miniocfg := v1.GetStringMapString("minio")
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	bucketName, err := configTypes.GetBucketName(v1)
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
+	//var (
+	//	buf    bytes.Buffer
+	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	//)
 
 	p, err := provOGraph(v1, k, sha, urlloc, objprefix)
 	if err != nil {
@@ -101,7 +101,7 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 	provsha := common.GetSHA(p)
 	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
 	// if err != nil {
-	// 	logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
+	// 	log.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 	// 	return err
 	// }
 
@@ -117,8 +117,8 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 	// Upload the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		logger.Printf("%s", objectName)
-		logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Printf("%s", objectName)
+		log.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 
 	return err
@@ -382,7 +382,7 @@ func provTemplate() string {
 // 	provsha := common.GetSHA(p)
 // 	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
 // 	// if err != nil {
-// 	// 	logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
+// 	// 	log.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 // 	// 	return err
 // 	// }
 
@@ -398,7 +398,7 @@ func provTemplate() string {
 // 	// Upload the file with FPutObject
 // 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 // 	if err != nil {
-// 		logger.Printf("%s", objectName)
+// 		log.Printf("%s", objectName)
 // 		logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 // 	}
 

@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
@@ -54,20 +54,20 @@ func fixContextString(jsonld string) (string, error) {
 	jsonContext := gjson.Get(jsonld, "@context")
 
 	switch jsonContext.Value().(type) {
-		case string:
-			jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": jsonContext.String()})
+	case string:
+		jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": jsonContext.String()})
 	}
 	return jsonld, err
 }
 
-func Upload(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, bucketName string, site string,  urlloc string, jsonld string) (string, error) {
+func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
 	jsonld, err := fixContextString(jsonld)
 	if err != nil {
-		logger.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
+		log.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
 	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 	if err != nil {
-		logger.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
+		log.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
 	}
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
 	contentType := "application/ld+json"
@@ -81,17 +81,17 @@ func Upload(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, bucketName st
 	// write the prov entry for this object
 	err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
 	if err != nil {
-		logger.Println(err)
+		log.Println(err)
 	}
 
 	// Upload the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		logger.Printf("%s", objectName)
-		logger.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Printf("%s", objectName)
+		log.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 
 	return sha, err
 
-	// logger.Printf("Uploaded Bucket:%s File:%s Size %d\n", bucketName, objectName, size)
+	// log.Printf("Uploaded Bucket:%s File:%s Size %d\n", bucketName, objectName, size)
 }

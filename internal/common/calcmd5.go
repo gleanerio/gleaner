@@ -4,8 +4,8 @@ import (
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"strings"
 
 	"github.com/piprate/json-gold/ld"

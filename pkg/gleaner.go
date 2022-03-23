@@ -8,9 +8,9 @@ import (
 	"github.com/gleanerio/gleaner/internal/summoner"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	"github.com/minio/minio-go/v7"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
-	"log"
 	//"os"
 )
 

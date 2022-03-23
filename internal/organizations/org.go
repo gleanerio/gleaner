@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"text/template"
 
 	"github.com/gleanerio/gleaner/internal/common"
@@ -42,10 +42,10 @@ type Qset struct {
 // BuildGraph makes a graph from the Gleaner config file source
 // load this to a /sources bucket (change this to sources naming convention?)
 func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
+	//var (
+	//	buf    bytes.Buffer
+	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	//)
 
 	// read config file
 	//miniocfg := v1.GetStringMapString("minio")

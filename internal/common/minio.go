@@ -2,7 +2,7 @@ package common
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/minio/minio-go/v7"
