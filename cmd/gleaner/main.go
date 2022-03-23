@@ -49,7 +49,7 @@ func init() {
 }
 
 func main() {
-	log.Println("EarthCube Gleaner")
+	fmt.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
 
 	// BEGIN profile section
