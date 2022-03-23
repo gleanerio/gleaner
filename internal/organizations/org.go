@@ -84,7 +84,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 		// Upload the file with FPutObject
 		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
 		if err != nil {
-			logger.Printf("%s", objectName)
+			log.Printf("%s", objectName)
 			return err
 		}
 
