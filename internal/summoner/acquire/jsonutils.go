@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
+	"strings"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
@@ -57,6 +59,24 @@ func fixContextString(jsonld string) (string, error) {
 		case string:
 			jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": jsonContext.String()})
 	}
+	return jsonld, err
+}
+
+// If the top-level JSON-LD context does not end with a trailing slash or use https,
+// this function corrects it.
+func fixContextUrl(jsonld string) (string, error) {
+	var err error
+	context := gjson.Get(jsonld, "@context.@vocab").String()
+	if ! strings.HasSuffix(context, "/") {
+		context += "/"
+	}
+	contextUrl, err := url.Parse(context)
+	if contextUrl.Scheme != "https" {
+		contextUrl.Scheme = "https"
+		context = contextUrl.String()
+	}
+
+	jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": context})
 	return jsonld, err
 }
 
