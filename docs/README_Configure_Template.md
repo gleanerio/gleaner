@@ -179,10 +179,13 @@ sources:
 
 A few things we need to look at.
 
-First, in the "mino:" section make sure the accessKey and secretKey here are the ones you utlize.
+First, in the "minio:" section make sure the accessKey and secretKey here are the ones you utlize.
 Note: blank these out, and used environment variables (TODO:Need to describe them)
 
 Next, lets look at the "gleaner:" section.  We can set the runid to something.  This is the ID for a run and it allows you to later make different runs and keep the resulting graphs organized.  It can be set to any lower case string with no spaces. 
+
+The "context:" section is about the JSON-LD context, which is a top-level object in each JSON-LD metadata document. Most of the time, it'll look like the example context [here](https://github.com/ESIPFed/science-on-schema.org/blob/cbe618d1896ae8408b3d3575e7be6847129808ab/guides/Dataset.md#common-properties).
+By default, Gleaner will look for common mistakes in the JSON-LD context specification and fix them up. Setting `strict: true` here will disable those fixup operations. It might make things run a little faster to do this.
 
 The miller and summon sections are true and we will leave them that way.  It means we want Gleaner to both fetch the resources and process (mill) them.  
 
