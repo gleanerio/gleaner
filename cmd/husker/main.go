@@ -11,7 +11,6 @@ import (
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 )
 
 var viperVal string
@@ -59,14 +58,8 @@ func main() {
 		buf    bytes.Buffer
 		logger = log.New(&buf, "logger: ", log.Lshortfile)
 	)
-	// setup the KV store to hold a record of indexed resources
-	db, err := bolt.Open("gleaner.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
-	err = acquire.PageRender(v1, mc, logger, 45*time.Second, url, k, db)
+	err = acquire.PageRender(v1, mc, logger, 45*time.Second, url, k)
 	if err != nil {
 		panic(fmt.Errorf("error when reading config: %v", err))
 	}

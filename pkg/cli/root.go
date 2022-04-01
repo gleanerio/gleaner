@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/boltdb/bolt"
 	"github.com/spf13/viper"
 )
 
@@ -15,8 +14,6 @@ var cfgFile, cfgName, cfgPath, nabuName, gleanerName string
 var minioVal, portVal, accessVal, secretVal, bucketVal string
 var sslVal bool
 var gleanerViperVal, nabuViperVal *viper.Viper
-
-var db *bolt.DB
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -116,12 +113,5 @@ func initConfig() {
 	if err := nabuViperVal.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using nabu config file:", nabuViperVal.ConfigFileUsed())
 	}
-	// Setup the KV store to hold a record of indexed resources
-	var err error
-	db, err = bolt.Open("gleaner.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 }

@@ -1,12 +1,10 @@
 package acquire
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"strings"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	bolt "go.etcd.io/bbolt"
 
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go/v7"
@@ -31,7 +29,7 @@ const robotsType = "robots"
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
-func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) (map[string][]string, error) {
+func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) (map[string][]string, error) {
 	m := make(map[string][]string) // make a map
 
 	// Know whether we are running in diff mode, in order to exclude urls that have already
@@ -54,7 +52,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			return m, err
 		}
 		if mcfg.Mode == "diff" {
-			urls = excludeAlreadySummoned(mapname, urls, db)
+			urls = excludeAlreadySummoned(mapname, urls)
 		}
 		m[mapname] = urls
 		log.Printf("%s sitemap size is : %d mode: %s \n", mapname, len(m[mapname]), mcfg.Mode)
@@ -80,7 +78,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			urls = append(urls, sitemapUrls...)
 		}
 		if mcfg.Mode == "diff" {
-			urls = excludeAlreadySummoned(mapname, urls, db)
+			urls = excludeAlreadySummoned(mapname, urls)
 		}
 		m[mapname] = urls
 		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]), mcfg.Mode)
@@ -146,23 +144,11 @@ func getSitemapURLList(domainURL string) ([]string, error) {
 	return s, nil
 }
 
-func excludeAlreadySummoned(domainName string, urls []string, db *bolt.DB) []string {
+func excludeAlreadySummoned(domainName string, urls []string) []string {
 	//  TODO if we check for URLs in prov..  do that here..
 	//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
 
 	oa := []string{}
-	db.View(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b := tx.Bucket([]byte(domainName))
-		c := b.Cursor()
-
-		for key, _ := c.First(); key != nil; key, _ = c.Next() {
-			//fmt.Printf("key=%s, value=%s\n", k, v)
-			oa = append(oa, fmt.Sprintf("%s", key))
-		}
-
-		return nil
-	})
 
 	d := difference(urls, oa)
 	return d

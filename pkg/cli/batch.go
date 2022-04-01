@@ -20,7 +20,6 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
-	bolt "go.etcd.io/bbolt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -77,12 +76,7 @@ func Batch(filename string, cfgPath string, cfgName string, mode string, runSour
 		panic(err)
 	}
 	mc := common.MinioConnection(v1)
-	// setup the KV store to hold a record of indexed resources
-	db, err := bolt.Open(path.Join(cfgPath, cfgName, "gleaner.db"), 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+
 	//var gln = v1.Sub("gleaner")
 	gln := v1.GetStringMapString("gleaner")
 	if millVal {
@@ -103,5 +97,5 @@ func Batch(filename string, cfgPath string, cfgName string, mode string, runSour
 			os.Exit(1)
 		}
 	}
-	pkg.Cli(mc, v1, db)
+	pkg.Cli(mc, v1)
 }

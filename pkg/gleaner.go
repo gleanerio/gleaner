@@ -10,11 +10,10 @@ import (
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 	//"os"
 )
 
-func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
+func Cli(mc *minio.Client, v1 *viper.Viper) error {
 
 	mcfg := v1.GetStringMapString("gleaner")
 	//mcfg := v1.Sub("gleaner") /// with overrides from batch ends up being nil
@@ -34,7 +33,7 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 		}
 		log.Println(fn)
 		// summon sitemaps
-		summoner.Summoner(mc, v1, db)
+		summoner.Summoner(mc, v1)
 		acquire.GetFromGDrive(mc, v1)
 	}
 
@@ -82,7 +81,7 @@ func Setup(mc *minio.Client, v1 *viper.Viper) error {
 
 /*
 Check to see we can connect to s3 instance, and that buckets exist
-Might also be used to flight check bolt database, and if containers are up
+Might also be used to flight check  if containers are up
 
 */
 func PreflightChecks(mc *minio.Client, v1 *viper.Viper) error {

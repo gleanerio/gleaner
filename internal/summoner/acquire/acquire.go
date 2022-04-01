@@ -1,7 +1,6 @@
 package acquire
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -17,13 +16,12 @@ import (
 	"github.com/samclarke/robotstxt"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 )
 
 const EarthCubeAgent = "EarthCube_DataBot/1.0"
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string) {
 	wg := sync.WaitGroup{}
 
 	// Why do I pass the wg pointer?   Just make a new one
@@ -31,7 +29,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	// to control the loop?
 	for domain, urls := range m {
 		log.Printf("Queuing URLs for %s \n", domain)
-		go getDomain(v1, mc, urls, domain, &wg, db)
+		go getDomain(v1, mc, urls, domain, &wg)
 	}
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
@@ -86,16 +84,7 @@ func getRobotsForDomain(v1 *viper.Viper, sourceName string) (*robotstxt.RobotsTx
 	return robots, nil
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
-
-	// make the bucket (if it doesn't exist)
-	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte(sourceName))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		return nil
-	})
+func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup) {
 
 	bucketName, tc, delay, err := getConfig(v1)
 	if err != nil {
@@ -218,17 +207,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.Printf("Direct access failed, trying headless for  %s ", urlloc)
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName) // TODO make delay configurable
 				if err != nil {
 					log.Printf("PageRender %s :: %s", urlloc, err)
-				}
-				db.Update(func(tx *bolt.Tx) error {
-					b := tx.Bucket([]byte(sourceName))
-					err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
-					return err
-				})
-				if err != nil {
-					log.Printf("DB Update %s :: %s", urlloc, err)
 				}
 
 			} //else {
@@ -238,24 +219,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
 					log.Printf("#%d Uploading", i)
-					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
+					_, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
 						log.Printf("Error uploading jsonld to object store: %s: %s", urlloc, err)
 					}
-					// TODO  Is here where to add an entry to the KV store
-					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(sourceName))
-						err := b.Put([]byte(urlloc), []byte(sha))
-						return err
-					})
+
 				} else {
 					log.Printf("Empty JSON-LD document found. Continuing.")
-					// TODO  Is here where to add an entry to the KV store
-					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(sourceName))
-						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
-						return err
-					})
+
 				}
 			}
 
