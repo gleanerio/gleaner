@@ -80,3 +80,55 @@ func TestContextStringFix(t *testing.T) {
         assert.Nil(t, err)
     })
 }
+
+func TestContextUrlFix(t *testing.T) {
+    var httpContext = `{
+        "@context": {
+            "@vocab":"http://schema.org/"
+        },
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+    var httpNoSlashContext = `{
+        "@context": {
+            "@vocab":"http://schema.org"
+        },
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+    var noSlashContext = `{
+        "@context": {
+            "@vocab":"https://schema.org"
+        },
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+    var expectedContext = `{
+        "@context": {
+            "@vocab":"https://schema.org/"
+        },
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+    t.Run("It rewrites the jsonld context if it does not have a trailing slash", func(t *testing.T) {
+        result, err := fixContextUrl(noSlashContext)
+        assert.JSONEq(t, expectedContext, result)
+        assert.Nil(t, err)
+    })
+
+    t.Run("It rewrites the jsonld context if its schema is not https", func(t *testing.T) {
+        result, err := fixContextUrl(httpContext)
+        assert.JSONEq(t, expectedContext, result)
+        assert.Nil(t, err)
+    })
+
+    t.Run("It rewrites the jsonld context if it does not have a trailing slash or its schema is not https", func(t *testing.T) {
+        result, err := fixContextUrl(httpNoSlashContext)
+        assert.JSONEq(t, expectedContext, result)
+        assert.Nil(t, err)
+    })
+}
