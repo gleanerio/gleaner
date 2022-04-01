@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/url"
+	"strings"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
@@ -60,10 +62,39 @@ func fixContextString(jsonld string) (string, error) {
 	return jsonld, err
 }
 
+// If the top-level JSON-LD context does not end with a trailing slash or use https,
+// this function corrects it.
+func fixContextUrl(jsonld string) (string, error) {
+	var err error
+	context := gjson.Get(jsonld, "@context.@vocab").String()
+	if ! strings.HasSuffix(context, "/") {
+		context += "/"
+	}
+	contextUrl, err := url.Parse(context)
+	if contextUrl.Scheme != "https" {
+		contextUrl.Scheme = "https"
+		context = contextUrl.String()
+	}
+
+	jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": context})
+	return jsonld, err
+}
+
 func Upload(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, bucketName string, site string,  urlloc string, jsonld string) (string, error) {
-	jsonld, err := fixContextString(jsonld)
-	if err != nil {
-		logger.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
+	mcfg := v1.GetStringMapString("context")
+
+	// In the config file, context { strict: true } bypasses these fixups.
+	// Strict defaults to false.
+	if strict, ok := mcfg["strict"]; !(ok && strict == "true") {
+		logger.Println("context.strict is not set to true; doing json-ld fixups.")
+		jsonld, err := fixContextString(jsonld)
+		if err != nil {
+			logger.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
+		}
+		jsonld, err = fixContextUrl(jsonld)
+		if err != nil {
+			logger.Printf("ERROR: URL: %s Action: Fixing JSON-LD context url scheme and trailing slash Error: %s\n", urlloc, err)
+		}
 	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 	if err != nil {
