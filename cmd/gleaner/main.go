@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -38,7 +39,9 @@ func init() {
 
 	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
 	log.SetReportCaller(true)              // include file name and line number
-	log.SetOutput(logFile)
+	mw := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(mw)
+	//log.SetOutput(logFile)
 
 	//log.SetLevel(log.WarnLevel) // Only log the warning severity or above.
 
