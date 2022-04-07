@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 
 	"github.com/rs/xid"

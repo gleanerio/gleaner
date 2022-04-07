@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"

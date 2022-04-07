@@ -1,14 +1,11 @@
 #!/bin/bash
 
-# gleaner-cli 
-# A wrapper script for invoking gleaner-cli with docker
-# Put this script in $PATH as `rgleaner-cli`
-# TODO 
-# add help with things like config for 
-# go run ../../cmd/gleaner/main.go -cfg eco_local -source '{"Name":"opentopo", "URL":"https://portal.opentopography.org/sitemap.xml", "Headless":false, "PID":"http://doi.org/10.17616/R3J616"}'
+# gleaner-cli : A wrapper script for invoking gleaner-cli with docker
 
-# This code pulls fils/gleaner:latest   However, if that breaks things you might want to exchange latest for a specific version.  See 
-# https://hub.docker.com/repository/docker/fils/gleaner for specific version numbers available. 
+# TODO:  add help with things like config for 
+# cfg eco_local 
+# cfg eco_local -source cfg_name
+
 
 PROGNAME="$(basename $0)"
 VERSION="v0.0.1"
@@ -41,8 +38,8 @@ check_cmd_in_path(){
 check_cmd_in_path docker
 check_cmd_in_path curl
 
-# Set up mounted volumes, environment, and run our containerized command
-# podman needs --privileged to mount /dev/shm
+
+# Podman:  podman needs --privileged to mount /dev/shm
 #exec podman run \
   #--privileged \
   #--interactive --tty --rm \
@@ -50,6 +47,7 @@ check_cmd_in_path curl
   #--workdir /wd \
   #"localhost/nsfearthcube/gleaner:latest" "$@"
 
+# Docker:  current docker command to do local volume mounts
 exec docker run \
   --interactive --tty --rm \
   --volume "$PWD":/wd \

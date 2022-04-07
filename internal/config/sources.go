@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gocarina/gocsv"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"io"
-	"log"
 
 	"github.com/utahta/go-openuri"
 	"path"

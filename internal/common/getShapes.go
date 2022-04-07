@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	minio "github.com/minio/minio-go/v7"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 // GetShapeGraphs gets the shape graphs the shacl miller will use.

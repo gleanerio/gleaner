@@ -5,8 +5,8 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"log"
 	"os"
 	"path"
 

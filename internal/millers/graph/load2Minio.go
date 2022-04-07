@@ -3,7 +3,7 @@ package graph
 import (
 	"bytes"
 	"context"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	minio "github.com/minio/minio-go/v7"
 )

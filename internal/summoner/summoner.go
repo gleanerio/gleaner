@@ -1,7 +1,7 @@
 package summoner
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
@@ -18,14 +18,13 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 
 	// Get a list of resource URLs that do and don't require headless processing
 	ru, err := acquire.ResourceURLs(v1, mc, false, db)
-
 	if err != nil {
 		log.Printf("Error getting urls that do not require headless processing: %s", err)
 	} else if len(ru) > 0 {
 		acquire.ResRetrieve(v1, mc, ru, db) // TODO  These can be go funcs that run all at the same time..
 	}
-	hru, err := acquire.ResourceURLs(v1, mc, true, db)
 
+	hru, err := acquire.ResourceURLs(v1, mc, true, db)
 	if err != nil {
 		log.Printf("Error getting urls that require headless processing: %s", err)
 	} else if len(hru) > 0 {

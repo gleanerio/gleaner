@@ -2,7 +2,7 @@ package acquire
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
@@ -32,7 +32,6 @@ const robotsType = "robots"
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) (map[string][]string, error) {
-
 	m := make(map[string][]string) // make a map
 
 	// Know whether we are running in diff mode, in order to exclude urls that have already
@@ -48,7 +47,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	sitemapDomains := configTypes.GetActiveSourceByType(domains, siteMapType)
 
 	for _, domain := range sitemapDomains {
-		mapname := domain.Name // TODO I would like to use this....
+		mapname := domain.Name
 		urls, err := getSitemapURLList(domain.URL)
 		if err != nil {
 			log.Println("Error getting sitemap urls for: ", mapname, err)
@@ -58,7 +57,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			urls = excludeAlreadySummoned(mapname, urls, db)
 		}
 		m[mapname] = urls
-		log.Printf("%s sitemap size is : %d mode: %s \n", mapname, len(m[mapname]),  mcfg.Mode)
+		log.Printf("%s sitemap size is : %d mode: %s \n", mapname, len(m[mapname]), mcfg.Mode)
 	}
 
 	robotsDomains := configTypes.GetActiveSourceByType(domains, robotsType)
@@ -84,7 +83,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			urls = excludeAlreadySummoned(mapname, urls, db)
 		}
 		m[mapname] = urls
-		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]),  mcfg.Mode)
+		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]), mcfg.Mode)
 	}
 
 	return m, nil
