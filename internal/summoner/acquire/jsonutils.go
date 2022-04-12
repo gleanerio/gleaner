@@ -80,14 +80,14 @@ func fixContextUrl(jsonld string) (string, error) {
 	return jsonld, err
 }
 
-func Upload(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, bucketName string, site string,  urlloc string, jsonld string) (string, error) {
+func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string,  urlloc string, jsonld string) (string, error) {
 	mcfg := v1.GetStringMapString("context")
-
+	var err error
 	// In the config file, context { strict: true } bypasses these fixups.
 	// Strict defaults to false.
 	if strict, ok := mcfg["strict"]; !(ok && strict == "true") {
 		log.Println("context.strict is not set to true; doing json-ld fixups.")
-		jsonld, err := fixContextString(jsonld)
+		jsonld, err = fixContextString(jsonld)
 		if err != nil {
 			log.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
 		}
