@@ -107,8 +107,7 @@ will generate gleaner and nabu configurations, and make copies
 
 ## Gleaner
 * glcon gleaner setup --cfgName X  
-* glcon gleaner batch  --cfgName X  
-
+* glcon gleaner batch  --cfgName X
 ## Nabu
 * glcon nabu prefix --cfgName X
 * glcon nabu prune --cfgName X

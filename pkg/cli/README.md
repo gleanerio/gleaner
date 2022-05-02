@@ -11,3 +11,8 @@ gleaner
 nabu What Nabu should do: tika, txtai, object, prefix, prune
   prefix
   prune
+
+updating nabu dependency
+
+go get github.com/gleanerio/nabu@{commit hash} 
+go get github.com/gleanerio/nabu@a01fa93

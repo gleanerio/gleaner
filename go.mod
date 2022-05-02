@@ -1,6 +1,6 @@
 module github.com/gleanerio/gleaner
 
-go 1.14
+go 1.15
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
@@ -29,7 +29,7 @@ require (
 
 require (
 	github.com/boltdb/bolt v1.3.1
-	github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef
+	github.com/gleanerio/nabu v0.0.0-20220223141452-a01fa9352430
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/tidwall/gjson v1.10.2
 	github.com/tidwall/sjson v1.2.3
