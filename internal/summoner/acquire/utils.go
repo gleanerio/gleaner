@@ -24,6 +24,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		log.Printf("error reading response for robots.txt at %s : %s ", robotsUrl, err)

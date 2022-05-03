@@ -76,6 +76,7 @@ func getRobotsForDomain(v1 *viper.Viper, sourceName string) (*robotstxt.RobotsTx
 	}
 
 	robots, err := getRobotsTxt(robotsUrl)
+	log.Println(robots)
 	if err != nil {
 		log.Printf("error getting robots.txt for %s : %s  ", sourceName, err)
 		return nil, err
@@ -85,7 +86,6 @@ func getRobotsForDomain(v1 *viper.Viper, sourceName string) (*robotstxt.RobotsTx
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup) {
-
 	bucketName, tc, delay, err := getConfig(v1)
 	if err != nil {
 		log.Panic("Error reading config file", err)
@@ -130,7 +130,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 		// TODO / WARNING for large site we can exhaust memory with just the creation of the
 		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
-		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
+		// make too..  reference https://github.com/mr51m0n/gorc (but look for something in the core
 		// library too)
 
 		go func(i int, sourceName string) {
@@ -140,15 +140,16 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			urlloc = strings.ReplaceAll(urlloc, " ", "")
 			urlloc = strings.ReplaceAll(urlloc, "\n", "")
 
-			if robots != nil {
-				allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
-				if !allowed {
-					log.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", urlloc, err)
-					lwg.Done() // tell the wait group that we be done
-					<-semaphoreChan
-					return
-				}
-			}
+			// TODO fix robot opt in here
+			//if robots != nil {
+			//allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
+			//if !allowed {
+			//log.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", urlloc, err)
+			//lwg.Done() // tell the wait group that we be done
+			//<-semaphoreChan
+			//return
+			//}
+			//}
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {

@@ -19,40 +19,43 @@ import (
 )
 
 var viperVal, sourceVal, modeVal string
-var setupVal bool
+var setupVal, stdoutVal bool
 
 func init() {
-	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
+	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
+	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
+	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
+	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
+	flag.BoolVar(&stdoutVal, "stdout", false, "Send log output to stdout and file (default only file)")
+}
 
-	// name the file with the date and time
-	const layout = "2006-01-02-15-04-05"
+func main() {
+	var v1 *viper.Viper
+
+	fmt.Println("EarthCube Gleaner")
+	flag.Parse() // parse any command line flags...
+
+	// Set up logs
+	const layout = "2006-01-02-15-04-05" // name the file with the date and time
 	t := time.Now()
 	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
 
-	LogFile := lf // log to custom file
-	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	logFile, err := os.OpenFile(lf, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		log.Panic(err)
 		return
 	}
 
-	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
+	// log.SetLevel(log.WarnLevel) // Only log the warning severity or above.
+	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter
 	log.SetReportCaller(true)              // include file name and line number
-	mw := io.MultiWriter(os.Stdout, logFile)
+	mw := io.MultiWriter(logFile)          // remove os.Stdout till it is made a flag
+
+	if isFlagPassed("stdout") { // Check for stdout flag for log, if present set mw with stdout too
+		mw = io.MultiWriter(logFile, os.Stdout)
+	}
+
 	log.SetOutput(mw)
-	//log.SetOutput(logFile)
-
-	//log.SetLevel(log.WarnLevel) // Only log the warning severity or above.
-
-	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
-	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
-	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
-	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
-}
-
-func main() {
-	fmt.Println("EarthCube Gleaner")
-	flag.Parse() // parse any command line flags...
 
 	// BEGIN profile section
 
@@ -74,9 +77,6 @@ func main() {
 	//defer trace.Stop()
 
 	// END profile section
-
-	var v1 *viper.Viper
-	var err error
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {

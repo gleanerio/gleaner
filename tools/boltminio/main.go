@@ -74,7 +74,7 @@ func main() {
 	}
 
 	defer db.Close()
-	ru, err := acquire.ResourceURLs(v1, mc, false, db)
+	ru, err := acquire.ResourceURLs(v1, mc, false) // main Gleaner function no longer uses Bolt, so removed from the call function
 	// hru := acquire.ResourceURLs(v1, true)
 	// log.Println(len(ru["samplesearth"].URL))
 	// log.Println(len(hru["samplesearth"].URL))
