@@ -57,7 +57,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	domainDelay := v1.Get("sources." + sourceName + ".Delay")
 	if domainDelay != nil && domainDelay.(int64) != 0 {
 		delay = domainDelay.(int64)
-		log.Printf("Crawl delay set to %i for %s", delay, sourceName)
+		log.Printf("Crawl delay set to %d for %s", delay, sourceName)
 	}
 
 	if delay != 0 {
