@@ -1,10 +1,9 @@
 package acquire
 
-import
-(
-	"testing"
+import (
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-    "github.com/spf13/viper"
+	"testing"
 )
 
 var invalidJson = `This isn't JSON at all.`
@@ -24,37 +23,37 @@ var validJson = `{
 var v1 = viper.New()
 
 func TestIsValid(t *testing.T) {
-    t.Run("It returns true for valid JSON-LD", func(t *testing.T) {
-        result, err := isValid(v1, validJson)
-        assert.Equal(t, true, result)
-        assert.Nil(t, err)
-    })
-    t.Run("It returns false and throws an error for invalid JSON-LD", func(t *testing.T) {
-        result, err := isValid(v1, invalidJson)
-        assert.Equal(t, false, result)
-        assert.NotNil(t, err)
-    })
+	t.Run("It returns true for valid JSON-LD", func(t *testing.T) {
+		result, err := isValid(v1, validJson)
+		assert.Equal(t, true, result)
+		assert.Nil(t, err)
+	})
+	t.Run("It returns false and throws an error for invalid JSON-LD", func(t *testing.T) {
+		result, err := isValid(v1, invalidJson)
+		assert.Equal(t, false, result)
+		assert.NotNil(t, err)
+	})
 
-    // to do: test for valid JSON but invalid RDF triples
+	// to do: test for valid JSON but invalid RDF triples
 }
 
 func TestAddToJsonListIfValid(t *testing.T) {
-    original := []string{"test"}
+	original := []string{"test"}
 
-    t.Run("It appends valid json to the array", func(t *testing.T) {
-        result, err := addToJsonListIfValid(v1, original, validJson)
-        assert.Equal(t, []string{"test", validJson}, result)
-        assert.Nil(t, err)
-    })
-    t.Run("It does not append invalid json to the array", func(t *testing.T) {
-        result, err := addToJsonListIfValid(v1, original, invalidJson)
-        assert.Equal(t, original, result)
-        assert.NotNil(t, err)
-    })
+	t.Run("It appends valid json to the array", func(t *testing.T) {
+		result, err := addToJsonListIfValid(v1, original, validJson)
+		assert.Equal(t, []string{"test", validJson}, result)
+		assert.Nil(t, err)
+	})
+	t.Run("It does not append invalid json to the array", func(t *testing.T) {
+		result, err := addToJsonListIfValid(v1, original, invalidJson)
+		assert.Equal(t, original, result)
+		assert.NotNil(t, err)
+	})
 }
 
 func TestContextStringFix(t *testing.T) {
-    var contextObjectJson = `{
+	var contextObjectJson = `{
         "@context": {
             "@vocab":"http://schema.org/"
         },
@@ -62,27 +61,27 @@ func TestContextStringFix(t *testing.T) {
         "SO:name":"Some type in a graph"
     }`
 
-    var contextStringJson = `{
+	var contextStringJson = `{
         "@context": "http://schema.org/",
         "@type":"bar",
         "SO:name":"Some type in a graph"
     }`
 
-    t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
-        result, err := fixContextString(contextStringJson)
-        assert.JSONEq(t, contextObjectJson, result)
-        assert.Nil(t, err)
-    })
+	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
+		result, err := fixContextString(contextStringJson)
+		assert.JSONEq(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
 
-    t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
-        result, err := fixContextString(contextObjectJson)
-        assert.Equal(t, contextObjectJson, result)
-        assert.Nil(t, err)
-    })
+	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
+		result, err := fixContextString(contextObjectJson)
+		assert.Equal(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
 }
 
 func TestContextUrlFix(t *testing.T) {
-    var httpContext = `{
+	var httpContext = `{
         "@context": {
             "@vocab":"http://schema.org/"
         },
@@ -90,7 +89,7 @@ func TestContextUrlFix(t *testing.T) {
         "SO:name":"Some type in a graph"
     }`
 
-    var httpNoSlashContext = `{
+	var httpNoSlashContext = `{
         "@context": {
             "@vocab":"http://schema.org"
         },
@@ -98,7 +97,7 @@ func TestContextUrlFix(t *testing.T) {
         "SO:name":"Some type in a graph"
     }`
 
-    var noSlashContext = `{
+	var noSlashContext = `{
         "@context": {
             "@vocab":"https://schema.org"
         },
@@ -106,7 +105,7 @@ func TestContextUrlFix(t *testing.T) {
         "SO:name":"Some type in a graph"
     }`
 
-    var expectedContext = `{
+	var expectedContext = `{
         "@context": {
             "@vocab":"https://schema.org/"
         },
@@ -114,21 +113,21 @@ func TestContextUrlFix(t *testing.T) {
         "SO:name":"Some type in a graph"
     }`
 
-    t.Run("It rewrites the jsonld context if it does not have a trailing slash", func(t *testing.T) {
-        result, err := fixContextUrl(noSlashContext)
-        assert.JSONEq(t, expectedContext, result)
-        assert.Nil(t, err)
-    })
+	t.Run("It rewrites the jsonld context if it does not have a trailing slash", func(t *testing.T) {
+		result, err := fixContextUrl(noSlashContext)
+		assert.JSONEq(t, expectedContext, result)
+		assert.Nil(t, err)
+	})
 
-    t.Run("It rewrites the jsonld context if its schema is not https", func(t *testing.T) {
-        result, err := fixContextUrl(httpContext)
-        assert.JSONEq(t, expectedContext, result)
-        assert.Nil(t, err)
-    })
+	t.Run("It rewrites the jsonld context if its schema is not https", func(t *testing.T) {
+		result, err := fixContextUrl(httpContext)
+		assert.JSONEq(t, expectedContext, result)
+		assert.Nil(t, err)
+	})
 
-    t.Run("It rewrites the jsonld context if it does not have a trailing slash or its schema is not https", func(t *testing.T) {
-        result, err := fixContextUrl(httpNoSlashContext)
-        assert.JSONEq(t, expectedContext, result)
-        assert.Nil(t, err)
-    })
+	t.Run("It rewrites the jsonld context if it does not have a trailing slash or its schema is not https", func(t *testing.T) {
+		result, err := fixContextUrl(httpNoSlashContext)
+		assert.JSONEq(t, expectedContext, result)
+		assert.Nil(t, err)
+	})
 }

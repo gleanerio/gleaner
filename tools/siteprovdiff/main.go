@@ -12,7 +12,6 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
-
 )
 
 var viperVal string

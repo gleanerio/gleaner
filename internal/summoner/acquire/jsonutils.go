@@ -56,8 +56,8 @@ func fixContextString(jsonld string) (string, error) {
 	jsonContext := gjson.Get(jsonld, "@context")
 
 	switch jsonContext.Value().(type) {
-		case string:
-			jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": jsonContext.String()})
+	case string:
+		jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": jsonContext.String()})
 	}
 	return jsonld, err
 }
@@ -67,7 +67,7 @@ func fixContextString(jsonld string) (string, error) {
 func fixContextUrl(jsonld string) (string, error) {
 	var err error
 	context := gjson.Get(jsonld, "@context.@vocab").String()
-	if ! strings.HasSuffix(context, "/") {
+	if !strings.HasSuffix(context, "/") {
 		context += "/"
 	}
 	contextUrl, err := url.Parse(context)
@@ -80,7 +80,8 @@ func fixContextUrl(jsonld string) (string, error) {
 	return jsonld, err
 }
 
-func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string,  urlloc string, jsonld string) (string, error) {
+
+func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error
 	// In the config file, context { strict: true } bypasses these fixups.

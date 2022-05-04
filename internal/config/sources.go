@@ -29,7 +29,8 @@ type Sources struct {
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait int // is loading is slow, wait
+	HeadlessWait int   // is loading is slow, wait
+	Delay        int64 // A domain-specific crawl delay value
 }
 
 // add needed for file
