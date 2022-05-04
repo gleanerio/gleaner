@@ -167,13 +167,12 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 
 func getRobotsForDomain(url string) (*robotstxt.RobotsTxt, error) {
 	robotsUrl := url + "/robots.txt"
-
+	log.Printf("Getting robots.txt from %s", robotsUrl)
 	robots, err := getRobotsTxt(robotsUrl)
 	if err != nil {
 		log.Printf("error getting robots.txt for %s : %s  ", url, err)
 		return nil, err
 	}
-
 	return robots, nil
 }
 

@@ -23,6 +23,12 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 		log.Printf("error fetching robots.txt at %s : %s  ", robotsUrl, err)
 		return nil, err
 	}
+
+	if resp.StatusCode >= 400 {
+		log.Printf("Robots.txt unavailable at %s", robotsUrl)
+		return nil, nil
+	}
+
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

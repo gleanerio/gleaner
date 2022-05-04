@@ -46,20 +46,18 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
+	if err != nil {
+		return bucketName, 0, 0, err
+	}
 	// Set default thread counts and global delay
 	tc := mcfg.Threads
 	delay := mcfg.Delay
 
 	// look for a domain specific override crawl delay
-	sourcesConfig, err := configTypes.GetSources(v1)
-	domain, err := configTypes.GetSourceByName(sourcesConfig, sourceName)
-
-	if domain.Delay != 0 {
-		delay = domain.Delay
-	}
-
-	if err != nil {
-		return bucketName, tc, delay, err
+	domainDelay := v1.Get("sources." + sourceName + ".Delay")
+	if domainDelay != nil && domainDelay.(int64) != 0 {
+		delay = domainDelay.(int64)
+		log.Printf("Crawl delay set to %i for %s", delay, sourceName)
 	}
 
 	if delay != 0 {
@@ -83,7 +81,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
-		log.Panic("Error reading config file", err)
+		log.Panic("Error reading config file ", err)
 	}
 
 	var client http.Client
