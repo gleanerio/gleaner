@@ -54,7 +54,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	delay := mcfg.Delay
 
 	// look for a domain specific override crawl delay
-	domainDelay := v1.Get("sources." + sourceName + ".Delay")
+	domainDelay := v1.Get("sources." + sourceName + ".delay")
 	if domainDelay != nil && domainDelay.(int64) != 0 {
 		delay = domainDelay.(int64)
 		log.Printf("Crawl delay set to %d for %s", delay, sourceName)

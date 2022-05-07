@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
+	"fmt"
 )
 
 func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
@@ -25,8 +26,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 	}
 
 	if resp.StatusCode >= 400 {
-		log.Printf("Robots.txt unavailable at %s", robotsUrl)
-		return nil, nil
+		return nil, fmt.Errorf("Robots.txt unavailable at %s", robotsUrl)
 	}
 
 	defer resp.Body.Close()

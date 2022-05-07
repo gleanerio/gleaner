@@ -3,15 +3,16 @@ package acquire
 import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
-	"net/http"
-	"net/http/httptest"
 	"testing"
-	"time"
 )
 
 func TestGetConfig(t *testing.T) {
 	t.Run("It reads a config for an indexing source and returns the expected information", func(t *testing.T) {
-		conf := map[string]interface{}{"minio": map[string]interface{}{"bucket": "test"}, "summoner": map[string]interface{}{"threads": "5", "delay": "0"}, "sources": map[string]interface{}{"name": "testSource"}}
+		conf := map[string]interface{}{
+			"minio": map[string]interface{}{"bucket": "test"},
+			"summoner": map[string]interface{}{"threads": "5", "delay": 0},
+			"sources": []map[string]interface{}{{"name": "testSource"}},
+		}
 
 		var viper = viper.New()
 		for key, value := range conf {
@@ -26,7 +27,11 @@ func TestGetConfig(t *testing.T) {
 	})
 
 	t.Run("It sets the thread count to 1 if a delay is specified", func(t *testing.T) {
-		conf := map[string]interface{}{"minio": map[string]interface{}{"bucket": "test"}, "summoner": map[string]interface{}{"threads": "5", "delay": "1000"}, "sources": map[string]interface{}{"name": "testSource"}}
+		conf := map[string]interface{}{
+			"minio": map[string]interface{}{"bucket": "test"},
+			"summoner": map[string]interface{}{"threads": "5", "delay": 1000},
+			"sources": []map[string]interface{}{{"name": "testSource"}},
+		}
 
 		var viper = viper.New()
 		for key, value := range conf {
@@ -41,7 +46,11 @@ func TestGetConfig(t *testing.T) {
 	})
 
 	t.Run("It allows delay to be optional", func(t *testing.T) {
-		conf := map[string]interface{}{"minio": map[string]interface{}{"bucket": "test"}, "summoner": map[string]interface{}{"threads": "5"}, "sources": map[string]interface{}{"name": "testSource"}}
+		conf := map[string]interface{}{
+			"minio": map[string]interface{}{"bucket": "test"},
+			"summoner": map[string]interface{}{"threads": "5"},
+			"sources": []map[string]interface{}{{"name": "testSource"}},
+		}
 
 		var viper = viper.New()
 		for key, value := range conf {
@@ -56,12 +65,18 @@ func TestGetConfig(t *testing.T) {
 	})
 
 	t.Run("It overrides a global summoner delay if the data source has a longer one specified", func(t *testing.T) {
-		conf := map[string]interface{}{"minio": map[string]interface{}{"bucket": "test"}, "summoner": map[string]interface{}{"threads": "5", "delay": "5"}, "sources": map[string]interface{}{"name": "testSource", "delay": "100"}}
+		conf := map[string]interface{}{
+			"minio": map[string]interface{}{"bucket": "test"},
+			"summoner": map[string]interface{}{"threads": "5", "delay": 5},
+			"sources": []map[string]string{{"name": "testSource", "delay": "100"}},
+		}
 
 		var viper = viper.New()
 		for key, value := range conf {
 			viper.Set(key, value)
 		}
+		viper.Set("sources.testSource.delay", int64(100))
+		assert.Equal(t, int64(100), viper.Get("sources.testSource.delay"))
 
 		bucketName, tc, delay, err := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
@@ -71,7 +86,7 @@ func TestGetConfig(t *testing.T) {
 	})
 
 	t.Run("It does not override a global summoner delay if the data source does not have a longer one specified", func(t *testing.T) {
-		conf := map[string]interface{}{"minio": map[string]interface{}{"bucket": "test"}, "summoner": map[string]interface{}{"threads": "5", "delay": "50"}, "sources": map[string]interface{}{"name": "testSource", "delay": "10"}}
+		conf := map[string]interface{}{"minio": map[string]interface{}{"bucket": "test"}, "summoner": map[string]interface{}{"threads": "5", "delay": 50}, "sources": map[string]interface{}{"name": "testSource", "delay": 10}}
 
 		var viper = viper.New()
 		for key, value := range conf {
