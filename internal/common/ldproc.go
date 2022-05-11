@@ -1,7 +1,7 @@
 package common
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 

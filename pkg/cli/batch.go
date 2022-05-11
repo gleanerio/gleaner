@@ -23,7 +23,7 @@ import (
 	bolt "go.etcd.io/bbolt"
 	"os"
 
-	"log"
+	log "github.com/sirupsen/logrus"
 	"path"
 
 	"github.com/spf13/cobra"

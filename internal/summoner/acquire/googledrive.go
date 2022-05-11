@@ -7,10 +7,10 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/api/googleapi"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -302,7 +302,7 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		}
 	}
 	var count = len(results)
-	m := fmt.Sprintf("GoogleDrives %f files processed", count)
+	m := fmt.Sprintf("GoogleDrives %d files processed", count)
 	return m, err
 }
 

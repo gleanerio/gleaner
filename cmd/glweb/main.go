@@ -12,6 +12,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/rs/xid"
 	"github.com/spf13/viper"
+	bolt "go.etcd.io/bbolt"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/millers"
@@ -135,7 +136,13 @@ func cli(mc *minio.Client, v1 *viper.Viper) {
 	mcfg := v1.GetStringMapString("gleaner")
 
 	if mcfg["summon"] == "true" {
-		summoner.Summoner(mc, v1)
+		// setup the KV store to hold a record of indexed resources
+		db, err := bolt.Open("gleaner.db", 0600, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer db.Close()
+		summoner.Summoner(mc, v1, db)
 	}
 
 	if mcfg["mill"] == "true" {

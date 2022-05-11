@@ -119,7 +119,7 @@ func run(timeout time.Duration) error {
 		return err
 	}
 
-	fmt.Printf("HTML: %s\n", len(result.OuterHTML))
+	fmt.Printf("HTML: %d\n", len(result.OuterHTML))
 
 	return nil
 }

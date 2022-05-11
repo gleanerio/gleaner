@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 type Summoner struct {
@@ -37,6 +38,9 @@ func ReadSummmonerConfig(viperSubtree *viper.Viper) (Summoner, error) {
 	err := viperSubtree.Unmarshal(&summoner)
 	if err != nil {
 		panic(fmt.Errorf("error when parsing sparql endpoint config: %v", err))
+	}
+	if strings.HasSuffix(summoner.Headless, "/") {
+		panic(fmt.Errorf("headless warning should not end with / %v", summoner.Headless))
 	}
 	return summoner, err
 }

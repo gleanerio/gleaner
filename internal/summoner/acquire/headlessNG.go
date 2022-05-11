@@ -1,11 +1,10 @@
 package acquire
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"sync"
 	"time"
 
@@ -29,10 +28,10 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 	// in same ways due to hwo we deal with threading (opportunities).   We don't queue up domains
 	// multiple times since we are dealing with our local resource now in the form of the headless tooling.
 
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
+	//var (
+	//	buf    bytes.Buffer
+	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	//)
 
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
@@ -45,7 +44,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		})
 
 		for i := range m[k] {
-			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], fmt.Sprintf("%s", err))
 			}
@@ -59,16 +58,16 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 func ThreadedHeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
 	wg := sync.WaitGroup{}
 
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
+	//var (
+	//	buf    bytes.Buffer
+	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	//)
 
 	for k := range m {
 		log.Printf("Headless chrome call to: %s", k)
 
 		// for i := range m[k] {
-		go doCall(v1, mc, logger, 60*time.Second, m, k, &wg, db) // TODO make delay configurable
+		go doCall(v1, mc, 60*time.Second, m, k, &wg, db) // TODO make delay configurable
 		// 	log.Printf("%s :: %s", m[k][i], err)
 		// }
 	}
@@ -78,7 +77,7 @@ func ThreadedHeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string
 
 }
 
-func doCall(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
+func doCall(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucket([]byte(k))
@@ -119,7 +118,7 @@ func doCall(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.
 			//thread management
 			semaphoreChan <- struct{}{}
 
-			err := PageRender(v1, mc, logger, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
 				log.Printf("%s :: %s", m[k][i], err)
 			}
@@ -138,7 +137,7 @@ func doCall(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.
 
 }
 
-func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout time.Duration, url, k string, db *bolt.DB) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -202,7 +201,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		return err
 	}
 
-	logger.Printf("%s for %s\n", nav.FrameID, url)
+	log.Printf("%s for %s\n", nav.FrameID, url)
 
 	/**
 	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
@@ -277,9 +276,9 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, logger *log.Logger, timeout t
 		if err != nil {
 			log.Printf("error checking for valid json: %s", err)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
-			sha, err := Upload(v1, mc, logger, bucketName, k, url, jsonld)
+			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
 			if err != nil {
-				logger.Printf("Error uploading jsonld to object store: %s: %s: %s", url, err, sha)
+				log.Printf("Error uploading jsonld to object store: %s: %s: %s", url, err, sha)
 			}
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {

@@ -2,7 +2,7 @@ package millers
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 
 	"github.com/gleanerio/gleaner/internal/config"

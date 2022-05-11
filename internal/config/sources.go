@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gocarina/gocsv"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"io"
-	"log"
 
 	"github.com/utahta/go-openuri"
 	"path"
@@ -15,6 +15,7 @@ import (
 
 // as read from csv
 type Sources struct {
+	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, and robots
 	SourceType      string `default:"sitemap"`
 	Name            string
 	Logo            string
@@ -28,6 +29,7 @@ type Sources struct {
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
+	HeadlessWait int // is loading is slow, wait
 }
 
 // add needed for file
@@ -41,6 +43,7 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
+	HeadlessWait int // is loading is slow, wait
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -54,6 +57,7 @@ var SourcesTemplate = map[string]interface{}{
 		"propername":      "",
 		"domain":          "",
 		"credentialsfile": "",
+		"headlesswait":    "0",
 	},
 }
 
@@ -162,6 +166,25 @@ func GetActiveSourceByType(sources []Sources, key string) []Sources {
 	return sourcesSlice
 }
 
+func GetActiveSourceByHeadless(sources []Sources, headless bool) []Sources {
+	var sourcesSlice []Sources
+	for _, s := range sources {
+		if s.Headless == headless && s.Active == true {
+			sourcesSlice = append(sourcesSlice, s)
+		}
+	}
+	return sourcesSlice
+}
+
+func GetSourceByName(sources []Sources, name string) (Sources, error) {
+	for _, s := range sources {
+		if s.Name == name {
+			return s, nil
+		}
+	}
+	return Sources{}, fmt.Errorf("Unable to find a source with name %s", name)
+}
+
 func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 
 	var prefixes []string
@@ -194,7 +217,7 @@ func PruneSources(v1 *viper.Viper, useSources []string) (*viper.Viper, error) {
 	var finalSources []Sources
 	allSources, err := GetSources(v1)
 	if err != nil {
-		log.Fatal("error retrieving sources: %s", err)
+		log.Fatal("error retrieving sources: ", err)
 	}
 	for _, s := range allSources {
 		if contains(useSources, s.Name) {
