@@ -168,6 +168,7 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 				return
 			}
 			source.Delay = crawlDelay
+			v1.Set("sources", sources)
 		}
 	}
 }

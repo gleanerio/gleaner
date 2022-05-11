@@ -29,7 +29,7 @@ type Sources struct {
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait int   // is loading is slow, wait
+	HeadlessWait int   // if loading is slow, wait
 	Delay        int64 // A domain-specific crawl delay value
 }
 
@@ -177,13 +177,13 @@ func GetActiveSourceByHeadless(sources []Sources, headless bool) []Sources {
 	return sourcesSlice
 }
 
-func GetSourceByName(sources []Sources, name string) (Sources, error) {
-	for _, s := range sources {
-		if s.Name == name {
-			return s, nil
+func GetSourceByName(sources []Sources, name string) (*Sources, error) {
+	for i := 0; i < len(sources); i++  {
+		if sources[i].Name == name {
+			return &sources[i], nil
 		}
 	}
-	return Sources{}, fmt.Errorf("Unable to find a source with name %s", name)
+	return nil, fmt.Errorf("Unable to find a source with name %s", name)
 }
 
 func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
