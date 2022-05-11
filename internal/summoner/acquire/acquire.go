@@ -53,15 +53,22 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	tc := mcfg.Threads
 	delay := mcfg.Delay
 
-	// look for a domain specific override crawl delay
-	domainDelay := v1.Get("sources." + sourceName + ".delay")
-	if domainDelay != nil && domainDelay.(int64) != 0 {
-		delay = domainDelay.(int64)
-		log.Printf("Crawl delay set to %d for %s", delay, sourceName)
-	}
-
 	if delay != 0 {
 		tc = 1
+	}
+
+	// look for a domain specific override crawl delay
+	sources, err := configTypes.GetSources(v1)
+	source, err := configTypes.GetSourceByName(sources, sourceName)
+
+	if err != nil {
+		return bucketName, tc, delay, err
+	}
+
+	if source.Delay != 0 && source.Delay > delay {
+		delay = source.Delay
+		tc = 1
+		log.Printf("Crawl delay set to %d for %s", delay, sourceName)
 	}
 
 	log.Printf("Thread count %d delay %d\n", tc, delay)

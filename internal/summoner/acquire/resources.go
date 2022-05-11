@@ -160,7 +160,14 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 		// If our default delay is less than what is set there, set a delay for this
 		// domain to respect the robots.txt setting.
 		if delay < crawlDelay {
-			v1.Set("sources."+sourceName+".delay", crawlDelay)
+			sources, err := configTypes.GetSources(v1)
+			source, err := configTypes.GetSourceByName(sources, sourceName)
+
+			if err != nil {
+				log.Printf("Error setting crawl delay override for %s : %s", sourceName, err)
+				return
+			}
+			source.Delay = crawlDelay
 		}
 	}
 }
