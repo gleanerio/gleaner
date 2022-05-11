@@ -162,7 +162,7 @@ func TestGetSourceByName(t *testing.T) {
 		}
 
 		results, err := GetSourceByName(sources, "test1")
-		assert.EqualValues(t, expected, results)
+		assert.EqualValues(t, &expected, results)
 		assert.Nil(t, err)
 
 	})
