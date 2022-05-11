@@ -50,11 +50,17 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	sitemapDomains := configTypes.GetActiveSourceByType(domains, siteMapType)
 
 	for _, domain := range sitemapDomains {
-		robots, err := getRobotsForDomain(domain.Domain)
-
-		if err != nil {
-			log.Printf("Error getting robots.txt for %s; continuing without it.", domain.Name)
+		var robots *robotstxt.RobotsTxt
+		if v1.Get("rude") == true {
+			robots = nil
+			log.Printf("Rude indexing mode enabled; ignoring robots.txt.")
+		} else {
+			robots, err = getRobotsForDomain(domain.Domain)
+			if err != nil {
+				log.Printf("Error getting robots.txt for %s; continuing without it.", domain.Name)
+			}
 		}
+
 		urls, err := getSitemapURLList(domain.URL, robots)
 		if err != nil {
 			log.Println("Error getting sitemap urls for: ", domain.Name, err)

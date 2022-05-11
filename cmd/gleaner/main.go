@@ -20,7 +20,7 @@ import (
 )
 
 var viperVal, sourceVal, modeVal string
-var setupVal bool
+var setupVal, rudeVal bool
 
 func init() {
 	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
@@ -47,6 +47,7 @@ func init() {
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
+	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
 }
@@ -122,6 +123,12 @@ func main() {
 		configMap := v1.AllSettings()
 		delete(configMap, "sources")
 		v1.Set("sources", tmp)
+
+		if rudeVal {
+			v1.Set("rude", true)
+		}
+	} else if rudeVal {
+		log.Println("--rude can only be used with --source, not globally.")
 	}
 
 	// Parse a new mode entry from command line if present
