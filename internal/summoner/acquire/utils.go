@@ -1,11 +1,11 @@
 package acquire
 
 import (
+	"fmt"
 	"github.com/samclarke/robotstxt"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
-	"fmt"
 )
 
 func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {

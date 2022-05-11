@@ -178,7 +178,7 @@ func GetActiveSourceByHeadless(sources []Sources, headless bool) []Sources {
 }
 
 func GetSourceByName(sources []Sources, name string) (*Sources, error) {
-	for i := 0; i < len(sources); i++  {
+	for i := 0; i < len(sources); i++ {
 		if sources[i].Name == name {
 			return &sources[i], nil
 		}

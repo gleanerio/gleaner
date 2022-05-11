@@ -80,7 +80,6 @@ func fixContextUrl(jsonld string) (string, error) {
 	return jsonld, err
 }
 
-
 func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error

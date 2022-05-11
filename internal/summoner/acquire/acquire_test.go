@@ -9,9 +9,9 @@ import (
 func TestGetConfig(t *testing.T) {
 	t.Run("It reads a config for an indexing source and returns the expected information", func(t *testing.T) {
 		conf := map[string]interface{}{
-			"minio": map[string]interface{}{"bucket": "test"},
+			"minio":    map[string]interface{}{"bucket": "test"},
 			"summoner": map[string]interface{}{"threads": "5", "delay": 0},
-			"sources": []map[string]interface{}{{"name": "testSource"}},
+			"sources":  []map[string]interface{}{{"name": "testSource"}},
 		}
 
 		var viper = viper.New()
@@ -28,9 +28,9 @@ func TestGetConfig(t *testing.T) {
 
 	t.Run("It sets the thread count to 1 if a delay is specified", func(t *testing.T) {
 		conf := map[string]interface{}{
-			"minio": map[string]interface{}{"bucket": "test"},
+			"minio":    map[string]interface{}{"bucket": "test"},
 			"summoner": map[string]interface{}{"threads": "5", "delay": 1000},
-			"sources": []map[string]interface{}{{"name": "testSource"}},
+			"sources":  []map[string]interface{}{{"name": "testSource"}},
 		}
 
 		var viper = viper.New()
@@ -47,9 +47,9 @@ func TestGetConfig(t *testing.T) {
 
 	t.Run("It allows delay to be optional", func(t *testing.T) {
 		conf := map[string]interface{}{
-			"minio": map[string]interface{}{"bucket": "test"},
+			"minio":    map[string]interface{}{"bucket": "test"},
 			"summoner": map[string]interface{}{"threads": "5"},
-			"sources": []map[string]interface{}{{"name": "testSource"}},
+			"sources":  []map[string]interface{}{{"name": "testSource"}},
 		}
 
 		var viper = viper.New()
@@ -66,9 +66,9 @@ func TestGetConfig(t *testing.T) {
 
 	t.Run("It overrides a global summoner delay if the data source has a longer one specified", func(t *testing.T) {
 		conf := map[string]interface{}{
-			"minio": map[string]interface{}{"bucket": "test"},
+			"minio":    map[string]interface{}{"bucket": "test"},
 			"summoner": map[string]interface{}{"threads": "5", "delay": 5},
-			"sources": []map[string]interface{}{{"name": "testSource", "delay": 100}},
+			"sources":  []map[string]interface{}{{"name": "testSource", "delay": 100}},
 		}
 
 		var viper = viper.New()
