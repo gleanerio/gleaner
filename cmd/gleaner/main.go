@@ -11,6 +11,7 @@ import (
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
+	logflag "github.com/reenjii/logflag"
 
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
@@ -43,7 +44,7 @@ func init() {
 	log.SetOutput(mw)
 	//log.SetOutput(logFile)
 
-	//log.SetLevel(log.WarnLevel) // Only log the warning severity or above.
+	log.SetLevel(log.WarnLevel) // Only log the warning severity or above, by default. Can be changed with command-line flags.
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
@@ -55,6 +56,7 @@ func init() {
 func main() {
 	fmt.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
+	logflag.Parse() // parse command line flags for logging, specifically
 
 	// BEGIN profile section
 
@@ -85,11 +87,10 @@ func main() {
 		//v1, err = readConfig(viperVal, map[string]interface{}{})
 		v1, err = config.ReadGleanerConfig(filepath.Base(viperVal), filepath.Dir(viperVal))
 		if err != nil {
-			log.Printf("error when reading config: %v", err)
-			os.Exit(1)
+			log.Fatal("error when reading config: %v", err)
 		}
 	} else {
-		log.Println("Gleaner must be run with a config file: -cfg CONFIGFILE")
+		log.Error("Gleaner must be run with a config file: -cfg CONFIGFILE")
 		flag.Usage()
 		os.Exit(0)
 	}
@@ -106,7 +107,7 @@ func main() {
 		var domains []objects.Sources
 		err := v1.UnmarshalKey("sources", &domains)
 		if err != nil {
-			log.Println(err)
+			log.Warn(err)
 		}
 
 		for _, k := range domains {
@@ -116,7 +117,7 @@ func main() {
 		}
 
 		if len(tmp) == 0 {
-			log.Println("CAUTION:  no matching source, did your -source VALUE match a sources.name VALUE in your config file?")
+			log.Error("CAUTION:  no matching source, did your -source VALUE match a sources.name VALUE in your config file?")
 			os.Exit(0)
 		}
 
@@ -143,23 +144,21 @@ func main() {
 
 	// If requested, set up the buckets
 	if setupVal {
-		log.Println("Setting up buckets")
+		log.Info("Setting up buckets")
 		//err := check.MakeBuckets(mc, bucketName)
 		err = pkg.Setup(mc, v1)
 		if err != nil {
-			log.Println("Error making buckets for setup call")
-			os.Exit(1)
+			log.Fatal("Error making buckets for setup call")
 		}
 
-		log.Println("Buckets generated.  Object store should be ready for runs")
+		log.Info("Buckets generated. Object store should be ready for runs")
 		os.Exit(0)
 	}
 
 	// Validate Minio access
 	err = pkg.PreflightChecks(mc, v1)
 	if err != nil {
-		log.Printf("Preflight Check failed. Make sure the minio server is running, accessible and has been setup. %s ", err)
-		os.Exit(1)
+		log.Fatal("Preflight Check failed. Make sure the minio server is running, accessible and has been setup. %s ", err)
 	}
 
 	//err = check.ConnCheck(mc)
@@ -208,12 +207,4 @@ func isFlagPassed(name string) bool {
 		}
 	})
 	return found
-}
-
-// func to support remove elements form the source slice
-func remove(s []objects.Sources, i int) []objects.Sources {
-	fmt.Println("removing")
-
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
 }
