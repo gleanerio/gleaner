@@ -52,7 +52,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	bucketName, _ := configTypes.GetBucketName(v1)
 
-	log.Print("Building organization graph.")
+	log.Info("Building organization graph.")
 	domains := objects.SourcesAndGraphs(v1)
 	proc, options := common.JLDProc(v1)
 
@@ -84,7 +84,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 		// Upload the file with FPutObject
 		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
 		if err != nil {
-			log.Printf("%s", objectName)
+			log.Error(objectName, err)
 			return err
 		}
 

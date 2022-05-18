@@ -33,7 +33,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	bucketName, err := configTypes.GetBucketName(v1)
 
-	log.Print("Building organization graph from config file")
+	log.Info("Building organization graph from config file")
 
 	//var domains []objects.Sources
 	//err := v1.UnmarshalKey("sources", &domains)
@@ -67,20 +67,20 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 			// Upload the file with FPutObject
 			_, err = mc.PutObject(context.Background(), bucketName, objectName, br, int64(br.Len()), minio.PutObjectOptions{})
 			if err != nil {
-				log.Printf("%s", objectName)
-				log.Fatalln(err) // Fatal?   seriously?  I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+				log.Fatal(objectName, err)
+				// Fatal?   seriously?  I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 			}
 
 			return err
 		})
 		if err != nil {
-			log.Println("Can't create s3 file writer", err)
+			log.Error("Can't create s3 file writer", err)
 			return err
 		}
 
 		pw, err := writer.NewParquetWriter(fw, new(Qset), 4)
 		if err != nil {
-			log.Println("Can't create parquet writer", err)
+			log.Error("Can't create parquet writer", err)
 			return err
 		}
 
@@ -117,10 +117,10 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 			qs := Qset{Subject: spog.Subj.String(), Predicate: spog.Pred.String(), Object: spog.Obj.String(), Graph: spog.Ctx.String()}
 
-			// log.Println(qs)
+			log.Trace(qs)
 
 			if err = pw.Write(qs); err != nil {
-				log.Println("Write error", err)
+				log.Error("Write error", err)
 				return err
 			}
 
@@ -133,20 +133,19 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 		pw.Flush(true)
 
 		if err = pw.WriteStop(); err != nil {
-			log.Println("WriteStop error", err)
+			log.Error("WriteStop error", err)
 			return err
 		}
 
 		err = fw.Close()
 		if err != nil {
-			log.Error(err)
-			log.Println("Error closing S3 file writer")
+			log.Error("Error closing S3 file writer", err)
 			return err
 		}
 
 		// delete, is this needed since we close above and have a closure call?
 		if err := mem.GetMemFileFs().Remove("org.parquet"); err != nil {
-			log.Printf("error removing file from memfs: %v", err)
+			log.Error("error removing file from memfs:", err)
 
 		}
 	}
