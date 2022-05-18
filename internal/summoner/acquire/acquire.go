@@ -119,7 +119,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 				log.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
 			}
 			req.Header.Set("User-Agent", EarthCubeAgent)

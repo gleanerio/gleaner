@@ -274,7 +274,7 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 
 	sources, err := configTypes.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	domains = configTypes.GetActiveSourceByType(sources, googleDriveType)
 	//var results []*drive.File

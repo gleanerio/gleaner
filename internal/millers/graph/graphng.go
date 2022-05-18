@@ -63,7 +63,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			}
 
 			wg.Done() // tell the wait group that we be done
-			// log.Printf("Doc: %s error: %v ", object.Key, err) // why print the status??
+			log.Debug("Doc:", object.Key, "error:", err)
 
 			bar.Add(1) //bar1.Incr()
 			<-semaphoreChan
@@ -73,20 +73,20 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 
 	// TODO make a version of PipeCopy that generates Parquet version of graph
 	// TODO..  then delete milled objects?
-	// log.Printf("Processed prefix: %s", prefix)
+	log.Trace("Processed prefix:", prefix)
 	millprefix := strings.ReplaceAll(prefix, "summoned", "milled")
 	sp := strings.SplitAfterN(prefix, "/", 2)
 	mcfg := v1.GetStringMapString("gleaner")
 
 	rslt := fmt.Sprintf("results/%s/%s_graph.nq", mcfg["runid"], sp[1])
-	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
-	log.Printf("Result graph will be at: %s", rslt)
+	log.Info("Assembling result graph for prefix:", prefix, "to:", millprefix)
+	log.Info("Result graph will be at:", rslt)
 
 	err = common.PipeCopyNG(rslt, bucketName, millprefix, mc)
 	if err != nil {
-		log.Printf("Error on pipe copy: %s", err)
+		log.Error("Error on pipe copy:", err)
 	} else {
-		log.Println("Pipe copy for graph done")
+		log.Info("Pipe copy for graph done")
 	}
 
 	return err
@@ -97,11 +97,11 @@ func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInf
 	// object is an object reader
 	stat, err := mc.StatObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if stat.Size > 100000 {
-		log.Printf("retrieving a large object (%d) (this may be slow) %s \n ", stat.Size, object.Key)
+		log.Warn("retrieving a large object (", stat.Size, ") (this may be slow)", object.Key)
 	}
 	fo, err := mc.GetObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if err != nil {
-		fmt.Printf("minio.getObject %s", err)
+		log.Error("minio.getObject", err)
 		return "", err
 	}
 
@@ -112,18 +112,18 @@ func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	_, err = io.Copy(bw, fo)
 	if err != nil {
-		log.Printf("error copying: %s", err)
+		log.Error("error copying:", err)
 	}
 
 	// TODO
 	// Process the bytes in b to RDF (with randomized blank nodes)
-	// log.Println("JLD2NQ call")
+	log.Trace("JLD2NQ call")
 	rdf, err := common.JLD2nq(b.String(), proc, options)
 	if err != nil {
 		return key, err
 	}
 
-	// log.Println("blank node fix call")
+	log.Trace("blank node fix call")
 	rdfubn := GlobalUniqueBNodes(rdf)
 
 	milledkey := strings.ReplaceAll(key, ".jsonld", ".rdf")

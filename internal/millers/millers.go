@@ -24,7 +24,7 @@ type Sources struct {
 // do on the JSON-LD data graphs
 func Millers(mc *minio.Client, v1 *viper.Viper) {
 	st := time.Now()
-	log.Printf("Miller start time: %s \n", st) // Log the time at start for the record
+	log.Info("Miller start time", st) // Log the time at start for the record
 
 	// Put the sources in the config file into a struct
 	//var domains []Sources
@@ -33,7 +33,7 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	//domains, err := config.GetSources(v1)
 	domains, err := config.GetActiveSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	// Make an array "as" of active buckets to process...

@@ -52,7 +52,7 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 	if _, err := os.Stat(basePath); errors.Is(err, os.ErrNotExist) {
 		err := os.MkdirAll(basePath, os.ModePerm)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 	}
 

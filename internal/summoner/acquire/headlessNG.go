@@ -89,11 +89,11 @@ func doCall(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, m map[stri
 
 	tc, err := Threadcount(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	dt, err := Delayrequest(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	if dt > 0 {
@@ -253,7 +253,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return (err)
 	}
 
@@ -267,7 +267,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// could create a struct out of them if we want to.
 	var jsonlds []string
 	if err = json.Unmarshal(eval.Result.Value, &jsonlds); err != nil {
-		log.Println(err)
+		log.Error(err)
 		return (err)
 	}
 

@@ -63,7 +63,7 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 	// Note: We can also make a file and pipe write to that, keep this code around in case
 	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))  // needs a f.Close() later
 	// if err != nil {
-	// 	log.Println(err)
+	// 	log.Error(err)
 	// }
 	// go function to write to file from pipe
 	// go func() {

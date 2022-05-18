@@ -32,7 +32,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 
 	sources, err := configTypes.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	domains = configTypes.GetActiveSourceByType(sources, siteGraphType)
 
@@ -104,7 +104,7 @@ func getJSON(urlloc string) (string, error) {
 	var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
 	req, err := http.NewRequest("GET", urlloc, nil)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
 	u, err := url.Parse(urlloc)

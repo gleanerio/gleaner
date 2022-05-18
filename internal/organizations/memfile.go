@@ -39,7 +39,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 	//err := v1.UnmarshalKey("sources", &domains)
 	domains, err := config.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return err
 	}
 
@@ -92,13 +92,13 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 		jld, err := orggraph(domains[k])
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
 		r, err := common.JLD2nq(jld, proc, options)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
@@ -111,7 +111,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 			spog, err := dec.Decode()
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 				return err
 			}
 
@@ -126,7 +126,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 		}
 		if err := scanner.Err(); err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
@@ -139,7 +139,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 		err = fw.Close()
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			log.Println("Error closing S3 file writer")
 			return err
 		}

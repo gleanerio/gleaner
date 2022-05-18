@@ -43,7 +43,7 @@ func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, objec
 
 	_, err = io.Copy(bw, fo)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	// TODO  this is a waste to read the same bytes N times!   read early and pass a pointer!
@@ -51,7 +51,7 @@ func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, objec
 	//so, err := mc.GetObject("gleaner", shape.Key, minio.GetObjectOptions{})
 	so, err := mc.GetObject(context.Background(), "gleaner", shape.Key, minio.GetObjectOptions{})
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return "", err
 	}
 
@@ -60,7 +60,7 @@ func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, objec
 
 	_, err = io.Copy(sbw, so)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	// TODO
@@ -85,7 +85,7 @@ func shaclTestNG(v1 *viper.Viper, bucket, prefix string, mc *minio.Client, objec
 	// resolve how call
 	rdfubn, err := shaclCallNG(mcfg["url"], string(b.Bytes()), string(sb.Bytes()))
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 	}
 
 	// TODO we have our nt from SHACL, but it needs some extra info to let us
@@ -197,30 +197,30 @@ func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 
 	part, err := writer.CreateFormFile("datagraph", "datagraph")
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	_, err = io.Copy(part, strings.NewReader(dg))
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	part, err = writer.CreateFormFile("shapegraph", "shapegraph")
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	_, err = io.Copy(part, strings.NewReader(sg))
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	err = writer.Close()
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	req, err := http.NewRequest("POST", url, body)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	req.Header.Set("Content-Type", writer.FormDataContentType())
 	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
@@ -228,13 +228,13 @@ func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	defer resp.Body.Close()
 
 	b, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	// write result to buffer

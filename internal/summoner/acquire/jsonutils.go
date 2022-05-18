@@ -112,7 +112,7 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	// write the prov entry for this object
 	err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	// Upload the file with FPutObject
