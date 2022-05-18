@@ -13,7 +13,7 @@ import (
 )
 
 func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
-	log.Println("Start pipe reader / writer sequence")
+	log.Debug("Start pipe reader / writer sequence")
 
 	pr, pw := io.Pipe()     // TeeReader of use?
 	lwg := sync.WaitGroup{} // work group for the pipe writes...
@@ -41,7 +41,7 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 
 			_, err = io.Copy(bw, fo)
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 			}
 
 			pw.Write(b.Bytes())
@@ -49,14 +49,14 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 
 	}()
 
-	// log.Printf("%s_graph.nq", name)
+	log.Debug("%s_graph.nq", name)
 
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
 		_, err := mc.PutObject(context.Background(), bucket, name, pr, -1, minio.PutObjectOptions{})
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 	}()
 

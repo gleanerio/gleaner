@@ -33,7 +33,7 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 		var s []ContextMapping
 		err := v1.UnmarshalKey("contextmaps", &s)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 
 		m := make(map[string]string)
@@ -43,7 +43,8 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 				m[s[i].Prefix] = s[i].File
 
 			} else {
-				log.Printf("ERROR: context file location %s is wrong, this is a critical error", s[i].File)
+				// todo: fatal?
+				log.Error("ERROR: context file location %s is wrong, this is a critical error", s[i].File)
 			}
 		}
 
