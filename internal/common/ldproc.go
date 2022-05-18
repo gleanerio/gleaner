@@ -44,7 +44,7 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 
 			} else {
 				// todo: fatal?
-				log.Error("ERROR: context file location %s is wrong, this is a critical error", s[i].File)
+				log.Error("ERROR: context file location", s[i].File, "is wrong, this is a critical error")
 			}
 		}
 

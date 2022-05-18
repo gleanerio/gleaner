@@ -49,7 +49,7 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 
 	}()
 
-	log.Debug("%s_graph.nq", name)
+	log.Debug(name, "_graph.nq")
 
 	// go function to write to minio from pipe
 	go func() {

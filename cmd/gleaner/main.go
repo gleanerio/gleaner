@@ -10,7 +10,6 @@ import (
 
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
-	logflag "github.com/reenjii/logflag"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
@@ -20,8 +19,13 @@ import (
 	"github.com/gleanerio/gleaner/internal/objects"
 )
 
+<<<<<<< HEAD
 var viperVal, sourceVal, modeVal string
 var setupVal, rudeVal bool
+=======
+var viperVal, sourceVal, modeVal, logVal string
+var setupVal bool
+>>>>>>> 4f3e017 (Remove logflag due to errors, roll our own, fix formatting issues)
 
 func init() {
 	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
@@ -42,21 +46,24 @@ func init() {
 	log.SetReportCaller(true)              // include file name and line number
 	mw := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(mw)
-	//log.SetOutput(logFile)
-
-	log.SetLevel(log.WarnLevel) // Only log the warning severity or above, by default. Can be changed with command-line flags.
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
+	flag.StringVar(&logVal, "log", "warn", "The log level to output (debug | info | warn | error | fatal)")
 }
 
 func main() {
 	fmt.Println("EarthCube Gleaner")
-	flag.Parse()    // parse any command line flags...
-	logflag.Parse() // parse command line flags for logging, specifically
+	flag.Parse() // parse any command line flags...
+	lvl, err := log.ParseLevel(logVal)
+
+	if err != nil {
+		log.Panic("invalid log level:", err.Error())
+	}
+	log.SetLevel(lvl)
 
 	// BEGIN profile section
 
@@ -80,14 +87,13 @@ func main() {
 	// END profile section
 
 	var v1 *viper.Viper
-	var err error
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
 		//v1, err = readConfig(viperVal, map[string]interface{}{})
 		v1, err = config.ReadGleanerConfig(filepath.Base(viperVal), filepath.Dir(viperVal))
 		if err != nil {
-			log.Fatal("error when reading config: %v", err)
+			log.Fatal("error when reading config:", err)
 		}
 	} else {
 		log.Error("Gleaner must be run with a config file: -cfg CONFIGFILE")
@@ -158,7 +164,7 @@ func main() {
 	// Validate Minio access
 	err = pkg.PreflightChecks(mc, v1)
 	if err != nil {
-		log.Fatal("Preflight Check failed. Make sure the minio server is running, accessible and has been setup. %s ", err)
+		log.Fatal("Preflight Check failed. Make sure the minio server is running, accessible and has been setup.", err)
 	}
 
 	//err = check.ConnCheck(mc)

@@ -16,7 +16,7 @@ func MinioConnection(v1 *viper.Viper) *minio.Client {
 	mSub := v1.Sub("minio")
 	mcfg, err := configTypes.ReadMinioConfig(mSub)
 	if err != nil {
-		log.Panic("error when  file minio key: %v", err)
+		log.Panic("error when file minio key:", err)
 	}
 	endpoint := fmt.Sprintf("%s:%d", mcfg.Address, mcfg.Port)
 	accessKeyID := mcfg.Accesskey
