@@ -1,0 +1,82 @@
+---
+minio:
+  address: localhost
+  accessKey: worldsbestaccesskey
+  secretKey: worldsbestsecretkey
+  port: 9000   
+  ssl: false
+  bucket: gleaner
+gleaner:
+  runid: polder # Run ID used in prov and a few others
+  summon: true # do we want to visit the web sites and pull down the files
+  mill: true
+context:
+  cache: true
+contextmaps:
+- prefix: "https://schema.org/"
+  file: "./schemaorg-current-https.jsonld"
+summoner:
+  after: ""      # "21 May 20 10:00 UTC"   
+  mode: full  # full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
+  threads: 5
+  headless: http://localhost:9222  # URL for headless see docs/headless
+millers:
+  graph: true
+sources:
+- name: nsidc
+  url: http://nsidc.org/sitemap.xml
+  headless: false
+  properName: National Snow and Ice Data Center
+  domain: http://nsidc.org
+  type: sitemap
+  active: true
+- sourcetype: sitemap
+  name: euroceanexpert
+  logo: ""
+  url: https://www.oceanexpert.org/assets/sitemaps/sitemapExperts.xml
+  headless: false
+  pid: http://example.org/eurocean/experts
+  propername: EurOcean Experts
+  domain: https://infohub.eurocean.net/data/experts
+  active: true
+- sourcetype: sitemap
+  name: euroceanevents
+  logo: ""
+  url: https://www.oceanexpert.org/assets/sitemaps/sitemapEvents.xml
+  headless: false
+  pid: http://example.org/eurocean/events
+  propername: EurOcean Events
+  domain: https://infohub.eurocean.net/data/events
+  active: true
+- sourcetype: sitemap
+  name: euroceantraining
+  logo: ""
+  url: https://www.oceanexpert.org/assets/sitemaps/sitemapTraining.xml
+  headless: false
+  pid: http://example.org/eurocean/training
+  propername: EurOcean training
+  domain: https://infohub.eurocean.net/data/training
+  active: true
+- sourcetype: sitemap
+  name: euroceanorgs
+  logo: ""
+  url: https://www.oceanexpert.org/assets/sitemaps/sitemapInstitutions.xml
+  headless: false
+  pid: http://example.org/eurocean/orgs
+  propername: EurOcean Organizations
+  domain: https://infohub.eurocean.net/data/organizations
+  active: true
+- name: gem
+  type: sitemap
+  headless: true
+  url: https://data.g-e-m.dk/sitemap
+  properName: Greenland Ecosystem Monitoring Database
+  domain: https://data.g-e-m.dk
+  active: true
+- name: bas
+  type: sitemap
+  headless: false
+  url: http://localhost:9000/sitemaps/bas-sitemap.xml
+  properName: British Antarctic Survey
+  active: true
+  domain: http://localhost

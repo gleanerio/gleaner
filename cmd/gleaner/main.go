@@ -10,8 +10,8 @@ import (
 
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
-	log "github.com/sirupsen/logrus"
 	logflag "github.com/reenjii/logflag"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
@@ -55,7 +55,7 @@ func init() {
 
 func main() {
 	fmt.Println("EarthCube Gleaner")
-	flag.Parse() // parse any command line flags...
+	flag.Parse()    // parse any command line flags...
 	logflag.Parse() // parse command line flags for logging, specifically
 
 	// BEGIN profile section
