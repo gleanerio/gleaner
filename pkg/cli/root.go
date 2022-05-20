@@ -49,7 +49,7 @@ func Execute() {
 }
 
 func init() {
-	log.Println("EarthCube Gleaner")
+	log.Info("EarthCube Gleaner")
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
 	cobra.OnInitialize(initConfig, initLogging)

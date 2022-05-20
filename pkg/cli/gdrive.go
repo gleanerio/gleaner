@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -14,20 +13,20 @@ var gdriveCmd = &cobra.Command{
 	Long: `This retrieves and store google drive credentials
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("gdrive called")
+		log.Info("gdrive called")
 		var srv, err = acquire.GetDriveCredentials("")
 		//srv, err := googledrive.GetDriveCredentials("")
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
-		log.Println(srv.Drives.List())
+		log.Info(srv.Drives.List())
 		//var folderid = "0B8xif6Jg1upyfnpORzlTZ01kSUpFejFySFBZVlBtaHNWLVlic0QtVzYxQ21lYzNmVk0yRWc"
 		//var folderid ="1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd"
 		//var folderid = "0B8xif6Jg1upyfnpORzlTZ01kSUpFejFySFBZVlBtaHNWLVlic0QtVzYxQ21lYzNmVk0yRWc"
 		//var folderid = "0B8xif6Jg1upyfnpORzlTZ01kSUpFejFySFBZVlBtaHNWLVlic0QtVzYxQ21lYzNmVk0yRWc"
 		var folderid = "1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd"
 		list, err := acquire.GetFileList(srv, folderid, false, folderid)
-		log.Println(list)
+		log.Info(list)
 
 	},
 }

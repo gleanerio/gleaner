@@ -23,10 +23,10 @@ gleaner_base.yaml - base configuration file for gleaner
 nabu_base. yaml - base configuration for nabu
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		log.Info("init called")
 		err := initCfg(cfgPath, cfgName, configBaseFiles)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
 
 	},
