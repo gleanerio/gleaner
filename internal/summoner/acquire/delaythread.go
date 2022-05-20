@@ -28,11 +28,10 @@ func Delayrequest(v1 *viper.Viper) (int64, error) {
 	delay := mcfg["delay"]
 	var dt int64
 	if delay != "" {
-		//log.Printf("Delay set to: %s milliseconds", delay)
+		log.Debug("Delay set to: ", delay, "milliseconds")
 		dt, err = strconv.ParseInt(delay, 10, 64)
 		if err != nil {
-			log.Error(err)
-			log.Panic("Could not convert delay from config file to a value")
+			log.Panic(err, "Could not convert delay from config file to a value")
 		}
 	} else {
 		dt = 0

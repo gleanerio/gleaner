@@ -86,19 +86,19 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	// In the config file, context { strict: true } bypasses these fixups.
 	// Strict defaults to false.
 	if strict, ok := mcfg["strict"]; !(ok && strict == "true") {
-		log.Println("context.strict is not set to true; doing json-ld fixups.")
+		log.Info("context.strict is not set to true; doing json-ld fixups.")
 		jsonld, err = fixContextString(jsonld)
 		if err != nil {
-			log.Printf("ERROR: URL: %s Action: Fixing JSON-LD context to be an object Error: %s\n", urlloc, err)
+			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
 		}
 		jsonld, err = fixContextUrl(jsonld)
 		if err != nil {
-			log.Printf("ERROR: URL: %s Action: Fixing JSON-LD context url scheme and trailing slash Error: %s\n", urlloc, err)
+			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
 		}
 	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 	if err != nil {
-		log.Printf("ERROR: URL: %s Action: Getting normalized sha  Error: %s\n", urlloc, err)
+		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
 	}
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
 	contentType := "application/ld+json"
@@ -118,11 +118,8 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	// Upload the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Printf("%s", objectName)
-		log.Fatalln(err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
-
+	log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
 	return sha, err
-
-	// log.Printf("Uploaded Bucket:%s File:%s Size %d\n", bucketName, objectName, size)
 }

@@ -43,7 +43,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	sources, err := configTypes.GetSources(v1)
 	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 	if err != nil {
-		log.Println("Error getting sources to summon: ", err)
+		log.Error("Error getting sources to summon: ", err)
 		return domainsMap, err
 	}
 
@@ -63,7 +63,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 
 		urls, err := getSitemapURLList(domain.URL, robots)
 		if err != nil {
-			log.Println("Error getting sitemap urls for: ", domain.Name, err)
+			log.Error("Error getting sitemap urls for: ", mapname, err)
 			return domainsMap, err
 		}
 		if mcfg.Mode == "diff" {
@@ -71,7 +71,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, robots)
 		domainsMap[domain.Name] = urls
-		log.Printf("%s sitemap size is : %d mode: %s \n", domain.Name, len(domainsMap[domain.Name]), mcfg.Mode)
+		log.Debug("%s sitemap size is : %d mode: %s \n", domain.Name, len(domainsMap[domain.Name]), mcfg.Mode)
 	}
 
 	robotsDomains := configTypes.GetActiveSourceByType(domains, robotsType)
