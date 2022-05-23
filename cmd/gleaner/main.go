@@ -39,7 +39,6 @@ func init() {
 	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		log.Panic(err)
-		return
 	}
 
 	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
@@ -52,7 +51,7 @@ func init() {
 	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
-	flag.StringVar(&logVal, "log", "warn", "The log level to output (debug | info | warn | error | fatal)")
+	flag.StringVar(&logVal, "log", "warn", "The log level to output (trace | debug | info | warn | error | fatal)")
 }
 
 func main() {
