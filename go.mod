@@ -1,6 +1,6 @@
 module github.com/gleanerio/gleaner
 
-go 1.14
+go 1.15
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
@@ -29,7 +29,7 @@ require (
 
 require (
 	github.com/boltdb/bolt v1.3.1
-	github.com/gleanerio/nabu v0.0.0-20211214151422-eda9e525f196
+	github.com/gleanerio/nabu v0.0.0-20220223141452-a01fa9352430
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/samclarke/robotstxt v0.0.0-20171127213916-2817654b7988
 	github.com/sirupsen/logrus v1.8.1 // indirect

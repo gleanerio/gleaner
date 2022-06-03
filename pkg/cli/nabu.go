@@ -29,7 +29,8 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	//NabuCmd.Flags().StringVar(&nabuVal, "cfg", "nabu", "Configuration file")
 	NabuCmd.Flags().StringVar(&prefixVal, "prefix", "", "Prefix to override config file setting")
-
+	NabuCmd.Flags().MarkDeprecated("source", "use --prefix prov/source or milled/source to override loading")
+	NabuCmd.Flags().MarkShorthandDeprecated("source", "use --prefix prov/source or milled/source to override loading")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// gleanerCmd.PersistentFlags().String("foo", "", "A help for foo")
