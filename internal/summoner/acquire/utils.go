@@ -1,6 +1,7 @@
 package acquire
 
 import (
+	"fmt"
 	"github.com/samclarke/robotstxt"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
@@ -23,6 +24,11 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 		log.Printf("error fetching robots.txt at %s : %s  ", robotsUrl, err)
 		return nil, err
 	}
+
+	if resp.StatusCode >= 400 {
+		return nil, fmt.Errorf("Robots.txt unavailable at %s", robotsUrl)
+	}
+
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if err != nil {

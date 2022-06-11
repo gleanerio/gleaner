@@ -14,7 +14,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
-	"github.com/samclarke/robotstxt"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
@@ -38,7 +37,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	wg.Wait()
 }
 
-func getConfig(v1 *viper.Viper) (string, int, int64, error) {
+func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
 	if err != nil {
 		return bucketName, 0, 0, err
@@ -46,44 +45,34 @@ func getConfig(v1 *viper.Viper) (string, int, int64, error) {
 
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
-	tc := mcfg.Threads
-	delay := mcfg.Delay
 
 	if err != nil {
-		return bucketName, tc, delay, err
+		return bucketName, 0, 0, err
 	}
+	// Set default thread counts and global delay
+	tc := mcfg.Threads
+	delay := mcfg.Delay
 
 	if delay != 0 {
 		tc = 1
 	}
 
+	// look for a domain specific override crawl delay
+	sources, err := configTypes.GetSources(v1)
+	source, err := configTypes.GetSourceByName(sources, sourceName)
+
+	if err != nil {
+		return bucketName, tc, delay, err
+	}
+
+	if source.Delay != 0 && source.Delay > delay {
+		delay = source.Delay
+		tc = 1
+		log.Printf("Crawl delay set to %d for %s", delay, sourceName)
+	}
+
 	log.Printf("Thread count %d delay %d\n", tc, delay)
 	return bucketName, tc, delay, nil
-}
-
-func getRobotsForDomain(v1 *viper.Viper, sourceName string) (*robotstxt.RobotsTxt, error) {
-	// first get the domain url for our source
-	sourcesConfig, err := configTypes.GetSources(v1)
-	domain, err := configTypes.GetSourceByName(sourcesConfig, sourceName)
-	if err != nil {
-		log.Printf("error getting domain url for %s : %s  ", sourceName, err)
-		return nil, err
-	}
-
-	var robotsUrl string
-	if domain.SourceType == "robots" {
-		robotsUrl = domain.URL
-	} else {
-		robotsUrl = domain.Domain + "/robots.txt"
-	}
-
-	robots, err := getRobotsTxt(robotsUrl)
-	if err != nil {
-		log.Printf("error getting robots.txt for %s : %s  ", sourceName, err)
-		return nil, err
-	}
-
-	return robots, nil
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
@@ -97,32 +86,12 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		return nil
 	})
 
-	bucketName, tc, delay, err := getConfig(v1)
+	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
-		log.Panic("Error reading config file", err)
+		log.Panic("Error reading config file ", err)
 	}
 
 	var client http.Client
-
-	robots, err := getRobotsForDomain(v1, sourceName)
-
-	if err != nil {
-		log.Printf("Error getting robots.txt for %s; continuing without it.", sourceName)
-	}
-
-	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
-	if robots != nil {
-		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
-		crawlDelay := int64(robots.CrawlDelay(EarthCubeAgent) / time.Millisecond)
-		log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
-
-		// If our default delay is less than what is set there, bump up the delay for this
-		// domain to respect the robots.txt setting.
-		if delay < crawlDelay {
-			delay = crawlDelay
-			tc = 1 // any delay means going down to one thread.
-		}
-	}
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -147,19 +116,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
 			log.Println("Indexing", urlloc)
-
-			urlloc = strings.ReplaceAll(urlloc, " ", "")
-			urlloc = strings.ReplaceAll(urlloc, "\n", "")
-
-			if robots != nil {
-				allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
-				if !allowed {
-					log.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", urlloc, err)
-					lwg.Done() // tell the wait group that we be done
-					<-semaphoreChan
-					return
-				}
-			}
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {

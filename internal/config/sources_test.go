@@ -1,34 +1,33 @@
 package config
 
-import
-(
-    "testing"
-    "github.com/stretchr/testify/assert"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 var sources = []Sources{
 	{
-		Name: "test1",
-		Headless: true,
-		Active: true,
+		Name:       "test1",
+		Headless:   true,
+		Active:     true,
 		SourceType: "sitemap",
 	},
 	{
-		Name: "test2",
-		Headless: false,
-		Active: true,
+		Name:       "test2",
+		Headless:   false,
+		Active:     true,
 		SourceType: "robots",
 	},
 	{
-		Name: "test3",
-		Headless: false,
-		Active: false,
+		Name:       "test3",
+		Headless:   false,
+		Active:     false,
 		SourceType: "sitemap",
 	},
 	{
-		Name: "test4",
-		Headless: true,
-		Active: false,
+		Name:       "test4",
+		Headless:   true,
+		Active:     false,
 		SourceType: "sitemap",
 	},
 }
@@ -37,26 +36,26 @@ var empty = []Sources{}
 
 func TestGetSourceByType(t *testing.T) {
 	t.Run("It gets sources of the given type", func(t *testing.T) {
-	expected := []Sources{
-		{
-			Name: "test1",
-			Headless: true,
-			Active: true,
-			SourceType: "sitemap",
-		},
-		{
-			Name: "test3",
-			Headless: false,
-			Active: false,
-			SourceType: "sitemap",
-		},
-		{
-			Name: "test4",
-			Headless: true,
-			Active: false,
-			SourceType: "sitemap",
-		},
-	}
+		expected := []Sources{
+			{
+				Name:       "test1",
+				Headless:   true,
+				Active:     true,
+				SourceType: "sitemap",
+			},
+			{
+				Name:       "test3",
+				Headless:   false,
+				Active:     false,
+				SourceType: "sitemap",
+			},
+			{
+				Name:       "test4",
+				Headless:   true,
+				Active:     false,
+				SourceType: "sitemap",
+			},
+		}
 		results := GetSourceByType(sources, "sitemap")
 		assert.ElementsMatch(t, expected, results)
 	})
@@ -66,7 +65,7 @@ func TestGetSourceByType(t *testing.T) {
 		assert.ElementsMatch(t, empty, results)
 	})
 
-	t.Run("It handles an empty source slice correctly", func(t *testing.T){
+	t.Run("It handles an empty source slice correctly", func(t *testing.T) {
 		results := GetSourceByType(empty, "sitemap")
 		assert.ElementsMatch(t, empty, results)
 	})
@@ -76,9 +75,9 @@ func TestGetActiveSourceByType(t *testing.T) {
 	t.Run("It gets active sources of the given type", func(t *testing.T) {
 		expected := []Sources{
 			{
-				Name: "test1",
-				Headless: true,
-				Active: true,
+				Name:       "test1",
+				Headless:   true,
+				Active:     true,
 				SourceType: "sitemap",
 			},
 		}
@@ -91,7 +90,7 @@ func TestGetActiveSourceByType(t *testing.T) {
 		assert.ElementsMatch(t, empty, results)
 	})
 
-	t.Run("It handles an empty source slice correctly", func(t *testing.T){
+	t.Run("It handles an empty source slice correctly", func(t *testing.T) {
 		results := GetActiveSourceByType(empty, "sitemap")
 		assert.ElementsMatch(t, empty, results)
 	})
@@ -101,9 +100,9 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 	t.Run("It gets active sources of the given type", func(t *testing.T) {
 		expectedTrue := []Sources{
 			{
-				Name: "test1",
-				Headless: true,
-				Active: true,
+				Name:       "test1",
+				Headless:   true,
+				Active:     true,
 				SourceType: "sitemap",
 			},
 		}
@@ -112,9 +111,9 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 
 		expectedFalse := []Sources{
 			{
-				Name: "test2",
-				Headless: false,
-				Active: true,
+				Name:       "test2",
+				Headless:   false,
+				Active:     true,
 				SourceType: "robots",
 			},
 		}
@@ -124,30 +123,30 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 
 	t.Run("It returns an empty slice if there are no such sources", func(t *testing.T) {
 		test := []Sources{
-		{
-			Name: "test1",
-			Headless: true,
-			Active: true,
-			SourceType: "sitemap",
-		},
-		{
-			Name: "test3",
-			Headless: false,
-			Active: false,
-			SourceType: "sitemap",
-		},
-		{
-			Name: "test4",
-			Headless: true,
-			Active: false,
-			SourceType: "sitemap",
-		},
-	}
+			{
+				Name:       "test1",
+				Headless:   true,
+				Active:     true,
+				SourceType: "sitemap",
+			},
+			{
+				Name:       "test3",
+				Headless:   false,
+				Active:     false,
+				SourceType: "sitemap",
+			},
+			{
+				Name:       "test4",
+				Headless:   true,
+				Active:     false,
+				SourceType: "sitemap",
+			},
+		}
 		results := GetActiveSourceByHeadless(test, false)
 		assert.ElementsMatch(t, empty, results)
 	})
 
-	t.Run("It handles an empty source slice correctly", func(t *testing.T){
+	t.Run("It handles an empty source slice correctly", func(t *testing.T) {
 		results := GetActiveSourceByHeadless(empty, true)
 		assert.ElementsMatch(t, empty, results)
 	})
@@ -156,14 +155,14 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 func TestGetSourceByName(t *testing.T) {
 	t.Run("It gets sources of the given name", func(t *testing.T) {
 		expected := Sources{
-			Name: "test1",
-			Headless: true,
-			Active: true,
+			Name:       "test1",
+			Headless:   true,
+			Active:     true,
 			SourceType: "sitemap",
 		}
 
 		results, err := GetSourceByName(sources, "test1")
-		assert.EqualValues(t, expected, results)
+		assert.EqualValues(t, &expected, results)
 		assert.Nil(t, err)
 
 	})
@@ -174,7 +173,7 @@ func TestGetSourceByName(t *testing.T) {
 		assert.NotNil(t, err)
 	})
 
-	t.Run("It handles an empty source slice correctly", func(t *testing.T){
+	t.Run("It handles an empty source slice correctly", func(t *testing.T) {
 		results, err := GetSourceByName(empty, "test1")
 		assert.ElementsMatch(t, empty, results)
 		assert.NotNil(t, err)

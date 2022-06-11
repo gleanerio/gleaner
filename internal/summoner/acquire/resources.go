@@ -4,9 +4,12 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"strings"
+	"time"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	bolt "go.etcd.io/bbolt"
+
+	"github.com/samclarke/robotstxt"
 
 	"github.com/gleanerio/gleaner/internal/summoner/sitemaps"
 	"github.com/minio/minio-go/v7"
@@ -32,65 +35,77 @@ const robotsType = "robots"
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) (map[string][]string, error) {
-	m := make(map[string][]string) // make a map
+	domainsMap := make(map[string][]string)
 
 	// Know whether we are running in diff mode, in order to exclude urls that have already
 	// been summoned before
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
-	domains, err := configTypes.GetSources(v1)
-	domains = configTypes.GetActiveSourceByHeadless(domains, headless)
+	sources, err := configTypes.GetSources(v1)
+	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 	if err != nil {
 		log.Println("Error getting sources to summon: ", err)
-		return m, err
+		return domainsMap, err
 	}
 
 	sitemapDomains := configTypes.GetActiveSourceByType(domains, siteMapType)
 
 	for _, domain := range sitemapDomains {
-		mapname := domain.Name
-		urls, err := getSitemapURLList(domain.URL)
+		var robots *robotstxt.RobotsTxt
+		if v1.Get("rude") == true {
+			robots = nil
+			log.Printf("Rude indexing mode enabled; ignoring robots.txt.")
+		} else {
+			robots, err = getRobotsForDomain(domain.Domain)
+			if err != nil {
+				log.Printf("Error getting robots.txt for %s; continuing without it.", domain.Name)
+			}
+		}
+
+		urls, err := getSitemapURLList(domain.URL, robots)
 		if err != nil {
-			log.Println("Error getting sitemap urls for: ", mapname, err)
-			return m, err
+			log.Println("Error getting sitemap urls for: ", domain.Name, err)
+			return domainsMap, err
 		}
 		if mcfg.Mode == "diff" {
-			urls = excludeAlreadySummoned(mapname, urls, db)
+			urls = excludeAlreadySummoned(domain.Name, urls, db)
 		}
-		m[mapname] = urls
-		log.Printf("%s sitemap size is : %d mode: %s \n", mapname, len(m[mapname]), mcfg.Mode)
+		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, robots)
+		domainsMap[domain.Name] = urls
+		log.Printf("%s sitemap size is : %d mode: %s \n", domain.Name, len(domainsMap[domain.Name]), mcfg.Mode)
 	}
 
 	robotsDomains := configTypes.GetActiveSourceByType(domains, robotsType)
 
 	for _, domain := range robotsDomains {
-		mapname := domain.Name
+
 		var urls []string
 		// first, get the robots file and parse it
 		robots, err := getRobotsTxt(domain.URL)
 		if err != nil {
-			log.Println("Error getting sitemap location from robots.txt for: ", mapname, err)
-			return m, err
+			log.Println("Error getting sitemap location from robots.txt for: ", domain.Name, err)
+			return domainsMap, err
 		}
 		for _, sitemap := range robots.Sitemaps() {
-			sitemapUrls, err := getSitemapURLList(sitemap)
+			sitemapUrls, err := getSitemapURLList(sitemap, robots)
 			if err != nil {
-				log.Println("Error getting sitemap urls for: ", mapname, err)
-				return m, err
+				log.Println("Error getting sitemap urls for: ", domain.Name, err)
+				return domainsMap, err
 			}
 			urls = append(urls, sitemapUrls...)
 		}
 		if mcfg.Mode == "diff" {
-			urls = excludeAlreadySummoned(mapname, urls, db)
+			urls = excludeAlreadySummoned(domain.Name, urls, db)
 		}
-		m[mapname] = urls
-		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", mapname, len(m[mapname]), mcfg.Mode)
+		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, robots)
+		domainsMap[domain.Name] = urls
+		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", domain.Name, len(domainsMap[domain.Name]), mcfg.Mode)
 	}
 
-	return m, nil
+	return domainsMap, nil
 }
 
 // given a sitemap url, parse it and get the list of URLS from it.
-func getSitemapURLList(domainURL string) ([]string, error) {
+func getSitemapURLList(domainURL string, robots *robotstxt.RobotsTxt) ([]string, error) {
 	var us sitemaps.Sitemap
 	var s []string
 
@@ -118,32 +133,61 @@ func getSitemapURLList(domainURL string) ([]string, error) {
 			}
 		}
 	}
-	// if mcfg["after"] != "" {
-	// 	//log.Println("Get After Date")
-	// 	us, err = sitemaps.GetAfterDate(domain.URL, nil, mcfg["after"])
-	// 	if err != nil {
-	// 		log.Println(domains[k].Name, err)
-	// 		// pass back error and deal with it better in the logs
-	// 		// and in the user experience
-	// 	}
-	// } else {
-	// 	//log.Println("Get with no date")
-	// 	us, err = sitemaps.Get(domains[k].URL, nil)
-	// 	if err != nil {
-	// 		log.Println(domains[k].Name, err)
-	// 		// pass back error and deal with it better in the logs
-	// 		// and in the user experience
-	// 	}
-	// }
 
 	// Convert the array of sitemap package struct to simply the URLs in []string
 	for _, urlStruct := range us.URL {
 		if urlStruct.Loc != "" { // TODO why did this otherwise add a nil to the array..  need to check
-			s = append(s, strings.TrimSpace(urlStruct.Loc))
+			loc := strings.TrimSpace(urlStruct.Loc)
+			loc = strings.ReplaceAll(loc, " ", "")
+			loc = strings.ReplaceAll(loc, "\n", "")
+
+			// only bother indexing urls that are allowed by robots.txt
+			if robots != nil {
+				allowed, err := robots.IsAllowed(EarthCubeAgent, loc)
+				if !allowed {
+					log.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", loc, err)
+					continue
+				}
+			}
+			s = append(s, loc)
 		}
 	}
 
 	return s, nil
+}
+
+func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int64, robots *robotstxt.RobotsTxt) {
+	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
+	if robots != nil {
+		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
+		crawlDelay := int64(robots.CrawlDelay(EarthCubeAgent) / time.Millisecond)
+		log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
+
+		// If our default delay is less than what is set there, set a delay for this
+		// domain to respect the robots.txt setting.
+		if delay < crawlDelay {
+			sources, err := configTypes.GetSources(v1)
+			source, err := configTypes.GetSourceByName(sources, sourceName)
+
+			if err != nil {
+				log.Printf("Error setting crawl delay override for %s : %s", sourceName, err)
+				return
+			}
+			source.Delay = crawlDelay
+			v1.Set("sources", sources)
+		}
+	}
+}
+
+func getRobotsForDomain(url string) (*robotstxt.RobotsTxt, error) {
+	robotsUrl := url + "/robots.txt"
+	log.Printf("Getting robots.txt from %s", robotsUrl)
+	robots, err := getRobotsTxt(robotsUrl)
+	if err != nil {
+		log.Printf("error getting robots.txt for %s : %s  ", url, err)
+		return nil, err
+	}
+	return robots, nil
 }
 
 func excludeAlreadySummoned(domainName string, urls []string, db *bolt.DB) []string {
