@@ -22,7 +22,7 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
 	err := organizations.BuildGraph(mc, v1)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 	}
 
 	// If configured, summon sources
@@ -30,9 +30,9 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 		// Index the sitegraphs first, if any
 		fn, err := acquire.GetGraph(mc, v1)
 		if err != nil {
-			log.Print(err)
+			log.Error(err)
 		}
-		log.Println(fn)
+		log.Info(fn)
 		// summon sitemaps
 		summoner.Summoner(mc, v1, db)
 		acquire.GetFromGDrive(mc, v1)
@@ -53,21 +53,21 @@ func Setup(mc *minio.Client, v1 *viper.Viper) error {
 	ms := v1.Sub("minio")
 	m1, err := configTypes.ReadMinioConfig(ms)
 	if err != nil {
-		log.Printf("Error reading gleaner config %s ", err)
+		log.Error("Error reading gleaner config", err)
 		return err
 	}
 	// Validate Minio is up  TODO:  validate all expected containers are up
-	log.Println("Validating access to object store")
+	log.Info("Validating access to object store")
 	err = check.ConnCheck(mc)
 	if err != nil {
-		log.Printf("Connection issue, make sure the minio server is running and accessible. %s ", err)
+		log.Error("Connection issue, make sure the minio server is running and accessible.", err)
 		return err
 	}
 	// If requested, set up the buckets
-	log.Println("Setting up buckets")
+	log.Info("Setting up buckets")
 	err = check.MakeBuckets(mc, m1.Bucket)
 	if err != nil {
-		log.Println("Error making buckets for Setup call")
+		log.Error("Error making buckets for Setup call", err)
 		return err
 	}
 
@@ -75,7 +75,7 @@ func Setup(mc *minio.Client, v1 *viper.Viper) error {
 	if err != nil {
 		return err
 	}
-	log.Println("Buckets generated.  Object store should be ready for runs")
+	log.Info("Buckets generated.  Object store should be ready for runs")
 	return nil
 
 }
@@ -91,14 +91,14 @@ func PreflightChecks(mc *minio.Client, v1 *viper.Viper) error {
 
 	err = check.ConnCheck(mc)
 	if err != nil {
-		log.Printf("Connection issue, make sure the minio server is running and accessible. %s ", err)
+		log.Error("Connection issue, make sure the minio server is running and accessible.", err)
 		return err
 	}
 
 	// Check our bucket is ready
 	err = check.Buckets(mc, bucketName)
 	if err != nil {
-		log.Printf("Can not find bucket. %s ", err)
+		log.Error("Can not find bucket.", err)
 		return err
 	}
 	return nil

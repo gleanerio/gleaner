@@ -29,19 +29,19 @@ func SourcesAndGraphs(v1 *viper.Viper) []Sources {
 
 	//err := v1.UnmarshalKey("sitemaps", &sm)
 	//if err != nil {
-	//	log.Println(err)
+	//	log.Error(err)
 	//}
 	//
 	//err = v1.UnmarshalKey("sitegraphs", &sg)
 	//if err != nil {
-	//	log.Println(err)
+	//	log.Error(err)
 	//}
 	//err := v1.UnmarshalKey("sources", &sm)
 	// use config
 
 	domains, err = configTypes.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	//domains = append(sg, sm...)

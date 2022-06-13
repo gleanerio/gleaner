@@ -7,7 +7,6 @@ import (
 	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"os"
 	"path"
 
 	"github.com/spf13/cobra"
@@ -44,8 +43,7 @@ func setup(filename string, cfgPath string, cfgName string) {
 
 	v1, err = configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	if err != nil {
-		log.Printf("Error reading gleaner config %s ", err)
-		os.Exit(1)
+		log.Fatal("Error reading gleaner config", err)
 	}
 
 	mc := common.MinioConnection(v1)

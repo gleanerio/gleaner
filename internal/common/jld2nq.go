@@ -12,13 +12,13 @@ func JLD2nq(jsonld string, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) 
 	var myInterface interface{}
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return "", err
 	}
 
 	nq, err := proc.ToRDF(myInterface, options)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 
 		return "", err
 	}

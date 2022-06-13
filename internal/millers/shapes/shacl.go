@@ -42,16 +42,15 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 	var s []ShapeRef
 	err = v1.UnmarshalKey("shapefiles", &s)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	for x := range s {
 		if isURL(s[x].Ref) {
-			log.Println("Load SHACL file")
+			log.Trace("Load SHACL file")
 			b, err := getBody(s[x].Ref)
 			if err != nil {
-				log.Println("Error getting SHACL file body")
-				log.Println(err)
+				log.Error("Error getting SHACL file body", err)
 			}
 
 			as := strings.Split(s[x].Ref, "/")
@@ -59,23 +58,23 @@ func loadShapeFiles(mc *minio.Client, v1 *viper.Viper) error {
 			// is what we should be using
 			_, err = graph.LoadToMinio(string(b), bucketName, fmt.Sprintf("shapes/%s", as[len(as)-1]), mc)
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 			}
-			log.Printf("Loaded SHACL file: %s \n", s[x].Ref)
+			log.Debug("Loaded SHACL file:", s[x].Ref)
 		} else { // see if it's a file
-			log.Println("Load file...")
+			log.Trace("Load file...")
 
 			dat, err := ioutil.ReadFile(s[x].Ref)
 			if err != nil {
-				log.Printf("Error loading file %s: %s\n", s[x].Ref, err)
+				log.Error("Error loading file", s[x].Ref, err)
 			}
 
 			as := strings.Split(s[x].Ref, "/")
 			_, err = graph.LoadToMinio(string(dat), bucketName, fmt.Sprintf("shapes/%s", as[len(as)-1]), mc)
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 			}
-			log.Printf("Loaded SHACL file: %s \n", s[x].Ref)
+			log.Debug("Loaded SHACL file:", s[x].Ref)
 
 		}
 	}
@@ -99,16 +98,16 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 	m := common.GetShapeGraphs(mc, "gleaner") // TODO: beware static bucket lists, put this in the config
 
 	for j := range m {
-		log.Printf("Checking data graphs against shape graph: %s\n", m[j])
+		log.Debug("Checking data graphs against shape graph:", m[j])
 		for k := range e {
 			wg.Add(1)
-			// log.Printf("Ready JSON-LD package  #%d #%s \n", j, e[k].Urlval)
+			log.Trace("Ready JSON-LD package  #", j, e[k].Urlval)
 			go func(j, k int) {
 				semaphoreChan <- struct{}{}
 				status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
 
-				wg.Done()                                                    // tell the wait group that we be done
-				log.Printf("#%d #%s wrote %d bytes", j, e[k].Urlval, status) // why print the status??
+				wg.Done() // tell the wait group that we be done
+				log.Debug("#", j, e[k].Urlval, "wrote", status, "bytes")
 
 				<-semaphoreChan
 			}(j, k)
@@ -121,13 +120,13 @@ func multiCall(e []common.Entry, bucketname string, mc *minio.Client, v1 *viper.
 	// TODO   gb is type turtle here..   need to convert to ntriples to store
 	// nt, err := rdf2rdf(gb.String())
 	// if err != nil {
-	// 		log.Println(err)
+	// 		log.Error(err)
 	// 	}
 
 	// write to S3
 	_, err := graph.LoadToMinio(gb.String(), "gleaner-milled", fmt.Sprintf("%s/%s_shacl.nt", mcfg["runid"], bucketname), mc)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 }
 
@@ -159,7 +158,7 @@ func getBody(url string) ([]byte, error) {
 	var client http.Client
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
-		log.Print(err) // not even being able to make a req instance..  might be a fatal thing?
+		log.Error(err) // not even being able to make a req instance..  might be a fatal thing?
 		return nil, err
 	}
 
@@ -167,7 +166,7 @@ func getBody(url string) ([]byte, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("Error reading sitemap: %s", err)
+		log.Error("Error reading sitemap:", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -176,7 +175,7 @@ func getBody(url string) ([]byte, error) {
 	if resp.StatusCode == http.StatusOK {
 		bodyBytes, err = ioutil.ReadAll(resp.Body)
 		if err != nil {
-			log.Print(err)
+			log.Error(err)
 			return nil, err
 		}
 	}

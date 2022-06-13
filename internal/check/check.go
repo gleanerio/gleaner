@@ -27,7 +27,7 @@ func Buckets(mc *minio.Client, bucket string) error {
 		return fmt.Errorf("unable to locate required bucket:  %s, did you run gleaner with -setup the first to set up buckets?", bucket)
 	}
 	if found {
-		log.Printf("Validated access to object store: %s\n", bucket)
+		log.Debug("Validated access to object store:", bucket)
 	}
 	// }
 
@@ -41,15 +41,15 @@ func MakeBuckets(mc *minio.Client, bucket string) error {
 	// for i := range bl {
 	found, err := mc.BucketExists(context.Background(), bucket)
 	if err != nil {
-		log.Printf("Existing bucket %s check: %v\n", bucket, err)
+		log.Debug("Existing bucket", bucket, "check:", err)
 	}
 	if found {
-		log.Printf("Gleaner Bucket %s found.\n", bucket)
+		log.Debug("Gleaner Bucket", bucket, "found.")
 	} else {
-		log.Printf("Gleaner Bucket %s not found, generating\n", bucket)
+		log.Debug("Gleaner Bucket", bucket, "not found, generating")
 		err = mc.MakeBucket(context.Background(), bucket, minio.MakeBucketOptions{Region: "us-east-1"}) // location is kinda meaningless here
 		if err != nil {
-			log.Printf("Make bucket: %v\n", err)
+			log.Debug("Make bucket:", err)
 		}
 	}
 	// }

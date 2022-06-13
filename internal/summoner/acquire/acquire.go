@@ -29,7 +29,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	// for each domain in getDomain and us this one here with a semaphore
 	// to control the loop?
 	for domain, urls := range m {
-		log.Printf("Queuing URLs for %s \n", domain)
+		log.Info("Queuing URLs for", domain)
 		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
@@ -68,10 +68,10 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	if source.Delay != 0 && source.Delay > delay {
 		delay = source.Delay
 		tc = 1
-		log.Printf("Crawl delay set to %d for %s", delay, sourceName)
+		log.Info("Crawl delay set to", delay, "for", sourceName)
 	}
 
-	log.Printf("Thread count %d delay %d\n", tc, delay)
+	log.Info("Thread count", tc, "delay", delay)
 	return bucketName, tc, delay, nil
 }
 
@@ -88,7 +88,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
-		log.Panic("Error reading config file ", err)
+		log.Panic("Error reading config file", err)
 	}
 
 	var client http.Client
@@ -115,20 +115,19 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
-			log.Println("Indexing", urlloc)
+			log.Debug("Indexing", urlloc)
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
-				log.Println(err)
-				log.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
+				log.Error(i, err, urlloc)
 			}
 			req.Header.Set("User-Agent", EarthCubeAgent)
 			req.Header.Set("Accept", "application/ld+json, text/html")
 
 			resp, err := client.Do(req)
 			if err != nil {
-				log.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                           // tell the wait group that we be done
+				log.Error("#", i, "error on", urlloc, err) // print an message containing the index (won't keep order)
+				lwg.Done()                                 // tell the wait group that we be done
 				<-semaphoreChan
 				return
 			}
@@ -136,8 +135,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 			doc, err := goquery.NewDocumentFromResponse(resp)
 			if err != nil {
-				log.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                           // tell the wait group that we be done
+				log.Error("#", i, "error on", urlloc, err) // print an message containing the index (won't keep order)
+				lwg.Done()                                 // tell the wait group that we be done
 				<-semaphoreChan
 				return
 			}
@@ -150,17 +149,17 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// this should not be here IMHO, but need to support people not setting proper header value
 			// The URL is sending back JSON-LD but incorrectly sending as application/json
 			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
-				log.Printf("%s as %s", urlloc, contentTypeHeader)
+				log.Debug(urlloc, "as", contentTypeHeader)
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
-					log.Printf("Error processing json response from %s: %s", urlloc, err)
+					log.Error("Error processing json response from", urlloc, err)
 				}
 				// look in the HTML page for <script type=application/ld+json>
 			} else {
 				doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
 					jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
 					if err != nil {
-						log.Printf("Error processing script tag in %s: %s", urlloc, err)
+						log.Error("Error processing script tag in", urlloc, err)
 					}
 				})
 			}
@@ -173,10 +172,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// even is no JSON-LD packages found, record the event of checking this URL
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
-				log.Printf("Direct access failed, trying headless for  %s ", urlloc)
+				log.Info("Direct access failed, trying headless for", urlloc)
 				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
 				if err != nil {
-					log.Printf("PageRender %s :: %s", urlloc, err)
+					log.Error("PageRender", urlloc, "::", err)
 				}
 				db.Update(func(tx *bolt.Tx) error {
 					b := tx.Bucket([]byte(sourceName))
@@ -184,19 +183,19 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					return err
 				})
 				if err != nil {
-					log.Printf("DB Update %s :: %s", urlloc, err)
+					log.Error("DB Update", urlloc, "::", err)
 				}
 
-			} //else {
-			//log.Printf("Direct access worked for  %s ", urlloc)
-			//}
+			} else {
+				log.Trace("Direct access worked for", urlloc)
+			}
 
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
-					log.Printf("#%d Uploading", i)
+					log.Trace("#", i, "Uploading")
 					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
-						log.Printf("Error uploading jsonld to object store: %s: %s", urlloc, err)
+						log.Error("Error uploading jsonld to object store:", urlloc, err)
 					}
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
@@ -205,7 +204,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 						return err
 					})
 				} else {
-					log.Printf("Empty JSON-LD document found. Continuing.")
+					log.Info("Empty JSON-LD document found. Continuing.")
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
@@ -216,7 +215,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			}
 
 			bar.Add(1)                                          // bar.Incr()
-			log.Printf("#%d thread for %s ", i, urlloc)         // print an message containing the index (won't keep order)
+			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
 
 			lwg.Done()

@@ -43,7 +43,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	sources, err := configTypes.GetSources(v1)
 	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 	if err != nil {
-		log.Println("Error getting sources to summon: ", err)
+		log.Error("Error getting sources to summon: ", err)
 		return domainsMap, err
 	}
 
@@ -53,17 +53,17 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		var robots *robotstxt.RobotsTxt
 		if v1.Get("rude") == true {
 			robots = nil
-			log.Printf("Rude indexing mode enabled; ignoring robots.txt.")
+			log.Info("Rude indexing mode enabled; ignoring robots.txt.")
 		} else {
 			robots, err = getRobotsForDomain(domain.Domain)
 			if err != nil {
-				log.Printf("Error getting robots.txt for %s; continuing without it.", domain.Name)
+				log.Error("Error getting robots.txt for", domain.Name, "continuing without it.")
 			}
 		}
 
 		urls, err := getSitemapURLList(domain.URL, robots)
 		if err != nil {
-			log.Println("Error getting sitemap urls for: ", domain.Name, err)
+			log.Error("Error getting sitemap urls for: ", domain.Name, err)
 			return domainsMap, err
 		}
 		if mcfg.Mode == "diff" {
@@ -71,7 +71,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, robots)
 		domainsMap[domain.Name] = urls
-		log.Printf("%s sitemap size is : %d mode: %s \n", domain.Name, len(domainsMap[domain.Name]), mcfg.Mode)
+		log.Debug(domain.Name, "sitemap size is :", len(domainsMap[domain.Name]), "mode:", mcfg.Mode)
 	}
 
 	robotsDomains := configTypes.GetActiveSourceByType(domains, robotsType)
@@ -82,13 +82,13 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		// first, get the robots file and parse it
 		robots, err := getRobotsTxt(domain.URL)
 		if err != nil {
-			log.Println("Error getting sitemap location from robots.txt for: ", domain.Name, err)
+			log.Error("Error getting sitemap location from robots.txt for: ", domain.Name, err)
 			return domainsMap, err
 		}
 		for _, sitemap := range robots.Sitemaps() {
 			sitemapUrls, err := getSitemapURLList(sitemap, robots)
 			if err != nil {
-				log.Println("Error getting sitemap urls for: ", domain.Name, err)
+				log.Error("Error getting sitemap urls for: ", domain.Name, err)
 				return domainsMap, err
 			}
 			urls = append(urls, sitemapUrls...)
@@ -98,7 +98,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, robots)
 		domainsMap[domain.Name] = urls
-		log.Printf("%s sitemap size from robots.txt is : %d mode: %s \n", domain.Name, len(domainsMap[domain.Name]), mcfg.Mode)
+		log.Debug(domain.Name, "sitemap size from robots.txt is :", len(domainsMap[domain.Name]), "mode:", mcfg.Mode)
 	}
 
 	return domainsMap, nil
@@ -111,24 +111,24 @@ func getSitemapURLList(domainURL string, robots *robotstxt.RobotsTxt) ([]string,
 
 	idxr, err := sitemaps.DomainIndex(domainURL)
 	if err != nil {
-		log.Println("Error reading sitemap at:", domainURL, err)
+		log.Error("Error reading sitemap at:", domainURL, err)
 		return s, err
 	}
 
 	if len(idxr) < 1 {
-		log.Println(domainURL, "is not a sitemap index, checking to see if it is a sitemap")
+		log.Info(domainURL, "is not a sitemap index, checking to see if it is a sitemap")
 		us, err = sitemaps.DomainSitemap(domainURL)
 		if err != nil {
-			log.Println("Error parsing sitemap index at ", domainURL, err)
+			log.Error("Error parsing sitemap index at ", domainURL, err)
 			return s, err
 		}
 	} else {
-		log.Println("Walking the sitemap index for sitemaps")
+		log.Info("Walking the sitemap index for sitemaps")
 		for _, idxv := range idxr {
 			subset, err := sitemaps.DomainSitemap(idxv)
 			us.URL = append(us.URL, subset.URL...)
 			if err != nil {
-				log.Println("Error parsing sitemap index at:", idxv, err)
+				log.Error("Error parsing sitemap index at:", idxv, err)
 				return s, err
 			}
 		}
@@ -145,7 +145,7 @@ func getSitemapURLList(domainURL string, robots *robotstxt.RobotsTxt) ([]string,
 			if robots != nil {
 				allowed, err := robots.IsAllowed(EarthCubeAgent, loc)
 				if !allowed {
-					log.Printf("Declining to index %s because it is disallowed by robots.txt. Error information, if any: %s", loc, err)
+					log.Error("Declining to index", loc, "because it is disallowed by robots.txt. Error information, if any:", err)
 					continue
 				}
 			}
@@ -161,7 +161,7 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 	if robots != nil {
 		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
 		crawlDelay := int64(robots.CrawlDelay(EarthCubeAgent) / time.Millisecond)
-		log.Printf("Crawl Delay specified by robots.txt for %s: %d", sourceName, crawlDelay)
+		log.Info("Crawl Delay specified by robots.txt for", sourceName, ":", crawlDelay)
 
 		// If our default delay is less than what is set there, set a delay for this
 		// domain to respect the robots.txt setting.
@@ -170,7 +170,7 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 			source, err := configTypes.GetSourceByName(sources, sourceName)
 
 			if err != nil {
-				log.Printf("Error setting crawl delay override for %s : %s", sourceName, err)
+				log.Error("Error setting crawl delay override for", sourceName, ":", err)
 				return
 			}
 			source.Delay = crawlDelay
@@ -181,10 +181,10 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 
 func getRobotsForDomain(url string) (*robotstxt.RobotsTxt, error) {
 	robotsUrl := url + "/robots.txt"
-	log.Printf("Getting robots.txt from %s", robotsUrl)
+	log.Info("Getting robots.txt from", robotsUrl)
 	robots, err := getRobotsTxt(robotsUrl)
 	if err != nil {
-		log.Printf("error getting robots.txt for %s : %s  ", url, err)
+		log.Error("error getting robots.txt for", url, ":", err)
 		return nil, err
 	}
 	return robots, nil
@@ -192,7 +192,7 @@ func getRobotsForDomain(url string) (*robotstxt.RobotsTxt, error) {
 
 func excludeAlreadySummoned(domainName string, urls []string, db *bolt.DB) []string {
 	//  TODO if we check for URLs in prov..  do that here..
-	//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", mapname))
+	//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", domain.Name))
 
 	oa := []string{}
 	db.View(func(tx *bolt.Tx) error {

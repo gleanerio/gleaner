@@ -34,7 +34,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 	//)
 
 	for k := range m {
-		log.Printf("Headless chrome call to: %s", k)
+		log.Trace("Headless chrome call to:", k)
 		db.Update(func(tx *bolt.Tx) error {
 			_, err := tx.CreateBucket([]byte(k))
 			if err != nil {
@@ -46,7 +46,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		for i := range m[k] {
 			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
-				log.Printf("%s :: %s", m[k][i], fmt.Sprintf("%s", err))
+				log.Error(m[k][i], "::", err)
 			}
 		}
 
@@ -64,7 +64,7 @@ func ThreadedHeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string
 	//)
 
 	for k := range m {
-		log.Printf("Headless chrome call to: %s", k)
+		log.Trace("Headless chrome call to:", k)
 
 		// for i := range m[k] {
 		go doCall(v1, mc, 60*time.Second, m, k, &wg, db) // TODO make delay configurable
@@ -89,18 +89,18 @@ func doCall(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, m map[stri
 
 	tc, err := Threadcount(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	dt, err := Delayrequest(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	if dt > 0 {
 		tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
 	}
 
-	log.Printf("Thread count %d delay %d\n", tc, dt)
+	log.Info("Thread count", tc, "delay", dt)
 
 	// thread vars
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
@@ -120,11 +120,11 @@ func doCall(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, m map[stri
 
 			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
 			if err != nil {
-				log.Printf("%s :: %s", m[k][i], err)
+				log.Error(m[k][i], "::", err)
 			}
 
 			// thread management
-			log.Printf("#%d thread for %s ", i, urlloc)      // print an message containing the index (won't keep order)
+			log.Debug("#", i, "thread for", urlloc)          // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
 
 			lwg.Done()
@@ -156,7 +156,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
-			log.Print(err)
+			log.Error(err)
 			return err
 		}
 	}
@@ -164,7 +164,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
 	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		return err
 	}
 	defer conn.Close() // Leaving connections open will leak memory.
@@ -175,14 +175,14 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// is what tells us when the page is done loading
 	err = c.Page.Enable(ctx)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		return err
 	}
 
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		return err
 	}
 	defer domContent.Close()
@@ -191,17 +191,17 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
 	if err != nil {
-		log.Print(err)
+		log.Error(err)
 		return err
 	}
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
-		log.Print(err)
+		log.Error(err)
 		return err
 	}
 
-	log.Printf("%s for %s\n", nav.FrameID, url)
+	log.Debug(nav.FrameID, "for", url)
 
 	/**
 	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
@@ -253,7 +253,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return (err)
 	}
 
@@ -267,36 +267,36 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// could create a struct out of them if we want to.
 	var jsonlds []string
 	if err = json.Unmarshal(eval.Result.Value, &jsonlds); err != nil {
-		log.Println(err)
+		log.Error(err)
 		return (err)
 	}
 
 	for _, jsonld := range jsonlds {
 		valid, err := isValid(v1, jsonld)
 		if err != nil {
-			log.Printf("error checking for valid json: %s", err)
+			log.Error("error checking for valid json:", err)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
 			if err != nil {
-				log.Printf("Error uploading jsonld to object store: %s: %s: %s", url, err, sha)
+				log.Error("Error uploading jsonld to object store:", url, err, sha)
 			}
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte(k))
 				err := b.Put([]byte(url), []byte(sha))
 				if err != nil {
-					log.Println("Error writing to bolt")
+					log.Error("Error writing to bolt", err)
 				}
 				return nil
 			})
 		} else {
-			log.Println("Empty JSON-LD document found. Continuing.", url)
+			log.Info("Empty JSON-LD document found. Continuing.", url)
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte(k))
 				err := b.Put([]byte(url), []byte("NULL")) // no JOSN-LD found at this URL
 				if err != nil {
-					log.Println("Error writing to bolt")
+					log.Error("Error writing to bolt", err)
 				}
 				return nil
 			})

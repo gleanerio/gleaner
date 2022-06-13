@@ -52,7 +52,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	bucketName, _ := configTypes.GetBucketName(v1)
 
-	log.Print("Building organization graph.")
+	log.Info("Building organization graph.")
 	domains := objects.SourcesAndGraphs(v1)
 	proc, options := common.JLDProc(v1)
 
@@ -63,13 +63,13 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 
 		jld, err := orggraph(domains[k])
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
 		rdf, err := common.JLD2nq(jld, proc, options)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
@@ -84,7 +84,7 @@ func BuildGraph(mc *minio.Client, v1 *viper.Viper) error {
 		// Upload the file with FPutObject
 		_, err = mc.PutObject(context.Background(), bucketName, objectName, rdfb, int64(rdfb.Len()), minio.PutObjectOptions{ContentType: contentType})
 		if err != nil {
-			log.Printf("%s", objectName)
+			log.Error(objectName, err)
 			return err
 		}
 
@@ -98,12 +98,12 @@ func orggraph(k objects.Sources) (string, error) {
 
 	t, err := template.New("prov").Parse(t)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	err = t.Execute(&doc, k)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	return doc.String(), err
@@ -146,12 +146,12 @@ func orggraph(k objects.Sources) (string, error) {
 
 // 		jld, err := orggraph(domains[k])
 // 		if err != nil {
-// 			log.Println(err)
+// 			log.Error(err)
 // 		}
 
 // 		r, err := common.JLD2nq(jld, proc, options)
 // 		if err != nil {
-// 			log.Println(err)
+// 			log.Error(err)
 // 		}
 
 // 		// create new S3 file writer
@@ -195,7 +195,7 @@ func orggraph(k objects.Sources) (string, error) {
 
 // 		}
 // 		if err := scanner.Err(); err != nil {
-// 			log.Println(err)
+// 			log.Error(err)
 // 		}
 
 // 		pw.Flush(true)
@@ -207,7 +207,7 @@ func orggraph(k objects.Sources) (string, error) {
 
 // 		err = fw.Close()
 // 		if err != nil {
-// 			log.Println(err)
+// 			log.Error(err)
 // 			log.Println("Error closing S3 file writer")
 // 			return
 // 		}

@@ -28,7 +28,7 @@ func remove(v1 *viper.Viper) {
 		//for object := range mc.ListObjects(context.Background(), "my-bucketname", "my-prefixname", true, nil) {
 		for object := range mc.ListObjects(context.Background(), "my-bucketname", opts) {
 			if object.Err != nil {
-				log.Fatalln(object.Err)
+				log.Fatal(object.Err)
 			}
 			//objectsCh <- object.Key
 			objectsCh <- object

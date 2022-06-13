@@ -125,20 +125,20 @@ func GetDriveCredentials(authFilename string) (srv *drive.Service, err error) {
 		//b, err := ioutil.ReadFile("configs/client_secret_255488082803-v2kja4qjaonb85gp8lv59333hpnt3n45.apps.googleusercontent.com.json")
 
 		if err != nil {
-			log.Printf("Unable to read client secret file: %v", err)
+			log.Error("Unable to read client secret file:", err)
 		}
 
 		// If modifying these scopes, delete your previously saved token.json.
 		config, err := google.ConfigFromJSON(b, drive.DriveMetadataReadonlyScope)
 		if err != nil {
-			log.Printf("Unable to parse client secret file to config: %v", err)
+			log.Error("Unable to parse client secret file to config:", err)
 		}
 		client := getClient(config)
 		srv, err = drive.NewService(ctx, option.WithHTTPClient(client))
 
 		srv.UserAgent = "EarthCube_DataBot/1.0"
 		if err != nil {
-			log.Printf("Unable to retrieve Drive client: %v", err)
+			log.Error("Unable to retrieve Drive client:", err)
 		}
 		return srv, err
 	} else {
@@ -146,7 +146,7 @@ func GetDriveCredentials(authFilename string) (srv *drive.Service, err error) {
 
 		srv, err = drive.NewService(ctx, option.WithCredentialsFile(authFilename))
 		if err != nil {
-			log.Printf("Unable to retrieve Drive client: %v", err)
+			log.Error("Unable to retrieve Drive client:", err)
 		}
 		return srv, err
 	}
@@ -232,7 +232,7 @@ func GetFileFromGDrive(srv *drive.Service, fileId string) (*drive.File, string, 
 	var fileContents string
 	file, err := srv.Files.Get(fileId).Do()
 	if e, ok := err.(*googleapi.Error); ok {
-		log.Printf("Unable to retrieve info about file %s: %v", fileId, e)
+		log.Error("Unable to retrieve info about file", fileId, e)
 		return file, "", e
 	}
 	count := 0
@@ -241,22 +241,22 @@ func GetFileFromGDrive(srv *drive.Service, fileId string) (*drive.File, string, 
 		if e, ok := err.(*googleapi.Error); ok {
 			if e.Code == 403 {
 				if count > 10 {
-					log.Printf("403 10 times, giving up : %v", e)
+					log.Error("403 10 times, giving up :", e)
 					return file, "", err
 				} else {
 					count = count + 1
-					log.Printf("403 waiting : %v", e)
+					log.Error("403 waiting :", e)
 					time.Sleep(2 * time.Second)
 				}
 
 			} else {
-				log.Printf("Unable to retrieve file %s: %v", file.Name, e)
+				log.Error("Unable to retrieve file", file.Name, e)
 				return file, "", e
 			}
 		} else {
 			b, err := ioutil.ReadAll(fileResp.Body)
 			if err != nil {
-				log.Printf("Unable to convert downloaded fil%s: %v", file.Name, err)
+				log.Error("Unable to convert downloaded file", file.Name, err)
 				return file, "", err
 			}
 			fileContents = string(b)
@@ -274,7 +274,7 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 
 	sources, err := configTypes.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	domains = configTypes.GetActiveSourceByType(sources, googleDriveType)
 	//var results []*drive.File
@@ -284,12 +284,12 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		serviceJson := s.CredentialsFile
 		srv, err := GetDriveCredentials(serviceJson)
 		if err != nil {
-			log.Printf("googledrive api key access failed: %s : %s", s.Name, err)
+			log.Error("googledrive api key access failed:", s.Name, err)
 			continue
 		}
 		u, _ := url.Parse(s.URL)
 		fn := filepath.Base(u.Path)
-		log.Printf("reading google folder id: %s", fn)
+		log.Info("reading google folder id:", fn)
 		l, err := GetFileList(srv, fn, false, "")
 
 		for _, f := range l {
@@ -310,7 +310,7 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 	var fileId = f.Id
 	_, contents, err := GetFileFromGDrive(srv, fileId)
 	if err != nil {
-		fmt.Printf("error with reading  JSON '%s' from google drive:%s ", f.Name, sourceName)
+		fmt.Errorf("error with reading  JSON '%s' from google drive:%s ", f.Name, sourceName)
 		return fileId, err
 	}
 
@@ -319,18 +319,18 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 	sha := common.GetSHA(contents) // Don't normalize big files..
 
 	// Upload the file
-	log.Printf("  file %s downloaded. Uploading to %s: %s", f.Name, bucketName, sourceName)
+	log.Info("  file", f.Name, "downloaded. Uploading to", bucketName, ":", sourceName)
 
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", sourceName, sha)
 	_, err = graph.LoadToMinio(contents, bucketName, objectName, mc)
 	if err != nil {
 		return objectName, err
 	}
-	log.Printf(" file %s uploaded to %s. Uploaded : %s", f.Name, bucketName, sourceName)
+	log.Info(" file", f.Name, "uploaded to", bucketName, "Uploaded :", sourceName)
 	// mill the json-ld to nq and upload to minio
 	// we bypass graph.GraphNG which does a time consuming blank node fix which is not required
 	// when dealing with a single large file.
-	// log.Print("Milling graph")
+	log.Debug("Milling graph")
 	//graph.GraphNG(mc, fmt.Sprintf("summoned/%s/", domains[k].Name), v1)
 	proc, options := common.JLDProc(v1) // Make a common proc and options to share with the upcoming go funcs
 	rdf, err := common.JLD2nq(contents, proc, options)
@@ -338,21 +338,21 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 		return "", err
 	}
 
-	log.Printf("Processed files being uploaded to %s: %s", bucketName, sourceName)
+	log.Info("Processed files being uploaded to", bucketName, ":", sourceName)
 	milledName := fmt.Sprintf("milled/%s/%s.rdf", sourceName, sha)
 	_, err = graph.LoadToMinio(rdf, bucketName, milledName, mc)
 	if err != nil {
 		return objectName, err
 	}
-	log.Printf("Processed files Upload to %s complete: %s", milledName, sourceName)
+	log.Info("Processed files Upload to", milledName, "complete:", sourceName)
 
 	// build prov
-	// log.Print("Building prov")
+	log.Debug("Building prov")
 	err = StoreProvNG(v1, mc, sourceName, sha, sourceName, "summoned")
 	if err != nil {
 		return objectName, err
 	}
 
-	log.Printf("Loaded: %d", len(contents))
+	log.Info("Loaded:", len(contents))
 	return objectName, err
 }
