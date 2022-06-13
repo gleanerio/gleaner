@@ -68,10 +68,10 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	if source.Delay != 0 && source.Delay > delay {
 		delay = source.Delay
 		tc = 1
-		log.Info("Crawl delay set to %d for %s", delay, sourceName)
+		log.Info("Crawl delay set to", delay, "for", sourceName)
 	}
 
-	log.Printf("Thread count %d delay %d\n", tc, delay)
+	log.Info("Thread count", tc, "delay", delay)
 	return bucketName, tc, delay, nil
 }
 
@@ -88,30 +88,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
-		log.Panic("Error reading config file ", err)
+		log.Panic("Error reading config file", err)
 	}
 
 	var client http.Client
-
-	robots, err := getRobotsForDomain(v1, sourceName)
-
-	if err != nil {
-		log.Warn("Error getting robots.txt for", sourceName, "continuing without it.")
-	}
-
-	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
-	if robots != nil {
-		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
-		crawlDelay := int64(robots.CrawlDelay(EarthCubeAgent) / time.Millisecond)
-		log.Info("Crawl Delay specified by robots.txt for", sourceName, ":", crawlDelay)
-
-		// If our default delay is less than what is set there, bump up the delay for this
-		// domain to respect the robots.txt setting.
-		if delay < crawlDelay {
-			delay = crawlDelay
-			tc = 1 // any delay means going down to one thread.
-		}
-	}
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	defer close(semaphoreChan)
@@ -136,19 +116,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
 			log.Debug("Indexing", urlloc)
-
-			urlloc = strings.ReplaceAll(urlloc, " ", "")
-			urlloc = strings.ReplaceAll(urlloc, "\n", "")
-
-			if robots != nil {
-				allowed, err := robots.IsAllowed(EarthCubeAgent, urlloc)
-				if !allowed {
-					log.Info("Declining to index", urlloc, "because it is disallowed by robots.txt. Error information, if any:", err)
-					lwg.Done() // tell the wait group that we be done
-					<-semaphoreChan
-					return
-				}
-			}
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {

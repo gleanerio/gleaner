@@ -54,7 +54,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 		fw, err := mem.NewMemFileWriter("org.parquet", func(name string, r io.Reader) error {
 			dat, err := ioutil.ReadAll(r)
 			if err != nil {
-				log.Printf("error reading data: %v", err)
+				log.Error("error reading data", err)
 				return err
 			}
 

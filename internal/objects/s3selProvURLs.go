@@ -80,7 +80,7 @@ func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string)
 
 	}
 
-	log.Printf("bucket %s:%s object count: %d\n", bucket, prefix, len(oa))
+	log.Info("bucket", bucket, ":", prefix, "object count:", len(oa))
 
 	return oa
 }

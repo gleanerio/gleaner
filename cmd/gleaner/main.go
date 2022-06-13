@@ -19,13 +19,8 @@ import (
 	"github.com/gleanerio/gleaner/internal/objects"
 )
 
-<<<<<<< HEAD
-var viperVal, sourceVal, modeVal string
-var setupVal, rudeVal bool
-=======
 var viperVal, sourceVal, modeVal, logVal string
-var setupVal bool
->>>>>>> 4f3e017 (Remove logflag due to errors, roll our own, fix formatting issues)
+var setupVal, rudeVal bool
 
 func init() {
 	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
@@ -134,7 +129,7 @@ func main() {
 			v1.Set("rude", true)
 		}
 	} else if rudeVal {
-		log.Println("--rude can only be used with --source, not globally.")
+		log.Error("--rude can only be used with --source, not globally.")
 	}
 
 	// Parse a new mode entry from command line if present

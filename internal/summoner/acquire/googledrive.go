@@ -338,13 +338,13 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 		return "", err
 	}
 
-	log.Printf("Processed files being uploaded to %s: %s", bucketName, sourceName)
+	log.Info("Processed files being uploaded to", bucketName, ":", sourceName)
 	milledName := fmt.Sprintf("milled/%s/%s.rdf", sourceName, sha)
 	_, err = graph.LoadToMinio(rdf, bucketName, milledName, mc)
 	if err != nil {
 		return objectName, err
 	}
-	log.Printf("Processed files Upload to %s complete: %s", milledName, sourceName)
+	log.Info("Processed files Upload to", milledName, "complete:", sourceName)
 
 	// build prov
 	log.Debug("Building prov")

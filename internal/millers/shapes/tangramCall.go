@@ -240,7 +240,7 @@ func shaclTest(urlval, dg, sgkey, sg string, gb *common.Buffer) int {
 	// write result to buffer
 	len, err := gb.Write(b)
 	if err != nil {
-		log.Printf("error in the buffer write... %v\n", err)
+		log.Error("error in the buffer write...", err)
 	}
 
 	return len //  we will return the bytes count we write...

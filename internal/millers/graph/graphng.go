@@ -59,7 +59,7 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 			semaphoreChan <- struct{}{}
 			_, err := obj2RDF(bucketName, "milled", mc, object, proc, options)
 			if err != nil {
-				log.Printf("obj2RDF %s", err) // need to log to an "errors" log file
+				log.Error("obj2RDF", err) // need to log to an "errors" log file
 			}
 
 			wg.Done() // tell the wait group that we be done

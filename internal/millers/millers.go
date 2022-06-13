@@ -41,7 +41,7 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	for i := range domains {
 		m := fmt.Sprintf("summoned/%s", domains[i].Name)
 		as = append(as, m)
-		log.Printf("Adding bucket to milling list: %s\n", m)
+		log.Info("Adding bucket to milling list:", m)
 	}
 
 	// Make array of prov buckets..  sad I have to do this..  I could just pass
@@ -52,7 +52,7 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	for i := range domains {
 		m := fmt.Sprintf("prov/%s", domains[i].Name)
 		ap = append(ap, m)
-		log.Printf("Adding bucket to prov building list: %s\n", m)
+		log.Info("Adding bucket to prov building list:", m)
 	}
 
 	mcfg := v1.GetStringMapString("millers") // get the millers we want to run from the config file
@@ -81,6 +81,6 @@ func Millers(mc *minio.Client, v1 *viper.Viper) {
 	// Time report
 	et := time.Now()
 	diff := et.Sub(st)
-	log.Printf("Miller end time: %s \n", et)
-	log.Printf("Miller run time: %f \n", diff.Minutes())
+	log.Info("Miller end time:", et)
+	log.Info("Miller run time:", diff.Minutes())
 }
