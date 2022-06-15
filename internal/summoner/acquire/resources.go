@@ -60,13 +60,12 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		} else {
 			robots, err = getRobotsForDomain(domain.Domain)
 			if err != nil {
-				log.Error("Error getting robots.txt for", domain.Name, "continuing without it.")
+				log.Error("Error getting robots.txt for ", domain.Name, "continuing without it.")
 			}
-			robots = nil
-			group = nil
 		}
 		if robots != nil {
 			group = robots.FindGroup(EarthCubeAgent)
+			log.Info("Got robots.txt group ", group)
 		}
 		urls, err := getSitemapURLList(domain.URL, group)
 		if err != nil {
@@ -78,7 +77,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, group)
 		domainsMap[domain.Name] = urls
-		log.Debug(domain.Name, "sitemap size is :", len(domainsMap[domain.Name]), "mode:", mcfg.Mode)
+		log.Debug(domain.Name, "sitemap size is :", len(domainsMap[domain.Name]), " mode: ", mcfg.Mode)
 	}
 
 	robotsDomains := configTypes.GetActiveSourceByType(domains, robotsType)
@@ -93,6 +92,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			return domainsMap, err
 		}
 		group := robots.FindGroup(EarthCubeAgent)
+		log.Debug("Found user agent group ", group)
 		for _, sitemap := range robots.Sitemaps {
 			sitemapUrls, err := getSitemapURLList(sitemap, group)
 			if err != nil {
@@ -106,7 +106,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, group)
 		domainsMap[domain.Name] = urls
-		log.Debug(domain.Name, "sitemap size from robots.txt is :", len(domainsMap[domain.Name]), "mode:", mcfg.Mode)
+		log.Debug(domain.Name, "sitemap size from robots.txt is : ", len(domainsMap[domain.Name]), " mode: ", mcfg.Mode)
 	}
 
 	return domainsMap, nil
@@ -124,7 +124,7 @@ func getSitemapURLList(domainURL string, robots *robotstxt.Group) ([]string, err
 	}
 
 	if len(idxr) < 1 {
-		log.Info(domainURL, "is not a sitemap index, checking to see if it is a sitemap")
+		log.Info(domainURL, " is not a sitemap index, checking to see if it is a sitemap")
 		us, err = sitemaps.DomainSitemap(domainURL)
 		if err != nil {
 			log.Error("Error parsing sitemap index at ", domainURL, err)
@@ -136,7 +136,7 @@ func getSitemapURLList(domainURL string, robots *robotstxt.Group) ([]string, err
 			subset, err := sitemaps.DomainSitemap(idxv)
 			us.URL = append(us.URL, subset.URL...)
 			if err != nil {
-				log.Error("Error parsing sitemap index at:", idxv, err)
+				log.Error("Error parsing sitemap index at: ", idxv, err)
 				return s, err
 			}
 		}
@@ -164,8 +164,9 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 	// Look at the crawl delay from this domain's robots.txt, if we can, and one exists.
 	if robots != nil {
 		// this is a time.Duration, which is in nanoseconds, because of COURSE it is, but we want milliseconds
+		log.Debug("Raw crawl delay for robots ", sourceName, " set to ", robots.CrawlDelay)
 		crawlDelay := int64(robots.CrawlDelay / time.Millisecond)
-		log.Info("Crawl Delay specified by robots.txt for", sourceName, ":", crawlDelay)
+		log.Debug("Crawl Delay specified by robots.txt for ", sourceName, " : ", crawlDelay)
 
 		// If our default delay is less than what is set there, set a delay for this
 		// domain to respect the robots.txt setting.
@@ -174,7 +175,7 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 			source, err := configTypes.GetSourceByName(sources, sourceName)
 
 			if err != nil {
-				log.Error("Error setting crawl delay override for", sourceName, ":", err)
+				log.Error("Error setting crawl delay override for ", sourceName, ":", err)
 				return
 			}
 			source.Delay = crawlDelay
@@ -185,10 +186,10 @@ func overrideCrawlDelayFromRobots(v1 *viper.Viper, sourceName string, delay int6
 
 func getRobotsForDomain(url string) (*robotstxt.RobotsData, error) {
 	robotsUrl := url + "/robots.txt"
-	log.Info("Getting robots.txt from", robotsUrl)
+	log.Info("Getting robots.txt from ", robotsUrl)
 	robots, err := getRobotsTxt(robotsUrl)
 	if err != nil {
-		log.Error("error getting robots.txt for", url, ":", err)
+		log.Error("error getting robots.txt for ", url, ":", err)
 		return nil, err
 	}
 	return robots, nil

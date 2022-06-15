@@ -12,7 +12,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsData, error) {
 
 	req, err := http.NewRequest("GET", robotsUrl, nil)
 	if err != nil {
-		log.Error("error creating http request:", err)
+		log.Error("error creating http request: ", err)
 		return nil, err
 	}
 	req.Header.Set("User-Agent", EarthCubeAgent)
@@ -20,7 +20,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsData, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("error fetching robots.txt at", robotsUrl, err)
+		log.Error("error fetching robots.txt at ", robotsUrl, err)
 		return nil, err
 	}
 
@@ -32,7 +32,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsData, error) {
 
 	robots, err := robotstxt.FromResponse(resp)
 	if err != nil {
-		log.Error("error parsing robots.txt at", robotsUrl, err)
+		log.Error("error parsing robots.txt at ", robotsUrl, err)
 		return nil, err
 	}
 	return robots, nil

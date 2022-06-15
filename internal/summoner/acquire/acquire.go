@@ -29,7 +29,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	// for each domain in getDomain and us this one here with a semaphore
 	// to control the loop?
 	for domain, urls := range m {
-		log.Info("Queuing URLs for", domain)
+		log.Info("Queuing URLs for ", domain)
 		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
@@ -68,10 +68,10 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	if source.Delay != 0 && source.Delay > delay {
 		delay = source.Delay
 		tc = 1
-		log.Info("Crawl delay set to", delay, "for", sourceName)
+		log.Info("Crawl delay set to ", delay, " for ", sourceName)
 	}
 
-	log.Info("Thread count", tc, "delay", delay)
+	log.Info("Thread count ", tc, " delay ", delay)
 	return bucketName, tc, delay, nil
 }
 
@@ -88,7 +88,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
-		log.Panic("Error reading config file", err)
+		log.Panic("Error reading config file ", err)
 	}
 
 	var client http.Client
@@ -126,7 +126,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 			resp, err := client.Do(req)
 			if err != nil {
-				log.Error("#", i, "error on", urlloc, err) // print an message containing the index (won't keep order)
+				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				lwg.Done()                                 // tell the wait group that we be done
 				<-semaphoreChan
 				return
@@ -135,7 +135,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 			doc, err := goquery.NewDocumentFromResponse(resp)
 			if err != nil {
-				log.Error("#", i, "error on", urlloc, err) // print an message containing the index (won't keep order)
+				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				lwg.Done()                                 // tell the wait group that we be done
 				<-semaphoreChan
 				return
@@ -152,14 +152,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				log.Debug(urlloc, "as", contentTypeHeader)
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
-					log.Error("Error processing json response from", urlloc, err)
+					log.Error("Error processing json response from ", urlloc, err)
 				}
 				// look in the HTML page for <script type=application/ld+json>
 			} else {
 				doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
 					jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
 					if err != nil {
-						log.Error("Error processing script tag in", urlloc, err)
+						log.Error("Error processing script tag in ", urlloc, err)
 					}
 				})
 			}
