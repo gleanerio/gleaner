@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 )
 
 func TestGetRobotsTxt(t *testing.T) {
@@ -30,7 +29,7 @@ func TestGetRobotsTxt(t *testing.T) {
 		robots, err := getRobotsTxt(testServer.URL + "/robots.txt")
 		assert.NotNil(t, robots)
 		assert.Nil(t, err)
-		assert.Equal(t, time.Duration(10000000000), robots.CrawlDelay("*"))
+		assert.False(t, robots.TestAgent("/cgi-bin/exploit", "*"))
 	})
 
 	t.Run("It returns nil if there is no robots.txt at that url", func(t *testing.T) {

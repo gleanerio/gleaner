@@ -2,13 +2,12 @@ package acquire
 
 import (
 	"fmt"
-	"github.com/samclarke/robotstxt"
 	log "github.com/sirupsen/logrus"
-	"io/ioutil"
+	"github.com/temoto/robotstxt"
 	"net/http"
 )
 
-func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
+func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsData, error) {
 	var client http.Client
 
 	req, err := http.NewRequest("GET", robotsUrl, nil)
@@ -30,17 +29,11 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 	}
 
 	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Error("error reading response for robots.txt at", robotsUrl, err)
-		return nil, err
-	}
 
-	robots, err := robotstxt.Parse(string(bodyBytes), robotsUrl)
+	robots, err := robotstxt.FromResponse(resp)
 	if err != nil {
 		log.Error("error parsing robots.txt at", robotsUrl, err)
 		return nil, err
 	}
-
 	return robots, nil
 }
