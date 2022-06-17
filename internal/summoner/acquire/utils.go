@@ -2,18 +2,17 @@ package acquire
 
 import (
 	"fmt"
-	"github.com/samclarke/robotstxt"
 	log "github.com/sirupsen/logrus"
-	"io/ioutil"
+	"github.com/temoto/robotstxt"
 	"net/http"
 )
 
-func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
+func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsData, error) {
 	var client http.Client
 
 	req, err := http.NewRequest("GET", robotsUrl, nil)
 	if err != nil {
-		log.Error("error creating http request:", err)
+		log.Error("error creating http request: ", err)
 		return nil, err
 	}
 	req.Header.Set("User-Agent", EarthCubeAgent)
@@ -21,7 +20,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("error fetching robots.txt at", robotsUrl, err)
+		log.Error("error fetching robots.txt at ", robotsUrl, err)
 		return nil, err
 	}
 
@@ -30,17 +29,11 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsTxt, error) {
 	}
 
 	defer resp.Body.Close()
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+
+	robots, err := robotstxt.FromResponse(resp)
 	if err != nil {
-		log.Error("error reading response for robots.txt at", robotsUrl, err)
+		log.Error("error parsing robots.txt at ", robotsUrl, err)
 		return nil, err
 	}
-
-	robots, err := robotstxt.Parse(string(bodyBytes), robotsUrl)
-	if err != nil {
-		log.Error("error parsing robots.txt at", robotsUrl, err)
-		return nil, err
-	}
-
 	return robots, nil
 }
