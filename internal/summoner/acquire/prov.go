@@ -3,11 +3,9 @@ package acquire
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	log "github.com/sirupsen/logrus"
-	"strings"
 	"text/template"
 	"time"
 
@@ -150,21 +148,8 @@ func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, erro
 		}
 	}
 
-	// TODO make an extracted function to share with nabu
-	// make the URN string
-
-	var objectURN string
-
-	if strings.Contains(objprefix, "summoned") {
-		objectURN = fmt.Sprintf("summoned:%s:%s", k, sha)
-	} else if strings.Contains(objprefix, "milled") {
-		objectURN = fmt.Sprintf("milled:%s:%s", k, sha)
-	} else {
-		return "", errors.New("no valid prov object prefix")
-	}
-
 	// build the struct to pass to the template parser
-	gp := fmt.Sprintf("urn:%s:%s", bucketName, objectURN)
+	gp := fmt.Sprintf("urn:%s:%s", bucketName, sha)
 	td := ProvData{RESID: urlloc, SHA256: sha, PID: pid, SOURCE: k,
 		DATE:   currentTime.Format("2006-01-02"),
 		RUNID:  mcfg["runid"],

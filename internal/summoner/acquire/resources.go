@@ -40,12 +40,14 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	// Know whether we are running in diff mode, in order to exclude urls that have already
 	// been summoned before
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+	// todo handle this error
 	sources, err := configTypes.GetSources(v1)
-	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 	if err != nil {
 		log.Error("Error getting sources to summon: ", err)
 		return domainsMap, err
 	}
+
+	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 
 	sitemapDomains := configTypes.GetActiveSourceByType(domains, siteMapType)
 
@@ -70,7 +72,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		urls, err := getSitemapURLList(domain.URL, group)
 		if err != nil {
 			log.Error("Error getting sitemap urls for: ", domain.Name, err)
-			return domainsMap, err
+			continue
+			// return domainsMap, err // todo comment this out
 		}
 		if mcfg.Mode == "diff" {
 			urls = excludeAlreadySummoned(domain.Name, urls, db)
@@ -89,7 +92,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		robots, err := getRobotsTxt(domain.URL)
 		if err != nil {
 			log.Error("Error getting sitemap location from robots.txt for: ", domain.Name, err)
-			return domainsMap, err
+			continue
+			//return domainsMap, err
 		}
 		group := robots.FindGroup(EarthCubeAgent)
 		log.Debug("Found user agent group ", group)
@@ -97,7 +101,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			sitemapUrls, err := getSitemapURLList(sitemap, group)
 			if err != nil {
 				log.Error("Error getting sitemap urls for: ", domain.Name, err)
-				return domainsMap, err
+				continue
+				//return domainsMap, err
 			}
 			urls = append(urls, sitemapUrls...)
 		}
