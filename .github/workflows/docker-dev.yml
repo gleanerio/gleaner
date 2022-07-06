@@ -69,7 +69,7 @@ jobs:
           images: nsfearthcube/gleaner
           flavor: |
             latest=true
-            suffix=:${{ env.VERSION }}
+            suffix=-${{ env.VERSION }}
           tags: |
             type=ref,event=tag
             type=ref,event=branch
