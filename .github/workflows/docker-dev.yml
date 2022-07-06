@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - dev
-    tags:
-      - v3.*--development
   release:
     types: [published]
 
@@ -71,10 +69,11 @@ jobs:
           images: nsfearthcube/gleaner
           flavor: |
             latest=true
+            suffix=${{ env.VERSION }}
           tags: |
             type=ref,event=tag
             type=ref,event=branch
-            type=semver,pattern=${{ env.VERSION }}
+            type=semver,pattern={{version}}
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
