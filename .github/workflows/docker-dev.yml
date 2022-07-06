@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - dev
-    tags:
-      - v3.*--development
   release:
     types: [published]
 
