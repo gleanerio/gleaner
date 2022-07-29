@@ -5,6 +5,6 @@ plugins:
   - search
   - literate-nav
 nav:
-  - [ HOME ]{ README.md)
+  - Home: README.md
   - '*/'
   - '*.md'
