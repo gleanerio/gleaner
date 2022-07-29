@@ -1,0 +1,7 @@
+site_name: Gleaner
+#theme: 'material'
+#theme: 'mkdocs'
+plugins:
+  - search
+  - literate-nav:
+      nav_file: SUMMARY.md
