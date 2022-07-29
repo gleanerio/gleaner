@@ -1,3 +1,0 @@
-* [HOME]{README.md)
-* */
-* *.md

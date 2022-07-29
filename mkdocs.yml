@@ -3,5 +3,8 @@ site_name: Gleaner
 #theme: 'mkdocs'
 plugins:
   - search
-  - literate-nav:
-      nav_file: SUMMARY.md
+  - literate-nav
+nav:
+  - [ HOME ]{ README.md)
+  - '*/'
+  - '*.md'
