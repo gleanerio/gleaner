@@ -33,7 +33,7 @@ require (
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/temoto/robotstxt v1.1.2
-	github.com/tidwall/gjson v1.10.2
+	github.com/tidwall/gjson v1.14.1
 	github.com/tidwall/sjson v1.2.3
 	github.com/utahta/go-openuri v0.1.0
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
