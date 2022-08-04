@@ -1,0 +1,208 @@
+ {
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+        "schema": "https://schema.org/",
+        "xsd": "http://www.w3.org/2001/XMLSchema#"
+    },
+    "@graph": [
+        {
+            "@id": "https://catalogue.cioosatlantic.ca/dataset/65931687-684a-41b5-9aa5-086a9e72b5c5/resource/ca-cioos-resource_5060f3c24e9a3a739a0e57682d7e8f40",
+            "@type": "schema:DataDownload",
+            "schema:contentUrl": "https://www.smartatlantic.ca/erddap/tabledap/sma_negl_postville_nlqu0001",
+            "schema:description": "ERDDAP's version of the OPeNDAP .html web page for this dataset. Specify a subset of the dataset and download the data via OPeNDAP or in many different file types.",
+            "schema:encodingFormat": "ERDDAP",
+            "schema:name": "ERDDAP Data Subset Form",
+            "schema:url": "https://www.smartatlantic.ca/erddap/tabledap/sma_negl_postville_nlqu0001"
+        },
+        {
+            "@id": "https://catalogue.cioosatlantic.ca/dataset/65931687-684a-41b5-9aa5-086a9e72b5c5",
+            "@type": "schema:Dataset",
+            "http://www.w3.org/ns/dcat#contactPoint": {
+                "@id": "_:N7b09c562111446729d3cf10e8e67c24d"
+            },
+            "schema:creator": [
+                {
+                    "@id": "_:N972080b4c56f4772bad36cf1db77cc32"
+                },
+                {
+                    "@id": "_:Nf697cddd67434490817deeed6165fd6e"
+                }
+            ],
+            "schema:dateModified": "2022-07-05T20:04:34.619446",
+            "schema:datePublished": "2022-07-05T20:04:34.619436",
+            "schema:description": "NEGL - Postville, Nunatsiavut (NLQU0001). Tri-leg tower masts are 25 feet tall (7.62 m) and stations are all located at mid-slopes in cleared terrain.  Sites at Cartwright Junction, near Red Bay and at North West River all include fence enclosures which may impact snow accumulation at these sites.  All stations are owned and operated by the Northern Environmental Geoscience Laboratory led by Dr. Robert Way. All stations were established in partnership with the communities of Black Tickle, North West River, Postville, Red Bay and Rigolet.  Support for this project was received from the Labrador Institute of Memorial University of Newfoundland, the Nunatsiavut Government, the NunatuKavut Community Council, the Government of Newfoundland and Labrador's Department of Fisheries and Land Resources \u0026 Department of Municipal Affairs and Environment, and Queen's University.  Funding for this project was received from Crown-Indigenous and Northern Affairs Canada (Government of Canada) through the Indigenous Community-Based Climate Monitoring Program. Climate stations were purchased from Forest Technology Systems Inc headquatered in British Columbia, Canada.",
+            "schema:distribution": {
+                "@id": "https://catalogue.cioosatlantic.ca/dataset/65931687-684a-41b5-9aa5-086a9e72b5c5/resource/ca-cioos-resource_5060f3c24e9a3a739a0e57682d7e8f40"
+            },
+            "schema:identifier": "https://catalogue.cioosatlantic.ca/dataset/65931687-684a-41b5-9aa5-086a9e72b5c5",
+            "schema:includedInDataCatalog": {
+                "@id": "_:N0eddcc4121d5403fa58632030162435f"
+            },
+            "schema:keywords": [
+                "queen",
+                "rainfall",
+                "cond",
+                "negl",
+                "airtempmin",
+                "atmospheric-winds",
+                "atmospres",
+                "station",
+                "soils",
+                "other",
+                "airtemp",
+                "batt",
+                "depth",
+                "winds",
+                "surface-winds",
+                "science",
+                "earth-science",
+                "data",
+                "northern-environmental-geoscience-laboratory-negl",
+                "snow",
+                "max",
+                "precipitation",
+                "winddir",
+                "direction",
+                "speed",
+                "air",
+                "ice",
+                "airtempmax",
+                "pres",
+                "statnum",
+                "smoist",
+                "battvoltage",
+                "department",
+                "meteorology",
+                "temperature",
+                "soil",
+                "surface",
+                "windfromdirection",
+                "wsc",
+                "humidity",
+                "time",
+                "nlqu0001",
+                "solar",
+                "relhumiditymin",
+                "ice-distribution",
+                "rain",
+                "preciptb",
+                "soilcond",
+                "relhumiditymax",
+                "atmosphere",
+                "planning",
+                "soiltemp",
+                "stationname",
+                "windspeed",
+                "pyr",
+                "gust",
+                "winddirgust",
+                "wscnum",
+                "num",
+                "timestamp",
+                "stat",
+                "windspeedgust",
+                "nunatsiavut",
+                "relhumidity",
+                "snowdepth",
+                "rel",
+                "identifier",
+                "pyrsolar",
+                "geography",
+                "voltage",
+                "postville",
+                "preciptot",
+                "earth",
+                "windspeedofgust",
+                "name",
+                "wind",
+                "university",
+                "tot",
+                "min",
+                "atmospheric",
+                "distribution"
+            ],
+            "schema:license": "https://creativecommons.org/licenses/by/4.0/",
+            "schema:name": "NEGL, Postville, Nunatsiavut (NLQU0001)",
+            "schema:publisher": {
+                "@id": "_:Ne667b4ff2ba34223bdbf21c34d48d183"
+            },
+            "schema:spatialCoverage": [
+                {
+                    "@id": "_:N609c120aabd74b38975f7de0324dba6f"
+                },
+                {
+                    "@id": "_:Nd3b64fd0b95f43498c3add1687db49e4"
+                }
+            ],
+            "schema:temporalCoverage": "2019-07-30/2022-07-05",
+            "schema:url": "https://catalogue.cioosatlantic.ca/dataset/65931687-684a-41b5-9aa5-086a9e72b5c5",
+            "schema:version": "1"
+        },
+        {
+            "@id": "_:N972080b4c56f4772bad36cf1db77cc32",
+            "@type": "schema:Organization",
+            "schema:name": "Government of Newfoundland and Labrador's Department of Municipal Affairs and Environment",
+            "schema:sameAs": ""
+        },
+        {
+            "@id": "_:N609c120aabd74b38975f7de0324dba6f",
+            "@type": "schema:Place",
+            "schema:geo": {
+                "@id": "_:N19709ec08ca64c7a84bfbf632576e493"
+            }
+        },
+        {
+            "@id": "_:N19709ec08ca64c7a84bfbf632576e493",
+            "@type": "schema:GeoShape",
+            "schema:box": "54.909369999999996 -59.780480000000004 54.909369999999996 -59.780480000000004"
+        },
+        {
+            "@id": "_:Nf697cddd67434490817deeed6165fd6e",
+            "@type": "schema:Organization",
+            "schema:name": "NEGL at Queen's University",
+            "schema:sameAs": ""
+        },
+        {
+            "@id": "_:Ne667b4ff2ba34223bdbf21c34d48d183",
+            "@type": "schema:Organization",
+            "schema:contactPoint": {
+                "@id": "_:N16c88b30af534c7fa37b1efa3a9a0cd3"
+            },
+            "schema:name": "SmartAtlantic"
+        },
+        {
+            "@id": "_:N16c88b30af534c7fa37b1efa3a9a0cd3",
+            "@type": "schema:ContactPoint",
+            "schema:contactType": "Publisher",
+            "schema:url": "None"
+        },
+        {
+            "@id": "_:N7b09c562111446729d3cf10e8e67c24d",
+            "@type": "http://www.w3.org/2006/vcard/ns#Individual",
+            "http://www.w3.org/2006/vcard/ns#fn": "SmartAtlantic",
+            "http://www.w3.org/2006/vcard/ns#hasEmail": "mailto:SmartBay@smartbay.ca",
+            "http://www.w3.org/2006/vcard/ns#org": "",
+            "http://www.w3.org/2006/vcard/ns#role": "publisher"
+        },
+        {
+            "@id": "_:Nd3b64fd0b95f43498c3add1687db49e4",
+            "@type": "schema:Place",
+            "schema:geo": {
+                "@id": "_:Nd49019496f1743de8b9881aeb3e0312b"
+            }
+        },
+        {
+            "@id": "_:Nd49019496f1743de8b9881aeb3e0312b",
+            "@type": "schema:GeoShape",
+            "schema:polygon": "{'type': 'Point', 'coordinates': [-59.780480000000004, 54.909369999999996]}"
+        },
+        {
+            "@id": "_:N0eddcc4121d5403fa58632030162435f",
+            "@type": "schema:DataCatalog",
+            "schema:description": "",
+            "schema:name": "CKAN",
+            "schema:url": "https://catalogue.cioosatlantic.ca"
+        }
+    ]
+}

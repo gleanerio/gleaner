@@ -1,0 +1,95 @@
+{
+  "@context": {
+    "brick": "https://brickschema.org/schema/Brick#",
+    "csvw": "http://www.w3.org/ns/csvw#",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dcam": "http://purl.org/dc/dcam/",
+    "dcat": "http://www.w3.org/ns/dcat#",
+    "dcmitype": "http://purl.org/dc/dcmitype/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "doap": "http://usefulinc.com/ns/doap#",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "odrl": "http://www.w3.org/ns/odrl/2/",
+    "org": "http://www.w3.org/ns/org#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "prof": "http://www.w3.org/ns/dx/prof/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "qb": "http://purl.org/linked-data/cube#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "@vocab": "http://schema.org/",
+    "sh": "http://www.w3.org/ns/shacl#",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "sosa": "http://www.w3.org/ns/sosa/",
+    "ssn": "http://www.w3.org/ns/ssn/",
+    "time": "http://www.w3.org/2006/time#",
+    "vann": "http://purl.org/vocab/vann/",
+    "void": "http://rdfs.org/ns/void#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "https://pacificdata.org/dataset/9c3e8ae8-8faf-481f-bf37-6ae6713270f8",
+      "@type": "schema:Dataset",
+      "schema:dateModified": [
+        "2022-02-15",
+        "2022-02-15T00:00:00"
+      ],
+      "schema:datePublished": [
+        "2021-06-24",
+        "2021-06-24T00:00:00"
+      ],
+      "schema:description": "Data on Alien Invasive Species in Palau including scientific and annual reports, reviews and policies",
+      "schema:distribution": {
+        "@id": "https://pacificdata.org/dataset/9c3e8ae8-8faf-481f-bf37-6ae6713270f8/resource/d1cc872c-9c92-47f9-9b50-e1c5f940e853"
+      },
+      "schema:includedInDataCatalog": {
+        "@id": "_:Nd1fd79ce17114392aff19918e21f5bd4"
+      },
+      "schema:keywords": [
+        "species",
+        "invasives",
+        "palau",
+        "biodiversity",
+        "alien"
+      ],
+      "schema:license": "https://pacific-data.sprep.org/dataset/data-portal-license-agreements/resource/de2a56f5-a565-481a-8589-406dc40b5588",
+      "schema:name": "Alien Invasive Species in Palau",
+      "schema:publisher": {
+        "@id": "_:N2a3af7ede9da4ff98b97517a054bd51d"
+      },
+      "schema:url": "https://pacificdata.org/data/dataset/alien-invasive-species-in-palau9c3e8ae8-8faf-481f-bf37-6ae6713270f8"
+    },
+    {
+      "@id": "_:N2a3af7ede9da4ff98b97517a054bd51d",
+      "@type": "schema:Organization",
+      "schema:contactPoint": {
+        "@id": "_:N91b4c15bf1604e98b388647f845af735"
+      },
+      "schema:name": "['MNRET - Ministry of Natural Resources']"
+    },
+    {
+      "@id": "_:N91b4c15bf1604e98b388647f845af735",
+      "@type": "schema:ContactPoint",
+      "schema:contactType": "customer service",
+      "schema:email": "joelmiles52@gmail.com",
+      "schema:name": "['MNRET - Ministry of Natural Resources']",
+      "schema:url": "https://pacificdata.org"
+    },
+    {
+      "@id": "_:Nd1fd79ce17114392aff19918e21f5bd4",
+      "@type": "schema:DataCatalog",
+      "schema:description": "",
+      "schema:name": "Pacific Data Hub",
+      "schema:url": "https://pacificdata.org"
+    },
+    {
+      "@id": "https://pacificdata.org/dataset/9c3e8ae8-8faf-481f-bf37-6ae6713270f8/resource/d1cc872c-9c92-47f9-9b50-e1c5f940e853",
+      "@type": "schema:DataDownload",
+      "schema:description": "NISC (Palau National Invasive Species Committee). 2014. Annual Report.",
+      "schema:encodingFormat": "PDF",
+      "schema:name": "Palau National Invasive Species Committee (NISC) Annual Report 2014",
+      "schema:url": "https://pacific-data.sprep.org/system/files/2014-NISC-Annual-Report_3.pdf"
+    }
+  ]
+}
