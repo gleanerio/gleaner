@@ -2,11 +2,12 @@ package acquire
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
@@ -37,7 +38,6 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	domains = configTypes.GetActiveSourceByType(sources, siteGraphType)
 
 	for k := range domains {
-		log.Info("Processing sitegraph file (this can be slow with little feedback):", domains[k].URL)
 		log.Info("Downloading sitegraph file:", domains[k].URL)
 
 		d, err := getJSON(domains[k].URL)

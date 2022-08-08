@@ -3,6 +3,20 @@
 ## NOTE
 
 code isn't wired in or working for any purpose yet.  it's a placeholder for a plan
+
+8-06-22
+Perhaps create an archives prefix along with summoner and milled.
+Then move
+
+.../summoned/orgx
+to
+.../archived/orgx/[DATE]
+
+This would be done for each sitegraph run and also for any full sitemap run, 
+but not for diff sitemap runs.  
+
+
+
 ## About
 
 Code here needs to manage the buckets that a crawl goes into. 

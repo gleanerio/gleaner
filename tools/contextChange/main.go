@@ -19,7 +19,7 @@ func main() {
 		fmt.Println("Error reading file")
 	}
 
-	jld, err := fixContextUrl(string(dat))
+	jld, err := fixContext(string(dat))
 	//jld, err := fixContextString(string(dat))
 	if err != nil {
 		fmt.Println("Error reading file")
@@ -43,9 +43,9 @@ func main() {
 //	return jsonld, err
 //}
 
-// If the top-level JSON-LD context does not end with a trailing slash or use https,
-// this function corrects it.
-func fixContextUrl(jsonld string) (string, error) {
+// fixContext unifies and updates the context string altering.  It replaces both fixContextUrl and
+//fixContextString
+func fixContext(jsonld string) (string, error) {
 	var err error
 
 	sdoc := "https://schema.org/" // eventually set in config so ignore always true/false conditional test below for now

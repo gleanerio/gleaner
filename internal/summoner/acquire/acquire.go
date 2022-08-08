@@ -12,6 +12,8 @@ import (
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
+	"github.com/gleanerio/gleaner/internal/summoner/buckets"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
@@ -25,10 +27,22 @@ const EarthCubeAgent = "EarthCube_DataBot/1.0"
 func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
 	wg := sync.WaitGroup{}
 
+	bucketName, err := configTypes.GetBucketName(v1)
+	if err != nil {
+		log.Error("Error getting bucket name in summoner ResRetrieve, needed to archive objects:", err)
+	}
+
 	// Why do I pass the wg pointer?   Just make a new one
 	// for each domain in getDomain and us this one here with a semaphore
 	// to control the loop?
 	for domain, urls := range m {
+		fmt.Println("Archiving current objects for ", domain)
+		log.Info("Archiving current objects for ", domain)
+
+		// Prior to doing the indexing, archive the current object.  This could be a boolean option pulled from config to do this too.
+		buckets.Copy(mc, bucketName, fmt.Sprintf("summoned/%s", domain), fmt.Sprintf("archive/%s", domain))
+		buckets.Remove(mc, bucketName, fmt.Sprintf("summoned/%s", domain))
+
 		log.Info("Queuing URLs for ", domain)
 		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
@@ -127,7 +141,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			resp, err := client.Do(req)
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                 // tell the wait group that we be done
+				lwg.Done()                                   // tell the wait group that we be done
 				<-semaphoreChan
 				return
 			}
@@ -136,7 +150,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			doc, err := goquery.NewDocumentFromResponse(resp)
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                 // tell the wait group that we be done
+				lwg.Done()                                   // tell the wait group that we be done
 				<-semaphoreChan
 				return
 			}

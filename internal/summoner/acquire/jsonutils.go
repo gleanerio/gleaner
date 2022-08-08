@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"net/url"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
@@ -80,6 +81,97 @@ func fixContextUrl(jsonld string) (string, error) {
 	return jsonld, err
 }
 
+// fixContext unifies and updates the context string altering.  It replaces both fixContextUrl and
+//fixContextString
+func fixContext(jsonld string) (string, error) {
+	var err error
+
+	sdoc := "https://schema.org/" // eventually set in config so ignore always true/false conditional test below for now
+
+	// grab the cotext
+	c := gjson.Get(jsonld, "@context")
+
+	// check to see if we can cast this to a map
+	cm, ok := c.Value().(map[string]interface{})
+	if !ok {
+		//fmt.Println("-----  string context -------")
+		//fmt.Println(c.Value().(string))
+		// if not it's a string and we can just regex it..  let's not promote to map
+		// check for https://schema.org/   (trailing / ?)  and fix
+		if c.Value().(string) == "http://schema.org/" {
+			if strings.Compare(sdoc, "http://schema.org/") == 0 {
+				return jsonld, nil // all good, return
+			} else {
+				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
+				return jsonld, nil
+			}
+		} else if c.Value().(string) == "https://schema.org/" {
+			if strings.Compare(sdoc, "https://schema.org/") == 0 {
+				return jsonld, nil // all good, return
+			} else {
+				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
+				return jsonld, nil
+			}
+		}
+
+		// repeat the above with the error of a missing trailing /
+		// check for this second so we don't match the shorter substring pattern first, if the string
+		// with the / is there we want to find it and leave this function first.
+		if c.Value().(string) == "http://schema.org" {
+			if strings.Compare(sdoc, "http://schema.org") == 0 {
+				return jsonld, nil // all good, return
+			} else {
+				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
+				return jsonld, nil
+			}
+		} else if c.Value().(string) == "https://schema.org" {
+			if strings.Compare(sdoc, "https://schema.org") == 0 {
+				return jsonld, nil // all good, return
+			} else {
+				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
+				return jsonld, nil
+			}
+		}
+	} else {
+		for k, v := range cm {
+			//fmt.Printf("Key: %s  Value: %s\n", k, v)
+
+			// if value is our schema.org issue then update this key
+			// try to ready this for a "config"  option
+
+			// NOTE we are checking the namespace as a prefix WITHOUT the training / to check
+			// on it too in the logic
+			if strings.HasPrefix(v.(string), "https://schema.org") {
+				if v.(string) == sdoc {
+					// we are good..  including trailing / as well, so leave
+					return jsonld, nil
+				} else {
+					tns := fmt.Sprintf("@context.%s", k)
+					jsonld, err = sjson.Set(jsonld, tns, sdoc)
+					return jsonld, err
+				}
+			} else if strings.HasPrefix(v.(string), "http://schema.org") {
+				tns := ""
+				if v.(string) == sdoc {
+					// we are good..  including trailing / as well, so leave
+					return jsonld, nil
+				} else {
+					if strings.HasPrefix(k, "@") {
+						tns = fmt.Sprintf("@context.\\%s", k) ////@context/@vocab
+					} else {
+						tns = fmt.Sprintf("@context.%s", k) ////@context/@vocab
+					}
+					jsonld, err = sjson.Set(jsonld, tns, sdoc)
+					return jsonld, err
+				}
+			}
+		}
+	}
+
+	// if we are still here, just return what we showed up with
+	return jsonld, err
+}
+
 func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error
@@ -87,14 +179,18 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	// Strict defaults to false.
 	if strict, ok := mcfg["strict"]; !(ok && strict == "true") {
 		log.Info("context.strict is not set to true; doing json-ld fixups.")
-		jsonld, err = fixContextString(jsonld)
+		jsonld, err = fixContext(jsonld)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
+			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context  Error:", err)
 		}
-		jsonld, err = fixContextUrl(jsonld)
-		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
-		}
+		//jsonld, err = fixContextString(jsonld)
+		//if err != nil {
+		//	log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
+		//}
+		//jsonld, err = fixContextUrl(jsonld)
+		//if err != nil {
+		//	log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+		//}
 	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 	if err != nil {
