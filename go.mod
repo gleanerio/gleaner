@@ -15,13 +15,13 @@ require (
 	github.com/piprate/json-gold v0.4.1-0.20210813112359-33b90c4ca86c
 	github.com/rs/xid v1.2.1
 	github.com/schollz/progressbar/v3 v3.8.3
-	github.com/spf13/cobra v1.2.1
-	github.com/spf13/viper v1.9.0
-	github.com/stretchr/testify v1.7.0
+	github.com/spf13/cobra v1.5.0
+	github.com/spf13/viper v1.12.0
+	github.com/stretchr/testify v1.7.1
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20211010230925-397910c5e371
 	go.etcd.io/bbolt v1.3.6
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
+	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 )
 
 // just using bolt github.com/boltdb/bolt would be ok... but it complains if we mix.
@@ -36,8 +36,8 @@ require (
 	github.com/tidwall/gjson v1.10.2
 	github.com/tidwall/sjson v1.2.3
 	github.com/utahta/go-openuri v0.1.0
-	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
-	google.golang.org/api v0.60.0
+	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
+	google.golang.org/api v0.81.0
 )
 
 // local replace. gleaner and nabu at same level
