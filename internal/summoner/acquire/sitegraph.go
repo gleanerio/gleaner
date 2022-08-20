@@ -10,6 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/summoner/buckets"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
@@ -38,6 +39,14 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	domains = configTypes.GetActiveSourceByType(sources, siteGraphType)
 
 	for k := range domains {
+		domain := domains[k].Name // TODO remove this stupid hack
+		fmt.Println("Archiving current objects for ", domain)
+		log.Info("Archiving current objects for ", domain)
+
+		// Prior to doing the indexing, archive the current object.  This could be a boolean option pulled from config to do this too.
+		buckets.Copy(mc, bucketName, fmt.Sprintf("summoned/%s", domain), fmt.Sprintf("archive/%s", domain))
+		buckets.Remove(mc, bucketName, fmt.Sprintf("summoned/%s", domain))
+
 		log.Info("Downloading sitegraph file:", domains[k].URL)
 
 		d, err := getJSON(domains[k].URL)

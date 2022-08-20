@@ -10,6 +10,9 @@ import (
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
+	"github.com/gleanerio/gleaner/internal/summoner/buckets"
+
+
 	"github.com/mafredri/cdp"
 	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/page"
@@ -33,8 +36,24 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
 	//)
 
+	bucketName, err := configTypes.GetBucketName(v1)
+	if err != nil {
+		log.Error("Error getting bucket name in summoner ResRetrieve, needed to archive objects:", err)
+	}
+
+
 	for k := range m {
 		log.Trace("Headless chrome call to:", k)
+
+		domain := k  // lazy hack after copying over the code below fpr the archive.  May make an "archive" function anyway
+
+		fmt.Println("Archiving current objects for ", domain)
+		log.Info("Archiving current objects for ", domain)
+
+		// Prior to doing the indexing, archive the current object.  This could be a boolean option pulled from config to do this too.
+		buckets.Copy(mc, bucketName, fmt.Sprintf("summoned/%s", domain), fmt.Sprintf("archive/%s", domain))
+		buckets.Remove(mc, bucketName, fmt.Sprintf("summoned/%s", domain))
+
 		db.Update(func(tx *bolt.Tx) error {
 			_, err := tx.CreateBucket([]byte(k))
 			if err != nil {
