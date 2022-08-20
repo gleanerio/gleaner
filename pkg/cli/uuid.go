@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 var jsonVal string
@@ -47,17 +48,22 @@ var uuidCmd = &cobra.Command{
 			text, err := reader.ReadString('\n')
 			jsonld = jsonld + text
 			if err != nil {
+				if err.Error() != "EOF" {
+					fmt.Println("error:", err)
+					os.Exit(1)
+				}
 				break
 			}
 		}
 		//fmt.Println(jsonld)
 		uuid := common.GetSHA(jsonld)
+		fmt.Println()
 		fmt.Println("urn:", uuid)
 	},
 }
 
 func init() {
-	gleanerCmd.AddCommand(uuidCmd)
+	toolsCmd.AddCommand(uuidCmd)
 
 	// Here you will define your flags and configuration settings.
 	uuidCmd.Flags().StringVar(&sourceVal, "jsonld", "", "jsonld file to read")
