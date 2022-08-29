@@ -1,7 +1,8 @@
 package cli
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
+	//	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -13,7 +14,7 @@ var toolsCmd = &cobra.Command{
 	Long: `These are small tools that do things like generate uuids
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("gleaner called")
+		log.Info("tools called")
 	},
 }
 
