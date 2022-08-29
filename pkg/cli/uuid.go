@@ -19,6 +19,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
 )
@@ -49,16 +50,20 @@ var uuidCmd = &cobra.Command{
 			jsonld = jsonld + text
 			if err != nil {
 				if err.Error() != "EOF" {
-					fmt.Println("error:", err)
+					log.Error("error:", err)
 					os.Exit(1)
 				}
 				break
 			}
 		}
-		//fmt.Println(jsonld)
-		uuid := common.GetSHA(jsonld)
-		fmt.Println()
-		fmt.Println("urn:", uuid)
+		log.Info(jsonld)
+		//uuid := common.GetSHA(jsonld)
+		uuid, err := common.GetNormSHA(jsonld, gleanerViperVal) // Moved to the normalized sha value
+		if err != nil {
+			log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
+		}
+		log.Info("urn:", uuid)
+		fmt.Println("\nurn:", uuid)
 	},
 }
 
@@ -67,7 +72,7 @@ func init() {
 
 	// Here you will define your flags and configuration settings.
 	uuidCmd.Flags().StringVar(&sourceVal, "jsonld", "", "jsonld file to read")
-
+	log.SetLevel(log.ErrorLevel)
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// batchCmd.PersistentFlags().String("foo", "", "A help for foo")

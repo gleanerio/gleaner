@@ -1,7 +1,8 @@
 package cli
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
+	//	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +17,7 @@ and store to a S3 server:
 --mode
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("gleaner called")
+		log.Info("gleaner called")
 	},
 }
 var modeVal string
