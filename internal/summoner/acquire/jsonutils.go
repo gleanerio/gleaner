@@ -16,7 +16,7 @@ import (
 	"github.com/tidwall/sjson"
 )
 
-/// A utility to keep a list of JSON-LD files that we have found
+// / A utility to keep a list of JSON-LD files that we have found
 // in or on a page
 func addToJsonListIfValid(v1 *viper.Viper, jsonlds []string, new_json string) ([]string, error) {
 	valid, err := isValid(v1, new_json)
@@ -29,7 +29,7 @@ func addToJsonListIfValid(v1 *viper.Viper, jsonlds []string, new_json string) ([
 	return append(jsonlds, new_json), nil
 }
 
-/// Validate JSON-LD that we get
+// / Validate JSON-LD that we get
 func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	proc, options := common.JLDProc(v1)
 
@@ -89,21 +89,23 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 		log.Info("context.strict is not set to true; doing json-ld fixups.")
 		jsonld, err = fixContextString(jsonld)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
+			log.Error("ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context to be an object Error: ", err)
 		}
 		jsonld, err = fixContextUrl(jsonld)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+			log.Error("ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context url scheme and trailing slash Error: ", err)
 		}
 	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	log.Trace("Generated SHA ", sha, " for url ", urlloc)
 	if err != nil {
 		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
 	}
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
 	contentType := "application/ld+json"
 	b := bytes.NewBufferString(jsonld)
-	// size := int64(b.Len()) // gets set to 0 after upload for some reason
+	size := int64(b.Len()) // gets set to 0 after upload for some reason
+	log.Trace("JSON-LD buffer is size ", size, " for url ", urlloc)
 
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["url"] = urlloc
@@ -116,10 +118,10 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	}
 
 	// Upload the file with FPutObject
-	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, size, minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
 		log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
-	log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
+	log.Debug("Uploaded Bucket: ", bucketName, " File: ", objectName, " Size ", size)
 	return sha, err
 }
