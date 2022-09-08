@@ -47,7 +47,6 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
-	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 }
 
@@ -108,11 +107,15 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	var client http.Client
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
-	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
 
-	wg.Add(1)       // wg from the calling function
-	defer wg.Done() // tell the wait group that we be done
+	defer func() {
+		lwg.Wait()
+		wg.Done()
+		close(semaphoreChan)
+	}()
+
+	wg.Add(1) // wg from the calling function
 
 	count := len(urls)
 	bar := progressbar.Default(int64(count))
@@ -129,7 +132,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
-			log.Debug("Indexing", urlloc)
+			log.Debug("Indexing ", urlloc)
 
 			req, err := http.NewRequest("GET", urlloc, nil)
 			if err != nil {
@@ -163,7 +166,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// this should not be here IMHO, but need to support people not setting proper header value
 			// The URL is sending back JSON-LD but incorrectly sending as application/json
 			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
-				log.Debug(urlloc, "as", contentTypeHeader)
+				log.Debug(urlloc, " as ", contentTypeHeader)
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
 					log.Error("Error processing json response from ", urlloc, err)
@@ -186,7 +189,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// even is no JSON-LD packages found, record the event of checking this URL
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
-				log.Info("Direct access failed, trying headless for", urlloc)
+				log.Info("Direct access failed, trying headless for ", urlloc)
 				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
 				if err != nil {
 					log.Error("PageRender", urlloc, "::", err)
@@ -201,21 +204,26 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				}
 
 			} else {
-				log.Trace("Direct access worked for", urlloc)
+				log.Trace("Direct access worked for ", urlloc)
 			}
 
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
-					log.Trace("#", i, "Uploading")
+					log.Trace("#", i, "Uploading ")
 					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
-						log.Error("Error uploading jsonld to object store:", urlloc, err)
+						log.Error("Error uploading jsonld to object store: ", urlloc, err, sha)
+					} else {
+						log.Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
 					}
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(sha))
-						return err
+						if err != nil {
+							log.Error("Error writing to bolt ", err)
+						}
+						return nil
 					})
 				} else {
 					log.Info("Empty JSON-LD document found. Continuing.")
@@ -223,13 +231,16 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
-						return err
+						if err != nil {
+							log.Error("Error writing to bolt ", err)
+						}
+						return nil
 					})
 				}
 			}
 
 			bar.Add(1)                                          // bar.Incr()
-			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
+			log.Trace("#", i, " thread for ", urlloc)           // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
 
 			lwg.Done()
@@ -238,9 +249,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		}(i, sourceName)
 
 	}
-
-	lwg.Wait()
-
 }
 
 func contains(arr []string, str string) bool {
