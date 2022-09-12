@@ -1,0 +1,17 @@
+site_name: Gleaner
+# this is intended to be included in the Earthcube Documentation.
+# see the action: https://github.com/earthcube/geocodes_documentation/blob/main/.github/workflows/runscript.yml
+# just incase we run standalong:
+#theme: 'mkdocs'
+theme: 'readthedocs'
+plugins:
+  - search
+  - literate-nav
+# the literate nav rules described, here: https://oprypin.github.io/mkdocs-literate-nav/reference.html
+# and here: https://github.com/oprypin/mkdocs-literate-nav
+
+# the nav: is needed for the multidocs to work: https://github.com/jdoiro3/mkdocs-multirepo-plugin
+nav:
+  - Home: README.md
+  - '*/'
+  - '*.md'

@@ -290,7 +290,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	for _, jsonld := range jsonlds {
 		valid, err := isValid(v1, jsonld)
 		if err != nil {
-			log.Error("error checking for valid json:", err)
+			log.Error("error checking for valid json :", err)
 			repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
