@@ -35,6 +35,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 			log.Error("Error creating a logger for a repository", err)
 		} else {
 			repologger.Info("Queuing URLs for ", domain)
+			repologger.Info("URL Count ", len(urls))
 		}
 		go getDomain(v1, mc, urls, domain, &wg, db, repologger)
 	}
