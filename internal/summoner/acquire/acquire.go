@@ -185,8 +185,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.Info("Direct access failed, trying headless for", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Info(err)
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
+				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info()
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger) // TODO make delay configurable
 				if err != nil {
 					log.Error("PageRender", urlloc, "::", err)
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)

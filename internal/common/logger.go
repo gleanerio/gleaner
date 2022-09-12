@@ -93,7 +93,7 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 			Compress:   false,
 			LocalTime:  false,
 		},
-		log.TraceLevel,
+		log.DebugLevel, //log.TraceLevel,  // needs to be configurable
 		&log.TextFormatter{
 			DisableColors:    true,
 			FullTimestamp:    false,
