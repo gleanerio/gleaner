@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 )
@@ -12,8 +12,8 @@ var checkCmd = &cobra.Command{
 	Short: "(not implemented)Check the connectivity to the Minio server",
 	Long:  `(not implemented)This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("check called")
-		fmt.Println("Not Implemented")
+		log.Println("check called")
+		log.Println("Not Implemented")
 	},
 }
 
