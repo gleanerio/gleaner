@@ -40,6 +40,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 		go getDomain(v1, mc, urls, domain, &wg, db, repologger)
 	}
 
+	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 }
 
@@ -101,15 +102,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	var client http.Client
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
+	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
 
-	defer func() {
-		lwg.Wait()
-		wg.Done()
-		close(semaphoreChan)
-	}()
-
-	wg.Add(1) // wg from the calling function
+	wg.Add(1)       // wg from the calling function
+	defer wg.Done() // tell the wait group that we be done
 
 	count := len(urls)
 	bar := progressbar.Default(int64(count))
@@ -126,6 +123,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
+
 			repologger.Trace("Indexing", urlloc)
 			log.Debug("Indexing ", urlloc)
 
@@ -141,7 +139,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
 				lwg.Done() // tell the wait group that we be done
-				lwg.Done()                                   // tell the wait group that we be done
+
 				<-semaphoreChan
 				return
 			}
@@ -165,6 +163,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
 				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug()
 				log.Debug(urlloc, " as ", contentTypeHeader)
+
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
 					log.Error("Error processing json response from ", urlloc, err)
@@ -228,10 +227,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(sha))
-						if err != nil {
-							log.Error("Error writing to bolt ", err)
-						}
-						return nil
+						return err
 					})
 				} else {
 					log.Info("Empty JSON-LD document found. Continuing.")
@@ -240,16 +236,13 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
-						if err != nil {
-							log.Error("Error writing to bolt ", err)
-						}
-						return nil
+						return err
 					})
 				}
 			}
 
 			bar.Add(1)                                          // bar.Incr()
-			log.Trace("#", i, " thread for ", urlloc)           // print an message containing the index (won't keep order)
+			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
 
 			lwg.Done()
@@ -258,6 +251,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		}(i, sourceName)
 
 	}
+
+	lwg.Wait()
+
 }
 
 func contains(arr []string, str string) bool {
