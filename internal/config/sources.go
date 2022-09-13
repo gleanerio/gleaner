@@ -20,7 +20,7 @@ type Sources struct {
 	Name            string
 	Logo            string
 	URL             string
-	Headless        bool
+	Headless        bool   `default:"false"`
 	PID             string
 	ProperName      string
 	Domain          string
