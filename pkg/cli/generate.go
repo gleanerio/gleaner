@@ -4,7 +4,6 @@ import (
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	nConfig "github.com/gleanerio/nabu/pkg/config"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"path"
@@ -30,7 +29,7 @@ Usually you will need to edit servers.yaml and sources.csv.
 A copy of the files (one per DAY) is saved.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("generate called")
+		fmt.Println("generate called")
 		//generateCfg(cfgPath, cfgName, sourcesVal) // sources moved into localConfig
 		generateCfg(cfgPath, cfgName)
 	},
@@ -61,24 +60,24 @@ func generateCfg(cfgPath string, cfgName string) error {
 
 	servers, err = configTypes.ReadServersConfig(configBaseFiles["servers"], configDir)
 	if err != nil {
-		log.Error(err)
+		fmt.Println(err)
 		panic(err)
 	}
 	gleaner, err = configTypes.ReadGleanerConfig(configBaseFiles["gleaner"], configDir)
 	if err != nil {
-		log.Error(err)
+		fmt.Println(err)
 		panic(err)
 	}
 	nabu, err = nConfig.ReadNabuConfig(configBaseFiles["nabu"], configDir)
 	if err != nil {
-		log.Error(err)
+		fmt.Println(err)
 		panic(err)
 	}
 
 	sourcesVal := servers.GetString("sourcesSource.location")
 	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
 	if err != nil {
-		log.Error(err)
+		fmt.Println(err)
 		panic(err)
 	}
 
@@ -89,7 +88,7 @@ func generateCfg(cfgPath string, cfgName string) error {
 	// sources
 	// need a check to see if it is an absolute path, so read not needed, and
 	if !(strings.HasPrefix(sourcesVal, "https://") || strings.HasPrefix(sourcesVal, "http://")) {
-		log.Println("make copy of sources")
+		fmt.Println("make copy of sources")
 		var original = path.Join(configDir, sourcesVal)
 		if strings.HasPrefix(sourcesVal, "/") { // how do we test filesystem agnostic
 			original = sourcesVal
@@ -101,12 +100,11 @@ func generateCfg(cfgPath string, cfgName string) error {
 		}
 	}
 
-	log.Println("make copy of servers.yaml")
+	fmt.Println("make copy of servers.yaml")
 	original := path.Join(configDir, configBaseFiles["servers"])
 	config := path.Join(configDir, date+configBaseFiles["servers"])
 	_, err = copy(original, config)
 	if err != nil {
-		log.Error(fmt.Errorf("error when copying servers.yaml: %v", err))
 		panic(fmt.Errorf("error when copying servers.yaml: %v", err))
 	}
 	//****** READ SERVERS CONFIG FILE ***
@@ -127,7 +125,6 @@ func generateCfg(cfgPath string, cfgName string) error {
 	//err = s.Unmarshal( &minioCfg)
 	minioCfg, err = configTypes.ReadMinioConfig(ms)
 	if err != nil {
-		log.Error(fmt.Errorf("error when writing config: %v", err))
 		panic(fmt.Errorf("error when writing config: %v", err))
 	}
 	sparqlSub := servers.Sub("sparql")
@@ -142,7 +139,7 @@ func generateCfg(cfgPath string, cfgName string) error {
 	// since not fully defined in mapping. things are missing
 	//hdlsCfg  :=  servers.Get("headless")
 
-	log.Println("Regnerate gleaner")
+	fmt.Println("Regnerate gleaner")
 	gleaner.SetConfigType("yaml")
 	var fn = path.Join(configDir, date+gleanerFileNameBase) // copy previous
 	err = gleaner.WriteConfigAs(fn)
@@ -164,7 +161,7 @@ func generateCfg(cfgPath string, cfgName string) error {
 		panic(fmt.Errorf("error when writing config: %v", err))
 	}
 
-	log.Println("Regnerate nabu")
+	fmt.Println("Regnerate nabu")
 	nabu.SetConfigType("yaml")
 	fn = path.Join(configDir, date+nabuFilenameBase) // copy previous
 	err = nabu.WriteConfigAs(fn)
@@ -232,7 +229,6 @@ func generateCfg(cfgPath string, cfgName string) error {
 	fn = path.Join(configDir, nabuFilenameBase)
 	err = nabu.WriteConfigAs(fn)
 	if err != nil {
-		log.Error("error when writing config: %v", err)
 		panic(fmt.Errorf("error when writing config: %v", err))
 	}
 	return err
