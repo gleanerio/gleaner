@@ -5,6 +5,7 @@ cmd/gleaner/gleaner
 cmd/gleaner/gleaner.exe
 cmd/gleaner/gleaner_darwin
 output/**
+.idea/**
 .DS_Store
 /configs/gleaner
 configs/local/
