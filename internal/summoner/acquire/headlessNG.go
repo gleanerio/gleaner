@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
-	"sync"
 	"time"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
@@ -35,6 +35,12 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 
 	for k := range m {
 		log.Trace("Headless chrome call to:", k)
+		repologger, err := common.LogIssues(v1, k)
+		if err != nil {
+			log.Error("Headless Error creating a logger for a repository", err)
+		} else {
+			repologger.Info("Headless chrome call to ", k)
+		}
 		db.Update(func(tx *bolt.Tx) error {
 			_, err := tx.CreateBucket([]byte(k))
 			if err != nil {
@@ -44,7 +50,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		})
 
 		for i := range m[k] {
-			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db, repologger) // TODO make delay configurable
 			if err != nil {
 				log.Error(m[k][i], "::", err)
 			}
@@ -54,90 +60,91 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 
 }
 
-// ThreadedHeadlessNG does not work.. ;)
-func ThreadedHeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
-	wg := sync.WaitGroup{}
+//// ThreadedHeadlessNG does not work.. ;)
+//func ThreadedHeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+//	wg := sync.WaitGroup{}
+//
+//	//var (
+//	//	buf    bytes.Buffer
+//	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+//	//)
+//
+//	for k := range m {
+//		log.Trace("Headless chrome call to:", k)
+//
+//		// for i := range m[k] {
+//		go doCall(v1, mc, 60*time.Second, m, k, &wg, db) // TODO make delay configurable
+//		// 	log.Printf("%s :: %s", m[k][i], err)
+//		// }
+//	}
+//
+//	time.Sleep(2 * time.Second) // ?? why is this here?
+//	wg.Wait()
+//
+//}
+//
+//func doCall(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
+//
+//	db.Update(func(tx *bolt.Tx) error {
+//		_, err := tx.CreateBucket([]byte(k))
+//		if err != nil {
+//			return fmt.Errorf("create bucket: %s", err)
+//		}
+//		return nil
+//	})
+//
+//	tc, err := Threadcount(v1)
+//	if err != nil {
+//		log.Error(err)
+//	}
+//	dt, err := Delayrequest(v1)
+//	if err != nil {
+//		log.Error(err)
+//	}
+//
+//	if dt > 0 {
+//		tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
+//	}
+//
+//	log.Info("Thread count", tc, "delay", dt)
+//
+//	// thread vars
+//	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
+//	defer close(semaphoreChan)
+//	lwg := sync.WaitGroup{}
+//
+//	wg.Add(1)       // wg from the calling function
+//	defer wg.Done() // tell the wait group that we be done
+//
+//	for i := range m[k] {
+//		lwg.Add(1)
+//		urlloc := m[k][i]
+//
+//		go func(i int, k string) {
+//			//thread management
+//			semaphoreChan <- struct{}{}
+//
+//			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
+//			if err != nil {
+//				log.Error(m[k][i], "::", err)
+//			}
+//
+//			// thread management
+//			log.Debug("#", i, "thread for", urlloc)          // print an message containing the index (won't keep order)
+//			time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
+//
+//			lwg.Done()
+//			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
+//
+//		}(i, k)
+//	}
+//
+//	lwg.Wait()
+//
+//}
 
-	//var (
-	//	buf    bytes.Buffer
-	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
-	//)
-
-	for k := range m {
-		log.Trace("Headless chrome call to:", k)
-
-		// for i := range m[k] {
-		go doCall(v1, mc, 60*time.Second, m, k, &wg, db) // TODO make delay configurable
-		// 	log.Printf("%s :: %s", m[k][i], err)
-		// }
-	}
-
-	time.Sleep(2 * time.Second) // ?? why is this here?
-	wg.Wait()
-
-}
-
-func doCall(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
-
-	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte(k))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		return nil
-	})
-
-	tc, err := Threadcount(v1)
-	if err != nil {
-		log.Error(err)
-	}
-	dt, err := Delayrequest(v1)
-	if err != nil {
-		log.Error(err)
-	}
-
-	if dt > 0 {
-		tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
-	}
-
-	log.Info("Thread count", tc, "delay", dt)
-
-	// thread vars
-	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
-	defer close(semaphoreChan)
-	lwg := sync.WaitGroup{}
-
-	wg.Add(1)       // wg from the calling function
-	defer wg.Done() // tell the wait group that we be done
-
-	for i := range m[k] {
-		lwg.Add(1)
-		urlloc := m[k][i]
-
-		go func(i int, k string) {
-			//thread management
-			semaphoreChan <- struct{}{}
-
-			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db) // TODO make delay configurable
-			if err != nil {
-				log.Error(m[k][i], "::", err)
-			}
-
-			// thread management
-			log.Debug("#", i, "thread for", urlloc)          // print an message containing the index (won't keep order)
-			time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
-
-			lwg.Done()
-			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
-
-		}(i, k)
-	}
-
-	lwg.Wait()
-
-}
-
-func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB, repologger *log.Logger) error {
+	repologger.WithFields(log.Fields{"url": url}).Trace("PageRender")
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -157,6 +164,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		pt, err = devt.Create(ctx)
 		if err != nil {
 			log.Error(err)
+			repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 			return err
 		}
 	}
@@ -165,6 +173,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
 	if err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 		return err
 	}
 	defer conn.Close() // Leaving connections open will leak memory.
@@ -176,6 +185,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	err = c.Page.Enable(ctx)
 	if err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 		return err
 	}
 
@@ -183,6 +193,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	domContent, err := c.Page.DOMContentEventFired(ctx)
 	if err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 		return err
 	}
 	defer domContent.Close()
@@ -192,17 +203,19 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	nav, err := c.Page.Navigate(ctx, navArgs)
 	if err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url, "issue": "Navigate To Headless"}).Error(err)
 		return err
 	}
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
 		return err
 	}
 
 	log.Debug(nav.FrameID, "for", url)
-
+	repologger.WithFields(log.Fields{"url": url, "issue": "Navigate Complete"}).Trace()
 	/**
 	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
 	 * and then tries to find all of the JSON-LD elements on the page, and get their contents.
@@ -254,12 +267,14 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url, "issue": "Headless Evaluate"}).Error(err)
 		return (err)
 	}
 
 	// Rejecting that promise just sends null as its value,
 	// so we need to stop if we got that.
 	if eval.Result.Value == nil {
+		repologger.WithFields(log.Fields{"url": url, "issue": "Headless Nil Result"}).Trace()
 		return nil
 	}
 
@@ -268,6 +283,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	var jsonlds []string
 	if err = json.Unmarshal(eval.Result.Value, &jsonlds); err != nil {
 		log.Error(err)
+		repologger.WithFields(log.Fields{"url": url, "issue": "Json Unmarshal"}).Error(err)
 		return (err)
 	}
 
@@ -275,10 +291,14 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		valid, err := isValid(v1, jsonld)
 		if err != nil {
 			log.Error("error checking for valid json :", err)
+			repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
 			if err != nil {
 				log.Error("Error uploading jsonld to object store:", url, err, sha)
+				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
+			} else {
+				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Debug()
 			}
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {
@@ -291,6 +311,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 			})
 		} else {
 			log.Info("Empty JSON-LD document found. Continuing.", url)
+			repologger.WithFields(log.Fields{"url": url, "issue": "Empty JSON-LD document found"}).Debug()
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte(k))
