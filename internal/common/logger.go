@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"fmt"
 	"github.com/orandin/lumberjackrus"
 	log "github.com/sirupsen/logrus"
@@ -11,11 +12,17 @@ import (
 )
 
 func InitLogging() {
-
+	logpath := "logs/"
+	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(logpath, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	// name the file with the date and time
 	const layout = "2006-01-02-15-04-05"
 	t := time.Now()
-	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
+	lf := fmt.Sprintf("%s/gleaner-%s.log", logpath, t.Format(layout))
 
 	LogFile := lf // log to custom file
 	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
@@ -43,14 +50,21 @@ func SetLogLevel(v1 *viper.Viper) {
 // Debug --- This will give us all the ins and outs of the summoning
 // Trace --- all the details
 func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
+	logpath := "logs/"
+	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(logpath, os.ModePerm)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	// name the file with the date and time
 	const layout = "2006-01-02-15-04-05"
 	t := time.Now()
 	//lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
 	logger := log.New()
 
-	issuefile := fmt.Sprintf("repo-%s-issues-%s.log", source, t.Format(layout))
-	allfile := fmt.Sprintf("repo-%s-loaded-%s.log", source, t.Format(layout))
+	issuefile := fmt.Sprintf("logs/repo-%s-issues-%s.log", source, t.Format(layout))
+	allfile := fmt.Sprintf("logs/repo-%s-loaded-%s.log", source, t.Format(layout))
 	//LogFile := issuefile // log to custom file
 	//logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	//if err != nil {
