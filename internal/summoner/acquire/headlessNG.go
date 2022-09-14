@@ -35,6 +35,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 
 	for k := range m {
 		r := runStats.Add(k)
+		r.Set(common.Count, len(m[k]))
 		log.Trace("Headless chrome call to:", k)
 		repologger, err := common.LogIssues(v1, k)
 		if err != nil {
