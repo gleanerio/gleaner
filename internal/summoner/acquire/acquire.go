@@ -22,13 +22,18 @@ import (
 const EarthCubeAgent = "EarthCube_DataBot/1.0"
 
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB, runStats *common.RunStats) {
 	wg := sync.WaitGroup{}
 
 	// Why do I pass the wg pointer?   Just make a new one
 	// for each domain in getDomain and us this one here with a semaphore
 	// to control the loop?
 	for domain, urls := range m {
+		r := runStats.Add(domain)
+		r.Set(common.Count, len(urls))
+		r.Set(common.HttpError, 0)
+		r.Set(common.Issues, 0)
+		r.Set(common.Summoned, 0)
 		log.Info("Queuing URLs for ", domain)
 		repologger, err := common.LogIssues(v1, domain)
 		if err != nil {
@@ -37,7 +42,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 			repologger.Info("Queuing URLs for ", domain)
 			repologger.Info("URL Count ", len(urls))
 		}
-		go getDomain(v1, mc, urls, domain, &wg, db, repologger)
+		go getDomain(v1, mc, urls, domain, &wg, db, repologger, r)
 	}
 
 	time.Sleep(2 * time.Second) // ?? why is this here?
@@ -82,7 +87,8 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	return bucketName, tc, delay, nil
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger) {
+func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
+	wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) {
 
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
@@ -138,6 +144,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+				repoStats.Inc(common.Issues)
 				lwg.Done() // tell the wait group that we be done
 
 				<-semaphoreChan
@@ -148,7 +155,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			doc, err := goquery.NewDocumentFromResponse(resp)
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-				lwg.Done()                                   // tell the wait group that we be done
+				repoStats.Inc(common.Issues)
+				lwg.Done() // tell the wait group that we be done
 				<-semaphoreChan
 				return
 			}
@@ -191,7 +199,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.Info("Direct access failed, trying headless for ", urlloc)
 				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info()
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger) // TODO make delay configurable
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats) // TODO make delay configurable
 
 				if err != nil {
 					log.Error("PageRender", urlloc, "::", err)
@@ -209,6 +217,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			} else {
 				log.Trace("Direct access worked for ", urlloc)
 				repologger.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace()
+				repoStats.Inc(common.Summoned)
 			}
 
 			for i, jsonld := range jsonlds {
@@ -219,9 +228,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					if err != nil {
 						log.Error("Error uploading jsonld to object store:", urlloc, err)
 						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
+						repoStats.Inc(common.StoreError)
 					} else {
 						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}).Trace(err)
 						log.Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
+						repoStats.Inc(common.Stored)
 					}
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {

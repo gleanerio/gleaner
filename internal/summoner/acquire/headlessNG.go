@@ -23,7 +23,7 @@ import (
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB, runStats *common.RunStats) {
 	// NOTE   this function compares to ResRetrieve in acquire.go.  They both approach things
 	// in same ways due to hwo we deal with threading (opportunities).   We don't queue up domains
 	// multiple times since we are dealing with our local resource now in the form of the headless tooling.
@@ -34,10 +34,12 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 	//)
 
 	for k := range m {
+		r := runStats.Add(k)
 		log.Trace("Headless chrome call to:", k)
 		repologger, err := common.LogIssues(v1, k)
 		if err != nil {
 			log.Error("Headless Error creating a logger for a repository", err)
+
 		} else {
 			repologger.Info("Headless chrome call to ", k)
 		}
@@ -50,7 +52,8 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		})
 
 		for i := range m[k] {
-			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db, repologger) // TODO make delay configurable
+
+			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db, repologger, r) // TODO make delay configurable
 			if err != nil {
 				log.Error(m[k][i], "::", err)
 			}
@@ -143,7 +146,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 //
 //}
 
-func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB, repologger *log.Logger) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) error {
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRender")
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -165,6 +168,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		if err != nil {
 			log.Error(err)
 			repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+			repoStats.Inc(common.HeadlessError)
 			return err
 		}
 	}
@@ -174,6 +178,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+		repoStats.Inc(common.HeadlessError)
 		return err
 	}
 	defer conn.Close() // Leaving connections open will leak memory.
@@ -186,6 +191,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+		repoStats.Inc(common.HeadlessError)
 		return err
 	}
 
@@ -194,6 +200,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+		repoStats.Inc(common.HeadlessError)
 		return err
 	}
 	defer domContent.Close()
@@ -204,6 +211,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Navigate To Headless"}).Error(err)
+		repoStats.Inc(common.HeadlessError)
 		return err
 	}
 
@@ -211,6 +219,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if _, err = domContent.Recv(); err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
+		repoStats.Inc(common.HeadlessError)
 		return err
 	}
 
@@ -268,6 +277,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Headless Evaluate"}).Error(err)
+		repoStats.Inc(common.Issues)
 		return (err)
 	}
 
@@ -275,6 +285,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// so we need to stop if we got that.
 	if eval.Result.Value == nil {
 		repologger.WithFields(log.Fields{"url": url, "issue": "Headless Nil Result"}).Trace()
+		repoStats.Inc(common.EmptyDoc)
 		return nil
 	}
 
@@ -284,6 +295,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err = json.Unmarshal(eval.Result.Value, &jsonlds); err != nil {
 		log.Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Json Unmarshal"}).Error(err)
+		repoStats.Inc(common.Issues)
 		return (err)
 	}
 
@@ -292,13 +304,16 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		if err != nil {
 			log.Error("error checking for valid json :", err)
 			repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
+			repoStats.Inc(common.Issues)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
 			if err != nil {
 				log.Error("Error uploading jsonld to object store:", url, err, sha)
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
+				repoStats.Inc(common.StoreError)
 			} else {
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Debug()
+				repoStats.Inc(common.Stored)
 			}
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {
@@ -312,6 +327,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		} else {
 			log.Info("Empty JSON-LD document found. Continuing.", url)
 			repologger.WithFields(log.Fields{"url": url, "issue": "Empty JSON-LD document found"}).Debug()
+			repoStats.Inc(common.EmptyDoc)
 			// TODO  Is here where to add an entry to the KV store
 			err = db.Update(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte(k))
