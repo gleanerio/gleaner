@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
 )
@@ -18,7 +18,7 @@ nabu uploads and manages data processed by gleaner to a sparql triplestore
 * configs/{localdirector}/servers.yaml is the configuration files for servers.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("config called")
+		log.Println("config called")
 	},
 }
 
