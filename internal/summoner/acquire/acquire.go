@@ -12,9 +12,10 @@ import (
 
 	"github.com/gleanerio/gleaner/internal/summoner/buckets"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+
+	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
@@ -44,14 +45,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 		buckets.Remove(mc, bucketName, fmt.Sprintf("summoned/%s", domain))
 
 		log.Info("Queuing URLs for ", domain)
-		repologger, err := common.LogIssues(v1, domain)
-		if err != nil {
-			log.Error("Error creating a logger for a repository", err)
-		} else {
-			repologger.Info("Queuing URLs for ", domain)
-			repologger.Info("URL Count ", len(urls))
-		}
-		go getDomain(v1, mc, urls, domain, &wg, db, repologger)
+		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
 	wg.Wait()
@@ -95,7 +89,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	return bucketName, tc, delay, nil
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger) {
+func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
@@ -109,7 +103,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
 		log.Panic("Error reading config file ", err)
-		repologger.Panic("Error reading config file ", err)
 	}
 
 	var client http.Client
@@ -140,7 +133,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 		go func(i int, sourceName string) {
 			semaphoreChan <- struct{}{}
-			repologger.Trace("Indexing", urlloc)
 			log.Debug("Indexing ", urlloc)
 
 			req, err := http.NewRequest("GET", urlloc, nil)
@@ -153,8 +145,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			resp, err := client.Do(req)
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-				repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
-				lwg.Done() // tell the wait group that we be done
 				lwg.Done()                                   // tell the wait group that we be done
 				<-semaphoreChan
 				return
@@ -177,21 +167,17 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// this should not be here IMHO, but need to support people not setting proper header value
 			// The URL is sending back JSON-LD but incorrectly sending as application/json
 			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug()
 				log.Debug(urlloc, " as ", contentTypeHeader)
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
 					log.Error("Error processing json response from ", urlloc, err)
-					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error(err)
 				}
 				// look in the HTML page for <script type=application/ld+json>
 			} else {
 				doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
 					jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
-					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Info()
 					if err != nil {
 						log.Error("Error processing script tag in ", urlloc, err)
-						repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error(err)
 					}
 				})
 			}
@@ -205,12 +191,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.Info("Direct access failed, trying headless for ", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info()
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger) // TODO make delay configurable
-
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db) // TODO make delay configurable
 				if err != nil {
 					log.Error("PageRender", urlloc, "::", err)
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
 				}
 				db.Update(func(tx *bolt.Tx) error {
 					b := tx.Bucket([]byte(sourceName))
@@ -223,19 +206,15 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 			} else {
 				log.Trace("Direct access worked for ", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace()
 			}
 
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
 					log.Trace("#", i, "Uploading ")
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace()
 					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
-						log.Error("Error uploading jsonld to object store:", urlloc, err)
-						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
+						log.Error("Error uploading jsonld to object store: ", urlloc, err, sha)
 					} else {
-						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}).Trace(err)
 						log.Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
 					}
 					// TODO  Is here where to add an entry to the KV store
@@ -249,7 +228,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					})
 				} else {
 					log.Info("Empty JSON-LD document found. Continuing.")
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found"}).Error(err)
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))

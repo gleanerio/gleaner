@@ -1,13 +1,16 @@
 package cli
 
 import (
-	"github.com/boltdb/bolt"
-	"github.com/gleanerio/gleaner/internal/common"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"io"
 	"os"
 	"path"
+	"time"
+
+	"github.com/boltdb/bolt"
+	"github.com/spf13/viper"
 )
 
 var cfgFile, cfgName, cfgPath, nabuName, gleanerName string
@@ -46,12 +49,11 @@ func Execute() {
 }
 
 func init() {
-	common.InitLogging()
 	log.Info("EarthCube Gleaner")
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
-	//cobra.OnInitialize(initConfig, initLogging) // init logging earlier
-	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initConfig, initLogging)
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -72,6 +74,25 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+func initLogging() {
+	// name the file with the date and time
+	const layout = "2006-01-02-15-04-05"
+	t := time.Now()
+	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
+
+	LogFile := lf // log to custom file
+	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Panic(err)
+		return
+	}
+
+	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
+	log.SetReportCaller(true)              // include file name and line number
+	mw := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(mw)
+	//log.SetOutput(logFile)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -111,10 +132,10 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := gleanerViperVal.ReadInConfig(); err == nil {
-		log.Info("Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
+		fmt.Fprintln(os.Stderr, "Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
 	}
 	if err := nabuViperVal.ReadInConfig(); err == nil {
-		log.Info("Using nabu config file:", nabuViperVal.ConfigFileUsed())
+		fmt.Fprintln(os.Stderr, "Using nabu config file:", nabuViperVal.ConfigFileUsed())
 	}
 	// Setup the KV store to hold a record of indexed resources
 	var err error

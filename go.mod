@@ -30,7 +30,6 @@ require (
 require (
 	github.com/boltdb/bolt v1.3.1
 	github.com/gleanerio/nabu v0.0.0-20220223141452-a01fa9352430
-	github.com/orandin/lumberjackrus v1.0.1
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/sirupsen/logrus v1.8.1
 	github.com/temoto/robotstxt v1.1.2
@@ -39,7 +38,6 @@ require (
 	github.com/utahta/go-openuri v0.1.0
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	google.golang.org/api v0.60.0
-	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )
 
 // local replace. gleaner and nabu at same level

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
@@ -17,7 +18,7 @@ var setupCmd = &cobra.Command{
 	Short: "setup gleaner process",
 	Long:  `connects to S3 store, creates buckets, `,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("setup called")
+		fmt.Println("setup called")
 		setup(glrVal, cfgPath, cfgName)
 	},
 }
