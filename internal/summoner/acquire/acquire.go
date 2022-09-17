@@ -9,12 +9,8 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-
 	"github.com/gleanerio/gleaner/internal/summoner/buckets"
-
-	"github.com/gleanerio/gleaner/internal/common"
-	configTypes "github.com/gleanerio/gleaner/internal/config"
-
+ 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
