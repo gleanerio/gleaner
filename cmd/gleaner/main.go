@@ -22,8 +22,14 @@ import (
 var viperVal, sourceVal, modeVal, logVal string
 var setupVal, rudeVal bool
 
+// pass -ldflags "-X main.version=testline"
+// go build -ldflags "-X main.version=testline" main.go
+
+var VERSION string
+
 func init() {
 	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
+	fmt.Println("version: ", VERSION)
 
 	// name the file with the date and time
 	const layout = "2006-01-02-15-04-05"
