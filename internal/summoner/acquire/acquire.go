@@ -30,6 +30,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	// to control the loop?
 	for domain, urls := range m {
 		log.Info("Queuing URLs for ", domain)
+		wg.Add(1)
 		go getDomain(v1, mc, urls, domain, &wg, db)
 	}
 
@@ -100,8 +101,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		wg.Done()
 		close(semaphoreChan)
 	}()
-
-	wg.Add(1) // wg from the calling function
 
 	count := len(urls)
 	bar := progressbar.Default(int64(count))
