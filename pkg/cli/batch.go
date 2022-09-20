@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -75,6 +75,8 @@ func Batch(filename string, cfgPath string, cfgName string, mode string, runSour
 	v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	if err != nil {
 		panic(err)
+		log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+		os.Exit(66)
 	}
 	mc := common.MinioConnection(v1)
 	// setup the KV store to hold a record of indexed resources

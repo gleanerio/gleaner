@@ -7,6 +7,7 @@ import (
 	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"os"
 	"path"
 
 	"github.com/spf13/cobra"
@@ -43,7 +44,8 @@ func setup(filename string, cfgPath string, cfgName string) {
 
 	v1, err = configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	if err != nil {
-		log.Fatal("Error reading gleaner config", err)
+		log.Fatal("Error reading gleaner config. Did you 'glcon generate --cfgName XXX'", err)
+		os.Exit(66)
 	}
 
 	mc := common.MinioConnection(v1)
