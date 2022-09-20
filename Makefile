@@ -1,31 +1,32 @@
 BINARY := gleaner
 BINARYIO := glcon
 VERSION :=`cat VERSION`
+MAINVERSION :=`cat ../../VERSION`
 .DEFAULT_GOAL := gleaner
 
 gleaner:
 	cd cmd/$(BINARY) ; \
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(VERSION)" -o $(BINARY)
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(MAINVERSION)" -o $(BINARY)
 
 gleaner.exe:
 	cd cmd/$(BINARY) ; \
-	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(VERSION)" -o $(BINARY).exe
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(MAINVERSION)" -o $(BINARY).exe
 
 gleaner.darwin:
 	cd cmd/$(BINARY) ; \
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 env go build  -ldflags "-X main.VERSION=$(VERSION)" -o $(BINARY)_darwin
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 env go build  -ldflags "-X main.VERSION=$(MAINVERSION)" -o $(BINARY)_darwin
 
 glcon:
 	cd cmd/$(BINARYIO) ; \
-	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(VERSION)" -o $(BINARYIO)
+	GOOS=linux GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(MAINVERSION)" -o $(BINARYIO)
 
 glcon.exe:
 	cd cmd/$(BINARYIO) ; \
-	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(VERSION)" -o $(BINARYIO).exe
+	GOOS=windows GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(MAINVERSION)" -o $(BINARYIO).exe
 
 glcon.darwin:
 	cd cmd/$(BINARYIO) ; \
-	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(VERSION)" -o $(BINARYIO)_darwin
+	GOOS=darwin GOARCH=amd64 CGO_ENABLED=0 env go build -ldflags "-X main.VERSION=$(MAINVERSION)" -o $(BINARYIO)_darwin
 
 releases: gleaner gleaner.exe gleaner.darwin glcon glcon.exe glcon.darwin
 
