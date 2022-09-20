@@ -74,7 +74,8 @@ func Batch(filename string, cfgPath string, cfgName string, mode string, runSour
 
 	v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	if err != nil {
-		panic(err)
+		//panic(err)
+		fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
 		log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
 		os.Exit(66)
 	}

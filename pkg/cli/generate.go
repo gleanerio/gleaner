@@ -61,27 +61,26 @@ func generateCfg(cfgPath string, cfgName string) error {
 
 	if _, err := os.Stat(configDir); os.IsNotExist(err) {
 		fmt.Println("Cannot find config directory: ", configDir)
-		fmt.Println(err)
-		panic(err)
-		os.Exit(1)
+
+		os.Exit(66)
 	}
 
 	servers, err = configTypes.ReadServersConfig(configBaseFiles["servers"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
 		os.Exit(1)
 	}
 	gleaner, err = configTypes.ReadGleanerConfig(configBaseFiles["gleaner"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
 		os.Exit(1)
 	}
 	nabu, err = nConfig.ReadNabuConfig(configBaseFiles["nabu"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
 		os.Exit(1)
 	}
 
@@ -89,7 +88,7 @@ func generateCfg(cfgPath string, cfgName string) error {
 	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
 		os.Exit(1)
 	}
 
