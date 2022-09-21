@@ -40,7 +40,7 @@ jobs:
         working-directory: ./cmd/gleaner
         env:
           GOOS: linux
-          GOARCH: [amd64, arm64]
+          GOARCH: all
           CGO_ENABLED: 0
       #  deploy:
       #    needs: build
