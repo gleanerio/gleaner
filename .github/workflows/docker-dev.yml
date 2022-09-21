@@ -20,7 +20,7 @@ jobs:
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
         goos: [linux]
-        goarch: [amd64, arm64]
+        goarch: amd64
         exclude:
           - goarch: "386"
             goos: darwin
