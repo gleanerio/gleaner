@@ -6,7 +6,7 @@ on:
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
+    name: Release gleaner Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
