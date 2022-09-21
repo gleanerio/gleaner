@@ -20,7 +20,7 @@ jobs:
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
         goos: [linux]
-        goarch: amd64
+        goarch: [amd64, arm64]
         exclude:
           - goarch: "386"
             goos: darwin
@@ -40,7 +40,7 @@ jobs:
         working-directory: ./cmd/gleaner
         env:
           GOOS: linux
-          GOARCH: all
+          GOARCH: amd64
           CGO_ENABLED: 0
       #  deploy:
       #    needs: build
