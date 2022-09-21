@@ -10,9 +10,9 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/PuerkitoBio/goquery"
-	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+
+	"github.com/PuerkitoBio/goquery"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
 	"github.com/spf13/viper"
@@ -35,6 +35,7 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 		r.Set(common.Issues, 0)
 		r.Set(common.Summoned, 0)
 		log.Info("Queuing URLs for ", domain)
+
 		repologger, err := common.LogIssues(v1, domain)
 		if err != nil {
 			log.Error("Error creating a logger for a repository", err)
@@ -42,10 +43,11 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 			repologger.Info("Queuing URLs for ", domain)
 			repologger.Info("URL Count ", len(urls))
 		}
+		wg.Add(1)
+		//go getDomain(v1, mc, urls, domain, &wg, db)
 		go getDomain(v1, mc, urls, domain, &wg, db, repologger, r)
 	}
 
-	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 }
 
@@ -89,6 +91,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) {
+//func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
@@ -108,11 +111,13 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	var client http.Client
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
-	defer close(semaphoreChan)
 	lwg := sync.WaitGroup{}
 
-	wg.Add(1)       // wg from the calling function
-	defer wg.Done() // tell the wait group that we be done
+	defer func() {
+		lwg.Wait()
+		wg.Done()
+		close(semaphoreChan)
+	}()
 
 	count := len(urls)
 	bar := progressbar.Default(int64(count))
@@ -144,9 +149,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
-				repoStats.Inc(common.Issues)
 				lwg.Done() // tell the wait group that we be done
-
 				<-semaphoreChan
 				return
 			}
@@ -226,7 +229,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace()
 					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
-						log.Error("Error uploading jsonld to object store:", urlloc, err)
+						log.Error("Error uploading jsonld to object store: ", urlloc, err)
 						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
 						repoStats.Inc(common.StoreError)
 					} else {
@@ -238,7 +241,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(sha))
-						return err
+						if err != nil {
+							log.Error("Error writing to bolt ", err)
+						}
+						return nil
 					})
 				} else {
 					log.Info("Empty JSON-LD document found. Continuing.")
@@ -247,7 +253,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
 						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
-						return err
+						if err != nil {
+							log.Error("Error writing to bolt ", err)
+						}
+						return nil
 					})
 				}
 			}
@@ -262,9 +271,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		}(i, sourceName)
 
 	}
-
-	lwg.Wait()
-
 }
 
 func contains(arr []string, str string) bool {

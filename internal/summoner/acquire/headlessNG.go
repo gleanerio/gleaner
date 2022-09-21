@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
+	"sync"
 	"time"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"

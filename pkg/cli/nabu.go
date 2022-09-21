@@ -1,7 +1,7 @@
 package cli
 
 import (
-	log "github.com/sirupsen/logrus"
+	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -17,7 +17,7 @@ var NabuCmd = &cobra.Command{
 --mode
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("nabu called")
+		fmt.Println("nabu called")
 	},
 }
 
