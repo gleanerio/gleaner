@@ -2,12 +2,13 @@ package cli
 
 import (
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"io"
+	//"io"
 	"os"
 	"path"
-	"time"
+	///"time"
 
 	"github.com/boltdb/bolt"
 	"github.com/spf13/viper"
@@ -52,8 +53,8 @@ func init() {
 	log.Info("EarthCube Gleaner")
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
-	cobra.OnInitialize(initConfig, initLogging)
-
+	//cobra.OnInitialize(initConfig, initLogging)
+	cobra.OnInitialize(initConfig, common.InitLogging)
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -75,25 +76,26 @@ func init() {
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-func initLogging() {
-	// name the file with the date and time
-	const layout = "2006-01-02-15-04-05"
-	t := time.Now()
-	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
 
-	LogFile := lf // log to custom file
-	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		log.Panic(err)
-		return
-	}
-
-	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
-	log.SetReportCaller(true)              // include file name and line number
-	mw := io.MultiWriter(os.Stdout, logFile)
-	log.SetOutput(mw)
-	//log.SetOutput(logFile)
-}
+//func initLogging() {
+//	// name the file with the date and time
+//	const layout = "2006-01-02-15-04-05"
+//	t := time.Now()
+//	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
+//
+//	LogFile := lf // log to custom file
+//	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+//	if err != nil {
+//		log.Panic(err)
+//		return
+//	}
+//
+//	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
+//	log.SetReportCaller(true)              // include file name and line number
+//	mw := io.MultiWriter(os.Stdout, logFile)
+//	log.SetOutput(mw)
+//	//log.SetOutput(logFile)
+//}
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {

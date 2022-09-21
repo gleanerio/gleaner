@@ -12,7 +12,7 @@ import (
 )
 
 func InitLogging() {
-	logpath := "logs/"
+	logpath := "logs"
 	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(logpath, os.ModePerm)
 		if err != nil {
@@ -50,7 +50,7 @@ func SetLogLevel(v1 *viper.Viper) {
 // Debug --- This will give us all the ins and outs of the summoning
 // Trace --- all the details
 func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
-	logpath := "logs/"
+	logpath := "logs"
 	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(logpath, os.ModePerm)
 		if err != nil {
@@ -63,8 +63,8 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 	//lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
 	logger := log.New()
 
-	issuefile := fmt.Sprintf("logs/repo-%s-issues-%s.log", source, t.Format(layout))
-	allfile := fmt.Sprintf("logs/repo-%s-loaded-%s.log", source, t.Format(layout))
+	issuefile := fmt.Sprintf("%s/repo-%s-issues-%s.log", logpath, source, t.Format(layout))
+	allfile := fmt.Sprintf("%s/repo-%s-loaded-%s.log", logpath, source, t.Format(layout))
 	//LogFile := issuefile // log to custom file
 	//logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	//if err != nil {

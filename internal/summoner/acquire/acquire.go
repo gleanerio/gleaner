@@ -2,6 +2,7 @@ package acquire
 
 import (
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/common"
 	"net/http"
 	"net/url"
 	"strings"
@@ -91,7 +92,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) {
-//func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
+	//func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
