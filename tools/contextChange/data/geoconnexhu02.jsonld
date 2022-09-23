@@ -1,0 +1,137 @@
+{
+    "@context": [
+        {
+            "schema": "https://schema.org/",
+            "type": "@type",
+            "features": "schema:itemListElement",
+            "FeatureCollection": "schema:itemList"
+        },
+        {
+            "schema": "https://schema.org/",
+            "NAME": "schema:name",
+            "gnis_url": {
+                "@id": "schema:subjectOf",
+                "@type": "@id"
+            }
+        }
+    ],
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "@id": "https://geoconnex.us/ref/hu02/07",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/09",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/18",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/14",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/20",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/17",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/05",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/01",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/12",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/15",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/02",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/08",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/21",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/11",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/03",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/06",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/22",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/13",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/16",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/10",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/04",
+            "type": "schema:Place"
+        },
+        {
+            "@id": "https://geoconnex.us/ref/hu02/19",
+            "type": "schema:Place"
+        }
+    ],
+    "@id": "https://reference.geoconnex.us/collections/hu02/items/",
+    "https://schema.org/sdDatePublished": "2022-09-21T21:49:15.502164Z",
+    "links": [
+        {
+            "type": "application/geo+json",
+            "rel": "alternate",
+            "title": "This document as GeoJSON",
+            "href": "https://reference.geoconnex.us/collections/hu02/items?f=json"
+        },
+        {
+            "rel": "self",
+            "type": "application/ld+json",
+            "title": "This document as RDF (JSON-LD)",
+            "href": "https://reference.geoconnex.us/collections/hu02/items?f=jsonld"
+        },
+        {
+            "type": "text/html",
+            "rel": "alternate",
+            "title": "This document as HTML",
+            "href": "https://reference.geoconnex.us/collections/hu02/items?f=html"
+        },
+        {
+            "type": "application/json",
+            "title": "HU02",
+            "rel": "collection",
+            "href": "https://reference.geoconnex.us/collections/hu02/items"
+        }
+    ]
+}
