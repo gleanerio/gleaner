@@ -12,4 +12,5 @@ configs/local/
 *.log
 **/*.log
 **/credentials/
+.idea
 

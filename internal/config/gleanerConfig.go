@@ -1,6 +1,8 @@
 package config
 
 import (
+	"fmt"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -46,7 +48,9 @@ func ReadGleanerConfig(filename string, cfgDir string) (*viper.Viper, error) {
 	v.AutomaticEnv()
 	err := v.ReadInConfig()
 	if err != nil {
-		panic(err)
+		fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+		log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+		//panic(err)
 	}
 	return v, err
 }

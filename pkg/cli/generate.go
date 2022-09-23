@@ -6,6 +6,7 @@ import (
 	nConfig "github.com/gleanerio/nabu/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 	"path"
 	"strings"
 	"time"
@@ -58,27 +59,37 @@ func generateCfg(cfgPath string, cfgName string) error {
 
 	var configDir = path.Join(cfgPath, cfgName)
 
+	if _, err := os.Stat(configDir); os.IsNotExist(err) {
+		fmt.Println("Cannot find config directory: ", configDir)
+
+		os.Exit(66)
+	}
+
 	servers, err = configTypes.ReadServersConfig(configBaseFiles["servers"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
 	}
 	gleaner, err = configTypes.ReadGleanerConfig(configBaseFiles["gleaner"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
 	}
 	nabu, err = nConfig.ReadNabuConfig(configBaseFiles["nabu"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
 	}
 
 	sourcesVal := servers.GetString("sourcesSource.location")
 	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
 	}
 
 	//var mi interface{}
