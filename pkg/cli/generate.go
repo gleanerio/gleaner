@@ -257,5 +257,16 @@ func generateCfg(cfgPath string, cfgName string) error {
 	if err != nil {
 		panic(fmt.Errorf("error when writing config: %v", err))
 	}
+
+	// now just write out a nabu prov file
+	s3Cfg.Prefix = configTypes.SourceToNabuProv(prefixSources)
+
+	s3Cfg.PrefixOff = configTypes.SourceToNabuProv(prefixOffSources)
+	nabu.Set("objects", s3Cfg)
+	fn = path.Join(configDir, nabuProvFilenameBase)
+	err = nabu.WriteConfigAs(fn)
+	if err != nil {
+		panic(fmt.Errorf("error when writing config: %v", err))
+	}
 	return err
 }
