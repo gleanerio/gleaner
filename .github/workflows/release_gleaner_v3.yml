@@ -1,4 +1,4 @@
-name: Release Gleaner Console binaries
+name: Release Gleaner Console (glcon) binaries
 
 on:
    release:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
+    name: Release glcon Gleaner Console Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
