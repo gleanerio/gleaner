@@ -248,6 +248,7 @@ func generateCfg(cfgPath string, cfgName string) error {
 
 	}
 	nabu.Set("objects", s3Cfg)
+
 	//nabu.Set("sitemaps", sources)
 	//// hack to get rid of the sourcetype
 	//err =  nabu.UnmarshalKey("sitemaps", &sm)
@@ -262,6 +263,8 @@ func generateCfg(cfgPath string, cfgName string) error {
 	s3Cfg.Prefix = configTypes.SourceToNabuProv(prefixSources)
 
 	s3Cfg.PrefixOff = configTypes.SourceToNabuProv(prefixOffSources)
+	s3Cfg.Bucket = "prov"
+
 	nabu.Set("objects", s3Cfg)
 	fn = path.Join(configDir, nabuProvFilenameBase)
 	err = nabu.WriteConfigAs(fn)
