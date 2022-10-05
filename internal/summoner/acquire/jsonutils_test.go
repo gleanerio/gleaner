@@ -131,3 +131,41 @@ func TestContextUrlFix(t *testing.T) {
 		assert.Nil(t, err)
 	})
 }
+
+func TestContextArrayFix(t *testing.T) {
+	var contextObjectJson = `{
+        "@context": {
+            "@vocab":"http://schema.org/"
+        },
+        "@type":"bar",
+        "SO:name":"Some type in a graph"
+    }`
+
+	var contextArrayJson = `{
+        "@context": [
+			{
+				"@vocab": "https://schema.org/"
+			},
+			{
+				"@vocab": "https://schema.org/",
+				"NAME": "schema:name",
+				"census_profile": {
+				"@id": "schema:subjectOf",
+				"@type": "@id"
+			}
+			}
+        ]
+    }`
+
+	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
+		result, err := fixContextString(contextArrayJson)
+		assert.JSONEq(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
+		result, err := fixContextString(contextObjectJson)
+		assert.Equal(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
+}

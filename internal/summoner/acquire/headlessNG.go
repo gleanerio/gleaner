@@ -301,6 +301,9 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 		return (err)
 	}
 
+	if len(jsonlds) > 1 {
+		repologger.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Debug(err)
+	}
 	for _, jsonld := range jsonlds {
 		valid, err := isValid(v1, jsonld)
 		if err != nil {
