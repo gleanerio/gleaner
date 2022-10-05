@@ -168,7 +168,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
-			log.Error(err)
+			log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
 			repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 			repoStats.Inc(common.HeadlessError)
 			return err
@@ -178,7 +178,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
 	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 		repoStats.Inc(common.HeadlessError)
 		return err
@@ -191,7 +191,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// is what tells us when the page is done loading
 	err = c.Page.Enable(ctx)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 		repoStats.Inc(common.HeadlessError)
 		return err
@@ -200,7 +200,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
 		repoStats.Inc(common.HeadlessError)
 		return err
@@ -211,7 +211,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Navigate To Headless"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Navigate To Headless"}).Error(err)
 		repoStats.Inc(common.HeadlessError)
 		return err
@@ -219,13 +219,13 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
 		repoStats.Inc(common.HeadlessError)
 		return err
 	}
 
-	log.Debug(nav.FrameID, "for", url)
+	log.WithFields(log.Fields{"url": url, "issue": "Navigate Complete"}).Debug(nav.FrameID, "for", url)
 	repologger.WithFields(log.Fields{"url": url, "issue": "Navigate Complete"}).Trace()
 	/**
 	 * This JavaScript expression will be run in Headless Chrome. It waits for 1000 milliseconds,
@@ -277,7 +277,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	evalArgs := runtime.NewEvaluateArgs(expression).SetAwaitPromise(true).SetReturnByValue(true)
 	eval, err := c.Runtime.Evaluate(ctx, evalArgs)
 	if err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Headless Evaluate"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Headless Evaluate"}).Error(err)
 		repoStats.Inc(common.Issues)
 		return (err)
@@ -295,7 +295,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// could create a struct out of them if we want to.
 	var jsonlds []string
 	if err = json.Unmarshal(eval.Result.Value, &jsonlds); err != nil {
-		log.Error(err)
+		log.WithFields(log.Fields{"url": url, "issue": "Json Unmarshal"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Json Unmarshal"}).Error(err)
 		repoStats.Inc(common.Issues)
 		return (err)
@@ -307,13 +307,13 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	for _, jsonld := range jsonlds {
 		valid, err := isValid(v1, jsonld)
 		if err != nil {
-			log.Error("error checking for valid json :", err)
+			log.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error("error checking for valid json :", err)
 			repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
 			repoStats.Inc(common.Issues)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
 			if err != nil {
-				log.Error("Error uploading jsonld to object store:", url, err, sha)
+				log.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store:", url, err, sha)
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
 				repoStats.Inc(common.StoreError)
 			} else {

@@ -76,6 +76,8 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 	logger.SetReportCaller(false)                                   // disable include file name and line number
 	//mw := io.MultiWriter(os.Stdout, logFile)
 	//log.SetOutput(mw)
+	logFile, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	logger.SetOutput(logFile)
 	//logger.SetOutput(logFile)
 	logger.SetLevel(log.TraceLevel) // this effects the lumberjacks
 	// second file for issues
