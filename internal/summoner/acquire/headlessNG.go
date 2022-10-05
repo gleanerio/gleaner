@@ -168,8 +168,8 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	if err != nil {
 		pt, err = devt.Create(ctx)
 		if err != nil {
-			log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
-			repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+			log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+			repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
 			repoStats.Inc(common.HeadlessError)
 			return err
 		}
@@ -178,8 +178,8 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
 	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
 	if err != nil {
-		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
-		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
 		repoStats.Inc(common.HeadlessError)
 		return err
 	}
@@ -191,8 +191,8 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// is what tells us when the page is done loading
 	err = c.Page.Enable(ctx)
 	if err != nil {
-		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
-		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
 		repoStats.Inc(common.HeadlessError)
 		return err
 	}
@@ -200,8 +200,8 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	// Open a DOMContentEventFired client to buffer this event.
 	domContent, err := c.Page.DOMContentEventFired(ctx)
 	if err != nil {
-		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Cotnainer running?"}).Error(err)
-		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Cotnainer running?")
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
 		repoStats.Inc(common.HeadlessError)
 		return err
 	}
