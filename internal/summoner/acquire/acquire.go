@@ -202,11 +202,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info()
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats) // TODO make delay configurable
+				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats)                           // TODO make delay configurable
 
 				if err != nil {
-					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRender", urlloc, "::", err)
+					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRender ", urlloc, "::", err)
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
 				}
 				db.Update(func(tx *bolt.Tx) error {
@@ -248,8 +248,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 						return nil
 					})
 				} else {
-					log.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found"}).Info("Empty JSON-LD document found. Continuing.")
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found"}).Error(err)
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}).Info("Empty JSON-LD document found. Continuing.")
+					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}).Error(err)
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))
