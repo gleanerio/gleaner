@@ -47,7 +47,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 	if err != nil {
 		log.Error("Error getting sources to summon: ", err)
-		return domainsMap, err // if we can't read list, ok to retunr an error
+		return domainsMap, err // if we can't read list, ok to return an error
 	}
 
 	sitemapDomains := configTypes.GetActiveSourceByType(domains, siteMapType)
