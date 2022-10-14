@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -51,6 +52,7 @@ func GetBucketName(v1 *viper.Viper) (string, error) {
 	minSubtree := v1.Sub("minio")
 	miniocfg, err := ReadMinioConfig(minSubtree)
 	if err != nil {
+		log.Panic("Cannot read bucket name from configuration/minio")
 		panic(err)
 	}
 	bucketName := miniocfg.Bucket //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file

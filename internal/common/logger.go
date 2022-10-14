@@ -133,6 +133,7 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 	)
 
 	if err != nil {
+		log.Panic("Cannot configure a repository logging")
 		panic(err)
 	}
 
