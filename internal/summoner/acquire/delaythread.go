@@ -13,7 +13,8 @@ func Threadcount(v1 *viper.Viper) (int64, error) {
 	tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
 	if err != nil {
 		log.Error(err)
-		log.Panic("Could not convert threads from config file to an int")
+		log.Error("Could not convert threads from config file to an int. setting to 5")
+		tc = 5
 	}
 
 	return tc, err
@@ -31,7 +32,9 @@ func Delayrequest(v1 *viper.Viper) (int64, error) {
 		log.Debug("Delay set to: ", delay, "milliseconds")
 		dt, err = strconv.ParseInt(delay, 10, 64)
 		if err != nil {
-			log.Panic(err, "Could not convert delay from config file to a value")
+			//log.Panic(err, "Could not convert delay from config file to a value")
+			log.Error(err, "Could not convert delay from config file to a value. setting to zero")
+			dt = 0
 		}
 	} else {
 		dt = 0

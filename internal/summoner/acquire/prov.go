@@ -175,14 +175,14 @@ func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, erro
 	var doc bytes.Buffer
 	t, err := template.New("prov").Parse(provTemplate())
 	if err != nil {
-		log.Panic("Prov Failure: Cannot parse or read template")
+		log.Error("Prov Failure: Cannot parse or read template")
 		//panic(err) // don't stop processing for a bad prov
 		return "", err
 	}
 	err = t.Execute(&doc, td)
 	if err != nil {
 		//panic(err) // don't stop processing for a bad prov
-		log.Panic("Prov Failure")
+		log.Error("Prov Failure")
 		return "", err
 	}
 
