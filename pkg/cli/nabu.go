@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"mime"
 )
 
 var nabuConfig *viper.Viper
@@ -17,6 +18,7 @@ var NabuCmd = &cobra.Command{
 --mode
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+		mime.AddExtensionType(".jsonld", "application/ld+json")
 		fmt.Println("nabu called")
 	},
 }

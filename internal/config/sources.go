@@ -20,7 +20,7 @@ type Sources struct {
 	Name            string
 	Logo            string
 	URL             string
-	Headless        bool   `default:"false"`
+	Headless        bool `default:"false"`
 	PID             string
 	ProperName      string
 	Domain          string
@@ -124,7 +124,8 @@ func GetSources(g1 *viper.Viper) ([]Sources, error) {
 	// config already read. substree passed
 	err := g1.UnmarshalKey(subtreeKey, &cfg)
 	if err != nil {
-		panic(fmt.Errorf("error when parsing %v config: %v", subtreeKey, err))
+		log.Fatal("error when parsing %v config: %v", subtreeKey, err)
+		//No sources, so nothing to run
 	}
 	for i, s := range cfg {
 		cfg[i] = populateDefaults(s)
@@ -186,7 +187,29 @@ func GetSourceByName(sources []Sources, name string) (*Sources, error) {
 	return nil, fmt.Errorf("Unable to find a source with name %s", name)
 }
 
-func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
+func SourceToNabuPrefix(sources []Sources, useMilled bool) []string {
+	jsonld := "summoned"
+	if useMilled {
+		jsonld = "milled"
+	}
+	var prefixes []string
+	for _, s := range sources {
+
+		switch s.SourceType {
+
+		case "sitemap":
+			prefixes = append(prefixes, fmt.Sprintf("%s/%s", jsonld, s.Name))
+
+		case "sitegraph":
+			// sitegraph not milled
+			prefixes = append(prefixes, fmt.Sprintf("%s/%s", "summoned", s.Name))
+		case "googledrive":
+			prefixes = append(prefixes, fmt.Sprintf("%s/%s", jsonld, s.Name))
+		}
+	}
+	return prefixes
+}
+func SourceToNabuProv(sources []Sources) []string {
 
 	var prefixes []string
 	for _, s := range sources {
@@ -194,21 +217,12 @@ func SourceToNabuPrefix(sources []Sources, includeProv bool) []string {
 		switch s.SourceType {
 
 		case "sitemap":
-			prefixes = append(prefixes, "milled/"+s.Name)
-			if includeProv {
-				prefixes = append(prefixes, "prov/"+s.Name)
-			}
+			prefixes = append(prefixes, "prov/"+s.Name)
 
 		case "sitegraph":
-			prefixes = append(prefixes, "summoned/"+s.Name)
-			if includeProv {
-				prefixes = append(prefixes, "prov/"+s.Name)
-			}
+			prefixes = append(prefixes, "prov/"+s.Name)
 		case "googledrive":
-			prefixes = append(prefixes, "milled/"+s.Name)
-			if includeProv {
-				prefixes = append(prefixes, "prov/"+s.Name)
-			}
+			prefixes = append(prefixes, "prov/"+s.Name)
 		}
 	}
 	return prefixes

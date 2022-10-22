@@ -4,6 +4,7 @@ import (
 	"fmt"
 	run "github.com/gleanerio/nabu/pkg"
 	"github.com/spf13/cobra"
+	"mime"
 )
 
 // checkCmd represents the check command
@@ -12,8 +13,8 @@ var prefixCmd = &cobra.Command{
 	Short: "nabu prefix command",
 	Long:  `Load graphs from prefix to triplestore`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("check called")
-
+		fmt.Println("nabu prefix called")
+		mime.AddExtensionType(".jsonld", "application/ld+json")
 		run.NabuPrefix(nabuViperVal)
 	},
 }

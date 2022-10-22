@@ -65,8 +65,11 @@ func main() {
 		log.Fatal(err)
 	}
 	defer db.Close()
+	rlogginer, _ := common.LogIssues(v1, k)
 
-	err = acquire.PageRender(v1, mc, logger, 45*time.Second, url, k, db)
+	runStats := common.NewRunStats()
+
+	err = acquire.PageRender(v1, mc, 45*time.Second, url, k, db, rlogginer, runStats)
 	if err != nil {
 		panic(fmt.Errorf("error when reading config: %v", err))
 	}

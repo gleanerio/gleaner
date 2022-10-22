@@ -16,7 +16,7 @@ type Source = configTypes.Sources
 type SourceConfig = configTypes.SourcesConfig
 type MinoConfigType = configTypes.Minio
 
-var Prov, Org bool
+var InclProv, InclOrg, UseMilled bool
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
@@ -39,8 +39,9 @@ A copy of the files (one per DAY) is saved.
 func init() {
 	configCmd.AddCommand(generateCmd)
 	// Here you will define your flags and configuration settings
-	generateCmd.Flags().BoolVar(&Prov, "prov", true, "include prov/source buckets in nabu conf")
-	generateCmd.Flags().BoolVar(&Org, "org", true, "include orgs bucket in nabu conf")
+	generateCmd.Flags().BoolVar(&InclProv, "prov", false, "include prov/source buckets in nabu conf")
+	generateCmd.Flags().BoolVar(&InclOrg, "org", true, "include orgs bucket in nabu conf")
+	generateCmd.Flags().BoolVar(&UseMilled, "milled", false, "use  jsonld summoned file instead of milled in nabu conf")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// generateCmd.PersistentFlags().String("foo", "", "A help for foo")
@@ -213,9 +214,16 @@ func generateCfg(cfgPath string, cfgName string) error {
 			prefixSources = append(prefixSources, s)
 		}
 	}
-	s3Cfg.Prefix = configTypes.SourceToNabuPrefix(prefixSources, Prov)
-	if Org {
+	s3Cfg.Prefix = configTypes.SourceToNabuPrefix(prefixSources, UseMilled)
+	if InclOrg {
 		s3Cfg.Prefix = append(s3Cfg.Prefix, "org") // TODO: add flags for prov and or
+	}
+	if InclProv {
+		provs := configTypes.SourceToNabuProv(prefixSources)
+		for _, p := range provs {
+			s3Cfg.Prefix = append(s3Cfg.Prefix, p) // TODO: add flags for prov and or
+		}
+
 	}
 
 	//var prefixOff []string
@@ -231,13 +239,34 @@ func generateCfg(cfgPath string, cfgName string) error {
 			prefixOffSources = append(prefixOffSources, s)
 		}
 	}
-	s3Cfg.PrefixOff = configTypes.SourceToNabuPrefix(prefixOffSources, Prov)
+	s3Cfg.PrefixOff = configTypes.SourceToNabuPrefix(prefixOffSources, UseMilled)
+	if InclProv {
+		provs := configTypes.SourceToNabuProv(prefixOffSources)
+		for _, p := range provs {
+			s3Cfg.PrefixOff = append(s3Cfg.PrefixOff, p) // TODO: add flags for prov and or
+		}
+
+	}
 	nabu.Set("objects", s3Cfg)
+
 	//nabu.Set("sitemaps", sources)
 	//// hack to get rid of the sourcetype
 	//err =  nabu.UnmarshalKey("sitemaps", &sm)
 	//nabu.Set("sitemaps", sm)
 	fn = path.Join(configDir, nabuFilenameBase)
+	err = nabu.WriteConfigAs(fn)
+	if err != nil {
+		panic(fmt.Errorf("error when writing config: %v", err))
+	}
+
+	// now just write out a nabu prov file
+	s3Cfg.Prefix = configTypes.SourceToNabuProv(prefixSources)
+
+	s3Cfg.PrefixOff = configTypes.SourceToNabuProv(prefixOffSources)
+	s3Cfg.Bucket = "prov"
+
+	nabu.Set("objects", s3Cfg)
+	fn = path.Join(configDir, nabuProvFilenameBase)
 	err = nabu.WriteConfigAs(fn)
 	if err != nil {
 		panic(fmt.Errorf("error when writing config: %v", err))

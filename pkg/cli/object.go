@@ -4,6 +4,7 @@ import (
 	"fmt"
 	run "github.com/gleanerio/nabu/pkg"
 	"github.com/spf13/cobra"
+	"mime"
 )
 
 var objectVal string
@@ -15,7 +16,7 @@ var objectCmd = &cobra.Command{
 	Long:  `Load a graph object to triplestore`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("nabu object called")
-
+		mime.AddExtensionType(".jsonld", "application/ld+json")
 		run.NabuObject(nabuViperVal, bucketVal, objectVal)
 	},
 }
