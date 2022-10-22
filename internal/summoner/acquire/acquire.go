@@ -174,11 +174,11 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// The URL is sending back JSON-LD but incorrectly sending as application/json
 			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
 				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug()
-				log.Debug(urlloc, " as ", contentTypeHeader)
+				log.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug(urlloc, " as ", contentTypeHeader)
 
 				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 				if err != nil {
-					log.Error("Error processing json response from ", urlloc, err)
+					log.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error("Error processing json response from ", urlloc, err)
 					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error(err)
 				}
 				// look in the HTML page for <script type=application/ld+json>
@@ -187,7 +187,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
 					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Info()
 					if err != nil {
-						log.Error("Error processing script tag in ", urlloc, err)
+						log.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error("Error processing script tag in ", urlloc, err)
 						repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error(err)
 					}
 				})
@@ -201,12 +201,12 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// even is no JSON-LD packages found, record the event of checking this URL
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
-				log.Info("Direct access failed, trying headless for ", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info()
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats) // TODO make delay configurable
+				log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
+				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats)                           // TODO make delay configurable
 
 				if err != nil {
-					log.Error("PageRender", urlloc, "::", err)
+					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRender ", urlloc, "::", err)
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
 				}
 				db.Update(func(tx *bolt.Tx) error {
@@ -219,23 +219,23 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				}
 
 			} else {
-				log.Trace("Direct access worked for ", urlloc)
+				log.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace("Direct access worked for ", urlloc)
 				repologger.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace()
 				repoStats.Inc(common.Summoned)
 			}
 
 			for i, jsonld := range jsonlds {
 				if jsonld != "" { // traps out the root domain...   should do this different
-					log.Trace("#", i, "Uploading ")
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace("#", i, "Uploading ")
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace()
 					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
 					if err != nil {
-						log.Error("Error uploading jsonld to object store: ", urlloc, err)
+						log.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store: ", urlloc, err)
 						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
 						repoStats.Inc(common.StoreError)
 					} else {
 						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}).Trace(err)
-						log.Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
+						log.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}).Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
 						repoStats.Inc(common.Stored)
 					}
 					// TODO  Is here where to add an entry to the KV store
@@ -248,8 +248,8 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 						return nil
 					})
 				} else {
-					log.Info("Empty JSON-LD document found. Continuing.")
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found"}).Error(err)
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}).Info("Empty JSON-LD document found. Continuing.")
+					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}).Error(err)
 					// TODO  Is here where to add an entry to the KV store
 					db.Update(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte(sourceName))

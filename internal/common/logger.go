@@ -60,43 +60,19 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 	// name the file with the date and time
 	const layout = "2006-01-02-15-04-05"
 	t := time.Now()
-	//lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
+
 	logger := log.New()
 
 	issuefile := fmt.Sprintf("%s/repo-%s-issues-%s.log", logpath, source, t.Format(layout))
 	allfile := fmt.Sprintf("%s/repo-%s-loaded-%s.log", logpath, source, t.Format(layout))
-	//LogFile := issuefile // log to custom file
-	//logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	//if err != nil {
-	//	log.Panic(err)
-	//	return logger, err // could break things if there is an nil value... so...
-	//}
 
 	logger.SetFormatter(&log.TextFormatter{DisableTimestamp: true}) // Log as JSON instead of the default ASCII formatter.
 	logger.SetReportCaller(false)                                   // disable include file name and line number
-	//mw := io.MultiWriter(os.Stdout, logFile)
-	//log.SetOutput(mw)
-	//logger.SetOutput(logFile)
+	logFile, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	logger.SetOutput(logFile)
 	logger.SetLevel(log.TraceLevel) // this effects the lumberjacks
-	// second file for issues
 
-	//IssueFile := issuefile // log to custom file
-	//issueFile, err := os.OpenFile(IssueFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	//if err != nil {
-	//	log.Panic(err)
-	//	return
-	//}
-	//
-	//imw := io.MultiWriter(os.Stdout, issueFile)
-	//log.AddHook(&writer.Hook{ // Send logs with level higher than warning to stderr
-	//	Writer: imw,
-	//	LogLevels: []log.Level{
-	//		log.PanicLevel,
-	//		log.FatalLevel,
-	//		log.ErrorLevel,
-	//		log.WarnLevel,
-	//	},
-	//})
+	// second file for issues
 
 	hook, err := lumberjackrus.NewHook(
 		&lumberjackrus.LogFile{
