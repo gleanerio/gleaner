@@ -100,16 +100,13 @@ func fixContext(jsonld string) (string, error) {
 		acm, ok := c.Value().([]interface{})
 		if !ok {
 			// we are not a recognized context
-			fmt.Println("This is not a recognized []map context either, will drop throgh to string check")
+			log.Println("This is not a recognized []map context either, will drop throgh to string check")
 		} else {
 			for x := range acm {
 				e := acm[x].(map[string]interface{})
-				fmt.Println(x)
-				fmt.Println(len(acm))
-				fmt.Println(e)
 				//cm2, _ := acm[x].Value().(map[string]interface{}) // should an OK check
 				for k, v := range e {
-					fmt.Printf("Key: %s  Value: %s\n", k, v)
+					//fmt.Printf("Key: %s  Value: %s\n", k, v)
 
 					// seed if v can do v.(string) and if not continue on..   don't deal with this gnis_url type things
 					//"schema": "http://schema.org/",
@@ -143,9 +140,8 @@ func fixContext(jsonld string) (string, error) {
 							} else {
 								tns = fmt.Sprintf("@context.%d.%s", x, k) ////@context/@vocab
 							}
-							fmt.Printf("FIRST CHECK MARK:%s:%s\n", tns, sdoc)
+							//fmt.Printf("FIRST CHECK MARK:%s:%s\n", tns, sdoc)
 							jsonld, err = sjson.Set(jsonld, tns, sdoc)
-
 						}
 					}
 				}
@@ -153,8 +149,10 @@ func fixContext(jsonld string) (string, error) {
 			return jsonld, err
 		}
 
-		fmt.Println("-----  string context -------")
-		fmt.Println(c.Value().(string))
+		if _, ok := c.Value().(string); !ok { // had a nil case..  hope this will catch it.. https://geoconnex.us/ref/gages/1094660
+			return "", err
+		}
+
 		// if not it's a string and we can just regex it..  let's not promote to map
 		// check for https://schema.org/   (trailing / ?)  and fix
 		if c.Value().(string) == "http://schema.org/" {
@@ -192,7 +190,7 @@ func fixContext(jsonld string) (string, error) {
 		}
 	} else {
 		for k, v := range cm {
-			fmt.Printf("Key: %s  Value: %s\n", k, v)
+			//fmt.Printf("Key: %s  Value: %s\n", k, v)
 
 			// if value is our schema.org issue then update this key
 			// try to ready this for a "config"  option
@@ -219,7 +217,7 @@ func fixContext(jsonld string) (string, error) {
 					} else {
 						tns = fmt.Sprintf("@context.%s", k) ////@context/@vocab
 					}
-					fmt.Printf("CHECK MARK:%s:%s\n", tns, sdoc)
+					//fmt.Printf("CHECK MARK:%s:%s\n", tns, sdoc)
 					jsonld, err = sjson.Set(jsonld, tns, sdoc)
 					return jsonld, err
 				}

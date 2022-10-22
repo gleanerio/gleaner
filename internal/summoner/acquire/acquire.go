@@ -9,12 +9,12 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/sirupsen/logrus"
-	"github.com/gleanerio/gleaner/internal/summoner/buckets"
- 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/PuerkitoBio/goquery"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/summoner/buckets"
 	"github.com/minio/minio-go/v7"
 	"github.com/schollz/progressbar/v3"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
 )
@@ -113,6 +113,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		}
 		return nil
 	})
+
+	// TODO..   I have this.   a merge removed it ..  I put it back..   what is the function of this one?
+	//wg.Add(1) // wg from the calling function
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
