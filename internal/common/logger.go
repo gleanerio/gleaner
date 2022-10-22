@@ -27,8 +27,7 @@ func InitLogging() {
 	LogFile := lf // log to custom file
 	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
-		log.Panic(err)
-		return
+		log.Fatal(err)
 	}
 
 	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
@@ -109,7 +108,7 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 	)
 
 	if err != nil {
-		panic(err)
+		log.Panic("Cannot configure a repository logging")
 	}
 
 	logger.AddHook(hook)

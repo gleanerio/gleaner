@@ -105,8 +105,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
-		log.Panic("Error reading config file ", err)
-		repologger.Panic("Error reading config file ", err)
+		// trying to read a source, so let's not kill everything with a panic/fatal
+		log.Error("Error reading config file ", err)
+		repologger.Error("Error reading config file ", err)
 	}
 
 	var client http.Client

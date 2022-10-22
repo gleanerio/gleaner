@@ -59,7 +59,7 @@ func main() {
 	lvl, err := log.ParseLevel(logVal)
 
 	if err != nil {
-		log.Panic("invalid log level:", err.Error())
+		log.Fatal("invalid log level:", err.Error())
 	}
 	log.SetLevel(lvl)
 
