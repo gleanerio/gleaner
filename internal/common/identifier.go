@@ -15,7 +15,9 @@ import (
 
 func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
 	obj, err := oj.ParseString(jsonld)
-
+	if err != nil {
+		return "", err
+	}
 	x, err := jp.ParseString(jsonPath)
 	ys := x.Get(obj)
 
