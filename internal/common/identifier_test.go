@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -76,7 +77,7 @@ var empty = []configTypes.Sources{}
 var jsonId = `{
 "@id":"idenfitier",
 "identifier":"doi:10.1575/1912/bco-dmo.2343.1",
-"identifier_array": [	
+"identifierArray": [	
 	{
 	"@type": "PropertyValue",
 	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
@@ -85,22 +86,22 @@ var jsonId = `{
 	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
 	}
 ],
-"identifiers_array": [	
+"identifierSArray": [	
 	{
 	"@type": "PropertyValue",
 	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
 	"propertyID": "https://registry.identifiers.org/registry/doi",
 	"value": "doi:10.1575/1912/bco-dmo.2343.1",
 	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
-	}
+	},
 	{
 	"@type": "PropertyValue",
 	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.N",
 	"propertyID": "https://registry.identifiers.org/registry/doi",
-	"value": "doi:10.1575/1912/bco-dmo.2343.1N,
+	"value": "doi:10.1575/1912/bco-dmo.2343.1N",
 	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.N"
-	}
-,	{
+	},
+	{
 	"@type": "PropertyValue",
 	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.P",
 	"propertyID": "https://purl.org",
@@ -124,19 +125,22 @@ func TestIsValid(t *testing.T) {
 	t.Run("@id", func(t *testing.T) {
 
 		result, err := GetIdentifierByPath(sources[0].IdentifierPath, jsonId)
-		assert.Equal(t, "idenfitier", result)
+		valStr := fmt.Sprint(result)
+		assert.Equal(t, "[idenfitier]", valStr)
 		assert.Nil(t, err)
 	})
 	t.Run(".idenfitier", func(t *testing.T) {
 
 		result, err := GetIdentifierByPath(sources[1].IdentifierPath, jsonId)
-		assert.Equal(t, "doi:10.1575/1912/bco-dmo.2343.1", result)
+		valStr := fmt.Sprint(result)
+		assert.Equal(t, "[doi:10.1575/1912/bco-dmo.2343.1]", valStr)
 		assert.Nil(t, err)
 	})
 	t.Run("$.idenfitier", func(t *testing.T) {
 
 		result, err := GetIdentifierByPath(sources[2].IdentifierPath, jsonId)
-		assert.Equal(t, "doi:10.1575/1912/bco-dmo.2343.1", result)
+		valStr := fmt.Sprint(result)
+		assert.Equal(t, "[doi:10.1575/1912/bco-dmo.2343.1]", valStr)
 		assert.Nil(t, err)
 	})
 	// to do: test for valid JSON but invalid RDF triples
