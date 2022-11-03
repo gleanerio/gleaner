@@ -9,6 +9,7 @@ http://jsonpath.herokuapp.com/
 There are four implementations... so you can see if one might be a little quirky
 */
 import (
+	"errors"
 	"github.com/ohler55/ojg/jp"
 	"github.com/ohler55/ojg/oj"
 )
@@ -25,4 +26,17 @@ func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
 		return "", err
 	}
 	return ys, err
+}
+
+// given a set of json paths return the first to the last.
+func GetIdentiferByPaths(jsonpaths []string, jsonld string) (interface{}, error) {
+	for _, jsonPath := range jsonpaths {
+		obj, err := GetIdentifierByPath(jsonPath, jsonld)
+		if err != nil {
+			continue
+		} else {
+			return obj, err
+		}
+	}
+	return "", errors.New("No Match")
 }
