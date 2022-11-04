@@ -9,7 +9,7 @@ import (
 
 type expectations struct {
 	name string
-	json []string
+	json map[string]string
 
 	IdentifierPaths []string
 	expected        string
@@ -23,15 +23,17 @@ var empty = []configTypes.Sources{}
 
 func testValidJsonPath(tests []expectations, t *testing.T) {
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			if test.ignore {
-				return
-			}
-			result, err := GetIdentifierByPath(test.IdentifierPaths[0], test.json[0])
-			valStr := fmt.Sprint(result)
-			assert.Equal(t, test.expected, valStr)
-			assert.Nil(t, err)
-		})
+		for i, json := range test.json {
+			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
+				if test.ignore {
+					return
+				}
+				result, err := GetIdentifierByPath(test.IdentifierPaths[0], json)
+				valStr := fmt.Sprint(result)
+				assert.Equal(t, test.expected, valStr)
+				assert.Nil(t, err)
+			})
+		}
 	}
 
 	//t.Run("@id", func(t *testing.T) {
@@ -62,7 +64,7 @@ func testValidJsonPath(tests []expectations, t *testing.T) {
 func testValidJsonPaths(tests []expectations, t *testing.T) {
 	for _, test := range tests {
 		for i, json := range test.json {
-			t.Run(fmt.Sprint(test.name, i), func(t *testing.T) {
+			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
 				if test.ignore {
 					return
 				}
@@ -131,7 +133,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		// default
 		{
 			name:          "@id",
-			json:          []string{jsonId},
+			json:          map[string]string{"jsonID": jsonId},
 			errorExpected: false,
 
 			IdentifierPaths: []string{`$['@id']`},
@@ -141,7 +143,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
 			name:            "@.identifier",
-			json:            []string{jsonId},
+			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
 			IdentifierPaths: []string{"@.identifier"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
@@ -150,7 +152,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
 			name:            "$.identifier",
-			json:            []string{jsonId},
+			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
@@ -159,7 +161,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		// argo example: https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/argo.json
 		{
 			name:            "identifiers Array ",
-			json:            []string{jsonId},
+			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
@@ -167,7 +169,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		},
 		{
 			name:          "identifier_obj",
-			json:          []string{jsonId},
+			json:          map[string]string{"jsonID": jsonId},
 			errorExpected: false,
 			//	IdentifierPath: "$.identifierObj[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			//IdentifierPath: "$.identifierObj.propertyID[@=='https://registry.identifiers.org/registry/doi')]",
@@ -178,7 +180,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
 			name:            " identifier or id",
-			json:            []string{jsonId},
+			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
 			IdentifierPaths: []string{"[ $.identifiers[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value || $.['@id'] ]"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
@@ -199,7 +201,7 @@ func TestValidJsonPathInput(t *testing.T) {
 		*/
 		{
 			name:          "identifierSArray slice",
-			json:          []string{jsonId},
+			json:          map[string]string{"jsonID": jsonId},
 			errorExpected: false,
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
 			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]"},
@@ -216,17 +218,19 @@ func TestValidJsonPathsInput(t *testing.T) {
 	// this failing the first test with just one
 	var jsonId = `{
 "@id":"idenfitier",
-"any": "any"
+"url": "http://example.com/,"
 }`
 	var jsonIdentifier = `{
 "@id":"idenfitier",
-"identifier":"doi:10.1575/1912/bco-dmo.2343.1"
+"url": "http://example.com/",
+"identifier":"doi:10"
 
 
 }`
 	var jsonIdentifierObject = `{
 "@id":"idenfitier",
-"idenfitier": 
+"url": "http://example.com/",
+"identifier": 
 	{
 	"@type": "PropertyValue",
 	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
@@ -238,6 +242,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 
 	var jsonIdentifierArraySingle = `{
 "@id":"idenfitier",
+"url": "http://example.com/",
 "identifier": [	
 	{
 	"@type": "PropertyValue",
@@ -252,6 +257,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 }`
 	var jsonIdentifierArrayMultiple = `{
 "@id":"idenfitier",
+"url": "http://example.com/",
 "identifier": [	
 	{
 	"@type": "PropertyValue",
@@ -281,8 +287,12 @@ func TestValidJsonPathsInput(t *testing.T) {
 		// default
 		// should work for all
 		{
-			name:          "@id",
-			json:          []string{jsonId, jsonIdentifier, jsonIdentifierObject, jsonIdentifierArraySingle, jsonIdentifierArrayMultiple},
+			name: "@id",
+			json: map[string]string{"jsonID": jsonId, "jsonIdentifier": jsonIdentifier,
+				"jsonobjectId":                jsonIdentifierObject,
+				"jsonIdentifierArraySingle":   jsonIdentifierArraySingle,
+				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
+			},
 			errorExpected: false,
 
 			IdentifierPaths: []string{`$['@id']`},
@@ -290,29 +300,70 @@ func TestValidJsonPathsInput(t *testing.T) {
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
+		// this returns an empty set [] https://cburgmer.github.io/json-path-comparison/results/dot_notation_on_object_without_key.html
 		{
-			name:            "$.identifier.$id",
-			json:            []string{jsonId},
+			name: "$.identifier.$id",
+			//json:            []string{jsonId},
+			json: map[string]string{"jsonID": jsonId}, //"jsonIdentifier": jsonIdentifier,
+			//"jsonobjectId": jsonIdentifierObject,
+			//"jsonIdentifierArraySingle": jsonIdentifierArraySingle,
+			//"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
+
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[idenfitier]",
 			ignore:          false,
 		},
-
+		{
+			name: "$.identifier.$id",
+			//json:            []string{jsonIdentifier},
+			json:            map[string]string{"jsonIdentifier": jsonIdentifier},
+			errorExpected:   false,
+			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
+			expected:        "[doi:10]",
+			ignore:          false,
+		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
-			name:            "$.identifierObj",
-			json:            []string{jsonIdentifier, jsonIdentifierObject},
+			name: "$.identifierObjBracket",
+			//json:            []string{jsonIdentifierObject},
+			json: map[string]string{
+				"jsonobjectId": jsonIdentifierObject,
+			},
+			errorExpected:   false,
+			IdentifierPaths: []string{"$.identifier['value']", "$.identifier", `$['@id']`},
+			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			ignore:          false,
+		},
+		{
+			name: "$.identifierObjDot",
+			//json:            []string{jsonIdentifierObject},
+			json: map[string]string{
+				"jsonobjectId": jsonIdentifierObject,
+			},
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			ignore:          false,
 		},
-
+		{
+			name: "$.identifierObjCheck",
+			//json:            []string{jsonIdentifierObject},
+			json: map[string]string{
+				"jsonobjectId": jsonIdentifierObject,
+			},
+			errorExpected:   false,
+			IdentifierPaths: []string{"$.identifier[?(@.value)].value", "$.identifier", `$['@id']`},
+			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			ignore:          true,
+		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
-			name:            "@.identifierArraySimple",
-			json:            []string{jsonIdentifierArraySingle},
+			name: "@.identifierArraySimple",
+			//json:            []string{jsonIdentifierArraySingle},
+			json: map[string]string{
+				"jsonIdentifierArraySingle": jsonIdentifierArraySingle,
+			},
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
@@ -321,8 +372,11 @@ func TestValidJsonPathsInput(t *testing.T) {
 
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
-			name:            "@.identifierArrayMultiple",
-			json:            []string{jsonIdentifierArrayMultiple},
+			name: "@.identifierArrayMultiple",
+			//json:            []string{jsonIdentifierArrayMultiple},
+			json: map[string]string{
+				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
+			},
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
