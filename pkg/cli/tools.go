@@ -7,23 +7,19 @@ import (
 )
 
 // gleanerCmd represents the run command
-var gleanerCmd = &cobra.Command{
-	Use:              "gleaner",
+var toolsCmd = &cobra.Command{
+	Use:              "tools",
 	TraverseChildren: true,
-	Short:            "command to execute gleaner processes",
-	Long: `run gleaner process to extract JSON-LD from pages using sitemaps, conver to triples
-and store to a S3 server:
---cfgName
---mode
+	Short:            "command to execute tools from gleaner and nabu",
+	Long: `These are small tools that do things like generate uuids
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Info("gleaner called")
+		log.Info("tools called")
 	},
 }
-var modeVal string
 
 func init() {
-	rootCmd.AddCommand(gleanerCmd)
+	rootCmd.AddCommand(toolsCmd)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command

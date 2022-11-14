@@ -134,10 +134,10 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := gleanerViperVal.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
+		log.Info("Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
 	}
 	if err := nabuViperVal.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using nabu config file:", nabuViperVal.ConfigFileUsed())
+		log.Info("Using nabu config file:", nabuViperVal.ConfigFileUsed())
 	}
 	// Setup the KV store to hold a record of indexed resources
 	var err error

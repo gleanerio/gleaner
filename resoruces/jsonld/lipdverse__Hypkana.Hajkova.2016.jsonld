@@ -1,0 +1,48 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/"
+  },
+  "@type": "Dataset",
+  "additionalType": "http://linked.earth/ontology/core/1.2.0/index-en.html#Dataset",
+  "@id": "http://lipdverse.org/Temp12k/1_0_2/Hypkana.Hajkova.2016.html",
+  "identifier": {
+    "@id": "https://lipdverse.org/resource/dataset/00ZGzZEY6nx8ep1lDO3z",
+    "@type": "PropertyValue",
+    "propertyID": "http://linked.earth/ontology#hasDatasetId",
+    "name": "lipdverse dataset ID 00ZGzZEY6nx8ep1lDO3z",
+    "value": "00ZGzZEY6nx8ep1lDO3z",
+    "url": "https://lipdverse.org/resource/dataset/00ZGzZEY6nx8ep1lDO3z"
+  },
+  "name": "Hypkana.Hajkova.2016",
+  "description": "This dataset from Hypkana (Europe>Eastern Europe>Slovakia) is derived from a LakeSediment archive, and includes data on temperature, uncertainty, reliable, and Commentregardingreliability1. The data are relevant to the time interval from 13074 to 5070 (BP).",
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "contentUrl": "http://lipdverse.org/Temp12k/1_0_2/Hypkana.Hajkova.2016.lpd",
+      "encodingFormat": [
+        "application/zip",
+        "http://linked.earth/ontology/core/1.2.0/index-en.html#Dataset"
+      ],
+      "datePublished": "2021-02-05T15:52:17+00:00"
+    }
+  ],
+  "url": "http://lipdverse.org/Temp12k/1_0_2/Hypkana.Hajkova.2016.html",
+  "version": "1.0.1",
+  "keywords": [
+    "temperature",
+    "uncertainty",
+    "reliable",
+    "Commentregardingreliability1"
+  ],
+  "spatialCoverage": {
+    "@type": "Place",
+    "name": "Hypkana",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 48.9131,
+      "longitude": 22.1636,
+      "elevation": 820
+    }
+  },
+  "license": "CC-BY-4.0"
+}
