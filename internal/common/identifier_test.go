@@ -353,9 +353,9 @@ func TestValidJsonPathsInput(t *testing.T) {
 				"jsonobjectId": jsonIdentifierObject,
 			},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier[?(@.value)].value", "$.identifier", `$['@id']`},
+			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
-			ignore:          true,
+			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
 		{
