@@ -25,7 +25,7 @@ type Sources struct {
 	ProperName      string
 	Domain          string
 	Active          bool                   `default:"true"`
-	CredentialsFile string                 // do not want someones google api key exposed.
+	CredentialsFile string                 // do not want someone's google api key exposed.
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
@@ -46,7 +46,9 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait int // is loading is slow, wait
+	HeadlessWait   int    // is loading is slow, wait
+	Delay          int64  // A domain-specific crawl delay value
+	IdentifierPath string // JSON Path to the identifier
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -61,6 +63,8 @@ var SourcesTemplate = map[string]interface{}{
 		"domain":          "",
 		"credentialsfile": "",
 		"headlesswait":    "0",
+		"delay":           "0",
+		"identifierspath": "",
 	},
 }
 
