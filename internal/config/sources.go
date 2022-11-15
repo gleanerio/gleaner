@@ -13,6 +13,12 @@ import (
 	"strings"
 )
 
+const (
+	IdentifierSha    string = "identifiersha"
+	Filesha                 = "filesha"
+	IdentifierString        = "identifierstring"
+)
+
 // as read from csv
 type Sources struct {
 	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, api, and robots
@@ -33,6 +39,7 @@ type Sources struct {
 	Delay          int64  // A domain-specific crawl delay value
 	IdentifierPath string // JSON Path to the identifier
 	ApiPageLimit int
+	IdentifierType string
 }
 
 // add needed for file
@@ -49,6 +56,7 @@ type SourcesConfig struct {
 	HeadlessWait   int    // is loading is slow, wait
 	Delay          int64  // A domain-specific crawl delay value
 	IdentifierPath string // JSON Path to the identifier
+	IdentifierType string
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -65,6 +73,7 @@ var SourcesTemplate = map[string]interface{}{
 		"headlesswait":    "0",
 		"delay":           "0",
 		"identifierspath": "",
+		"identifiertype":  Filesha,
 	},
 }
 
