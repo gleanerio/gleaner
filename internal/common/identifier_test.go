@@ -1,18 +1,21 @@
 package common
 
 import (
+	"bytes"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 type expectations struct {
-	name string
-	json map[string]string
-
+	name            string
+	json            map[string]string
+	IdentifierType  string `default:filesha`
 	IdentifierPaths []string
 	expected        string
+	expectedPath    string
 	errorExpected   bool `default:false`
 	ignore          bool `default:false`
 }
@@ -68,9 +71,10 @@ func testValidJsonPaths(tests []expectations, t *testing.T) {
 				if test.ignore {
 					return
 				}
-				result, err := GetIdentiferByPaths(test.IdentifierPaths, json)
+				result, foundPath, err := GetIdentiferByPaths(test.IdentifierPaths, json)
 				valStr := fmt.Sprint(result)
 				assert.Equal(t, test.expected, valStr)
+				assert.Equal(t, test.expectedPath, foundPath)
 				assert.Nil(t, err)
 			})
 		}
@@ -138,6 +142,7 @@ func TestValidJsonPathInput(t *testing.T) {
 
 			IdentifierPaths: []string{`$['@id']`},
 			expected:        "[idenfitier]",
+			expectedPath:    "$['@id']",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -147,6 +152,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"@.identifier"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "@.identifier",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -156,6 +162,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifier",
 			ignore:          false,
 		},
 		// argo example: https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/argo.json
@@ -165,6 +172,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
 		},
 		{
@@ -175,6 +183,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			//IdentifierPath: "$.identifierObj.propertyID[@=='https://registry.identifiers.org/registry/doi')]",
 			IdentifierPaths: []string{"$.identifierObj.value"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifierObj.value",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -184,6 +193,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"[ $.identifiers[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value || $.['@id'] ]"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "[ $.identifiers[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value || $.['@id'] ]",
 			ignore:          true,
 		},
 		// identifier as array: https://github.com/earthcube/GeoCODES-Metadata/blob/main/metadata/Dataset/allgood/bcodmo1.json
@@ -206,6 +216,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
 			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]",
 			ignore:          true,
 		},
 	}
@@ -297,6 +308,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 
 			IdentifierPaths: []string{`$['@id']`},
 			expected:        "[idenfitier]",
+			expectedPath:    "$.identifierObj.value",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -312,15 +324,17 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[idenfitier]",
+			expectedPath:    "$['@id']",
 			ignore:          false,
 		},
 		{
-			name: "$.identifier.$id",
+			name: "$.identifier.$.identifier",
 			//json:            []string{jsonIdentifier},
 			json:            map[string]string{"jsonIdentifier": jsonIdentifier},
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10]",
+			expectedPath:    "$.identifier",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -333,6 +347,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier['value']", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifier['value']",
 			ignore:          false,
 		},
 		{
@@ -344,6 +359,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "\"$.identifier.value",
 			ignore:          false,
 		},
 		{
@@ -355,6 +371,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifier.value",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -367,6 +384,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
 		},
 
@@ -380,8 +398,140 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
+			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
 		},
 	}
 	testValidJsonPaths(tests, t)
+}
+
+func testGenerateIdentifier(tests []expectations, t *testing.T) {
+
+	var vipercontext = []byte(`
+context:
+  cache: true
+contextmaps:
+- file: ./configs/schemaorg-current-https.jsonld
+  prefix: https://schema.org/
+- file: ./configs/schemaorg-current-https.jsonld
+  prefix: http://schema.org/
+sources:
+- sourcetype: sitemap
+  name: test
+  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+  url: https://opentopography.org/sitemap.xml
+  headless: false
+  pid: https://www.re3data.org/repository/r3d100010655
+  propername: OpenTopography
+  domain: http://www.opentopography.org/
+  active: false
+  credentialsfile: ""
+  other: {}
+  headlesswait: 0
+  delay: 0
+  identifierType: filesha
+`)
+
+	for _, test := range tests {
+		for i, json := range test.json {
+			// needs to be defiend in the loop, so that each run has it's own configuration.
+			// otherwise changing the sources information in a multi-threaded ent has issues
+			viperVal := viper.New()
+			viperVal.SetConfigType("yaml")
+			viperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+			sources, err := configTypes.GetSources(viperVal)
+
+			if err != nil {
+				assert.Fail(t, err.Error())
+			}
+
+			s := sources[0]
+			s.IdentifierType = test.IdentifierType
+			s.IdentifierPath = test.IdentifierPaths
+			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
+				if test.ignore {
+					return
+				}
+				result, err := GenerateIdentifier(viperVal, s, json)
+				//valStr := fmt.Sprint(result.uniqueId)
+				assert.Equal(t, test.expected, result.uniqueId)
+				assert.Equal(t, test.expectedPath, result.matchedPath)
+				assert.Equal(t, test.IdentifierType, result.identifierType)
+				assert.Nil(t, err)
+			})
+		}
+	}
+}
+
+func TestGenerateIdentifier(t *testing.T) {
+	var jsonIdentifierArrayMultiple = `{
+"@id":"idenfitier",
+"url": "http://example.com/",
+"identifier": [	
+	{
+	"@type": "PropertyValue",
+	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
+	"propertyID": "https://registry.identifiers.org/registry/doi",
+	"value": "doi:10.1575/1912/bco-dmo.2343.1",
+	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
+	},
+	{
+	"@type": "PropertyValue",
+	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.N",
+	"propertyID": "https://registry.identifiers.org/registry/doi",
+	"value": "doi:10.1575/1912/bco-dmo.2343.1N",
+	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.N"
+	},
+	{
+	"@type": "PropertyValue",
+	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.P",
+	"propertyID": "https://purl.org",
+	"value": "doi:10.1575/1912/bco-dmo.2343.P",
+	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.P"
+	}
+]
+
+}`
+	var tests = []expectations{
+		// default
+		// should work for all
+		{
+			name: "filesha",
+			json: map[string]string{
+				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
+			},
+			errorExpected:   false,
+			IdentifierType:  configTypes.Filesha,
+			IdentifierPaths: []string{`$['@id']`},
+			expected:        "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+			expectedPath:    "",
+			ignore:          false,
+		},
+		{
+			name: "@id_first",
+			json: map[string]string{
+				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
+			},
+			errorExpected:   false,
+			IdentifierType:  configTypes.IdentifierSha,
+			IdentifierPaths: []string{`$['@id']`},
+			expected:        "0fe143f05d6dbff260874a9a6e8da77243c74db0",
+			expectedPath:    "$['@id']",
+			ignore:          false,
+		},
+		{
+			name: "identifier_default_path",
+			json: map[string]string{
+				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
+			},
+			errorExpected:   false,
+			IdentifierType:  configTypes.IdentifierSha,
+			IdentifierPaths: []string{},
+			expected:        "e59f7f11a5615bcee6f35c92d8a2162e5b611944",
+			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
+			ignore:          false,
+		},
+	}
+
+	testGenerateIdentifier(tests, t)
 }
