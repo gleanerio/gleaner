@@ -7,17 +7,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-//type Sources struct {
-//	Name       string
-//	Logo       string
-//	URL        string
-//	Headless   bool
-//	PID        string
-//	ProperName string
-//	Domain     string
-//	// SitemapFormat string
-//	// Active        bool
-//}
+//	type Sources struct {
+//		Name       string
+//		Logo       string
+//		URL        string
+//		Headless   bool
+//		PID        string
+//		ProperName string
+//		Domain     string
+//		// SitemapFormat string
+//		// Active        bool
+//	}
 type Sources = configTypes.Sources
 
 // Return all sources and sitegraph domains

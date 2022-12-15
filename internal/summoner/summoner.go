@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
+
 	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
@@ -18,6 +19,14 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	st := time.Now()
 	log.Info("Summoner start time:", st) // Log the time at start for the record
 	runStats := common.NewRunStats()
+
+	// Retrieve API urls
+	apiSources, err := api.RetrieveAPIEndpoints(vi)
+	if err != nil {
+		log.Error("Error getting API endpoint sources:", err)
+	} else if len(api) > 0 {
+		api.RetrieveAPIData(apiSources, mc, db, runStats)
+	}
 
 	// Get a list of resource URLs that do and don't require headless processing
 	ru, err := acquire.ResourceURLs(v1, mc, false, db)

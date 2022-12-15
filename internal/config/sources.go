@@ -15,7 +15,7 @@ import (
 
 // as read from csv
 type Sources struct {
-	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, and robots
+	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, api, and robots
 	SourceType      string `default:"sitemap"`
 	Name            string
 	Logo            string
