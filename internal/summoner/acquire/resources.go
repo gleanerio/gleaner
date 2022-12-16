@@ -2,6 +2,7 @@ package acquire
 
 import (
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"strings"
 	"time"
@@ -17,18 +18,20 @@ import (
 )
 
 // Sources Holds the metadata associated with the sites to harvest
-// type Sources struct {
-// 	Name       string
-// 	Logo       string
-// 	URL        string
-// 	Headless   bool
-// 	PID        string
-// 	ProperName string
-// 	Domain     string
-// 	// SitemapFormat string
-// 	// Active        bool
-// }
-//type Sources = configTypes.Sources
+//
+//	type Sources struct {
+//		Name       string
+//		Logo       string
+//		URL        string
+//		Headless   bool
+//		PID        string
+//		ProperName string
+//		Domain     string
+//		// SitemapFormat string
+//		// Active        bool
+//	}
+//
+// type Sources = configTypes.Sources
 const siteMapType = "sitemap"
 const robotsType = "robots"
 
@@ -36,18 +39,17 @@ const robotsType = "robots"
 // map with domain name as key and []string of the URLs to process.
 func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) (map[string][]string, error) {
 	domainsMap := make(map[string][]string)
-
+	var repoFatalErrors common.MultiError
 	// Know whether we are running in diff mode, in order to exclude urls that have already
 	// been summoned before
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 	// todo handle this error
 	sources, err := configTypes.GetSources(v1)
+	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 	if err != nil {
 		log.Error("Error getting sources to summon: ", err)
-		return domainsMap, err
+		return domainsMap, err // if we can't read list, ok to return an error
 	}
-
-	domains := configTypes.GetActiveSourceByHeadless(sources, headless)
 
 	sitemapDomains := configTypes.GetActiveSourceByType(domains, siteMapType)
 
@@ -74,8 +76,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		urls, err := getSitemapURLList(domain.URL, group)
 		if err != nil {
 			log.Error("Error getting sitemap urls for: ", domain.Name, err)
-			continue
-			// return domainsMap, err // todo comment this out
+			repoFatalErrors = append(repoFatalErrors, err)
+			//return domainsMap, err // returning means that domains after broken one do not get indexed.
 		}
 		if mcfg.Mode == "diff" {
 			urls = excludeAlreadySummoned(domain.Name, urls, db)
@@ -94,8 +96,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		robots, err := getRobotsTxt(domain.URL)
 		if err != nil {
 			log.Error("Error getting sitemap location from robots.txt for: ", domain.Name, err)
-			continue
-			//return domainsMap, err
+			repoFatalErrors = append(repoFatalErrors, err)
+			//return domainsMap, err // returning means that domains after broken one do not get indexed.
 		}
 		group := robots.FindGroup(EarthCubeAgent)
 		log.Debug("Found user agent group ", group)
@@ -103,8 +105,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			sitemapUrls, err := getSitemapURLList(sitemap, group)
 			if err != nil {
 				log.Error("Error getting sitemap urls for: ", domain.Name, err)
-				continue
-				//return domainsMap, err
+				repoFatalErrors = append(repoFatalErrors, err)
+				//return domainsMap, err // returning means that domains after broken one do not get indexed.
 			}
 			urls = append(urls, sitemapUrls...)
 		}
@@ -115,8 +117,12 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		domainsMap[domain.Name] = urls
 		log.Debug(domain.Name, "sitemap size from robots.txt is : ", len(domainsMap[domain.Name]), " mode: ", mcfg.Mode)
 	}
+	if len(repoFatalErrors) == 0 {
+		return domainsMap, nil
+	} else {
+		return domainsMap, repoFatalErrors
+	}
 
-	return domainsMap, nil
 }
 
 // given a sitemap url, parse it and get the list of URLS from it.
