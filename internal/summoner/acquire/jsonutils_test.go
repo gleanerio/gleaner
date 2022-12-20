@@ -19,6 +19,36 @@ var validJson = `{
         }
     ]
 }`
+var arrayJsonCtx = `{
+    "@graph":[
+        {
+            "@context": [
+					"https://schema.org/",
+					
+				  ],
+            "@type":"bar",
+            "SO:name":"Some type in a graph"
+        }
+    ]
+}`
+
+// this has no @vocab or schema namespace defined, and is an object
+var mangledJsonCtx = `{
+    "@graph":[
+        {
+            "@context": [
+					"https://schema.org/",
+					{
+					  "gsqtime": "https://vocabs.gsq.digital/object?uri=http://linked.data.gov.au/def/trs",
+					  "time": "http://www.w3.org/2006/time#",
+					  "xsd": "https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html"
+					}
+				  ],
+            "@type":"bar",
+            "SO:name":"Some type in a graph"
+        }
+    ]
+}`
 
 var v1 = viper.New()
 
@@ -156,7 +186,36 @@ func TestContextArrayFix(t *testing.T) {
 			}
         ]
     }`
-
+	var contextMixedJson = `{
+        "@context": [
+			
+				"@vocab": "https://schema.org/"
+			,
+			{
+				"@vocab": "https://schema.org/",
+				"NAME": "schema:name",
+				"census_profile": {
+				"@id": "schema:subjectOf",
+				"@type": "@id"
+			}
+			}
+        ]
+    }`
+	var contextNoNamspaceJson = `{
+        "@context": [
+			
+				 "https://schema.org/"
+			,
+			{
+				"@vocab": "https://schema.org/",
+				"NAME": "schema:name",
+				"census_profile": {
+				"@id": "schema:subjectOf",
+				"@type": "@id"
+			}
+			}
+        ]
+    }`
 	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
 		result, err := fixContextString(contextArrayJson)
 		assert.JSONEq(t, contextObjectJson, result)
@@ -165,6 +224,17 @@ func TestContextArrayFix(t *testing.T) {
 
 	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
 		result, err := fixContextString(contextObjectJson)
+		assert.Equal(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It does not change the jsonld context if it is mixed content", func(t *testing.T) {
+		result, err := fixContextString(contextMixedJson)
+		assert.Equal(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
+	t.Run("It should change the  the jsonld context if object is not valid", func(t *testing.T) {
+		result, err := fixContextString(contextNoNamspaceJson)
 		assert.Equal(t, contextObjectJson, result)
 		assert.Nil(t, err)
 	})
