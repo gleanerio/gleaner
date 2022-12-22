@@ -7,20 +7,22 @@ import (
 )
 
 type Summoner struct {
-	After    string
-	Mode     string // full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
-	Threads  int
-	Delay    int64  // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
-	Headless string // URL for headless see docs/headless
+	After          string
+	Mode           string // full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
+	Threads        int
+	Delay          int64  // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
+	Headless       string // URL for headless see docs/
+	IdentifierType string // identifiersha, filesha, identifier
 }
 
 var SummonerTemplate = map[string]interface{}{
 	"summoner": map[string]string{
-		"after":    "",     // "21 May 20 10:00 UTC"
-		"mode":     "full", //full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
-		"threads":  "5",
-		"delay":    "10000",                 // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
-		"headless": "http://127.0.0.1:9222", // URL for headless see docs/headless
+		"after":          "",     // "21 May 20 10:00 UTC"
+		"mode":           "full", //full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
+		"threads":        "5",
+		"delay":          "10000",                 // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
+		"headless":       "http://127.0.0.1:9222", // URL for headless see docs/headless
+		"identifiertype": "filesha",
 	},
 }
 
