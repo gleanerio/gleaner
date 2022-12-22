@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"net/url"
+	"reflect"
 	"strings"
 
 	"github.com/gleanerio/gleaner/internal/common"
@@ -48,10 +48,74 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	return true, nil
 }
 
+// *********
+// context fixes
+// *********
+// let's try to do them all, in one, since that will make the code a bit cleaner and easier to test
+const httpContext = "http://schema.org/"
+const httpsContext = "https://schema.org/"
+
+type ContextOption int64
+
+const (
+	Strict ContextOption = iota
+	Https
+	Http
+	//	Array
+	//	Object
+	StandardizedHttps
+	StandardizedHttp
+)
+
+func (s ContextOption) String() string {
+	switch s {
+	case Strict:
+		return "strict"
+	case Https:
+		return "https"
+	case Http:
+		return "http"
+		//	case Array:
+		//		return "array"
+		//	case Object:
+		//		return "object"
+	case StandardizedHttps:
+		return "standardizedHttps"
+	case StandardizedHttp:
+		return "standardizedHttp"
+	}
+	return "unknown"
+}
+
+func fixContext(jsonld string, option ContextOption) (string, error) {
+	var err error
+
+	if option == Strict {
+		return jsonld, nil
+	}
+	jsonContext := gjson.Get(jsonld, "@context")
+
+	var ctxSchemaOrg = httpsContext
+	if option == Http {
+		ctxSchemaOrg = httpContext
+	}
+
+	//switch jsonContext.Value().(type) {
+	switch reflect.ValueOf(jsonContext).Kind() {
+	//case string:
+	case reflect.String:
+		jsonld, err = fixContextString(jsonld, Https)
+	case reflect.Slice:
+		jsonld, err = fixContextArray(jsonld, Https)
+	}
+	jsonld, err = fixContextUrl(jsonld, ctxSchemaOrg)
+	return jsonld, err
+}
+
 // Our first json fixup in existence.
 // If the top-level JSON-LD context is a string instead of an object,
 // this function corrects it.
-func fixContextString(jsonld string) (string, error) {
+func fixContextString(jsonld string, option ContextOption) (string, error) {
 	var err error
 	jsonContext := gjson.Get(jsonld, "@context")
 
@@ -64,34 +128,90 @@ func fixContextString(jsonld string) (string, error) {
 
 // If the top-level JSON-LD context does not end with a trailing slash or use https,
 // this function corrects it.
-func fixContextUrl(jsonld string) (string, error) {
+// this needs to check all items to see if they match schema.org, then fix.
+func fixContextUrl(jsonld string, ctx string) (string, error) {
 	var err error
-	context := gjson.Get(jsonld, "@context.@vocab").String()
-	if !strings.HasSuffix(context, "/") {
-		context += "/"
-	}
-	contextUrl, err := url.Parse(context)
-	if contextUrl.Scheme != "https" {
-		contextUrl.Scheme = "https"
-		context = contextUrl.String()
-	}
+	//context := gjson.Get(jsonld, "@context.@vocab").String()
 
-	jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": context})
+	contexts := gjson.Get(jsonld, "@context").Map()
+	if _, ok := contexts["@vocab"]; !ok {
+		jsonld, err = sjson.Set(jsonld, "@context.@vocab", httpsContext)
+	}
+	// for range
+	for ns, c := range contexts {
+		var context = c.String()
+		//var changed = false
+		if strings.Contains(context, "schema.org") {
+			//if !strings.HasSuffix(context, "/") {
+			//	context += "/"
+			//	changed = true
+			//}
+			//contextUrl, _ := url.Parse(context)
+			//if contextUrl.Scheme != "https" {
+			//	contextUrl.Scheme = "https"
+			//	context = contextUrl.String()
+			//	changed = true
+			//}
+			if strings.Contains(context, "www.") { // fix www.schema.org
+				var i = strings.Index(context, "schema.org")
+				context = context[i:]
+				context = ctx + context
+			}
+			if len(context) < 20 { // https://schema.org/
+				context = ctx
+			}
+
+			//changed=true
+		}
+		//if changed {
+		// contexts[ns] = context
+		var path = "@context." + ns
+		jsonld, err = sjson.Set(jsonld, path, context)
+		if err != nil {
+			log.Error("Error standardizing schema.org" + err.Error())
+		}
+		//}
+
+	}
+	//jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": context})
+	return jsonld, err
+}
+
+// Our first json fixup in existence.
+// If the top-level JSON-LD context is a string instead of an object,
+// this function corrects it.
+func fixContextArray(jsonld string, option ContextOption) (string, error) {
+	var err error
+	jsonContext := gjson.Get(jsonld, "@context")
+	//contexts := gjson.Get(jsonld, "@context").Map()
+	switch jsonContext.Value().(type) {
+	//switch reflect.ValueOf(contexts).Kind() {
+	//case string:
+	//case reflect.Slice:
+	case nil:
+		jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": httpsContext})
+	}
 	return jsonld, err
 }
 
 func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error
+
 	// In the config file, context { strict: true } bypasses these fixups.
 	// Strict defaults to false.
 	if strict, ok := mcfg["strict"]; !(ok && strict == "true") {
 		log.Info("context.strict is not set to true; doing json-ld fixups.")
-		jsonld, err = fixContextString(jsonld)
+		//contextType := reflect.ValueOf(jsonld).Kind().String()
+		//if strings.HasPrefix(contextType, "string") || strings.HasPrefix(contextType, "map") {
+		//
+		//}
+		jsonld, err = fixContextString(jsonld, Https)
 		if err != nil {
 			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
 		}
-		jsonld, err = fixContextUrl(jsonld)
+		//jsonld, err = fixContextUrl(jsonld, Https)
+		jsonld, err = fixContextUrl(jsonld, httpsContext) // CONST for now
 		if err != nil {
 			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
 		}
