@@ -13,12 +13,12 @@ require (
 	github.com/mafredri/cdp v0.32.0
 	github.com/minio/minio-go/v7 v7.0.15
 	github.com/ohler55/ojg v1.14.5
-	github.com/piprate/json-gold v0.4.1-0.20210813112359-33b90c4ca86c
+	github.com/piprate/json-gold v0.5.0
 	github.com/rs/xid v1.2.1
 	github.com/schollz/progressbar/v3 v3.8.3
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20211010230925-397910c5e371
 	go.etcd.io/bbolt v1.3.6
