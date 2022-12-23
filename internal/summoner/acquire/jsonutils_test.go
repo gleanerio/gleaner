@@ -1,6 +1,7 @@
 package acquire
 
 import (
+	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -113,22 +114,40 @@ func TestContextStringFix(t *testing.T) {
         "@type":"bar",
         "SO:name":"Some type in a graph"
     }`
-
+	var contextLocalNamspaceJson = `{
+        "@context": [	
+				 "https://schema.org/",
+			{
+				"NAME": "schema:name",
+				"census_profile": {
+				"@id": "schema:subjectOf",
+				"@type": "@id"
+			}
+			}
+        ],
+      "@type":"bar",
+      "SO:name":"Some type in a graph" 
+    }`
 	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
-		result, err := fixContextString(contextStringJson, Https)
+		result, err := fixContextString(contextStringJson, config.Https)
 		assert.JSONEq(t, contextObjectJson, result)
 		assert.Nil(t, err)
 	})
 
 	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
-		result, err := fixContextString(contextObjectJson, Https)
+		result, err := fixContextString(contextObjectJson, config.Https)
 		assert.Equal(t, contextObjectJson, result)
 		assert.Nil(t, err)
 	})
 
 	t.Run("It does not change the jsonld context if it is already an object. Version 2", func(t *testing.T) {
-		result, err := fixContextString(contextObjectGraphJson, Https)
+		result, err := fixContextString(contextObjectGraphJson, config.Https)
 		assert.Equal(t, contextObjectGraphJson, result)
+		assert.Nil(t, err)
+	})
+	t.Run("It does not change the jsonld context if it is array. ", func(t *testing.T) {
+		result, err := fixContextString(contextLocalNamspaceJson, config.Https)
+		assert.Equal(t, contextLocalNamspaceJson, result)
 		assert.Nil(t, err)
 	})
 }
@@ -285,7 +304,9 @@ func TestContextArrayFix(t *testing.T) {
 				  "@type": "@id"
 			      }
 			}
-        ]
+        ],
+     "@type":"bar",
+      "SO:name":"Some type in a graph"
     }`
 	var contextMixedJson = `{
         "@context": [
@@ -300,50 +321,75 @@ func TestContextArrayFix(t *testing.T) {
 				"@type": "@id"
 			}
 			}
-        ]
+        ],
+     "@type":"bar",
+      "SO:name":"Some type in a graph"
     }`
-
+	var contextStandardized = `{ 
+           "@context": { 
+               "@vocab": "https://schema.org/",
+				"adms":   "https://www.w3.org/ns/adms#",
+				"dcat":   "https://www.w3.org/ns/dcat#",
+				"dct":    "https://purl.org/dc/terms/",
+				"foaf":   "https://xmlns.com/foaf/0.1/",
+				"gsp":    "https://www.opengis.net/ont/geosparql#",
+				"locn":   "https://www.w3.org/ns/locn#",
+				"owl":    "https://www.w3.org/2002/07/owl#",
+				"rdf":    "https://www.w3.org/1999/02/22-rdf-syntax-ns#",
+				"rdfs":   "https://www.w3.org/2000/01/rdf-schema#",
+				"schema": "https://schema.org/",
+				"skos":   "https://www.w3.org/2004/02/skos/core#",
+				"spdx":   "https://spdx.org/rdf/terms#",
+				"time":   "https://www.w3.org/2006/time",
+				"vcard":  "https://www.w3.org/2006/vcard/ns#",
+				"xsd":    "https://www.w3.org/2001/XMLSchema#"
+				},
+      "@type":"bar",
+      "SO:name":"Some type in a graph" 
+      }`
 	// example from Magic, circa 2022-12
 	// similar to spec cases 20 and 22
 	//https://www.w3.org/TR/json-ld11/#example-20-describing-disconnected-nodes-with-graph
 	//https://www.w3.org/TR/json-ld11/#example-22-combining-external-and-local-contexts
 	//  this is a case where a string fix is needed.
 	var contextLocalNamspaceJson = `{
-        "@context": [
-			
+        "@context": [	
 				 "https://schema.org/",
-
 			{
-				
 				"NAME": "schema:name",
 				"census_profile": {
 				"@id": "schema:subjectOf",
 				"@type": "@id"
 			}
 			}
-        ]
+        ],
+      "@type":"bar",
+      "SO:name":"Some type in a graph" 
     }`
 	// is this really what we want?
 	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
-		result, err := fixContextArray(contextArrayJson, Https)
-		assert.JSONEq(t, contextObjectJson, result)
+		result, err := fixContextArray(contextArrayJson, config.Https)
+		//assert.JSONEq(t, contextObjectJson, result)
+		assert.JSONEq(t, contextStandardized, result)
 		assert.Nil(t, err)
 	})
 
 	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
-		result, err := fixContextArray(contextObjectJson, Https)
-		assert.Equal(t, contextObjectJson, result)
+		result, err := fixContextArray(contextObjectJson, config.Https)
+		assert.JSONEq(t, contextObjectJson, result)
 		assert.Nil(t, err)
 	})
 
-	t.Run("It does not change the jsonld context if it is mixed content", func(t *testing.T) {
-		result, err := fixContextArray(contextMixedJson, Https)
-		assert.Equal(t, contextMixedJson, result)
+	t.Run("It DOES change the jsonld context if it is mixed content", func(t *testing.T) {
+		result, err := fixContextArray(contextMixedJson, config.Https)
+		//assert.JSONEq(t, contextMixedJson, result)
+		assert.JSONEq(t, contextStandardized, result)
 		assert.Nil(t, err)
 	})
 	t.Run("It should change the  the jsonld context if the 'local' namespace is a string", func(t *testing.T) {
-		result, err := fixContextArray(contextLocalNamspaceJson, Https)
-		assert.Equal(t, contextObjectJson, result)
+		result, err := fixContextArray(contextLocalNamspaceJson, config.Https)
+		//assert.JSONEq(t, contextObjectJson, result)
+		assert.JSONEq(t, contextStandardized, result)
 		assert.Nil(t, err)
 	})
 }
