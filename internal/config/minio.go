@@ -42,7 +42,7 @@ func ReadMinioConfig(minioSubtress *viper.Viper) (Minio, error) {
 	// config already read. substree passed
 	err := minioSubtress.Unmarshal(&minioCfg)
 	if err != nil {
-		log.Fatal("error when parsing minio config: %v", err)
+		log.Fatal("error when parsing minio config: ", err)
 	}
 	return minioCfg, err
 }
