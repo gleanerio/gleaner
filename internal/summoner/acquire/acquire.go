@@ -21,6 +21,7 @@ import (
 )
 
 const EarthCubeAgent = "EarthCube_DataBot/1.0"
+const JSONContentType = "application/ld+json"
 
 // ResRetrieve is a function to pull down the data graphs at resources
 func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB, runStats *common.RunStats) {
@@ -157,7 +158,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			}
 			defer resp.Body.Close()
 
-			jsonlds := findJSONInResponse(resp)
+			jsonlds, err := FindJSONInResponse(v1, urlloc, repologger, resp)
 
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
@@ -213,37 +214,42 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 }
 
-func FindJSONInResponse(response Http.Response) ([]string, err) {
+func FindJSONInResponse(v1 *viper.Viper, urlloc string, repologger *log.Logger, response *http.Response) ([]string, error) {
 	doc, err := goquery.NewDocumentFromResponse(response)
 	if err != nil {
 		return nil, err
 	}
 
+	contentTypeHeader := response.Header["Content-Type"]
+	var jsonlds []string
+
 	// if the URL is sending back JSON-LD correctly as application/ld+json
 	// this should not be here IMHO, but need to support people not setting proper header value
 	// The URL is sending back JSON-LD but incorrectly sending as application/json
-
-	contentTypeHeader := response.Header["Content-Type"]
-	if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
-		repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug()
-		log.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug(urlloc, " as ", contentTypeHeader)
+	if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
+		logFields := log.Fields{"url": urlloc, "contentType": "json or ld_json"}
+		repologger.WithFields(logFields).Debug()
+		log.WithFields(logFields).Debug(urlloc, " as ", contentTypeHeader)
 
 		jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 		if err != nil {
-			log.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error("Error processing json response from ", urlloc, err)
-			repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error(err)
+			log.WithFields(logFields).Error("Error processing json response from ", urlloc, err)
+			repologger.WithFields(logFields).Error(err)
 		}
 		// look in the HTML response for <script type=application/ld+json>
 	} else {
 		doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
 			jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
-			repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Info()
+			logFields := log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}
+			repologger.WithFields(logFields).Info()
 			if err != nil {
-				log.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error("Error processing script tag in ", urlloc, err)
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error(err)
+				log.WithFields(logFields).Error("Error processing script tag in ", urlloc, err)
+				repologger.WithFields(logFields).Error(err)
 			}
 		})
 	}
+
+	return jsonlds, nil
 }
 
 func UploadWrapper(v1 *viper.Viper, mc *minio.Client, bucketName string, sourceName string, urlloc string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats, jsonlds []string) {

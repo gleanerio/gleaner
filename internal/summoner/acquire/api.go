@@ -1,7 +1,6 @@
 package acquire
 
 import (
-	"github.com/PuerkitoBio/goquery"
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
@@ -126,7 +125,7 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 			log.Trace("Response status ", response.StatusCode, " from ", urlloc)
 			responseStatusChan <- response.StatusCode
 
-			jsonlds, err := findJSONInResponse(response)
+			jsonlds, err := FindJSONInResponse(v1, urlloc, repologger, response)
 
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
