@@ -25,7 +25,7 @@ type Identifier struct {
 	matchedString  string
 }
 
-var jsonPathsDefault = []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`}
+var jsonPathsDefault = []string{"$['@graph'][?(@['@type']=='schema:Dataset')]['@id']", "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`}
 
 func GenerateIdentifier(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
 
