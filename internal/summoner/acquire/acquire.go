@@ -168,7 +168,6 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				return
 			}
 
-
 			// For incremental indexing I want to know every URL I visit regardless
 			// if there is a valid JSON-LD document or not.   For "full" indexing we
 			// visit ALL URLs.  However, many will not have JSON-LD, so let's also record

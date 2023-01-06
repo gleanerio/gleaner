@@ -159,7 +159,7 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 
 			lwg.Done()
 		}(i, source.Name)
-		status = <- responseStatusChan
+		status = <-responseStatusChan
 		i++
 	}
 }
