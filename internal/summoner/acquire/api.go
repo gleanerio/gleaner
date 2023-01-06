@@ -88,11 +88,11 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 	// we get an error; i is the page number in this case
 	status := http.StatusOK // start off with an OK default
 	i := 0
-	for status == http.StatusOK {
+	for status == http.StatusOK && (source.ApiPageLimit == 0 || i < source.ApiPageLimit) {
 		lwg.Add(1)
 		urlloc := fmt.Sprintf(source.URL, i)
 
-		go func(i int, sourceName string) {
+		go func(i int, sourceName string, apiKey string) {
 			repologger.Trace("Indexing", urlloc)
 			log.Debug("Indexing ", urlloc)
 
@@ -102,6 +102,11 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 			}
 			req.Header.Set("User-Agent", EarthCubeAgent)
 			req.Header.Set("Accept", "application/ld+json, text/html")
+
+			if apiKey != "" {
+				log.Trace("Setting x-api-key header to ", apiKey)
+				req.Header.Set("x-api-key", apiKey)
+			}
 
 			response, err := client.Do(req)
 
@@ -158,7 +163,7 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
 
 			lwg.Done()
-		}(i, source.Name)
+		}(i, source.Name, source.ApiKey)
 		status = <-responseStatusChan
 		i++
 	}

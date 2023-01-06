@@ -3,12 +3,12 @@ package acquire
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
+	"io/ioutil"
 	"net/http"
 	"testing"
-	log "github.com/sirupsen/logrus"
 )
 
 func ConfigSetupHelper(conf map[string]interface{}) *viper.Viper {
