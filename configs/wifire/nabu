@@ -1,0 +1,21 @@
+minio:
+  address: oss.geocodes-dev.earthcube.org
+  port: 443
+  ssl: true
+  accesskey: worldsbestaccesskey
+  secretkey: worldsbestsecretkey
+  bucket: wifire
+objects:
+  bucket: wifire
+  domain: us-east-1
+  prefix:
+  - summoned/wifire
+  - org
+  prefixoff: []
+sparql:
+  endpoint: https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/wifire/sparql
+  authenticate: false
+  username: ""
+  password: ""
+txtaipkg:
+  endpoint: http://0.0.0.0:8000

@@ -1,0 +1,35 @@
+context:
+  cache: true
+contextmaps:
+- file: ./configs/schemaorg-current-https.jsonld
+  prefix: https://schema.org/
+- file: ./configs/schemaorg-current-https.jsonld
+  prefix: http://schema.org/
+gleaner:
+  mill: true
+  runid: runX
+  summon: true
+millers:
+  graph: true
+minio:
+  accesskey: worldsbestaccesskey
+  address: 0.0.0.0
+  bucket: gleaner
+  port: 9000
+  secretkey: worldsbestsecretkey
+  ssl: false
+sources:
+  domain: ""
+  headless: ""
+  logo: ""
+  name: ""
+  pid: ""
+  propername: ""
+  sourcetype: sitemap
+  url: ""
+summoner:
+  after: ""
+  delay: null
+  headless: http://127.0.0.1:9222
+  mode: full
+  threads: 5
