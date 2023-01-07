@@ -196,6 +196,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
+		// this will not work since the || does not work
 		{
 			name:            " identifier or id",
 			json:            map[string]string{"jsonID": jsonId},
@@ -218,14 +219,16 @@ func TestValidJsonPathInput(t *testing.T) {
 		       }
 		   ],
 		*/
+		// this does not work fancy array index issues. Would be nice
 		{
 			name:          "identifierSArray slice",
 			json:          map[string]string{"jsonID": jsonId},
 			errorExpected: false,
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
-			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]"},
+			//IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]"},
+			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[0]"},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
-			expectedPath:    "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]",
+			expectedPath:    "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[0]",
 			ignore:          true,
 		},
 	}
@@ -414,15 +417,76 @@ func TestValidJsonPathsInput(t *testing.T) {
 	testValidJsonPaths(tests, t)
 }
 
-func testGenerateIdentifier(tests []expectations, t *testing.T) {
+func testGenerateJsonPathIdentifier(tests []expectations, t *testing.T) {
 
+	//mock configre file
+	// paths are relative to the code
 	var vipercontext = []byte(`
 context:
   cache: true
 contextmaps:
-- file: ./configs/schemaorg-current-https.jsonld
+- file: ../../configs/schemaorg-current-https.jsonld
   prefix: https://schema.org/
-- file: ./configs/schemaorg-current-https.jsonld
+- file: ../../configs/schemaorg-current-https.jsonld
+  prefix: http://schema.org/
+sources:
+- sourcetype: sitemap
+  name: test
+  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+  url: https://opentopography.org/sitemap.xml
+  headless: false
+  pid: https://www.re3data.org/repository/r3d100010655
+  propername: OpenTopography
+  domain: http://www.opentopography.org/
+  active: false
+  credentialsfile: ""
+  other: {}
+  headlesswait: 0
+  delay: 0
+  identifierType: identifiersha
+`)
+
+	for _, test := range tests {
+		for i, json := range test.json {
+			// needs to be defiend in the loop, so that each run has it's own configuration.
+			// otherwise changing the sources information in a multi-threaded ent has issues
+			viperVal := viper.New()
+			viperVal.SetConfigType("yaml")
+			viperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+			sources, err := configTypes.GetSources(viperVal)
+
+			if err != nil {
+				assert.Fail(t, err.Error())
+			}
+
+			s := sources[0]
+			s.IdentifierType = test.IdentifierType
+			s.IdentifierPath = test.IdentifierPaths
+			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
+				if test.ignore {
+					return
+				}
+				result, err := GenerateIdentifier(viperVal, s, json)
+				//valStr := fmt.Sprint(result.uniqueId)
+				assert.Equal(t, test.expected, result.uniqueId)
+				assert.Equal(t, test.expectedPath, result.matchedPath)
+				assert.Equal(t, test.IdentifierType, result.identifierType)
+				assert.Nil(t, err)
+			})
+		}
+	}
+}
+func testGenerateFileShaIdentifier(tests []expectations, t *testing.T) {
+
+	//mock configre file
+	// paths are relative to the code
+	var vipercontext = []byte(`
+context:
+  cache: true
+contextmaps:
+- file: ../../configs/schemaorg-current-https.jsonld
+  prefix: https://schema.org/
+- file: ../../configs/schemaorg-current-https.jsonld
   prefix: http://schema.org/
 sources:
 - sourcetype: sitemap
@@ -472,7 +536,7 @@ sources:
 	}
 }
 
-func TestGenerateIdentifier(t *testing.T) {
+func TestGenerateFileShaIdentifier(t *testing.T) {
 	var jsonIdentifierArrayMultiple = `{
 "@id":"idenfitier",
 "url": "http://example.com/",
@@ -510,12 +574,50 @@ func TestGenerateIdentifier(t *testing.T) {
 				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
 			},
 			errorExpected:   false,
-			IdentifierType:  configTypes.Filesha,
+			IdentifierType:  configTypes.NormalizedFilesha,
 			IdentifierPaths: []string{`$['@id']`},
-			expected:        "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+			expected:        "92b87f05ee545b042a563803bc148a46506b9e89",
 			expectedPath:    "",
 			ignore:          false,
 		},
+	}
+
+	testGenerateFileShaIdentifier(tests, t)
+}
+
+func TestGenerateJsonPathIdentifier(t *testing.T) {
+	var jsonIdentifierArrayMultiple = `{
+"@id":"idenfitier",
+"url": "http://example.com/",
+"identifier": [	
+	{
+	"@type": "PropertyValue",
+	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
+	"propertyID": "https://registry.identifiers.org/registry/doi",
+	"value": "doi:10.1575/1912/bco-dmo.2343.1",
+	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
+	},
+	{
+	"@type": "PropertyValue",
+	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.N",
+	"propertyID": "https://registry.identifiers.org/registry/doi",
+	"value": "doi:10.1575/1912/bco-dmo.2343.1N",
+	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.N"
+	},
+	{
+	"@type": "PropertyValue",
+	"@id": "https://doi.org/10.1575/1912/bco-dmo.2343.P",
+	"propertyID": "https://purl.org",
+	"value": "doi:10.1575/1912/bco-dmo.2343.P",
+	"url": "https://doi.org/10.1575/1912/bco-dmo.2343.P"
+	}
+]
+
+}`
+	var tests = []expectations{
+		// default
+		// should work for all
+
 		{
 			name: "@id_first",
 			json: map[string]string{
@@ -542,7 +644,7 @@ func TestGenerateIdentifier(t *testing.T) {
 		},
 	}
 
-	testGenerateIdentifier(tests, t)
+	testGenerateJsonPathIdentifier(tests, t)
 }
 
 func TestValidJsonPathGraphInput(t *testing.T) {

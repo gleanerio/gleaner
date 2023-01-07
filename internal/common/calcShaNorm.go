@@ -4,8 +4,8 @@ import (
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
-
 	"github.com/piprate/json-gold/ld"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -35,13 +35,21 @@ func GetNormSHA(jsonld string, v1 *viper.Viper) (string, error) {
 		return "", err
 	}
 
+	h := sha1.New()
+
 	normalizedTriples, err := proc.Normalize(myInterface, options)
 	if err != nil {
-		fmt.Println("Error normalizing jsonld: ", err)
+		log.Error("Error normalizing jsonld: ", err)
 		return "", err
 	}
+	// even an empty interface/string generates a sha. so if this is empty, do this now.
+	if normalizedTriples == "" {
+		log.Error("Error: empty normalize triples")
+		h.Write([]byte(jsonld))
+		hs := h.Sum(nil)
+		return fmt.Sprintf("%x", hs), err
+	}
 
-	h := sha1.New()
 	h.Write([]byte(fmt.Sprint(normalizedTriples.(string))))
 	hs := h.Sum(nil)
 	return fmt.Sprintf("%x", hs), nil
