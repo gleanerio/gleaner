@@ -12,7 +12,6 @@ func TestRetrieveAPIEndpoints(t *testing.T) {
             Name: "apiSource",
             SourceType: "api",
             Active: true,
-            ApiKey: "some api key",
         }
         conf := map[string]interface{}{
             "sources":  []map[string]interface{}{
@@ -31,7 +30,6 @@ func TestRetrieveAPIEndpoints(t *testing.T) {
                     "name": "apiSource",
                     "sourcetype": "api",
                     "active": "true",
-                    "apikey": "some api key",
                 },
             },
         }
