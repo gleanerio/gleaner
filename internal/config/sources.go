@@ -14,9 +14,10 @@ import (
 )
 
 const (
-	IdentifierSha    string = "identifiersha"
-	Filesha                 = "filesha"
-	IdentifierString        = "identifierstring"
+	IdentifierSha     string = "identifiersha"
+	Filesha                  = "filesha"
+	NormalizedFilesha        = "normalizedfilesha"
+	IdentifierString         = "identifierstring"
 )
 
 type ContextOption int64

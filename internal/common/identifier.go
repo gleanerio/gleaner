@@ -18,11 +18,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Identifier is the structure returned the information
 type Identifier struct {
 	uniqueId       string // file sha, identifier sha, or url normalized identifier
 	identifierType string // the returned identifierType..
 	matchedPath    string
 	matchedString  string
+	jsonSha        string
 }
 
 var jsonPathsDefault = []string{"$['@graph'][?(@['@type']=='schema:Dataset')]['@id']", "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`}
@@ -108,12 +110,19 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 		}
 
 	}
+	jsonsha, err := GenerateFileSha(v1, jsonld)
+	if err != nil {
+		return jsonsha, err
+	}
 	uniqueid, foundPath, err := GetIdentiferByPaths(jsonpath, jsonld)
+
 	if err == nil && uniqueid != "[]" {
 		id := Identifier{uniqueId: GetSHA(fmt.Sprint(uniqueid)),
 			identifierType: config.IdentifierSha,
 			matchedPath:    foundPath,
-			matchedString:  fmt.Sprint(uniqueid)}
+			matchedString:  fmt.Sprint(uniqueid),
+			jsonSha:        jsonsha.jsonSha,
+		}
 		return id, err
 	} else {
 		log.Error(config.IdentifierSha, "Action: Getting normalized sha  Error:", err)
@@ -122,16 +131,29 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 	}
 }
 func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
-
+	var id Identifier
 	//uuid := common.GetSHA(jsonld)
 	uuid, err := GetNormSHA(jsonld, v1) // Moved to the normalized sha value
-	if err != nil {
+
+	if uuid == "" {
+		// error
 		log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
-		return Identifier{}, err
+		id = Identifier{}
+	} else if err != nil {
+		log.Info(" Action: File sha generated sha:", uuid, " Error:", err)
+		id = Identifier{uniqueId: uuid,
+			identifierType: config.Filesha,
+			jsonSha:        uuid,
+		}
+		err = nil
+	} else {
+		log.Debug(" Action: File sha generated", uuid)
+		id = Identifier{uniqueId: uuid,
+			identifierType: config.NormalizedFilesha,
+			jsonSha:        uuid,
+		}
 	}
-	id := Identifier{uniqueId: uuid,
-		identifierType: config.Filesha,
-	}
+
 	log.Info("filesha: ", uuid)
 	fmt.Println("\nfilesha:", id)
 	return id, err
