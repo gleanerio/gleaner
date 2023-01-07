@@ -81,8 +81,8 @@ func testValidJsonPaths(tests []expectations, t *testing.T) {
 				}
 				result, foundPath, err := GetIdentiferByPaths(test.IdentifierPaths, json)
 				valStr := fmt.Sprint(result)
-				assert.Equal(t, test.expected, valStr)
-				assert.Equal(t, test.expectedPath, foundPath)
+				assert.Equal(t, test.expected, valStr, "expected Failed")
+				assert.Equal(t, test.expectedPath, foundPath, "matched Path Failed")
 				assert.Nil(t, err)
 			})
 		}
@@ -320,7 +320,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 
 			IdentifierPaths: []string{`$['@id']`},
 			expected:        "[idenfitier]",
-			expectedPath:    "$.identifierObj.value",
+			expectedPath:    "$['@id']",
 			ignore:          false,
 		},
 		//https://raw.githubusercontent.com/earthcube/GeoCODES-Metadata/main/metadata/Dataset/actualdata/earthchem2.json
@@ -371,7 +371,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			errorExpected:   false,
 			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
-			expectedPath:    "\"$.identifier.value",
+			expectedPath:    "$.identifier.value",
 			ignore:          false,
 		},
 		{
@@ -443,7 +443,7 @@ sources:
   other: {}
   headlesswait: 0
   delay: 0
-  identifierType: identifiersha
+  IdentifierType: identifiersha
 `)
 
 	for _, test := range tests {
@@ -468,9 +468,9 @@ sources:
 				}
 				result, err := GenerateIdentifier(viperVal, s, json)
 				//valStr := fmt.Sprint(result.uniqueId)
-				assert.Equal(t, test.expected, result.uniqueId)
-				assert.Equal(t, test.expectedPath, result.matchedPath)
-				assert.Equal(t, test.IdentifierType, result.identifierType)
+				assert.Equal(t, test.expected, result.UniqueId, "uuid faild")
+				assert.Equal(t, test.expectedPath, result.MatchedPath, "matched path failed")
+				assert.Equal(t, test.IdentifierType, result.IdentifierType, "identifier failed")
 				assert.Nil(t, err)
 			})
 		}
@@ -502,7 +502,7 @@ sources:
   other: {}
   headlesswait: 0
   delay: 0
-  identifierType: filesha
+  IdentifierType: filesha
 `)
 
 	for _, test := range tests {
@@ -527,9 +527,9 @@ sources:
 				}
 				result, err := GenerateIdentifier(viperVal, s, json)
 				//valStr := fmt.Sprint(result.uniqueId)
-				assert.Equal(t, test.expected, result.uniqueId)
-				assert.Equal(t, test.expectedPath, result.matchedPath)
-				assert.Equal(t, test.IdentifierType, result.identifierType)
+				assert.Equal(t, test.expected, result.UniqueId, "uuid failed")
+				assert.Equal(t, test.expectedPath, result.MatchedPath, "matched path failed")
+				assert.Equal(t, test.IdentifierType, result.IdentifierType, "identifiertype match failed")
 				assert.Nil(t, err)
 			})
 		}
@@ -537,6 +537,25 @@ sources:
 }
 
 func TestGenerateFileShaIdentifier(t *testing.T) {
+	var jsonIdentifier = `{
+		"@context": {
+		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+			"schema": "http://schema.org/",
+			"xsd": "http://www.w3.org/2001/XMLSchema#"
+	    },
+		"@graph": [
+		      {
+					"@id": "https://wifire-data.sdsc.edu/dataset/a1770ff8-1665-433c-88fb-c8e6863c61fc/resource/b01d00d2-1d64-47b8-aa5c-00410d84e6e6",
+					"@type": "schema:DataDownload",
+					"schema:encodingFormat": "GeoJSON",
+					"schema:name": "GeoJSON",
+					"schema:url": "https://gis-calema.opendata.arcgis.com/datasets/34402e97810f410db0ccd1ae345d9807_5.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+				}
+		]
+	}
+`
+
 	var jsonIdentifierArrayMultiple = `{
 "@id":"idenfitier",
 "url": "http://example.com/",
@@ -574,9 +593,21 @@ func TestGenerateFileShaIdentifier(t *testing.T) {
 				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
 			},
 			errorExpected:   false,
-			IdentifierType:  configTypes.NormalizedFilesha,
+			IdentifierType:  configTypes.Filesha,
 			IdentifierPaths: []string{`$['@id']`},
 			expected:        "92b87f05ee545b042a563803bc148a46506b9e89",
+			expectedPath:    "",
+			ignore:          false,
+		},
+		{
+			name: "normalizedsha",
+			json: map[string]string{
+				"jsonidentifier": jsonIdentifier,
+			},
+			errorExpected:   false,
+			IdentifierType:  configTypes.NormalizedFilesha,
+			IdentifierPaths: []string{`$['@id']`},
+			expected:        "4b741fbebb530cb553bd07639045e569a54424c7",
 			expectedPath:    "",
 			ignore:          false,
 		},
