@@ -3,6 +3,7 @@ package common
 import (
 	"crypto/sha1"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/piprate/json-gold/ld"
 	log "github.com/sirupsen/logrus"
@@ -47,6 +48,7 @@ func GetNormSHA(jsonld string, v1 *viper.Viper) (string, error) {
 		log.Error("Error: empty normalize triples")
 		h.Write([]byte(jsonld))
 		hs := h.Sum(nil)
+		err = errors.New("Error: empty normalize triples")
 		return fmt.Sprintf("%x", hs), err
 	}
 

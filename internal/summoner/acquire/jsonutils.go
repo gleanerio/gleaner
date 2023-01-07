@@ -277,10 +277,12 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 		}
 
 	}
-	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	//sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	identifier, err := common.GenerateIdentifier(v1, *source, jsonld)
 	if err != nil {
 		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
 	}
+	sha := identifier.UniqueId
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
 	contentType := JSONContentType
 	b := bytes.NewBufferString(jsonld)
@@ -289,6 +291,10 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha
+	usermeta["identifiertype"] = identifier.IdentifierType
+	if identifier.MatchedPath != "" {
+		usermeta["matchedpath"] = identifier.MatchedPath
+	}
 
 	// write the prov entry for this object
 	err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
