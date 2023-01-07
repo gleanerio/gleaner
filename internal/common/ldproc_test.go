@@ -103,7 +103,7 @@ sources:
   other: {}
   headlesswait: 0
   delay: 0
-  identifierType: filesha
+  IdentifierType: filesha
 `)
 	viperVal := viper.New()
 	viperVal.SetConfigType("yaml")
