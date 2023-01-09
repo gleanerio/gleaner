@@ -31,6 +31,7 @@ type Sources struct {
 	// Active        bool
 	HeadlessWait int   // if loading is slow, wait
 	Delay        int64 // A domain-specific crawl delay value
+	ApiPageLimit int
 }
 
 // add needed for file

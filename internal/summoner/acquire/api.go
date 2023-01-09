@@ -88,7 +88,7 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 	// we get an error; i is the page number in this case
 	status := http.StatusOK // start off with an OK default
 	i := 0
-	for status == http.StatusOK {
+	for status == http.StatusOK && (source.ApiPageLimit == 0 || i < source.ApiPageLimit) {
 		lwg.Add(1)
 		urlloc := fmt.Sprintf(source.URL, i)
 

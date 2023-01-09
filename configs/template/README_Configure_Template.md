@@ -75,7 +75,7 @@ hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
 
 Fields: 
 1. hack:a hack to make the fields are properly read.
-2. SourceType : [sitemap, sitegraph, googledrive] type of source
+2. SourceType : [sitemap, sitegraph, googledrive, api] type of source
 3. Active: [TRUE,FALSE] is source active. 
 4. Name: short name of source. It should be one word (no space) and be lower case.
 5. ProperName: Long name of source that will be added to organization record for provenance
