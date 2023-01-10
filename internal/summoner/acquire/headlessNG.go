@@ -238,7 +238,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 	expression := `
 		function getMetadata() {
 			return new Promise((resolve, reject) => {
-				const elements = document.querySelectorAll('script[type=JSONContentType]');
+				const elements = document.querySelectorAll('script[type=application/ld+json]');
 				let metadata = [];
 				elements.forEach(function(element) {
 					if(element && element.innerText) {
