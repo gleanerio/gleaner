@@ -22,7 +22,7 @@ var SummonerTemplate = map[string]interface{}{
 		"threads":        "5",
 		"delay":          "10000",                 // milliseconds (1000 = 1 second) to delay between calls (will FORCE threads to 1)
 		"headless":       "http://127.0.0.1:9222", // URL for headless see docs/headless
-		"identifiertype": "filesha",
+		"identifiertype": JsonSha,
 	},
 }
 
