@@ -34,8 +34,7 @@ func GenerateIdentifier(v1 *viper.Viper, source config.Sources, jsonld string) (
 	// Generate calls also do the casecading aka if IdentifierSha is [] it calls JsonSha
 	switch source.IdentifierType {
 	case config.IdentifierString:
-		sha, _ := GenerateIdentifierSha(v1, source, jsonld)
-		return sha, errors.New("Not implemented")
+		return GenerateIdentiferString(v1, source, jsonld)
 	case config.IdentifierSha:
 		return GenerateIdentifierSha(v1, source, jsonld)
 	default: //config.filesha
@@ -95,6 +94,20 @@ func GetIdentiferByPaths(jsonpaths []string, jsonld string) (interface{}, string
 		}
 	}
 	return "", "", errors.New("No Match")
+}
+
+func GenerateIdentiferString(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
+	uniqueid, err := GenerateIdentifierSha(v1, source, jsonld)
+
+	if err != nil {
+		return uniqueid, err
+	}
+	if uniqueid.MatchedString != "" {
+		uniqueid.UniqueId = uniqueid.MatchedString
+		uniqueid.IdentifierType = config.IdentifierString
+
+	}
+	return uniqueid, err
 }
 
 func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
