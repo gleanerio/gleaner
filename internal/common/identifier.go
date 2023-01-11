@@ -31,10 +31,11 @@ var jsonPathsDefault = []string{"$['@graph'][?(@['@type']=='schema:Dataset')]['@
 
 func GenerateIdentifier(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
 
-	// Generate calls also do the casecading aka if IdentifierSha is [] it calls Filesha
+	// Generate calls also do the casecading aka if IdentifierSha is [] it calls JsonSha
 	switch source.IdentifierType {
 	case config.IdentifierString:
-		return Identifier{}, errors.New("Not implemented")
+		sha, _ := GenerateIdentifierSha(v1, source, jsonld)
+		return sha, errors.New("Not implemented")
 	case config.IdentifierSha:
 		return GenerateIdentifierSha(v1, source, jsonld)
 	default: //config.filesha
@@ -142,19 +143,19 @@ func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
 	} else if err != nil {
 		log.Info(" Action: File sha generated sha:", uuid, " Error:", err)
 		id = Identifier{UniqueId: uuid,
-			IdentifierType: config.Filesha,
+			IdentifierType: config.JsonSha,
 			JsonSha:        uuid,
 		}
 		err = nil
 	} else {
 		log.Debug(" Action: File sha generated", uuid)
 		id = Identifier{UniqueId: uuid,
-			IdentifierType: config.NormalizedFilesha,
+			IdentifierType: config.NormalizedJsonSha,
 			JsonSha:        uuid,
 		}
 	}
 
-	log.Info("filesha: ", uuid)
-	fmt.Println("\nfilesha:", id)
+	log.Trace("jsonsha: ", uuid)
+	//	fmt.Println("\njsonsha:", id)
 	return id, err
 }
