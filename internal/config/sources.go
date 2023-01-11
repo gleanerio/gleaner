@@ -15,8 +15,8 @@ import (
 
 const (
 	IdentifierSha     string = "identifiersha"
-	Filesha                  = "filesha"
-	NormalizedFilesha        = "normalizedfilesha"
+	JsonSha                  = "jsonsha"
+	NormalizedJsonSha        = "normalizedjsonsha"
 	IdentifierString         = "identifierstring"
 )
 
@@ -107,7 +107,7 @@ var SourcesTemplate = map[string]interface{}{
 		"headlesswait":     "0",
 		"delay":            "0",
 		"identifierspath":  "",
-		"identifiertype":   Filesha,
+		"identifiertype":   JsonSha,
 		"fixcontextoption": "https",
 	},
 }

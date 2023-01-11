@@ -291,9 +291,11 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha
+	usermeta["jsonsha"] = identifier.JsonSha
 	usermeta["identifiertype"] = identifier.IdentifierType
 	if identifier.MatchedPath != "" {
 		usermeta["matchedpath"] = identifier.MatchedPath
+		usermeta["matchedstring"] = identifier.MatchedString
 	}
 
 	// write the prov entry for this object
