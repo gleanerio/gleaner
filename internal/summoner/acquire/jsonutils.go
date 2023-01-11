@@ -291,13 +291,19 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha
+	usermeta["uniqueid"] = sha
 	usermeta["jsonsha"] = identifier.JsonSha
 	usermeta["identifiertype"] = identifier.IdentifierType
 	if identifier.MatchedPath != "" {
 		usermeta["matchedpath"] = identifier.MatchedPath
 		usermeta["matchedstring"] = identifier.MatchedString
 	}
-
+	if config.IdentifierString == source.IdentifierType {
+		usermeta["sha1"] = identifier.JsonSha
+	}
+	if source.IdentifierType == config.SourceUrl {
+		log.Info("not suppported, yet. needs url sanitizing")
+	}
 	// write the prov entry for this object
 	err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
 	if err != nil {
