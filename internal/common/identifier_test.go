@@ -14,14 +14,15 @@ import (
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
 type expectations struct {
 	name            string
 	json            map[string]string
-	IdentifierType  string `default:filesha`
-	IdentifierPaths []string
+	IdentifierType  string `default:JsonSha`
+	IdentifierPaths string
 	expected        string
 	expectedPath    string
 	errorExpected   bool `default:false`
@@ -39,7 +40,7 @@ func testValidJsonPath(tests []expectations, t *testing.T) {
 				if test.ignore {
 					return
 				}
-				result, err := GetIdentifierByPath(test.IdentifierPaths[0], json)
+				result, err := GetIdentifierByPath(test.IdentifierPaths, json)
 				valStr := fmt.Sprint(result)
 				assert.Equal(t, test.expected, valStr)
 				assert.Nil(t, err)
@@ -79,7 +80,8 @@ func testValidJsonPaths(tests []expectations, t *testing.T) {
 				if test.ignore {
 					return
 				}
-				result, foundPath, err := GetIdentiferByPaths(test.IdentifierPaths, json)
+				paths := strings.Split(test.IdentifierPaths, ",")
+				result, foundPath, err := GetIdentiferByPaths(paths, json)
 				valStr := fmt.Sprint(result)
 				assert.Equal(t, test.expected, valStr, "expected Failed")
 				assert.Equal(t, test.expectedPath, foundPath, "matched Path Failed")
@@ -149,7 +151,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			json:          map[string]string{"jsonID": jsonId},
 			errorExpected: false,
 
-			IdentifierPaths: []string{`$['@id']`},
+			IdentifierPaths: `$['@id']`,
 			expected:        "[idenfitier]",
 			expectedPath:    "$['@id']",
 			ignore:          false,
@@ -159,7 +161,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			name:            "@.identifier",
 			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
-			IdentifierPaths: []string{"@.identifier"},
+			IdentifierPaths: "@.identifier",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "@.identifier",
 			ignore:          false,
@@ -169,7 +171,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			name:            "$.identifier",
 			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier"},
+			IdentifierPaths: "$.identifier",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier",
 			ignore:          false,
@@ -179,7 +181,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			name:            "identifiers Array ",
 			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value"},
+			IdentifierPaths: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
@@ -190,7 +192,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			errorExpected: false,
 			//	IdentifierPath: "$.identifierObj[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			//IdentifierPath: "$.identifierObj.propertyID[@=='https://registry.identifiers.org/registry/doi')]",
-			IdentifierPaths: []string{"$.identifierObj.value"},
+			IdentifierPaths: "$.identifierObj.value",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifierObj.value",
 			ignore:          false,
@@ -201,7 +203,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			name:            " identifier or id",
 			json:            map[string]string{"jsonID": jsonId},
 			errorExpected:   false,
-			IdentifierPaths: []string{"[ $.identifiers[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value || $.['@id'] ]"},
+			IdentifierPaths: "[ $.identifiers[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value || $.['@id'] ]",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "[ $.identifiers[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value || $.['@id'] ]",
 			ignore:          true,
@@ -226,7 +228,7 @@ func TestValidJsonPathInput(t *testing.T) {
 			errorExpected: false,
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
 			//IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[-1:]"},
-			IdentifierPaths: []string{"$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[0]"},
+			IdentifierPaths: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[0]",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value.[0]",
 			ignore:          true,
@@ -318,7 +320,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			},
 			errorExpected: false,
 
-			IdentifierPaths: []string{`$['@id']`},
+			IdentifierPaths: `$['@id']`,
 			expected:        "[idenfitier]",
 			expectedPath:    "$['@id']",
 			ignore:          false,
@@ -334,7 +336,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			//"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
 
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier.value,$.identifier,$['@id']",
 			expected:        "[idenfitier]",
 			expectedPath:    "$['@id']",
 			ignore:          false,
@@ -344,7 +346,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 			//json:            []string{jsonIdentifier},
 			json:            map[string]string{"jsonIdentifier": jsonIdentifier},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier.value,$.identifier,$['@id']",
 			expected:        "[doi:10]",
 			expectedPath:    "$.identifier",
 			ignore:          false,
@@ -357,7 +359,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 				"jsonobjectId": jsonIdentifierObject,
 			},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier['value']", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier['value'],$.identifier,$['@id']",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier['value']",
 			ignore:          false,
@@ -369,7 +371,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 				"jsonobjectId": jsonIdentifierObject,
 			},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier.value,$.identifier,$['@id']",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier.value",
 			ignore:          false,
@@ -381,7 +383,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 				"jsonobjectId": jsonIdentifierObject,
 			},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier.value,$.identifier,$['@id']",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier.value",
 			ignore:          false,
@@ -394,7 +396,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 				"jsonIdentifierArraySingle": jsonIdentifierArraySingle,
 			},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier.$['@id']",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
@@ -408,7 +410,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 				"jsonIdentifierArrayMultiple": jsonIdentifierArrayMultiple,
 			},
 			errorExpected:   false,
-			IdentifierPaths: []string{"$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier,$['@id']",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
@@ -594,7 +596,7 @@ func TestGenerateFileShaIdentifier(t *testing.T) {
 			},
 			errorExpected:   false,
 			IdentifierType:  configTypes.JsonSha,
-			IdentifierPaths: []string{`$['@id']`},
+			IdentifierPaths: "$['@id']",
 			expected:        "92b87f05ee545b042a563803bc148a46506b9e89",
 			expectedPath:    "",
 			ignore:          false,
@@ -606,7 +608,7 @@ func TestGenerateFileShaIdentifier(t *testing.T) {
 			},
 			errorExpected:   false,
 			IdentifierType:  configTypes.NormalizedJsonSha,
-			IdentifierPaths: []string{`$['@id']`},
+			IdentifierPaths: "$['@id']",
 			expected:        "4b741fbebb530cb553bd07639045e569a54424c7",
 			expectedPath:    "",
 			ignore:          false,
@@ -656,7 +658,7 @@ func TestGenerateJsonPathIdentifier(t *testing.T) {
 			},
 			errorExpected:   false,
 			IdentifierType:  configTypes.IdentifierSha,
-			IdentifierPaths: []string{`$['@id']`},
+			IdentifierPaths: "$['@id']",
 			expected:        "0fe143f05d6dbff260874a9a6e8da77243c74db0",
 			expectedPath:    "$['@id']",
 			ignore:          false,
@@ -668,7 +670,7 @@ func TestGenerateJsonPathIdentifier(t *testing.T) {
 			},
 			errorExpected:   false,
 			IdentifierType:  configTypes.IdentifierSha,
-			IdentifierPaths: []string{},
+			IdentifierPaths: "",
 			expected:        "e59f7f11a5615bcee6f35c92d8a2162e5b611944",
 			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
 			ignore:          false,
@@ -865,7 +867,7 @@ func TestValidJsonPathGraphInput(t *testing.T) {
 			json:          map[string]string{"jsonID": jsonIdentifierArrayMultiple},
 			errorExpected: true,
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
-			IdentifierPaths: []string{"$['@graph'][?(@['@type']=='schema:Dataset')]['@id']", "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$['@graph'][?(@['@type']=='schema:Dataset')]['@id'],$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier,$['@id']",
 
 			expected:     "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath: "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
@@ -887,7 +889,7 @@ func TestValidJsonPathGraphInput(t *testing.T) {
 			json:          map[string]string{"jsonID": jsonLdGraph},
 			errorExpected: false,
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
-			IdentifierPaths: []string{"$['@graph'][?(@['@type']=='schema:Dataset')]['@id']"},
+			IdentifierPaths: "$['@graph'][?(@['@type']=='schema:Dataset')]['@id']",
 
 			expected:     "[https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a]",
 			expectedPath: "$['@graph'][?(@['@type']=='schema:Dataset')]['@id']",
@@ -898,7 +900,7 @@ func TestValidJsonPathGraphInput(t *testing.T) {
 			json:          map[string]string{"jsonID": jsonLdGraph},
 			errorExpected: false,
 			//IdentifierPath: "$.identifierSArray[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value[-1:]",
-			IdentifierPaths: []string{"$['@graph'][?(@['@type']=='schema:Dataset')]['@id']", "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value", "$.identifier.value", "$.identifier", `$['@id']`},
+			IdentifierPaths: "$['@graph'][?(@['@type']=='schema:Dataset')]['@id'],$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier,$['@id']",
 
 			expected:     "[https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a]",
 			expectedPath: "$['@graph'][?(@['@type']=='schema:Dataset')]['@id']",

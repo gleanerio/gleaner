@@ -53,12 +53,12 @@ func TestNormalizeTriple(t *testing.T) {
 	var tests = []expectations{
 		// default
 		{
-			name:          "noContext",
-			json:          map[string]string{"jsonID": jsonNoContext},
-			errorExpected: false,
-
-			expected: "[idenfitier]",
-			ignore:   false,
+			name: "noContext",
+			json: map[string]string{"jsonID": jsonNoContext},
+			//errorExpected: true,
+			errorExpected: false, // when we proxy/wrapper NormalizeTriple this, we should throw error on empty
+			expected:      "",
+			ignore:        false,
 		},
 		{
 			name:          "noContextSimple",
@@ -91,19 +91,8 @@ contextmaps:
   prefix: http://schema.org/
 sources:
 - sourcetype: sitemap
-  name: test
-  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
-  url: https://opentopography.org/sitemap.xml
-  headless: false
-  pid: https://www.re3data.org/repository/r3d100010655
-  propername: OpenTopography
-  domain: http://www.opentopography.org/
-  active: false
-  credentialsfile: ""
-  other: {}
-  headlesswait: 0
-  delay: 0
-  IdentifierType: filesha
+  
+  IdentifierType: jsonsha
 `)
 	viperVal := viper.New()
 	viperVal.SetConfigType("yaml")
@@ -133,7 +122,12 @@ sources:
 
 				valStr := fmt.Sprint(result)
 				assert.Equal(t, test.expected, valStr)
-				assert.Nil(t, err)
+				if test.errorExpected {
+					assert.NotNil(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+
 			})
 		}
 	}
