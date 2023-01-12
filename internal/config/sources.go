@@ -69,10 +69,12 @@ type Sources struct {
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait   int    // if loading is slow, wait
-	Delay          int64  // A domain-specific crawl delay value
-	IdentifierPath string // JSON Path to the identifier
-	ApiPageLimit int
+
+	HeadlessWait     int    // if loading is slow, wait
+	Delay            int64  // A domain-specific crawl delay value
+	IdentifierPath   string // JSON Path to the identifier
+	ApiPageLimit     int
+	IdentifierType   string
 	FixContextOption ContextOption
 }
 
@@ -107,7 +109,7 @@ var SourcesTemplate = map[string]interface{}{
 		"credentialsfile":  "",
 		"headlesswait":     "0",
 		"delay":            "0",
-		"identifierspath":  "",
+		"identifierpath":   "",
 		"identifiertype":   JsonSha,
 		"fixcontextoption": "https",
 	},

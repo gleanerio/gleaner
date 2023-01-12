@@ -16,6 +16,7 @@ import (
 	"github.com/ohler55/ojg/oj"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 // Identifier is the structure returned the information
@@ -114,12 +115,13 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 	// need a copy of the arrays, or it will get munged in a multithreaded env
 	var jsonpath = make([]string, len(jsonPathsDefault))
 	copy(jsonpath, jsonPathsDefault)
-	if len(source.IdentifierPath) > 0 && source.IdentifierPath != nil {
+	if len(source.IdentifierPath) > 0 && source.IdentifierPath != "" {
 		// this does not move an item to the front of the array, if the item already exists in the array,
 		// overriding the default overrides all paths
 		//jsonpath = append(source.IdentifierPath, jsonPathsDefault...)
 		//jsonpath = source.IdentifierPath
-		for _, p := range source.IdentifierPath {
+		paths := strings.Split(source.IdentifierPath, ",")
+		for _, p := range paths {
 			jsonpath = config.MoveToFront(p, jsonPathsDefault)
 		}
 
