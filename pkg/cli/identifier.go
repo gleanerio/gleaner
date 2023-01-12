@@ -27,7 +27,7 @@ import (
 
 var jsonVal string
 var idTypeVal string
-var idPathVal []string
+var idPathVal string // string separated by a comman
 
 // batchCmd represents the batch command
 var identifierCmd = &cobra.Command{
@@ -97,7 +97,7 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	identifierCmd.Flags().StringVar(&jsonVal, "jsonld", "", "jsonld file to read")
 	identifierCmd.Flags().StringVar(&idTypeVal, "idtype", "", "identifiertype to generate")
-	identifierCmd.Flags().StringArrayVar(&idPathVal, "idtPath", []string{}, "id path to use")
+	identifierCmd.Flags().StringVar(&idPathVal, "idtPath", "", "id path to use")
 	log.SetLevel(log.ErrorLevel)
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
