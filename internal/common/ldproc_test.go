@@ -11,7 +11,13 @@ import (
 	"testing"
 )
 
-// expectations is in identifiers_test
+// jsonexpectations is in test_common_structs
+/* ldjsonprocessor.Normalize often returns "" or the same set of triples
+for JSONLD Document with context or other issues.
+
+We will need to write a wrapper around Normalize to catch these issues, and return an error.
+These are tests that helped determine that Normalize was the issue.
+*/
 
 /*
 this tests a single path against a single json file
@@ -50,7 +56,7 @@ func TestNormalizeTriple(t *testing.T) {
         }
     ]
 }`
-	var tests = []expectations{
+	var tests = []jsonexpectations{
 		// default
 		{
 			name: "noContext",
@@ -80,7 +86,7 @@ func TestNormalizeTriple(t *testing.T) {
 	testNormalizeTriple(tests, t)
 }
 
-func testNormalizeTriple(tests []expectations, t *testing.T) {
+func testNormalizeTriple(tests []jsonexpectations, t *testing.T) {
 	var vipercontext = []byte(`
 context:
   cache: true
