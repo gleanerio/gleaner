@@ -1,5 +1,17 @@
 package common
 
+import (
+	"fmt"
+	configTypes "github.com/gleanerio/gleaner/internal/config"
+)
+
+/*
+This is to test various identifier
+It uses a structure of expectations to run a series of individual tests with the name: testname_jsonfilename.
+
+In the future, the JSON should probably be loaded from a file in resources_test folder.
+*/
+
 /* info on possible packages:
 https://cburgmer.github.io/json-path-comparison/
 using https://github.com/ohler55/ojg
@@ -10,30 +22,19 @@ There are four implementations... so you can see if one might be a little quirky
 */
 import (
 	"bytes"
-	"fmt"
-	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 )
 
-type expectations struct {
-	name            string
-	json            map[string]string
-	IdentifierType  string `default:JsonSha`
-	IdentifierPaths string
-	expected        string
-	expectedPath    string
-	errorExpected   bool `default:false`
-	ignore          bool `default:false`
-}
+// jsonexpectations is in test_common_structs
 
 var empty = []configTypes.Sources{}
 
 // using idenfiters as a stand in for array of identifiers.
 
-func testValidJsonPath(tests []expectations, t *testing.T) {
+func testValidJsonPath(tests []jsonexpectations, t *testing.T) {
 	for _, test := range tests {
 		for i, json := range test.json {
 			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
@@ -73,7 +74,7 @@ func testValidJsonPath(tests []expectations, t *testing.T) {
 }
 
 // test the array paths
-func testValidJsonPaths(tests []expectations, t *testing.T) {
+func testValidJsonPaths(tests []jsonexpectations, t *testing.T) {
 	for _, test := range tests {
 		for i, json := range test.json {
 			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
@@ -144,7 +145,7 @@ func TestValidJsonPathInput(t *testing.T) {
 
 }`
 
-	var tests = []expectations{
+	var tests = []jsonexpectations{
 		// default
 		{
 			name:          "@id",
@@ -308,7 +309,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 ]
 
 }`
-	var tests = []expectations{
+	var tests = []jsonexpectations{
 		// default
 		// should work for all
 		{
@@ -419,7 +420,7 @@ func TestValidJsonPathsInput(t *testing.T) {
 	testValidJsonPaths(tests, t)
 }
 
-func testGenerateJsonPathIdentifier(tests []expectations, t *testing.T) {
+func testGenerateJsonPathIdentifier(tests []jsonexpectations, t *testing.T) {
 
 	//mock configre file
 	// paths are relative to the code
@@ -478,7 +479,7 @@ sources:
 		}
 	}
 }
-func testGenerateFileShaIdentifier(tests []expectations, t *testing.T) {
+func testGenerateFileShaIdentifier(tests []jsonexpectations, t *testing.T) {
 
 	//mock configre file
 	// paths are relative to the code
@@ -586,7 +587,7 @@ func TestGenerateFileShaIdentifier(t *testing.T) {
 ]
 
 }`
-	var tests = []expectations{
+	var tests = []jsonexpectations{
 		// default
 		// should work for all
 		{
@@ -647,7 +648,7 @@ func TestGenerateJsonPathIdentifier(t *testing.T) {
 ]
 
 }`
-	var tests = []expectations{
+	var tests = []jsonexpectations{
 		// default
 		// should work for all
 
@@ -859,7 +860,7 @@ func TestValidJsonPathGraphInput(t *testing.T) {
 }
    `
 
-	var tests = []expectations{
+	var tests = []jsonexpectations{
 		// default
 
 		{
