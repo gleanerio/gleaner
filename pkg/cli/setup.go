@@ -2,9 +2,9 @@ package cli
 
 import (
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
@@ -26,7 +26,7 @@ var setupCmd = &cobra.Command{
 
 func init() {
 	gleanerCmd.AddCommand(setupCmd)
-
+	configCmd.AddCommand(setupCmd)
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
@@ -50,5 +50,5 @@ func setup(filename string, cfgPath string, cfgName string) {
 
 	mc := common.MinioConnection(v1)
 
-	pkg.Setup(mc, v1)
+	check.Setup(mc, v1)
 }
