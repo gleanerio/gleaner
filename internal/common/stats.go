@@ -79,12 +79,14 @@ func (c *RepoStats) Value(key string) int {
 	return c.counts[key]
 }
 func (c *RunStats) Output() string {
-	out := fmt.Sprintln("-------RUN STATS --------")
-	out += fmt.Sprintf("Start %s\n", c.Date)
+	out := fmt.Sprintln("RunStats:")
+	out += fmt.Sprintf("  Start: %s\n", c.Date)
+	out += fmt.Sprintf("  Repositories:\n")
 	for name, repo := range c.RepoStats {
-		out += fmt.Sprintf("---%s----\n", name)
+
+		out += fmt.Sprintf("    - name: %s\n", name)
 		for r, count := range repo.counts {
-			out += fmt.Sprintf("   %s: %d \n", r, count)
+			out += fmt.Sprintf("      %s: %d \n", r, count)
 		}
 	}
 	return out
