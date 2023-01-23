@@ -11,8 +11,11 @@ import (
 	"time"
 )
 
+const Logpath = "logs"
+
 func InitLogging() {
-	logpath := "logs"
+	//logpath := "logs"
+	logpath := Logpath
 	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(logpath, os.ModePerm)
 		if err != nil {
