@@ -170,9 +170,9 @@ func TestContextArrayFix(t *testing.T) {
 	})
 }
 
-func TestIdIRIFix(t *testing.T){
+func TestIdIRIFix(t *testing.T) {
 
-	t.Run("It does not make changes if there is a base in the context", func(t* testing.T) {
+	t.Run("It does not make changes if there is a base in the context", func(t *testing.T) {
 		var testJson = `
 		{
 			"@context": 	{
@@ -187,7 +187,7 @@ func TestIdIRIFix(t *testing.T){
 		assert.Nil(t, err)
 	})
 
-	t.Run("It does not make changes if the id is a full IRI", func(t* testing.T) {
+	t.Run("It does not make changes if the id is a full IRI", func(t *testing.T) {
 		var testJson = `
 		{
 			"@context": 	{
@@ -201,7 +201,7 @@ func TestIdIRIFix(t *testing.T){
 		assert.Nil(t, err)
 	})
 
-	t.Run("It adds a base in the context if there is not one and the id is relative", func(t* testing.T) {
+	t.Run("It adds a base in the context if there is not one and the id is relative", func(t *testing.T) {
 		var testJson = `
 		{
 			"@context": 	{
@@ -221,7 +221,7 @@ func TestIdIRIFix(t *testing.T){
 		assert.Equal(t, expected, result)
 	})
 
-	t.Run("It does not make changes if there is a base in the context and the id is a full IRI", func(t* testing.T) {
+	t.Run("It does not make changes if there is a base in the context and the id is a full IRI", func(t *testing.T) {
 		var testJson = `
 		{
 			"@context": 	{

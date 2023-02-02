@@ -90,7 +90,7 @@ func fixId(jsonld string, domain string) (string, error) {
 	jsonIdentifier := gjson.Get(jsonld, "@id").String()
 	originalBase := gjson.Get(jsonld, "@context.@base").String()
 	idUrl, err := url.Parse(jsonIdentifier)
-	if originalBase == "" && idUrl.Scheme == "" {// we have a relative url and we need to add a base in the context
+	if originalBase == "" && idUrl.Scheme == "" { // we have a relative url and we need to add a base in the context
 		log.Trace("Fixing up JSON-LD context base for id: ", idUrl)
 		// working around https://github.com/tidwall/sjson/issues/66
 		// we should be able to do the following:
