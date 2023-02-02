@@ -80,7 +80,42 @@ func fixContextUrl(jsonld string) (string, error) {
 	return jsonld, err
 }
 
-func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
+// if the top-level JSON-LD @id is not an IRI, add a base to the context
+// if one does not exist
+// see https://github.com/piprate/json-gold/discussions/68#discussioncomment-4782788
+// for details
+// In this case, the base is the domain, taken from the config
+func fixId(jsonld string, domain string) (string, error) {
+	var err error
+	jsonIdentifier := gjson.Get(jsonld, "@id").String()
+	originalBase := gjson.Get(jsonld, "@context.@base").String()
+	idUrl, err := url.Parse(jsonIdentifier)
+	if originalBase == "" && idUrl.Scheme == "" {// we have a relative url and we need to add a base in the context
+		log.Trace("Fixing up JSON-LD context base for id: ", idUrl)
+		// working around https://github.com/tidwall/sjson/issues/66
+		// we should be able to do the following:
+		// jsonld, err = sjson.Set(jsonld, "@context.@base", domain)
+		context := gjson.Get(jsonld, "@context|@tostr")
+		withBase, err := sjson.Set(context.Str, "\\@base", domain)
+
+		if err != nil {
+			return jsonld, err
+		}
+		var newContext map[string]interface{}
+		err = json.Unmarshal([]byte(withBase), &newContext)
+
+		if err != nil {
+			return jsonld, err
+		}
+
+		jsonld, err = sjson.Set(jsonld, "\\@context", newContext)
+	} else {
+		log.Trace("JSON-LD context base found: ", originalBase, "ID: ", idUrl)
+	}
+	return jsonld, err
+}
+
+func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, domain string, urlloc string, jsonld string) (string, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error
 	// In the config file, context { strict: true } bypasses these fixups.
@@ -89,16 +124,20 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 		log.Info("context.strict is not set to true; doing json-ld fixups.")
 		jsonld, err = fixContextString(jsonld)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
+			log.Error("ERROR: URL: ", urlloc, "Action: Fixing JSON-LD context to be an object Error: ", err)
 		}
 		jsonld, err = fixContextUrl(jsonld)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+			log.Error("ERROR: URL: ", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error: ", err)
+		}
+		jsonld, err = fixId(jsonld, domain)
+		if err != nil {
+			log.Error("ERROR: URL: ", urlloc, "Action: Fixing JSON-LD @id to be a full IRI with a base failed with Error: ", err)
 		}
 	}
 	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
 	if err != nil {
-		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
+		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error: ", err)
 	}
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
 	contentType := "application/ld+json"

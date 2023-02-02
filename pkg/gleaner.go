@@ -45,9 +45,9 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 	return err
 }
 
-/**
+/*
+*
 Setup Gleaner buckets
-
 */
 func Setup(mc *minio.Client, v1 *viper.Viper) error {
 	ms := v1.Sub("minio")
@@ -83,7 +83,6 @@ func Setup(mc *minio.Client, v1 *viper.Viper) error {
 /*
 Check to see we can connect to s3 instance, and that buckets exist
 Might also be used to flight check bolt database, and if containers are up
-
 */
 func PreflightChecks(mc *minio.Client, v1 *viper.Viper) error {
 	// Validate Minio access

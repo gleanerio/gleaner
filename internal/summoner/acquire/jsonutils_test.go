@@ -150,9 +150,9 @@ func TestContextArrayFix(t *testing.T) {
 				"@vocab": "https://schema.org/",
 				"NAME": "schema:name",
 				"census_profile": {
-				"@id": "schema:subjectOf",
-				"@type": "@id"
-			}
+					"@id": "schema:subjectOf",
+					"@type": "@id"
+				}
 			}
         ]
     }`
@@ -166,6 +166,73 @@ func TestContextArrayFix(t *testing.T) {
 	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
 		result, err := fixContextString(contextObjectJson)
 		assert.Equal(t, contextObjectJson, result)
+		assert.Nil(t, err)
+	})
+}
+
+func TestIdIRIFix(t *testing.T){
+
+	t.Run("It does not make changes if there is a base in the context", func(t* testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/",
+				"@base": "http://valid-json.com"
+			},
+			"@id": "some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson, "http://www.test.com")
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It does not make changes if the id is a full IRI", func(t* testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "http://www.test.com/some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson, "http://www.test.com")
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It adds a base in the context if there is not one and the id is relative", func(t* testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "some_cool_guid"
+		}
+		`
+		var expected = `
+		{
+			"@context": 	{"@base":"http://www.test.com","@vocab":"https://schema.org/"},
+			"@id": "some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson, "http://www.test.com")
+		assert.Nil(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("It does not make changes if there is a base in the context and the id is a full IRI", func(t* testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/",
+				"@base": "http://valid-json.com"
+			},
+			"@id": "http://www.test.com/some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson, "http://www.test.com")
+		assert.Equal(t, testJson, result)
 		assert.Nil(t, err)
 	})
 }

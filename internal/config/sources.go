@@ -124,7 +124,7 @@ func GetSources(g1 *viper.Viper) ([]Sources, error) {
 	// config already read. substree passed
 	err := g1.UnmarshalKey(subtreeKey, &cfg)
 	if err != nil {
-		log.Fatal("error when parsing %v config: %v", subtreeKey, err)
+		log.Fatal("error when parsing ", subtreeKey, " config: ", err)
 		//No sources, so nothing to run
 	}
 	for i, s := range cfg {

@@ -52,17 +52,17 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *b
 	wg.Wait()
 }
 
-func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
+func getConfig(v1 *viper.Viper, sourceName string) (string, string, int, int64, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
 	if err != nil {
-		return bucketName, 0, 0, err
+		return bucketName, "", 0, 0, err
 	}
 
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	if err != nil {
-		return bucketName, 0, 0, err
+		return bucketName, "", 0, 0, err
 	}
 	// Set default thread counts and global delay
 	tc := mcfg.Threads
@@ -77,7 +77,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	source, err := configTypes.GetSourceByName(sources, sourceName)
 
 	if err != nil {
-		return bucketName, tc, delay, err
+		return bucketName, source.Domain, tc, delay, err
 	}
 
 	if source.Delay != 0 && source.Delay > delay {
@@ -87,7 +87,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	}
 
 	log.Info("Thread count ", tc, " delay ", delay)
-	return bucketName, tc, delay, nil
+	return bucketName, source.Domain, tc, delay, nil
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
@@ -103,7 +103,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 		return nil
 	})
 
-	bucketName, tc, delay, err := getConfig(v1, sourceName)
+	bucketName, domain, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
 		log.Error("Error reading config file ", err)
@@ -204,7 +204,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				// TODO is her where I then try headless, and scope the following for into an else?
 				log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
 				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
-				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats)                           // TODO make delay configurable
+				err := PageRender(v1, mc, 60*time.Second, urlloc, sourceName, domain, db, repologger, repoStats)                           // TODO make delay configurable
 
 				if err != nil {
 					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRender ", urlloc, "::", err)
@@ -229,7 +229,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				if jsonld != "" { // traps out the root domain...   should do this different
 					log.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace("#", i, "Uploading ")
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace()
-					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
+					sha, err := Upload(v1, mc, bucketName, sourceName, domain, urlloc, jsonld)
 					if err != nil {
 						log.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store: ", urlloc, err)
 						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)

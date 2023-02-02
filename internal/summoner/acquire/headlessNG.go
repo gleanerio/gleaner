@@ -34,6 +34,12 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
 	//)
 
+	// look for a domain specific override crawl delay
+	sources, err := configTypes.GetSources(v1)
+	if err != nil {
+		log.Error("Unable to get sources from config ", err)
+	}
+
 	for k := range m {
 		r := runStats.Add(k)
 		r.Set(common.Count, len(m[k]))
@@ -55,7 +61,13 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 
 		for i := range m[k] {
 
-			err := PageRender(v1, mc, 60*time.Second, m[k][i], k, db, repologger, r) // TODO make delay configurable
+			// get the actual source config
+			source, err := configTypes.GetSourceByName(sources, k)
+			if err != nil {
+				log.Error("Unable to read config for ", k, " :", err)
+			}
+
+			err = PageRender(v1, mc, 60*time.Second, m[k][i], k, source.Domain, db, repologger, r) // TODO make delay configurable
 			if err != nil {
 				log.Error(m[k][i], "::", err)
 			}
@@ -148,7 +160,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 //
 //}
 
-func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) error {
+func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, domain string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) error {
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRender")
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
@@ -311,7 +323,7 @@ func PageRender(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k
 			repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
 			repoStats.Inc(common.Issues)
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
-			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
+			sha, err := Upload(v1, mc, bucketName, domain, k, url, jsonld)
 			if err != nil {
 				log.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store:", url, err, sha)
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
