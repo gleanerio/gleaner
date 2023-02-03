@@ -8,9 +8,10 @@ import (
 
 // validateCmd represents the validate command
 var validateCmd = &cobra.Command{
-	Use:   "validate",
-	Short: "(not implemented)validate gleaner.io files",
-	Long:  `(not implemented)This should read and validate the gleaner and nabu files`,
+	Use:              "validate",
+	TraverseChildren: true,
+	Short:            "(not implemented)validate gleaner.io files",
+	Long:             `(not implemented)This should read and validate the gleaner and nabu files`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("validate called")
 		fmt.Println("Not Implemented")
