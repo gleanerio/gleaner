@@ -1,0 +1,63 @@
+{
+    "@context": "https://schema.org/",
+    "@type": "WebSite",
+    "url": "http://dataprovider.org/",
+    "creator": {
+        "@id": "ID_for_this_metadata_record..  align with org creation code",
+        "@type": "Organization",
+        "identifier": {
+            "@id": "ID_value_string",
+            "@type": "PropertyValue",
+            "propertyID": "this can be text or URL..",
+            "url": "https://foo.org/linkToPropertyIDPage",
+            "description": "Optional description of the ID"
+        }
+    },
+    "potentialAction": {
+        "@type": "ConsumeAction",
+        "actionStatus": "CompletedActionStatus",
+        "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "http://example.com/index.xml",
+            "contentType": "application/json+ld"
+        },
+        "agent": {
+            "@id": "ID_for_this_metadata_record..  align with org creation code",
+            "@type": "Organization",
+            "identifier": {
+                "@id": "ID_value_string",
+                "@type": "PropertyValue",
+                "propertyID": "this can be text or URL..",
+                "url": "https://foo.org/linkToPropertyIDPage",
+                "description": "EarthCube Office"
+            },
+            "startTime": "sdsds",
+            "endTime": "sdassdas",
+            "result": {
+                "@type": "DataFeed",
+                "name": "OrgX Gleaner index results",
+                "dateModified": "2015-01-02",
+                "dataFeedElement": [
+                    {
+                        "@type": "DataFeedItem",
+                        "dateCreated": "2014-07-01",
+                        "item": {
+                            "@type": "WebPage",
+                            "url": "https://foo.org/id/1234",
+                            "description": "Hard to get this?   Could s3select for it..  as well as type?"
+                        }
+                    },
+                    {
+                        "@type": "DataFeedItem",
+                        "dateModified": "2015-01-02",
+                        "item": {
+                            "@type": "WebPage",
+                            "url": "https://foo.org/id/1234",
+                            "description": "Hard to get this?   Could s3select for it..  as well as type?"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,34 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+# SOME ENITIES: these are static for the most part.  
+# make else where.  
+
+# Source
+<{{.PID}}>
+    a prov:Organization .
+    # could this be a https://schema.org/Organization then as well?
+
+# INPUT DATA: The first two don't change much, may change how we genereate 
+<{{.RESURL}}>
+    a prov:Entity ;
+    prov:wasAttributedTo <{{.PID}}> ;
+    prov:value "{{.RESURL}}" .
+
+# Collection of INPUT DATA
+<https://gleaner.io/id/collection/{{.SHA}}>
+    a prov:Collection ;
+    prov:hadMember <{{.RESURL}}> .
+
+# OUTPUT DATA
+<{{.URN}}>
+    a prov:Entity ;
+    prov:value "SHA.jsonld" .
+
+# The ACT:  Colonel Mustard in the library with a candle stick
+<https://gleaner.io/id/run/{{.SHA}}>
+    a prov:Activity ;
+    prov:endedAtTime "{{.Date}}"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+    prov:generated <{{.URN}}> ;
+    prov:used  <https://gleaner.io/id/collection/{{.SHA}}> .
+

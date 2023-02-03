@@ -1,0 +1,1097 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.4.2, mkdocs-material-8.5.10">
+    
+    
+      
+        <title>Gleaner CLI Docker Image - Gleaner</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.975780f9.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.2505c338.min.css">
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="None" data-md-color-accent="None">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gleaner-cli-docker-image" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Gleaner" class="md-header__button md-logo" aria-label="Gleaner" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Gleaner
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Gleaner CLI Docker Image
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Gleaner" class="md-nav__button md-logo" aria-label="Gleaner" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Gleaner
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Installation
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Installation" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Installation
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../BinaryInstallation/" class="md-nav__link">
+        BinaryInstallation
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Gleaner
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Gleaner" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Gleaner
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../buildrun/" class="md-nav__link">
+        Buildrun
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GleanerConfig/" class="md-nav__link">
+        Gleaner Configuration file
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Gleaner CLI Docker Image
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Gleaner CLI Docker Image
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about" class="md-nav__link">
+    About
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    Steps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-results" class="md-nav__link">
+    Working with results
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-to-the-triplestore" class="md-nav__link">
+    Loading to the triplestore
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_4">
+          Glcon Gleaner/Nabu Console
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Glcon Gleaner/Nabu Console" data-md-level="1">
+        <label class="md-nav__title" for="__nav_4">
+          <span class="md-nav__icon md-icon"></span>
+          Glcon Gleaner/Nabu Console
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glcon/" class="md-nav__link">
+        Glcon
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README_glcon/" class="md-nav__link">
+        Gleaner Console  (glcon)
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_5" type="checkbox" id="__nav_5" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_5">
+          Configuration
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Configuration" data-md-level="1">
+        <label class="md-nav__title" for="__nav_5">
+          <span class="md-nav__icon md-icon"></span>
+          Configuration
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../README_Configure_Template/" class="md-nav__link">
+        Configure Using glcon and Templates
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SourceSitemap/" class="md-nav__link">
+        SourceSitemap
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SourceGoogleDrive/" class="md-nav__link">
+        SourceGoogleDrive
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SourceGithubAsAJsonLDSource/" class="md-nav__link">
+        Github
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DEVELOPER/" class="md-nav__link">
+        Developer notes
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../community/" class="md-nav__link">
+        Users of Gleaner
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_8" type="checkbox" id="__nav_8" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8">
+          Deprecated
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Deprecated" data-md-level="1">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Deprecated
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deprecated/DEMO/" class="md-nav__link">
+        ECAM Gleaner Demo
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Deprecated/runningGleanerOLD/" class="md-nav__link">
+        Gleaner getting started
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_9" type="checkbox" id="__nav_9" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9">
+          Profiling
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Profiling" data-md-level="1">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          Profiling
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiling/" class="md-nav__link">
+        Profiling
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_10">
+          Prov
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Prov" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          Prov
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prov/" class="md-nav__link">
+        Nanopubs for PROV
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sitemaps/" class="md-nav__link">
+        Sitemaps
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about" class="md-nav__link">
+    About
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    Steps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-results" class="md-nav__link">
+    Working with results
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-to-the-triplestore" class="md-nav__link">
+    Loading to the triplestore
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="gleaner-cli-docker-image">Gleaner CLI Docker Image<a class="headerlink" href="#gleaner-cli-docker-image" title="Permanent link"></a></h1>
+<h2 id="about">About<a class="headerlink" href="#about" title="Permanent link"></a></h2>
+<p>This is a new approach for quick starts with Gleaner.  It is a script that exposes
+a containerized version of Gleaner as a CLI interface.</p>
+<p>You can use the -init flag to pull down all the support files you need including
+the Docker Compose file for setting up the object store, a triplestore and 
+the support for headless indexing.  </p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link"></a></h2>
+<p>You need Docker installed.  Later, to work with the results and load them into a
+triplestore, you will also need an S3 compatible client.  We will use the Minio
+client, mc, for this.  </p>
+<h2 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link"></a></h2>
+<p>Download the script gleanerDocker.sh from https://github.com/gleanerio/gleaner/tree/master/docs/cliDocker You may need to make it run-able with </p>
+<pre class="highlight"><code class="language-bash">curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/docs/cliDocker/gleanerDocker.sh
+
+chmod 755 gleanerDocker.sh</code></pre>
+<p>Next you can run the script with the -init flag to pull down all the support files you need.</p>
+<pre class="highlight"><code class="language-bash">./gleanerDocker.sh -init</code></pre>
+<p>This will also download the needed docker image and the support files. 
+Your directory should look like this now:</p>
+<pre class="highlight"><code class="language-bash">fils@ubuntu:~/clidocker# ls -lt
+total 1356
+-rw-r--r-- 1 fils fils    1281 Aug 15 14:07 gleaner-IS.yml
+-rw-r--r-- 1 fils fils     290 Aug 15 14:07 setenvIS.sh
+-rw-r--r-- 1 fils fils    1266 Aug 15 14:07 demo.yaml
+-rw-r--r-- 1 fils fils 1371350 Aug 15 14:07 schemaorg-current-https.jsonld
+-rwxr-xr-x 1 fils fils    1852 Aug 15 14:06 gleanerDocker.sh</code></pre>
+<p>Let's see if we can setup our support infrastructure for Gleaner.  The 
+file gleaner-IS.yml is a docker compose file that will set up the object store,
+and a triplestore.</p>
+<p>To do this we need to set up a few environment variables.  To do this we can 
+leverage the setenvIS.sh script.  This script will set up the environment we need.
+Note you can also use a .env file or other approaches.  You can references 
+the <a href="https://docs.docker.com/compose/environment-variables/">Environment variables in Compose</a> documentation.  </p>
+<pre class="highlight"><code class="language-bash">root@ubuntu:~/clidocker# source setenvIS.sh 
+root@ubuntu:~/clidocker# docker-compose -f gleaner-IS.yml up -d
+Creating network "clidocker_traefik_default" with the default driver
+Creating clidocker_triplestore_1 ... done
+Creating clidocker_s3system_1    ... done
+Creating clidocker_headless_1    ... done</code></pre>
+<p>Note:  In a fresh run all the images will be pulled down.  This may take a while.</p>
+<p>In the end, you should be able to see these images running:</p>
+<pre class="highlight"><code class="language-bash">root@ubuntu:~/clidocker# docker ps
+CONTAINER ID        IMAGE                            COMMAND                  CREATED              STATUS              PORTS                                              NAMES
+a26f7c945479        nawer/blazegraph                 "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:9999-&gt;9999/tcp                             clidocker_triplestore_1
+f3a4197c42be        minio/minio:latest               "/usr/bin/docker-ent…"   About a minute ago   Up About a minute   0.0.0.0:9000-&gt;9000/tcp, 0.0.0.0:54321-&gt;54321/tcp   clidocker_s3system_1
+062f029462b1        chromedp/headless-shell:latest   "/headless-shell/hea…"   About a minute ago   Up About a minute   0.0.0.0:9222-&gt;9222/tcp  </code></pre>
+<p>At this point we should be able to do a run.  During the init process a 
+working config file was downloaded.   </p>
+<blockquote>
+<p>Note:  This config file will change...  it's pointing to an OIH partner 
+and I will not do that for the release.  I have a demo site I will use.  </p>
+</blockquote>
+<p>Next we need to setup our object for Gleaner.  Gleaner itself can do this 
+task so we will use </p>
+<pre class="highlight"><code class="language-bash">root@ubuntu:~/clidocker# ./gleanerDocker.sh -setup -cfg demo
+main.go:35: EarthCube Gleaner
+main.go:110: Setting up buckets
+check.go:58: Gleaner Bucket gleaner not found, generating
+main.go:117: Buckets generated.  Object store should be ready for runs</code></pre>
+<blockquote>
+<p>Note:  Here is where we go off the rails.  The config file uses 0.0.0.0 as the 
+location and this is not working.   You need to edit the config file with the 
+"real" IP of the host machine.  In may case is this 192.168.122.77.  This is 
+obviously still a local network IP but it does work.  I am still investigating 
+this issue.</p>
+</blockquote>
+<p>We can now do a run with the example template file.  </p>
+<blockquote>
+<p>Note:  Best to delete the "sitegraph" node, I will do that soon.  It should 
+work, but is currently slow and gives little feedback</p>
+</blockquote>
+<p>If everything goes well, you should see something like the following:</p>
+<pre class="highlight"><code class="language-bash">root@ubuntu:~/clidocker# ./gleanerDocker.sh -cfg demo
+main.go:35: EarthCube Gleaner
+main.go:122: Validating access to object store
+check.go:39: Validated access to object store: gleaner.
+org.go:156: Building organization graph (nq)
+org.go:163: {samplesearth  https://samples.earth/sitemap.xml false https://www.re3data.org/repository/samplesearth Samples Earth (DEMO Site) https://samples.earth}
+main.go:154: Sitegraph(s) processed
+summoner.go:16: Summoner start time: 2021-08-15 14:34:08.907152656 +0000 UTC m=+0.067250623 
+resources.go:74: samplesearth : 202
+ 100% |██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| (202/202, 20 it/s)        
+summoner.go:34: Summoner end time: 2021-08-15 14:34:20.36804137 +0000 UTC m=+11.528139340 
+summoner.go:35: Summoner run time: 0.191015 
+webfeed.go:37: 1758
+millers.go:26: Miller start time: 2021-08-15 14:34:20.368063453 +0000 UTC m=+11.528161421 
+millers.go:40: Adding bucket to milling list: summoned/samplesearth
+millers.go:51: Adding bucket to prov building list: prov/samplesearth
+ 100% |█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| (202/202, 236 it/s)        
+graphng.go:77: Assembling result graph for prefix: summoned/samplesearth to: milled/samplesearth
+graphng.go:78: Result graph will be at: results/runX/samplesearth_graph.nq
+pipecopy.go:16: Start pipe reader / writer sequence
+graphng.go:84: Pipe copy for graph done
+millers.go:80: Miller end time: 2021-08-15 14:34:21.84702814 +0000 UTC m=+13.007126109 
+millers.go:81: Miller run time: 0.024649 
+</code></pre>
+<h2 id="working-with-results">Working with results<a class="headerlink" href="#working-with-results" title="Permanent link"></a></h2>
+<p>If all has gone well, at this point you have downloaded the JSON-LD documents into Minio or 
+some other object store.Next we will install a client that we can use to work with these objects.</p>
+<p>Note, there is a web interface exposed on the port mapped in the Docker compose file.
+In the case of these demo that is 9000.  You can access it at
+http://localhost:9000/ with the credentials set in the environment variable file.  </p>
+<p>However, to work with these objects it would be better to use a command line tool, like mc.
+The Minio Client, can be installed
+following their <a href="https://docs.min.io/docs/minio-client-quickstart-guide.html">Minio Client Quickstate Guide</a>.
+Be sure to place it somewhere where it can be seen from the command line, ie, make sure it
+is in your PATH variable. </p>
+<p>If you are on Linux this might look something like:</p>
+<pre class="highlight"><code>wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+./mc --help</code></pre>
+<p>There is also a <a href="https://hub.docker.com/r/minio/minio-client/">Minio Client Docker image</a> 
+that you can use as well but it will be more difficult to use with the following scripts due
+to container isolation. </p>
+<p>To man an entry in the mc config use:</p>
+<pre class="highlight"><code>mc alias set oih  http://localhost:9000 worldsbestaccesskey worldsbestsecretkey</code></pre>
+<p>We should now be able to list our object store.  We have set it up using the alias <em>oih</em>.</p>
+<pre class="highlight"><code>user@ubuntu:~/clidocker# mc ls oih
+[2021-08-15 14:31:20 UTC]     0B gleaner/
+user@ubuntu:~/clidocker# mc ls oih/gleaner
+[2021-08-19 13:36:04 UTC]     0B milled/
+[2021-08-19 13:36:04 UTC]     0B orgs/
+[2021-08-19 13:36:04 UTC]     0B prov/
+[2021-08-19 13:36:04 UTC]     0B results/
+[2021-08-19 13:36:04 UTC]     0B summoned/</code></pre>
+<p>You can explore mc and see how to copy and work with the object store.  </p>
+<h2 id="loading-to-the-triplestore">Loading to the triplestore<a class="headerlink" href="#loading-to-the-triplestore" title="Permanent link"></a></h2>
+<p>As part of our Docker compose file we also spun up a triplestore.  Let's use that now.  </p>
+<p>Now Download the minio2blaze.sh script.</p>
+<pre class="highlight"><code class="language-bash">curl -O https://raw.githubusercontent.com/earthcubearchitecture-project418/gleaner/master/scripts/minio2blaze.sh
+chmod 755 minio2blaze.sh </code></pre>
+<p>The content we need to load into the triplestore needs to be in RDF for Blazegraph.  We also need
+to tell the triplestore how we have encoded that RDF.   If look in the object store at</p>
+<pre class="highlight"><code>mc ls oih/gleaner/milled
+[2021-08-19 13:26:52 UTC]     0B samplesearth/</code></pre>
+<p>We should see a bucket that is holding the RDF data converted from the JSON-LD.  Let's use this
+in our test.   We can pass this path to the minio2blaze.sh script.  This script will go looking 
+for the mc command we installed above, so be sure it is in a PATH location that script can see.  </p>
+<pre class="highlight"><code>./minio2blaze.sh oih/gleaner/milled/samplesearth
+...   lots of results removed </code></pre>
+<p>If all has gone well, we should have RDF in the triplestore.  We started our triplestore as part of
+the docker-compose.yml file.  You can visit the triplestore at http://localhost:9999/blazegraph/#splash</p>
+<p>Note, you may have to try other addresses other than <em>localhost</em> if your networking is a bit different with
+Docker.  For me, I had to use a real local IP address for my network, you might also try <em>0.0.0.0</em>.</p>
+<p>Hopefully you will see something like the following.</p>
+<p><img alt="Blazegrah" src="images/blaze.png" /></p>
+<p>We loaded into the default <em>kb</em> namespace, so we should be good there.  We can see that is listed 
+as the active namespace at the <em>Current Namespace: kb</em> report.  </p>
+<p>Let's try a simple SPARQL query.  Click on the <em>Query</em> tab to get to the query user interfaced. We
+can use something like:</p>
+<pre class="highlight"><code>select * 
+where 
+{ 
+  ?s ?p ?o
+}
+LIMIT 10</code></pre>
+<p>A very simple SPARQL to give us the first 10 results from the triplestore.  If all has gone well, 
+we should see something like:</p>
+<p><img alt="Blazegrah" src="images/simplequery.png" /></p>
+<p>You can explore more about SPARQL and the wide range of queries you can do with it
+at the W3C <a href="https://www.w3.org/TR/sparql11-query/">SPARQL 1.1 Query Language</a> reference. </p>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link"></a></h2>
+<p>We have attempted here to give a quick introduction to the use of Gleaner in a Docker 
+environment.  This is a very simple example, but it should give you an idea of the approach
+used.  This approach can then be combined with other approaches documented to establish a 
+more production oriented implementation.  Most of this documentation will be located
+at the <a href="https://github.com/gleanerio">Gleaner.io GitHub repository</a> and <a href="https://github.com/gleanerio/gleaner">Gleaner</a> repository.</p>
+<blockquote>
+<p>Note: The plan is to merge the Gleaner.io GitHub repository into the first. </p>
+</blockquote>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="../GleanerConfig/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Gleaner Configuration file" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Gleaner Configuration file
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../glcon/" class="md-footer__link md-footer__link--next" aria-label="Next: Glcon" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Glcon
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.sections"], "search": "../assets/javascripts/workers/search.16e2a7d4.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.5a2dcb6a.min.js"></script>
+      
+    
+    
+  </body>
+</html>
