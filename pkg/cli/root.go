@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os"
 
 	///"time"
 
@@ -48,6 +50,12 @@ func Execute() {
 
 func init() {
 	log.Info("EarthCube Gleaner")
+	akey := os.Getenv("MINIO_ACCESS_KEY")
+	skey := os.Getenv("MINIO_SECRET_KEY")
+	if skey != "" || akey != "" {
+		fmt.Println(" MINIO_ACCESS_KEY or  MINIO_SECRET_KEY are set")
+		fmt.Println("if this is not intentional, please unset")
+	}
 	// set in in internal/configs
 	//akey := os.Getenv("MINIO_ACCESS_KEY")
 	//skey := os.Getenv("MINIO_SECRET_KEY")
