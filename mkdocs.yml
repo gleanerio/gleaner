@@ -3,15 +3,57 @@ site_name: Gleaner
 # see the action: https://github.com/earthcube/geocodes_documentation/blob/main/.github/workflows/runscript.yml
 # just incase we run standalong:
 #theme: 'mkdocs'
-theme: 'readthedocs'
+theme:
+  #  name: 'readthedocs'
+  name: material
+  features:
+    #    - content.code.copy
+    - navigation.sections
+markdown_extensions:
+  - toc:
+      permalink: 
+  - attr_list
+  - def_list
+  - tables
+  - pymdownx.highlight:
+      use_pygments: false
+  - admonition
+  - pymdownx.snippets
+  - pymdownx.details
+  - pymdownx.superfences
+
+
 plugins:
   - search
+  # literate_nav must load after multirepo for the features to be available.
+  - multirepo:
+      # (optional) tells multirepo to cleanup the temporary directory after site is built.
+      cleanup: true
+  -  mermaid2
   - literate-nav
-# the literate nav rules described, here: https://oprypin.github.io/mkdocs-literate-nav/reference.html
-# and here: https://github.com/oprypin/mkdocs-literate-nav
+  #https://pypi.org/project/mkdocs-jupyter/
+  -  mkdocs-jupyter
+  - callouts
 
 # the nav: is needed for the multidocs to work: https://github.com/jdoiro3/mkdocs-multirepo-plugin
 nav:
   - Home: README.md
+  - Installation:
+      - BinaryInstallation.md
+  - Gleaner:
+      - buildrun.md
+      - GleanerConfig.md
+      - cliDocker/README.md
+  - Glcon Gleaner/Nabu Console:
+      - glcon.md
+      - README_glcon.md
+
+  - Configuration:
+      - README_Configure_Template.md
+      - SourceSitemap.md
+      - SourceGoogleDrive.md
+      - SourceGithubAsAJsonLDSource.md
+  - DEVELOPER.md
+  - community.md
   - '*/'
   - '*.md'

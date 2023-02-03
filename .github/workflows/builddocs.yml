@@ -1,0 +1,59 @@
+# Based on: https://github.com/multirepo-docs/root-docs:
+
+name: mkdocs
+on:
+  push:
+    branches:
+      - main
+      - dev_docs
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - run: pip install mkdocs
+      - run: pip install mkdocs-material
+      - run: pip install mkdocs-mermaid2-plugin
+      #      - run: pip install mkdocs-schema-reader
+      - run: pip install mkdocs-multirepo-plugin
+      - run: pip install mkdocs-literate-nav
+      - run: pip install mkdocs-jupyter
+      - run: pip install mkdocs-callouts
+      - name: Checkout
+        uses: actions/checkout@v3
+      ## no cleaup needed
+      #      - name: Checkout
+      #        uses: actions/checkout@v3
+      #        with:
+      #          repository: earthcube/geocodes
+      #          path: docs/geocodes
+      #      - run: cd docs/geocodes && rm -rf '!(docs)' && cd ..
+      #
+      #      - name: Checkout
+      #        uses: actions/checkout@v3
+      #        with:
+      #          repository: earthcube/GeoCODES-Metadata
+      #          path: docs/GeoCODES-Metadata
+      #      - run: cd docs/GeoCODES-Metadata && rm -rf archive && cd ..
+      ##      - run: cd docs/GeoCODES-Metadata && rm -rf '!(docs)' && cd ..
+      #
+      #      - name: Checkout
+      #        uses: actions/checkout@v3
+      #        with:
+      #          repository: gleanerio/gleaner
+      #          path: docs/gleaner
+      #      - run: cd docs/gleaner && rm -rf '!(docs)' && cd ..
+      #
+      #      - name: Checkout
+      #        uses: actions/checkout@v3
+      #        with:
+      #          repository: gleanerio/nabu
+      #          path: docs/nabu
+      #      - run: cd docs/nabu && rm -rf '!(docs)' && cd ..
+
+
+      #     - run: cd docs/ && mkdocs gh-deploy --force --clean --verbose
+      - run:  mkdocs gh-deploy --force --clean --verbose
