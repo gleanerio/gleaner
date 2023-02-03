@@ -309,6 +309,135 @@ func TestValidJsonPathsInput(t *testing.T) {
 ]
 
 }`
+	var problemChildIris = `
+{
+ "@context": {
+  "@vocab": "https://schema.org/"
+ },
+ "@id": "https://ds.iris.edu/ds/products/emtf/",
+ "@type": "Dataset",
+ "name": "Magnetotelluric Transfer Functions",
+ "alternateName": [
+  "EMTF"
+ ],
+ "description": "USArray magnetotelluric transfer functions (MT TFs) calculated at USArray MT sites installed by Oregon State University, as well as other community magnetotelluric transfer functions, are available from the \"SPUD EMTF\":http://www.iris.edu/spud/emtf repository in both XML and EDI formats. The international magnetotelluric community is invited to use the EMTF repository to archive their MT TFs. Please contact \"Anna Kelbert\":https://www.usgs.gov/staff-profiles/anna-kelbert for support; all data formats are accepted and a data citation is created upon submission of data to the searchable repository.\r\n\r\nThe XML format for electromagnetic transfer functions and related conversion software was developed at Oregon State University under an NSF award, and later improved and updated by the USGS Geomagnetism Program, with continued support from IRIS. A living software repository is available in the \"SeisCode EMTF-FCU project\":https://seiscode.iris.washington.edu/projects/emtf-fcu File Conversion Utilities project. Detailed documentation and usage examples are provided by \"Kelbert &#40;2009&#41; \":https://library.seg.org/doi/10.1190/geo2018-0679.1.",
+ "url": "https://ds.iris.edu/ds/products/emtf/",
+ "dateCreated": "2013-07-17T22:17:22.003",
+ "dateModified": "2019-11-20T14:48:11.228",
+ "includedInDataCatalog": {
+  "@type": "DataCatalog",
+  "@id": "https://ds.iris.edu/ds/products/",
+  "url": "https://ds.iris.edu/ds/products/"
+ },
+ "keywords": "Transportable Array,magnetotelluric data,seismic,USArray MT,MT data,global magnetotellurics,magnetotelluric impedance,seismology,geophysics,EMTF,impedance database,US magnetotellurics",
+ "author": [
+  {
+   "@type": "Person",
+   "name": "IRIS Data Products"
+  },
+  {
+   "@type": "Person",
+   "name": "Anna Kelbert",
+   "affiliation": {
+    "@type": "Organization",
+    "name": "Geomagnetism Program, U.S. Geological Survey"
+   }
+  }
+ ],
+ "image": "https://ds.iris.edu/media/product/emtf/images/mt_func_logo_1.png"
+}`
+	var problemChildOpenTopo = `
+
+{
+    "@context": {
+        "@vocab": "https://schema.org/"
+    },
+    "@type": "Dataset",
+    "version": "1.0",
+    "additionalType": ["geolink:Dataset", "vivo:Dataset"],
+    "name": "Quaternary Surface Ruptures along Panamint Valley Fault, CA, April-May 2018",
+    "@id": "https://portal.opentopography.org/dataspace/dataset?opentopoID=OTDS.062020.32611.1",
+    "description": "The digital surface models, generated from sUAS-derived images and SfM methods, show fault scarps and offset channels at six sites along the oblique-slip and strike-slip segments of the Panamint Valley Fault.  The fault cuts Late Quaternary alluvial deposits. These data were collected as part of a master\u0092s thesis. The study aims to reconstruct the displacement and rupture length of the most recent earthquake, and understand the kinematics of the geometrically complex Panamint Valley Fault.",
+    "url": "https://doi.org/10.5069/G92Z13PS",
+    "sameAs": "https://portal.opentopography.org/dataspace/dataset?opentopoID=OTDS.062020.32611.1",
+    "fileFormat" : "Point Cloud, Raster",
+    "publisher" : {
+        "@type": "Organization",
+        "additionalType": "geolink:Organization",
+        "email": "info@opentopography.org",
+        "legalName": "OpenTopography",
+        "name": "OpenTopography",
+        "url": "https://opentopography.org",
+        "award" : "National Science Foundation under Award Numbers EAR-1948997, 1948994 & 1948857",
+        "logo" : "http://www.opentopography.org/sites/opentopography.org/files/ot_transp_logo.png"
+    },
+    "funder": [],
+    "contributor": [{
+        "@type": "Person",
+        "name": "Israporn Sethanant"
+    },{
+        "@type": "Person",
+        "name": "Israporn Sethanant"
+    },{
+        "@type": "Person",
+        "name": "Wesley Dassow"
+    }],
+
+    "variableMeasured": [{
+        "@type": "PropertyValue",
+        "name" : "Area",
+        "value" : "588,495.73 m2"
+    }
+
+    ,{
+        "@type": "PropertyValue",
+        "name" : "LidarReturns",
+        "value" : "421,777,492 points"
+    }
+
+    ,{
+        "@type": "PropertyValue",
+        "name" : "PointDensity",
+        "value" : "716.7 points/m2"
+    }
+
+    ],
+
+    "temporalCoverage": "2018-04-27/2018-05-04",
+
+    "spatialCoverage": {
+        "@type": "Place",
+        "additionalProperty": [{
+                "@type": "PropertyValue",
+                "additionalType" : "CoordinatesSystem",
+                "name" : "Horizontal Coordinates",
+                "value" : "WGS 84 / UTM zone 11N [EPSG: 32611]"
+        },{
+                "@type": "PropertyValue",
+                "additionalType" : "CoordinatesSystem",
+                "name" : "Vertical Coordinates",
+                "value" : ""
+        }],
+        "geo": {
+            "@type": "GeoShape",
+            "box": "35.89945649,-117.2195011 36.00975424,-117.1817643"
+        }
+    },
+    "locationCreated" : "",
+    "dateCreated": "2020-06-25 15:35:13.965967",
+    "license" : "Not-Provided",
+    "usageinfo" : "https://opentopography.org/usageterms",
+    "isAccessibleForFree" : true,
+    "citation" : "The data collection was funded by the 2017 GSA Graduate Student Research Grant. Special thanks to Chris Parrish, Chase Simpson, and Richard Slocum (Oregon State University) for the guidance of flight planning, RTK positioning survey, and Trimble 5800 set up. I would also like to acknowledge Wesley von Dassow for the help in the successful GCPs collection in the field. ",
+    "keywords": "Panamint Valley Fault, Eastern California Shear Zone, earthquake, complex fault",
+    "identifier": {
+        "@id": "https://portal.opentopography.org/dataspace/dataset?opentopoID=OTDS.062020.32611.1",
+        "@type": "PropertyValue",
+        "propertyID": "opentopoID",
+        "value": "OTDS.062020.32611.1"
+    }
+}
+`
 	var tests = []jsonexpectations{
 		// default
 		// should work for all
@@ -414,6 +543,30 @@ func TestValidJsonPathsInput(t *testing.T) {
 			IdentifierPaths: "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier,$['@id']",
 			expected:        "[doi:10.1575/1912/bco-dmo.2343.1N doi:10.1575/1912/bco-dmo.2343.1]",
 			expectedPath:    "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value",
+			ignore:          false,
+		},
+		{
+			name: "@.identifierProblemChildIris",
+			//json:            []string{jsonIdentifierArrayMultiple},
+			json: map[string]string{
+				"problem child": problemChildIris,
+			},
+			errorExpected:   false,
+			IdentifierPaths: "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier,$['@id']",
+			expected:        "[https://ds.iris.edu/ds/products/emtf/]",
+			expectedPath:    "$['@id']",
+			ignore:          false,
+		},
+		{
+			name: "@.identifierProblemChildOpenTopo",
+			//json:            []string{jsonIdentifierArrayMultiple},
+			json: map[string]string{
+				"problem child opentopo": problemChildOpenTopo,
+			},
+			errorExpected:   false,
+			IdentifierPaths: "$.identifier[?(@.propertyID=='https://registry.identifiers.org/registry/doi')].value,$.identifier.value,$.identifier,$['@id']",
+			expected:        "[OTDS.062020.32611.1]",
+			expectedPath:    "$.identifier.value",
 			ignore:          false,
 		},
 	}
