@@ -18,23 +18,20 @@ package cli
 import (
 	"bufio"
 	"fmt"
-	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"os"
 )
 
-var jsonVal string
-var idTypeVal string
-var idPathVal string // string separated by a comman
-
 // batchCmd represents the batch command
-var identifierCmd = &cobra.Command{
-	Use:              "id",
+var jsonLdCmd = &cobra.Command{
+	Use:              "jsonld",
 	TraverseChildren: true,
-	Short:            "Generate the identifier a jsonld string",
-	Long: `Execute gleaner to generate the identifier a jsonld string. 
+	Short:            "take a jsonld string and process it through the context",
+	Long: `Execute gleaner to process a jsonld string, and run through context and other
+processing.
 --jsonld jsonld file to read (reading from stdin, works)
 --idtype (filesha |identifiersha | identifierstring )
 --idPath (json path rule for the identifier)
@@ -52,7 +49,7 @@ There are three types of idtype:
 		//	runSources = append(runSources, sourceVal)
 		//}
 		source := configTypes.Sources{
-			Name:             "identifierCmd",
+			Name:             "jsonldCmd",
 			IdentifierType:   idTypeVal,
 			FixContextOption: configTypes.Https,
 		}
@@ -85,22 +82,24 @@ There are three types of idtype:
 		log.Info(jsonld)
 		//uuid := common.GetSHA(jsonld)
 		//uuid, err := common.GetNormSHA(jsonld, gleanerViperVal) // Moved to the normalized sha value
-		identifier, err := common.GenerateIdentifier(gleanerViperVal, source, jsonld)
+		jsonRes, identifierRes, err := acquire.ProcessJson(gleanerViperVal, &source, "http://example.com/", jsonld)
 		if err != nil {
-			log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
+			log.Error("ERROR: json ldtest:", "Action: getting json:", err)
 		}
-		log.Info("urn:", fmt.Sprint(identifier))
-		fmt.Println("\nurn:", fmt.Sprint(identifier))
+		log.Info("urn:", fmt.Sprint(identifierRes))
+		fmt.Println("\nurn:", fmt.Sprint(identifierRes))
+		log.Info("jsonld:", fmt.Sprint(jsonRes))
+		fmt.Println("\njsonld:", fmt.Sprint(jsonRes))
 	},
 }
 
 func init() {
-	toolsCmd.AddCommand(identifierCmd)
+	toolsCmd.AddCommand(jsonLdCmd)
 
 	// Here you will define your flags and configuration settings.
-	identifierCmd.Flags().StringVar(&jsonVal, "jsonld", "", "jsonld file to read")
-	identifierCmd.Flags().StringVar(&idTypeVal, "idtype", "", "identifiertype to generate")
-	identifierCmd.Flags().StringVar(&idPathVal, "idtPath", "", "id path to use")
+	jsonLdCmd.Flags().StringVar(&jsonVal, "jsonld", "", "jsonld file to read")
+	jsonLdCmd.Flags().StringVar(&idTypeVal, "idtype", "", "identifiertype to generate")
+	jsonLdCmd.Flags().StringVar(&idPathVal, "idtPath", "", "id path to use")
 	log.SetLevel(log.ErrorLevel)
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:

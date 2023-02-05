@@ -243,12 +243,12 @@ func getOptions(ctxOption config.ContextOption) (config.ContextOption, string) {
 }
 
 // ##### end contxt fixes
-
-func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
+func ProcessJson(v1 *viper.Viper,
+	source *config.Sources, urlloc string, jsonld string) (string, common.Identifier, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error
-	sources, err := config.GetSources(v1)
-	source, err := config.GetSourceByName(sources, site)
+	//sources, err := config.GetSources(v1)
+	//source, err := config.GetSourceByName(sources, site)
 	srcFixOption, srcHttpOption := getOptions(source.FixContextOption)
 
 	// In the config file, context { strict: true } bypasses these fixups.
@@ -264,7 +264,8 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 		//}
 		jsonld, err = fixContextString(jsonld, srcFixOption)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from string to be an object Error:", err)
+			log.Error(
+				"ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from string to be an object Error:", err)
 		}
 		jsonld, err = fixContextArray(jsonld, srcFixOption)
 		if err != nil {
@@ -282,6 +283,83 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	if err != nil {
 		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
 	}
+	//sha := identifier.UniqueId
+	//objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
+	//contentType := "application/ld+json"
+	//b := bytes.NewBufferString(jsonld)
+	//// size := int64(b.Len()) // gets set to 0 after upload for some reason
+	//
+	//usermeta := make(map[string]string) // what do I want to know?
+	//usermeta["url"] = urlloc
+	//usermeta["sha1"] = sha
+	//usermeta["uniqueid"] = sha
+	//usermeta["jsonsha"] = identifier.JsonSha
+	//usermeta["identifiertype"] = identifier.IdentifierType
+	//if identifier.MatchedPath != "" {
+	//	usermeta["matchedpath"] = identifier.MatchedPath
+	//	usermeta["matchedstring"] = identifier.MatchedString
+	//}
+	//if config.IdentifierString == source.IdentifierType {
+	//	usermeta["sha1"] = identifier.JsonSha
+	//}
+	//if source.IdentifierType == config.SourceUrl {
+	//	log.Info("not suppported, yet. needs url sanitizing")
+	//}
+	// write the prov entry for this object
+	//err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
+	//if err != nil {
+	//	log.Error(err)
+	//}
+	//
+	//// ProcessJson the file with FPutObject
+	//_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+	//if err != nil {
+	//	log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+	//}
+	//log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
+	return jsonld, identifier, err
+}
+
+func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
+	var err error
+	//mcfg := v1.GetStringMapString("context")
+	sources, err := config.GetSources(v1)
+	source, err := config.GetSourceByName(sources, site)
+	//srcFixOption, srcHttpOption := getOptions(source.FixContextOption)
+
+	//// In the config file, context { strict: true } bypasses these fixups.
+	//// Strict defaults to false.
+	//// this is a command level
+	//if strict, ok := mcfg["strict"]; !(ok && strict == "true") || (srcFixOption != config.Strict) {
+	//	// source level
+	//
+	//	log.Info("context.strict is not set to true; doing json-ld fixups.")
+	//	//contextType := reflect.ValueOf(jsonld).Kind().String()
+	//	//if strings.HasPrefix(contextType, "string") || strings.HasPrefix(contextType, "map") {
+	//	//
+	//	//}
+	//	jsonld, err = fixContextString(jsonld, srcFixOption)
+	//	if err != nil {
+	//		log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from string to be an object Error:", err)
+	//	}
+	//	jsonld, err = fixContextArray(jsonld, srcFixOption)
+	//	if err != nil {
+	//		log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from array to be an object Error:", err)
+	//	}
+	//	//jsonld, err = fixContextUrl(jsonld, Https)
+	//	jsonld, err = fixContextUrl(jsonld, srcHttpOption) // CONST for now
+	//	if err != nil {
+	//		log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+	//	}
+	//
+	//}
+	////sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	//identifier, err := common.GenerateIdentifier(v1, *source, jsonld)
+	//if err != nil {
+	//	log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
+	//}
+	jsonld, identifier, err := ProcessJson(v1, source, urlloc, jsonld)
+
 	sha := identifier.UniqueId
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
 	contentType := "application/ld+json"
@@ -310,7 +388,7 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 		log.Error(err)
 	}
 
-	// Upload the file with FPutObject
+	// ProcessJson the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
 		log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
