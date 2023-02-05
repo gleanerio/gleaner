@@ -20,21 +20,20 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/millers/graph"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 )
 
-var jsonVal string
-var idTypeVal string
-var idPathVal string // string separated by a comman
-
 // batchCmd represents the batch command
-var identifierCmd = &cobra.Command{
-	Use:              "id",
+var rdfCmd = &cobra.Command{
+	Use:              "rdf",
 	TraverseChildren: true,
-	Short:            "Generate the identifier a jsonld string",
-	Long: `Execute gleaner to generate the identifier a jsonld string. 
+	Short:            "take a jsonld string and process it through the context",
+	Long: `Execute gleaner to process a jsonld string, and run through context and other
+processing.
 --jsonld jsonld file to read (reading from stdin, works)
 --idtype (filesha |identifiersha | identifierstring )
 --idPath (json path rule for the identifier)
@@ -52,7 +51,7 @@ There are three types of idtype:
 		//	runSources = append(runSources, sourceVal)
 		//}
 		source := configTypes.Sources{
-			Name:             "identifierCmd",
+			Name:             "rdfCmd",
 			IdentifierType:   idTypeVal,
 			FixContextOption: configTypes.Https,
 		}
@@ -85,22 +84,39 @@ There are three types of idtype:
 		log.Info(jsonld)
 		//uuid := common.GetSHA(jsonld)
 		//uuid, err := common.GetNormSHA(jsonld, gleanerViperVal) // Moved to the normalized sha value
-		identifier, err := common.GenerateIdentifier(gleanerViperVal, source, jsonld)
-		if err != nil {
-			log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
+		maps := []map[string]interface{}{
+			{"file": "./configs/schemaorg-current-https.jsonld", "prefix": "https://schema.org/"},
+			{"file": "./configs/schemaorg-current-http.jsonld", "prefix": "http://schema.org/"},
 		}
-		log.Info("urn:", fmt.Sprint(identifier))
-		fmt.Println("\nurn:", fmt.Sprint(identifier))
+		conf := map[string]interface{}{
+			"context": map[string]interface{}{"contextmap": maps},
+			"sources": []map[string]interface{}{{"name": "testSource"}},
+		}
+
+		var viper = viper.New()
+		for key, value := range conf {
+			viper.Set(key, value)
+		}
+
+		proc, options := common.JLDProc(viper)
+
+		rdfRes, err := graph.Obj2RDF(jsonld, proc, options)
+		if err != nil {
+			log.Error("ERROR: tools rdf:", "Action: getting rdf:", err)
+		}
+
+		log.Info("rdf:", fmt.Sprint(rdfRes))
+		fmt.Print("\nrdf:\n", fmt.Sprintf("%v", rdfRes))
 	},
 }
 
 func init() {
-	toolsCmd.AddCommand(identifierCmd)
+	toolsCmd.AddCommand(rdfCmd)
 
 	// Here you will define your flags and configuration settings.
-	identifierCmd.Flags().StringVar(&jsonVal, "jsonld", "", "jsonld file to read")
-	identifierCmd.Flags().StringVar(&idTypeVal, "idtype", "", "identifiertype to generate")
-	identifierCmd.Flags().StringVar(&idPathVal, "idtPath", "", "id path to use")
+	rdfCmd.Flags().StringVar(&jsonVal, "jsonld", "", "jsonld file to read")
+	rdfCmd.Flags().StringVar(&idTypeVal, "idtype", "", "identifiertype to generate")
+	rdfCmd.Flags().StringVar(&idPathVal, "idtPath", "", "id path to use")
 	log.SetLevel(log.ErrorLevel)
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
