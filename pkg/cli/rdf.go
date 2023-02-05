@@ -31,17 +31,10 @@ import (
 var rdfCmd = &cobra.Command{
 	Use:              "rdf",
 	TraverseChildren: true,
-	Short:            "take a jsonld string and process it through the context",
-	Long: `Execute gleaner to process a jsonld string, and run through context and other
-processing.
+	Short:            "take a jsonld string and process it through Obj2RDF",
+	Long: `Execute gleaner to process a jsonld string,  process it through Obj2RDF.
 --jsonld jsonld file to read (reading from stdin, works)
---idtype (filesha |identifiersha | identifierstring )
---idPath (json path rule for the identifier)
 
-There are three types of idtype: 
-* filesha -just generate the sha for the entire jsonld file
-* identifiersha - use identifieter rules to determine the identifier, and generate the sha
-* identifierstring -(not yet implemented) use idenfitfer rules to determine identifier, then convert to a url safe string.
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -82,8 +75,7 @@ There are three types of idtype:
 		}
 
 		log.Info(jsonld)
-		//uuid := common.GetSHA(jsonld)
-		//uuid, err := common.GetNormSHA(jsonld, gleanerViperVal) // Moved to the normalized sha value
+
 		maps := []map[string]interface{}{
 			{"file": "./configs/schemaorg-current-https.jsonld", "prefix": "https://schema.org/"},
 			{"file": "./configs/schemaorg-current-http.jsonld", "prefix": "http://schema.org/"},
@@ -115,8 +107,7 @@ func init() {
 
 	// Here you will define your flags and configuration settings.
 	rdfCmd.Flags().StringVar(&jsonVal, "jsonld", "", "jsonld file to read")
-	rdfCmd.Flags().StringVar(&idTypeVal, "idtype", "", "identifiertype to generate")
-	rdfCmd.Flags().StringVar(&idPathVal, "idtPath", "", "id path to use")
+
 	log.SetLevel(log.ErrorLevel)
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
