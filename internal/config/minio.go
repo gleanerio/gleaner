@@ -22,6 +22,7 @@ var MinioTemplate = map[string]interface{}{
 		"accesskey": "",
 		"secretkey": "",
 		"bucket":    "",
+		"ssl":       "false",
 	},
 }
 

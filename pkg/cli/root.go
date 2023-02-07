@@ -84,70 +84,9 @@ func init() {
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-//func initLogging() {
-//	// name the file with the date and time
-//	const layout = "2006-01-02-15-04-05"
-//	t := time.Now()
-//	lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
-//
-//	LogFile := lf // log to custom file
-//	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-//	if err != nil {
-//		log.Panic(err)
-//		return
-//	}
-//
-//	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
-//	log.SetReportCaller(true)              // include file name and line number
-//	mw := io.MultiWriter(os.Stdout, logFile)
-//	log.SetOutput(mw)
-//	//log.SetOutput(logFile)
-//}
-
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 
-	//gleanerViperVal = viper.New()
-	//if cfgFile != "" {
-	//	// Use config file from the flag.
-	//	gleanerViperVal.SetConfigFile(cfgFile)
-	//} else {
-	//	// Find home directory.
-	//	home, err := os.UserHomeDir()
-	//	cobra.CheckErr(err)
-	//
-	//	// Search config in home directory with name ".gleaner" (without extension).
-	//	gleanerViperVal.AddConfigPath(home)
-	//	gleanerViperVal.AddConfigPath(path.Join(cfgPath, cfgName))
-	//	gleanerViperVal.SetConfigType("yaml")
-	//	gleanerViperVal.SetConfigName("gleaner")
-	//}
-	//nabuViperVal = viper.New()
-	//if cfgFile != "" {
-	//	// Use config file from the flag.
-	//	nabuViperVal.SetConfigFile(cfgFile)
-	//} else {
-	//	// Find home directory.
-	//	home, err := os.UserHomeDir()
-	//	cobra.CheckErr(err)
-	//
-	//	// Search config in home directory with name ".gleaner" (without extension).
-	//	nabuViperVal.AddConfigPath(home)
-	//	nabuViperVal.AddConfigPath(path.Join(cfgPath, cfgName))
-	//	nabuViperVal.SetConfigType("yaml")
-	//	nabuViperVal.SetConfigName("nabu")
-	//}
-	//viper.AutomaticEnv() // read in environment variables that match
-	//
-	//// If a config file is found, read it in.
-	//if err := gleanerViperVal.ReadInConfig(); err == nil {
-	//	fmt.Fprintln(os.Stderr, "Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
-	//} else {
-	//	log.Fatal("error reading config file")
-	//}
-	//if err := nabuViperVal.ReadInConfig(); err == nil {
-	//	fmt.Fprintln(os.Stderr, "Using nabu config file:", nabuViperVal.ConfigFileUsed())
-	//}
 	// Setup the KV store to hold a record of indexed resources
 	var err error
 	db, err = bolt.Open("gleaner.db", 0600, nil)
