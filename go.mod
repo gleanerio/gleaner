@@ -28,6 +28,8 @@ require (
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292
 )
 
+require github.com/valyala/fasttemplate v1.2.2
+
 require (
 	cloud.google.com/go v0.97.0 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
@@ -38,7 +40,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/gobwas/httphead v0.1.0 // indirect
+	github.com/gobwas/httphead v0.1.0 // indirect; indirect get fasttemplate
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.0.4 // indirect
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
