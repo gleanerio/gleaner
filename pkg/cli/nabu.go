@@ -34,16 +34,19 @@ var NabuCmd = &cobra.Command{
 	},
 }
 
-var prefixVal string
+var prefixVal []string
+var sparqlEndpointVal string
 
 func init() {
 	rootCmd.AddCommand(NabuCmd)
 
 	// Here you will define your flags and configuration settings.
 	//NabuCmd.Flags().StringVar(&nabuVal, "cfg", "nabu", "Configuration file")
-	NabuCmd.PersistentFlags().StringVar(&prefixVal, "prefix", "", "Prefix to override config file setting")
+	NabuCmd.PersistentFlags().StringArrayVar(&prefixVal, "prefix", []string{}, "Prefix to override config file setting")
 	NabuCmd.PersistentFlags().MarkDeprecated("source", "use --prefix prov/source or milled/source to override loading")
 	NabuCmd.PersistentFlags().MarkShorthandDeprecated("source", "use --prefix prov/source or milled/source to override loading")
+	// sparql
+	NabuCmd.PersistentFlags().StringVar(&sparqlEndpointVal, "sparqlurl", "", "SPARQL_ENDPOINT")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// gleanerCmd.PersistentFlags().String("foo", "", "A help for foo")
@@ -89,5 +92,22 @@ func initNabuConfig() {
 	bucketVal, err = config.GetBucketName(nabuViperVal)
 	if err != nil {
 		log.Fatal("cannot read bucketname from : %s ", err)
+	}
+
+	if len(prefixVal) > 0 {
+		//out := viperVal.GetStringMapString("objects")
+		//d := out["domain"]
+
+		var p []string
+		for _, pre := range prefixVal {
+			p = append(p, pre)
+		}
+
+		nabuViperVal.Set("objects.prefix", p)
+
+		//p := prefixVal
+		// r := out["region"]
+		// v1.Set("objects", map[string]string{"bucket": b, "prefix": NEWPREFIX, "region": r})
+		//viperVal.Set("objects", map[string]string{"domain": d, "prefix": p})
 	}
 }
