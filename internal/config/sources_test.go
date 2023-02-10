@@ -7,10 +7,11 @@ import (
 
 var sources = []Sources{
 	{
-		Name:       "test1",
-		Headless:   true,
-		Active:     true,
-		SourceType: "sitemap",
+		Name:           "test1",
+		Headless:       true,
+		Active:         true,
+		SourceType:     "sitemap",
+		IdentifierType: IdentifierSha,
 	},
 	{
 		Name:       "test2",
@@ -19,10 +20,11 @@ var sources = []Sources{
 		SourceType: "robots",
 	},
 	{
-		Name:       "test3",
-		Headless:   false,
-		Active:     false,
-		SourceType: "sitemap",
+		Name:           "test3",
+		Headless:       false,
+		Active:         false,
+		SourceType:     "sitemap",
+		IdentifierType: JsonSha,
 	},
 	{
 		Name:       "test4",
@@ -38,16 +40,18 @@ func TestGetSourceByType(t *testing.T) {
 	t.Run("It gets sources of the given type", func(t *testing.T) {
 		expected := []Sources{
 			{
-				Name:       "test1",
-				Headless:   true,
-				Active:     true,
-				SourceType: "sitemap",
+				Name:           "test1",
+				Headless:       true,
+				Active:         true,
+				SourceType:     "sitemap",
+				IdentifierType: IdentifierSha,
 			},
 			{
-				Name:       "test3",
-				Headless:   false,
-				Active:     false,
-				SourceType: "sitemap",
+				Name:           "test3",
+				Headless:       false,
+				Active:         false,
+				SourceType:     "sitemap",
+				IdentifierType: JsonSha,
 			},
 			{
 				Name:       "test4",

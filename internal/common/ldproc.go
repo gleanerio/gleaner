@@ -1,5 +1,7 @@
 package common
 
+// this needs to have some wrapper around normalize to throw an error when things are not right
+
 import (
 	log "github.com/sirupsen/logrus"
 	"net/http"

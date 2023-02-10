@@ -13,6 +13,46 @@ import (
 	"strings"
 )
 
+const (
+	IdentifierSha     string = "identifiersha"
+	JsonSha                  = "jsonsha"
+	NormalizedJsonSha        = "normalizedjsonsha"
+	IdentifierString         = "identifierstring"
+	SourceUrl                = "sourceurl"
+)
+
+type ContextOption int64
+
+const (
+	Strict ContextOption = iota
+	Https
+	Http
+	//	Array
+	//	Object
+	StandardizedHttps
+	StandardizedHttp
+)
+
+func (s ContextOption) String() string {
+	switch s {
+	case Strict:
+		return "strict"
+	case Https:
+		return "https"
+	case Http:
+		return "http"
+		//	case Array:
+		//		return "array"
+		//	case Object:
+		//		return "object"
+	case StandardizedHttps:
+		return "standardizedHttps"
+	case StandardizedHttp:
+		return "standardizedHttp"
+	}
+	return "unknown"
+}
+
 // as read from csv
 type Sources struct {
 	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, and robots
@@ -25,12 +65,15 @@ type Sources struct {
 	ProperName      string
 	Domain          string
 	Active          bool                   `default:"true"`
-	CredentialsFile string                 // do not want someones google api key exposed.
+	CredentialsFile string                 // do not want someone's google api key exposed.
 	Other           map[string]interface{} `mapstructure:",remain"`
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait int   // if loading is slow, wait
-	Delay        int64 // A domain-specific crawl delay value
+	HeadlessWait     int    // if loading is slow, wait
+	Delay            int64  // A domain-specific crawl delay value
+	IdentifierPath   string // one string JSON Path to the identifier
+	IdentifierType   string
+	FixContextOption ContextOption
 }
 
 // add needed for file
@@ -44,21 +87,29 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait int // is loading is slow, wait
+	HeadlessWait     int    // is loading is slow, wait
+	Delay            int64  // A domain-specific crawl delay value
+	IdentifierPath   string // JSON Path to the identifier
+	IdentifierType   string
+	FixContextOption ContextOption
 }
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype":      "sitemap",
-		"name":            "",
-		"url":             "",
-		"logo":            "",
-		"headless":        "",
-		"pid":             "",
-		"propername":      "",
-		"domain":          "",
-		"credentialsfile": "",
-		"headlesswait":    "0",
+		"sourcetype":       "sitemap",
+		"name":             "",
+		"url":              "",
+		"logo":             "",
+		"headless":         "",
+		"pid":              "",
+		"propername":       "",
+		"domain":           "",
+		"credentialsfile":  "",
+		"headlesswait":     "0",
+		"delay":            "0",
+		"identifierpath":   "",
+		"identifiertype":   JsonSha,
+		"fixcontextoption": "https",
 	},
 }
 

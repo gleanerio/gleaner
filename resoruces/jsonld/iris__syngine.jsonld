@@ -1,0 +1,28 @@
+{
+  "@context": {
+    "@vocab": "http://schema.org/"
+  },
+  "@id": "https://ds.iris.edu/ds/products/syngine/",
+  "@type": "Dataset",
+  "name": "On demand custom 3D AxiSEM synthetic seismograms",
+  "alternateName": [
+    "syngine"
+  ],
+  "description": "The *Synthetics Engine* (Syngine) service provides access to custom tailored synthetic seismograms for selected *Earth* and *Mars* models.",
+  "url": "https://ds.iris.edu/ds/products/syngine/",
+  "dateCreated": "2015-09-16T05:00:16.792",
+  "dateModified": "2021-09-23T21:38:59.924",
+  "includedInDataCatalog": {
+    "@type": "DataCatalog",
+    "@id": "https://ds.iris.edu/ds/products/",
+    "url": "https://ds.iris.edu/ds/products/"
+  },
+  "keywords": "Green's functions,SAC,seismic,geophysics,Earth Models,mars,miniSEED,Syngine,AxiSEM,Synthetics,seismology,Mars Models,Instaseis",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "IRIS Data Products"
+    }
+  ],
+  "image": "https://ds.iris.edu/media/product/syngine/images/Syngine_Logo.png"
+}
