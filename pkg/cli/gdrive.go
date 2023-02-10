@@ -8,8 +8,9 @@ import (
 
 // initCmd represents the init command
 var gdriveCmd = &cobra.Command{
-	Use:   "gdrive",
-	Short: "This retrieves and store google drive credentials",
+	Use:              "gdrive",
+	TraverseChildren: true,
+	Short:            "This retrieves and store google drive credentials",
 	Long: `This retrieves and store google drive credentials
 `,
 	Run: func(cmd *cobra.Command, args []string) {

@@ -9,9 +9,10 @@ import (
 
 // checkCmd represents the check command
 var prefixCmd = &cobra.Command{
-	Use:   "prefix ",
-	Short: "nabu prefix command",
-	Long:  `Load graphs from prefix to triplestore`,
+	Use:              "prefix",
+	TraverseChildren: true,
+	Short:            "nabu prefix command",
+	Long:             `Load graphs from prefix to triplestore`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("nabu prefix called")
 		mime.AddExtensionType(".jsonld", "application/ld+json")
