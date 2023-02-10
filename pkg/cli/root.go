@@ -53,8 +53,8 @@ func init() {
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
 	if skey != "" || akey != "" {
-		fmt.Println(" MINIO_ACCESS_KEY or  MINIO_SECRET_KEY are set")
-		fmt.Println("if this is not intentional, please unset")
+		log.Println(" MINIO_ACCESS_KEY or  MINIO_SECRET_KEY are set")
+		log.Println("if this is not intentional, please unset")
 	}
 	// set in in internal/configs
 	//akey := os.Getenv("MINIO_ACCESS_KEY")
