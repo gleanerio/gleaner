@@ -255,6 +255,16 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	}
 	defer domContent.Close()
 
+	// Open a LoadEventFired client to buffer this event.
+	loadEventFired, err := c.Page.LoadEventFired(ctx)
+	if err != nil {
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+		repoStats.Inc(common.HeadlessError)
+		return response, err
+	}
+	defer loadEventFired.Close()
+
 	// Create the Navigate arguments with the optional Referrer field set.
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
@@ -264,6 +274,12 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 		repoStats.Inc(common.HeadlessError)
 		return response, err
 	}
+
+	_, err = loadEventFired.Recv()
+	if err != nil {
+		return nil, err
+	}
+	loadEventFired.Close()
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
