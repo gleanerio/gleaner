@@ -16,6 +16,7 @@ require (
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/mafredri/cdp v0.32.0
 	github.com/minio/minio-go/v7 v7.0.15
+	github.com/ohler55/ojg v1.14.5
 	github.com/piprate/json-gold v0.5.0
 	github.com/rs/xid v1.2.1
 	github.com/schollz/progressbar/v3 v3.8.3
