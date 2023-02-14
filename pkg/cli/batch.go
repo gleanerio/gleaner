@@ -20,6 +20,7 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
+	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
 	"os"
 
@@ -49,7 +50,7 @@ and store to a S3 server:
 		if sourceVal != "" {
 			runSources = append(runSources, sourceVal)
 		}
-		Batch(glrVal, cfgPath, cfgName, modeVal, runSources)
+		Batch(gleanerViperVal, modeVal, runSources)
 	},
 }
 
@@ -70,15 +71,17 @@ func init() {
 	// batchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func Batch(filename string, cfgPath string, cfgName string, mode string, runSources []string) {
+func Batch(v1 *viper.Viper, mode string, runSources []string) {
+	// gleanerViperVal is declared in cli/root.go, and read in cli/gleaner.go
 
-	v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
-	if err != nil {
-		//panic(err)
-		fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
-		log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
-		os.Exit(66)
-	}
+	//v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
+	//if err != nil {
+	//	//panic(err)
+	//	fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+	//	log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+	//	os.Exit(66)
+	//}
+
 	mc := common.MinioConnection(v1)
 	// setup the KV store to hold a record of indexed resources
 	db, err := bolt.Open(path.Join(cfgPath, cfgName, "gleaner.db"), 0600, nil)
