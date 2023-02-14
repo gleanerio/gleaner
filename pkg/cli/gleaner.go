@@ -9,7 +9,6 @@ import (
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"os"
 	"path"
 )
@@ -48,8 +47,7 @@ func init() {
 }
 
 func initGleanerConfig() {
-
-	var gleanerViperVal *viper.Viper
+	// gleanerViperVal is declared in cli/root.go
 	var err error
 	if cfgFile != "" {
 

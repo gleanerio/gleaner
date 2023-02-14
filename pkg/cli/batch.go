@@ -72,6 +72,7 @@ func init() {
 }
 
 func Batch(v1 *viper.Viper, mode string, runSources []string) {
+	// gleanerViperVal is declared in cli/root.go, and read in cli/gleaner.go
 
 	//v1, err := configTypes.ReadGleanerConfig(filename, path.Join(cfgPath, cfgName))
 	//if err != nil {
