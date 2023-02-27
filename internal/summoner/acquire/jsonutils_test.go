@@ -1,6 +1,7 @@
 package acquire
 
 import (
+	approvals "github.com/approvals/go-approval-tests"
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -391,16 +392,23 @@ func TestContextArrayFix(t *testing.T) {
       "SO:name":"Some type in a graph" 
     }`
 	// is this really what we want?
+	// probably want to parameterize,
+	// little hack to show approvals working.
 	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
 		result, err := fixContextArray(contextArrayJson, config.Https)
 		//assert.JSONEq(t, contextObjectJson, result)
 		assert.JSONEq(t, contextStandardized, result)
+		approvals.UseFolder("testdata")
+		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 
 	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
 		result, err := fixContextArray(contextObjectJson, config.Https)
 		assert.JSONEq(t, contextObjectJson, result)
+
+		approvals.UseFolder("testdata")
+		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 
@@ -408,12 +416,17 @@ func TestContextArrayFix(t *testing.T) {
 		result, err := fixContextArray(contextMixedJson, config.Https)
 		//assert.JSONEq(t, contextMixedJson, result)
 		assert.JSONEq(t, contextStandardized, result)
+		approvals.UseFolder("testdata")
+		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 	t.Run("It should change the  the jsonld context if the 'local' namespace is a string", func(t *testing.T) {
 		result, err := fixContextArray(contextLocalNamspaceJson, config.Https)
 		//assert.JSONEq(t, contextObjectJson, result)
 		assert.JSONEq(t, contextStandardized, result)
+
+		approvals.UseFolder("testdata")
+		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 }

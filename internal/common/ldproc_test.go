@@ -2,6 +2,9 @@ package common
 
 import (
 	"bytes"
+	approvals "github.com/approvals/go-approval-tests"
+	"github.com/approvals/go-approval-tests/reporters"
+	"os"
 
 	"encoding/json"
 	"fmt"
@@ -10,6 +13,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	//r := UseReporter(reporters.NewContinuousIntegrationReporter())
+	r := approvals.UseReporter(reporters.NewGoLandReporter())
+	defer r.Close()
+
+	approvals.UseFolder("testdata")
+
+	os.Exit(m.Run())
+}
 
 // jsonexpectations is in test_common_structs
 /* ldjsonprocessor.Normalize often returns "" or the same set of triples
@@ -56,6 +69,9 @@ func TestNormalizeTriple(t *testing.T) {
         }
     ]
 }`
+
+	// now using approval test approach, so expected not needed
+	// look in testdata for recieved and approved information
 	var tests = []jsonexpectations{
 		// default
 		{
@@ -127,7 +143,8 @@ sources:
 				result, err := proc.Normalize(myInterface, options)
 
 				valStr := fmt.Sprint(result)
-				assert.Equal(t, test.expected, valStr)
+				//assert.Equal(t, test.expected, valStr)
+				approvals.VerifyString(t, valStr)
 				if test.errorExpected {
 					assert.NotNil(t, err)
 				} else {
