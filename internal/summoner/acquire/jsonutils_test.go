@@ -4,6 +4,8 @@ import (
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -72,11 +74,18 @@ var v1 = viper.New()
 
 func TestIsValid(t *testing.T) {
 	t.Run("It returns true for valid JSON-LD", func(t *testing.T) {
-		result, err := isValid(v1, validJson)
+		path := filepath.Join("testdata", "jsonutils", "validJson.json")
+		assert.FileExistsf(t, path, "Datafile Missing: {path}")
+		source, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal("error reading source file:", err)
+		}
+		result, err := isValid(v1, string(source))
 		assert.Equal(t, true, result)
 		assert.Nil(t, err)
 	})
 	t.Run("It returns false and throws an error for invalid JSON-LD", func(t *testing.T) {
+
 		result, err := isValid(v1, invalidJson)
 		assert.Equal(t, false, result)
 		assert.NotNil(t, err)
@@ -152,6 +161,8 @@ func TestContextStringFix(t *testing.T) {
 	})
 }
 
+// this is the exact case for approvals tests.
+
 func TestContextUrlFix(t *testing.T) {
 	var httpContext = `{
 "@context": {
@@ -218,24 +229,25 @@ func TestContextUrlFix(t *testing.T) {
 "@type":"bar",
 "SO:name":"Some type in a graph"
 }`
-	// ContextObjectGraphJson  from global
-	var expectedContextObjectGraphJson = ` {
-		"@context": {
-		"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-			"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-			"schema": "https://schema.org/",
-			"xsd": "http://www.w3.org/2001/XMLSchema#"
-	    },
-		"@graph": [
-		      {
-					"@id": "https://wifire-data.sdsc.edu/dataset/a1770ff8-1665-433c-88fb-c8e6863c61fc/resource/b01d00d2-1d64-47b8-aa5c-00410d84e6e6",
-					"@type": "schema:DataDownload",
-					"schema:encodingFormat": "GeoJSON",
-					"schema:name": "GeoJSON",
-					"schema:url": "https://gis-calema.opendata.arcgis.com/datasets/34402e97810f410db0ccd1ae345d9807_5.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
-				}
-		]
-	}`
+	// now handled by a file load
+	//// ContextObjectGraphJson  from global
+	//var expectedContextObjectGraphJson = ` {
+	//	"@context": {
+	//	"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+	//		"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+	//		"schema": "https://schema.org/",
+	//		"xsd": "http://www.w3.org/2001/XMLSchema#"
+	//   },
+	//	"@graph": [
+	//	      {
+	//				"@id": "https://wifire-data.sdsc.edu/dataset/a1770ff8-1665-433c-88fb-c8e6863c61fc/resource/b01d00d2-1d64-47b8-aa5c-00410d84e6e6",
+	//				"@type": "schema:DataDownload",
+	//				"schema:encodingFormat": "GeoJSON",
+	//				"schema:name": "GeoJSON",
+	//				"schema:url": "https://gis-calema.opendata.arcgis.com/datasets/34402e97810f410db0ccd1ae345d9807_5.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+	//			}
+	//	]
+	//}`
 
 	t.Run("It rewrites the jsonld context if it does not have a trailing slash", func(t *testing.T) {
 		result, err := fixContextUrl(noSlashContext, httpsContext)
@@ -275,8 +287,20 @@ func TestContextUrlFix(t *testing.T) {
 	})
 
 	t.Run("It rewrites the jsonld context so it uses https", func(t *testing.T) {
-		result, err := fixContextUrl(contextObjectGraphJson, httpsContext)
-		assert.JSONEq(t, expectedContextObjectGraphJson, result)
+		path := filepath.Join("testdata", "jsonutils", "contextObjectGraphJson.json")
+		assert.FileExistsf(t, path, "Datafile Missing: {path}")
+		source, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal("error reading source file:", err)
+		}
+		result, err := fixContextUrl(string(source), httpsContext)
+		pathex := filepath.Join("testdata", "jsonutils", "expectedContextObjGraph.json")
+		assert.FileExistsf(t, pathex, "Datafile Missing: {path}")
+		expected, err := os.ReadFile(pathex)
+		if err != nil {
+			t.Fatal("error reading source file:", err)
+		}
+		assert.JSONEq(t, string(expected), result)
 		assert.Nil(t, err)
 	})
 
