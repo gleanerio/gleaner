@@ -46,8 +46,7 @@ func GetNormSHA(jsonld string, v1 *viper.Viper) (string, error) {
 	// even an empty interface/string generates a sha. so if this is empty, do this now.
 	if normalizedTriples == "" {
 		log.Error("Error: empty normalize triples")
-		h.Write([]byte(jsonld))
-		hs := h.Sum(nil)
+		hs := GetSHA(jsonld)
 		err = errors.New("Error: empty normalize triples")
 		return fmt.Sprintf("%x", hs), err
 	}
