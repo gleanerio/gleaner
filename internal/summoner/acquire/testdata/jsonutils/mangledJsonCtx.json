@@ -1,0 +1,16 @@
+{
+    "@graph":[
+        {
+            "@context": [
+					"https://schema.org/",
+					{
+					  "gsqtime": "https://vocabs.gsq.digital/object?uri=http://linked.data.gov.au/def/trs",
+					  "time": "http://www.w3.org/2006/time#",
+					  "xsd": "https://www.w3.org/TR/2004/REC-xmlschema-2-20041028/datatypes.html"
+					}
+				  ],
+            "@type":"bar",
+            "SO:name":"Some type in a graph"
+        }
+    ]
+}
