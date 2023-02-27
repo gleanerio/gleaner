@@ -1,0 +1,143 @@
+{
+  "@context": {
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "_:N4c6352f015f54e27a532ac1e0d693293",
+      "@type": "schema:ContactPoint",
+      "schema:contactType": "customer service",
+      "schema:name": "CA Governor's Office of Emergency Services",
+      "schema:url": "https://wifire-data.sdsc.edu"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/87accf29-5b48-49dd-b299-b0a417f5a8c6",
+      "@type": "schema:DataDownload",
+      "schema:encodingFormat": "KML",
+      "schema:name": "KML",
+      "schema:url": "https://gis-calema.opendata.arcgis.com/datasets/b426dba2dacb4d788d85ad061e14e6db_2.kml?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    },
+    {
+      "@id": "_:N6c68117e012c4c77ba9c82f6264c5836",
+      "@type": "schema:DataCatalog",
+      "schema:description": "",
+      "schema:name": "WIFIRE Commons Data Catalog",
+      "schema:url": "https://wifire-data.sdsc.edu"
+    },
+    {
+      "@id": "_:N8022daf479db4a99a26bfc41fe5cef9b",
+      "@type": "schema:GeoShape",
+      "schema:polygon": "{\"type\": \"Polygon\", \"coordinates\": [[[-178.4436, -14.3743], [-178.4436, 71.3905], [146.0827, 71.3905], [146.0827, -14.3743], [-178.4436, -14.3743]]]}"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a",
+      "@type": "schema:Dataset",
+      "schema:dateModified": [
+        "2020-04-15T23:04:24+00:00",
+        "2020-04-15T23:04:24.000Z"
+      ],
+      "schema:datePublished": [
+        "2018-01-16T20:02:32+00:00",
+        "2018-01-16T20:02:32.000Z"
+      ],
+      "schema:description": "<span style='font-family: &quot;Avenir Next W01&quot;, &quot;Avenir Next W00&quot;, &quot;Avenir Next&quot;, Avenir, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif; font-size: 17px; background-color: rgb(255, 255, 255);'>This dataset represents regions, which are part of the national field level structure to support chapters. The Regions role is administrative as well as to provide oversight and program technical support to the chapters. This Region shapefile reflects the region boundaries with the associated attribute information. Red Cross Geography Model: Counties make up chapters, chapters make up regions and regions make up divisions. There are five exceptions to the Red Cross Geography model: Middlesex County, MA, Los Angeles, Kern, Riverside and San Bernardino Counties in California which are covered by more than one chapter. (many to one). In the case of these five counties, the geometry was dissolved from zip codes.\u00a0</span>",
+      "schema:distribution": [
+        {
+          "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/e53f2226-f9b0-45a0-9ec8-6fd72b6fcfe8"
+        },
+        {
+          "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/2b9bb554-48e3-44fb-b253-b27e32a3f3d9"
+        },
+        {
+          "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/7a24ea41-4c3e-43b9-85df-880e4754d613"
+        },
+        {
+          "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/0850ffdb-8cde-4c2d-baca-5616b56675d1"
+        },
+        {
+          "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/ed9b42d2-4260-490b-be0d-1a09e138ab12"
+        },
+        {
+          "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/87accf29-5b48-49dd-b299-b0a417f5a8c6"
+        }
+      ],
+      "schema:includedInDataCatalog": {
+        "@id": "_:N6c68117e012c4c77ba9c82f6264c5836"
+      },
+      "schema:keywords": [
+        "Data Library",
+        "Boundaries and Regions",
+        "HIFLD",
+        "CalOES Library",
+        "ESF5",
+        "Basedata",
+        "CalOES Data Library",
+        "ESF6",
+        "Emergency Services",
+        "American Red Cross Regions"
+      ],
+      "schema:license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "schema:name": "American Red Cross Regions",
+      "schema:publisher": {
+        "@id": "https://wifire-data.sdsc.edu/organization/0e04d99f-90be-40d7-bf0a-ddda02f1eb09"
+      },
+      "schema:spatialCoverage": {
+        "@id": "_:N57eefc034db64b7d8b24c0b108fd2e7f"
+      },
+      "schema:url": "https://wifire-data.sdsc.edu/dataset/american-red-cross-regions"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/2b9bb554-48e3-44fb-b253-b27e32a3f3d9",
+      "@type": "schema:DataDownload",
+      "schema:encodingFormat": "GeoJSON",
+      "schema:name": "GeoJSON",
+      "schema:url": "https://gis-calema.opendata.arcgis.com/datasets/b426dba2dacb4d788d85ad061e14e6db_2.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/ed9b42d2-4260-490b-be0d-1a09e138ab12",
+      "@type": "schema:DataDownload",
+      "schema:encodingFormat": "HTML",
+      "schema:name": "ArcGIS Hub Dataset",
+      "schema:url": "https://gis-calema.opendata.arcgis.com/datasets/b426dba2dacb4d788d85ad061e14e6db_2"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/organization/0e04d99f-90be-40d7-bf0a-ddda02f1eb09",
+      "@type": "schema:Organization",
+      "schema:contactPoint": {
+        "@id": "_:N4c6352f015f54e27a532ac1e0d693293"
+      },
+      "schema:name": "CA Governor's Office of Emergency Services"
+    },
+    {
+      "@id": "_:N57eefc034db64b7d8b24c0b108fd2e7f",
+      "@type": "schema:Place",
+      "schema:geo": {
+        "@id": "_:N8022daf479db4a99a26bfc41fe5cef9b"
+      }
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/7a24ea41-4c3e-43b9-85df-880e4754d613",
+      "@type": "schema:DataDownload",
+      "schema:encodingFormat": "Esri REST",
+      "schema:name": "Esri Rest API",
+      "schema:url": "https://services.arcgis.com/pGfbNJoYypmNq86F/ArcGIS/rest/services/ARC_Master_Geography_FY19_January/FeatureServer/2"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/e53f2226-f9b0-45a0-9ec8-6fd72b6fcfe8",
+      "@type": "schema:DataDownload",
+      "schema:encodingFormat": "ZIP",
+      "schema:name": "Shapefile",
+      "schema:url": "https://gis-calema.opendata.arcgis.com/datasets/b426dba2dacb4d788d85ad061e14e6db_2.zip?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    },
+    {
+      "@id": "https://wifire-data.sdsc.edu/dataset/8fd44c38-f6d3-429c-a785-1498dfaa2a6a/resource/0850ffdb-8cde-4c2d-baca-5616b56675d1",
+      "@type": "schema:DataDownload",
+      "schema:encodingFormat": "CSV",
+      "schema:name": "CSV",
+      "schema:url": "https://gis-calema.opendata.arcgis.com/datasets/b426dba2dacb4d788d85ad061e14e6db_2.csv?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
+    }
+  ]
+}

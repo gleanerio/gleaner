@@ -1,0 +1,45 @@
+{
+  "@id":"idenfitier",
+  "identifier":"doi:10.1575/1912/bco-dmo.2343.1",
+  "identifierArray": [
+    {
+      "@type": "PropertyValue",
+      "@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
+      "propertyID": "https://registry.identifiers.org/registry/doi",
+      "value": "doi:10.1575/1912/bco-dmo.2343.1",
+      "url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
+    }
+  ],
+  "identifierSArray": [
+    {
+      "@type": "PropertyValue",
+      "@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
+      "propertyID": "https://registry.identifiers.org/registry/doi",
+      "value": "doi:10.1575/1912/bco-dmo.2343.1",
+      "url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
+    },
+    {
+      "@type": "PropertyValue",
+      "@id": "https://doi.org/10.1575/1912/bco-dmo.2343.N",
+      "propertyID": "https://registry.identifiers.org/registry/doi",
+      "value": "doi:10.1575/1912/bco-dmo.2343.1N",
+      "url": "https://doi.org/10.1575/1912/bco-dmo.2343.N"
+    },
+    {
+      "@type": "PropertyValue",
+      "@id": "https://doi.org/10.1575/1912/bco-dmo.2343.P",
+      "propertyID": "https://purl.org",
+      "value": "doi:10.1575/1912/bco-dmo.2343.P",
+      "url": "https://doi.org/10.1575/1912/bco-dmo.2343.P"
+    }
+  ],
+  "identifierObj":
+  {
+    "@type": "PropertyValue",
+    "@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
+    "propertyID": "https://registry.identifiers.org/registry/doi",
+    "value": "doi:10.1575/1912/bco-dmo.2343.1",
+    "url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
+  }
+
+}
