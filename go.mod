@@ -28,6 +28,8 @@ require (
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 )
 
+require github.com/valyala/fasttemplate v1.2.2
+
 require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
