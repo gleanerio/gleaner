@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
@@ -12,9 +15,25 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+func runStatsOutput(runStats *common.RunStats) {
+	fmt.Print(runStats.Output())
+	const layout = "2006-01-02-15-04-05"
+	t := time.Now()
+	lf := fmt.Sprintf("%s/gleaner-runstats-%s.log", common.Logpath, t.Format(layout))
+
+	LogFile := lf // log to custom file
+	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	logFile.WriteString(runStats.Output())
+	logFile.Close()
+}
+
 // Summoner pulls the resources from the data facilities
 // func Summoner(mc *minio.Client, cs utils.Config) {
 func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
+
 	st := time.Now()
 	log.Info("Summoner start time:", st) // Log the time at start for the record
 	runStats := common.NewRunStats()
@@ -26,6 +45,15 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	} else if len(apiSources) > 0 {
 		acquire.RetrieveAPIData(apiSources, mc, db, runStats, v1)
 	}
+
+
+	c := make(chan os.Signal)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+	go func() {
+		<-c
+		runStatsOutput(runStats)
+		os.Exit(1)
+	}()
 
 	// Get a list of resource URLs that do and don't require headless processing
 	ru, err := acquire.ResourceURLs(v1, mc, false, db)
@@ -51,8 +79,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	diff := et.Sub(st)
 	log.Info("Summoner end time:", et)
 	log.Info("Summoner run time:", diff.Minutes())
-	fmt.Print(runStats.Output())
-
+	runStatsOutput(runStats)
 	// What do I need to the "run" prov
 	// the URLs indexed  []string
 	// the graph generated?  "version" the graph by the build date

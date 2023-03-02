@@ -14,8 +14,9 @@ import (
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "This initialize a config directory which are used create config files",
+	Use:              "init",
+	TraverseChildren: true,
+	Short:            "This initialize a config directory which are used create config files",
 	Long: `config init creates template configuration files. :
 localConfig.yaml - configuration file for services
 sources.csv - a csv listing of sources that are uses to generate lists of files to harvest

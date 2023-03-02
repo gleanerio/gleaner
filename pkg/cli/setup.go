@@ -15,9 +15,10 @@ import (
 
 // setupCmd represents the Setup command
 var setupCmd = &cobra.Command{
-	Use:   "setup",
-	Short: "setup gleaner process",
-	Long:  `connects to S3 store, creates buckets, `,
+	Use:              "setup",
+	TraverseChildren: true,
+	Short:            "setup gleaner process",
+	Long:             `connects to S3 store, creates buckets, `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("setup called")
 		setup(glrVal, cfgPath, cfgName)

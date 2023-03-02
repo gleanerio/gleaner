@@ -14,9 +14,9 @@ context:
   cache: true
 contextmaps:
 - prefix: "https://schema.org/"
-  file: "./configs/schemaorg-current-https.jsonld"
+  file: "./assets/schemaorg-current-https.jsonld"
 - prefix: "http://schema.org/"
-  file: "./configs/schemaorg-current-https.jsonld"
+  file: "./assets/schemaorg-current-http.jsonld"
 summoner:
   after: ""      # "21 May 20 10:00 UTC"   
   mode: full  # full || diff:  If diff compare what we have currently in gleaner to sitemap, get only new, delete missing
