@@ -21,6 +21,7 @@ import (
 )
 
 const EarthCubeAgent = "EarthCube_DataBot/1.0"
+const JSONContentType = "application/ld+json"
 
 // ResRetrieve is a function to pull down the data graphs at resources
 func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB, runStats *common.RunStats) {
@@ -157,41 +158,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			}
 			defer resp.Body.Close()
 
-			doc, err := goquery.NewDocumentFromResponse(resp)
+			jsonlds, err := FindJSONInResponse(v1, urlloc, repologger, resp)
+
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				repoStats.Inc(common.Issues)
 				lwg.Done() // tell the wait group that we be done
 				<-semaphoreChan
 				return
-			}
-
-			var jsonlds []string
-			var contentTypeHeader = resp.Header["Content-Type"]
-
-			// if
-			// The URL is sending back JSON-LD correctly as application/ld+json
-			// this should not be here IMHO, but need to support people not setting proper header value
-			// The URL is sending back JSON-LD but incorrectly sending as application/json
-			if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug()
-				log.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Debug(urlloc, " as ", contentTypeHeader)
-
-				jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
-				if err != nil {
-					log.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error("Error processing json response from ", urlloc, err)
-					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "json or ld_json"}).Error(err)
-				}
-				// look in the HTML page for <script type=application/ld+json>
-			} else {
-				doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
-					jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
-					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Info()
-					if err != nil {
-						log.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error("Error processing script tag in ", urlloc, err)
-						repologger.WithFields(log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}).Error(err)
-					}
-				})
 			}
 
 			// For incremental indexing I want to know every URL I visit regardless
@@ -225,43 +199,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				repoStats.Inc(common.Summoned)
 			}
 
-			for i, jsonld := range jsonlds {
-				if jsonld != "" { // traps out the root domain...   should do this different
-					log.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace("#", i, "Uploading ")
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Uploading"}).Trace()
-					sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
-					if err != nil {
-						log.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store: ", urlloc, err)
-						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
-						repoStats.Inc(common.StoreError)
-					} else {
-						repologger.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}).Trace(err)
-						log.WithFields(log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}).Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
-						repoStats.Inc(common.Stored)
-					}
-					// TODO  Is here where to add an entry to the KV store
-					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(sourceName))
-						err := b.Put([]byte(urlloc), []byte(sha))
-						if err != nil {
-							log.Error("Error writing to bolt ", err)
-						}
-						return nil
-					})
-				} else {
-					log.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}).Info("Empty JSON-LD document found. Continuing.")
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}).Error(err)
-					// TODO  Is here where to add an entry to the KV store
-					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(sourceName))
-						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
-						if err != nil {
-							log.Error("Error writing to bolt ", err)
-						}
-						return nil
-					})
-				}
-			}
+			UploadWrapper(v1, mc, bucketName, sourceName, urlloc, db, repologger, repoStats, jsonlds)
 
 			bar.Add(1)                                          // bar.Incr()
 			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
@@ -272,6 +210,88 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
 		}(i, sourceName)
 
+	}
+}
+
+func FindJSONInResponse(v1 *viper.Viper, urlloc string, repologger *log.Logger, response *http.Response) ([]string, error) {
+	doc, err := goquery.NewDocumentFromResponse(response)
+	if err != nil {
+		return nil, err
+	}
+
+	contentTypeHeader := response.Header["Content-Type"]
+	var jsonlds []string
+
+	// if the URL is sending back JSON-LD correctly as application/ld+json
+	// this should not be here IMHO, but need to support people not setting proper header value
+	// The URL is sending back JSON-LD but incorrectly sending as application/json
+	if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
+		logFields := log.Fields{"url": urlloc, "contentType": "json or ld_json"}
+		repologger.WithFields(logFields).Debug()
+		log.WithFields(logFields).Debug(urlloc, " as ", contentTypeHeader)
+
+		jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
+		if err != nil {
+			log.WithFields(logFields).Error("Error processing json response from ", urlloc, err)
+			repologger.WithFields(logFields).Error(err)
+		}
+		// look in the HTML response for <script type=application/ld+json>
+	} else {
+		doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
+			jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
+			logFields := log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}
+			repologger.WithFields(logFields).Info()
+			if err != nil {
+				log.WithFields(logFields).Error("Error processing script tag in ", urlloc, err)
+				repologger.WithFields(logFields).Error(err)
+			}
+		})
+	}
+
+	return jsonlds, nil
+}
+
+func UploadWrapper(v1 *viper.Viper, mc *minio.Client, bucketName string, sourceName string, urlloc string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats, jsonlds []string) {
+	for i, jsonld := range jsonlds {
+		if jsonld != "" { // traps out the root domain...   should do this different
+			logFields := log.Fields{"url": urlloc, "issue": "Uploading"}
+			log.WithFields(logFields).Trace("#", i, "Uploading ")
+			repologger.WithFields(logFields).Trace()
+			sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
+			if err != nil {
+				logFields = log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}
+				log.WithFields(logFields).Error("Error uploading jsonld to object store: ", urlloc, err)
+				repologger.WithFields(logFields).Error(err)
+				repoStats.Inc(common.StoreError)
+			} else {
+				logFields = log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}
+				repologger.WithFields(logFields).Trace(err)
+				log.WithFields(logFields).Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
+				repoStats.Inc(common.Stored)
+			}
+			// TODO  Is here where to add an entry to the KV store
+			db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(sourceName))
+				err := b.Put([]byte(urlloc), []byte(sha))
+				if err != nil {
+					log.Error("Error writing to bolt ", err)
+				}
+				return nil
+			})
+		} else {
+			logFields := log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}
+			log.WithFields(logFields).Info("Empty JSON-LD document found. Continuing.")
+			repologger.WithFields(logFields).Error("Empty JSON-LD document found. Continuing.")
+			// TODO  Is here where to add an entry to the KV store
+			db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(sourceName))
+				err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JSON-LD found at this URL
+				if err != nil {
+					log.Error("Error writing to bolt ", err)
+				}
+				return nil
+			})
+		}
 	}
 }
 

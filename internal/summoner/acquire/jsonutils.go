@@ -101,7 +101,7 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
 	}
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
-	contentType := "application/ld+json"
+	contentType := JSONContentType
 	b := bytes.NewBufferString(jsonld)
 	// size := int64(b.Len()) // gets set to 0 after upload for some reason
 

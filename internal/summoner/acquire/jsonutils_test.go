@@ -150,9 +150,9 @@ func TestContextArrayFix(t *testing.T) {
 				"@vocab": "https://schema.org/",
 				"NAME": "schema:name",
 				"census_profile": {
-				"@id": "schema:subjectOf",
-				"@type": "@id"
-			}
+					"@id": "schema:subjectOf",
+					"@type": "@id"
+				}
 			}
         ]
     }`

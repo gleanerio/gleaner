@@ -15,7 +15,7 @@ import (
 
 // as read from csv
 type Sources struct {
-	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, and robots
+	// Valid values for SourceType: sitemap, sitegraph, csv, googledrive, api, and robots
 	SourceType      string `default:"sitemap"`
 	Name            string
 	Logo            string
@@ -31,6 +31,7 @@ type Sources struct {
 	// Active        bool
 	HeadlessWait int   // if loading is slow, wait
 	Delay        int64 // A domain-specific crawl delay value
+	ApiPageLimit int
 }
 
 // add needed for file
@@ -124,7 +125,7 @@ func GetSources(g1 *viper.Viper) ([]Sources, error) {
 	// config already read. substree passed
 	err := g1.UnmarshalKey(subtreeKey, &cfg)
 	if err != nil {
-		log.Fatal("error when parsing %v config: %v", subtreeKey, err)
+		log.Fatal("error when parsing ", subtreeKey, " config: ", err)
 		//No sources, so nothing to run
 	}
 	for i, s := range cfg {
