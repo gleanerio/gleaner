@@ -11,9 +11,10 @@ var objectVal string
 
 // checkCmd represents the check command
 var objectCmd = &cobra.Command{
-	Use:   "object ",
-	Short: "nabu object command",
-	Long:  `Load a graph object to triplestore`,
+	Use:              "object ",
+	TraverseChildren: true,
+	Short:            "nabu object command",
+	Long:             `Load a graph object to triplestore`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("nabu object called")
 		mime.AddExtensionType(".jsonld", "application/ld+json")

@@ -9,9 +9,10 @@ import (
 
 // checkCmd represents the check command
 var pruneCmd = &cobra.Command{
-	Use:   "prune",
-	Short: "nabu prune command",
-	Long:  `Prune graphs in triplestore not in objectVal store`,
+	Use:              "prune",
+	TraverseChildren: true,
+	Short:            "nabu prune command",
+	Long:             `Prune graphs in triplestore not in objectVal store`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("nabu prune called")
 		mime.AddExtensionType(".jsonld", "application/ld+json")
