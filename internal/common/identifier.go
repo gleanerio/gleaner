@@ -16,6 +16,7 @@ import (
 	"github.com/ohler55/ojg/oj"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"sort"
 	"strings"
 )
 
@@ -58,7 +59,15 @@ func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
 	if err != nil {
 		return "", err
 	}
-	return ys, err
+	// we need to sort the results
+	aString := make([]string, len(ys))
+	for i, v := range ys {
+		aString[i] = v.(string)
+	}
+	sort.SliceStable(aString, func(i, j int) bool {
+		return aString[i] < aString[j]
+	})
+	return aString, err
 }
 
 // given a set of json paths return the first to the last.
