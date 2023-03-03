@@ -91,7 +91,7 @@ func initNabuConfig() {
 
 	bucketVal, err = config.GetBucketName(nabuViperVal)
 	if err != nil {
-		log.Fatal("cannot read bucketname from : %s ", err)
+		log.Fatalf("cannot read bucketname from : %s ", err)
 	}
 
 	if len(prefixVal) > 0 {
