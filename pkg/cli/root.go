@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
