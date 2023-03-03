@@ -33,14 +33,14 @@ var idPathVal string // string separated by a comman
 
 // need a mock config with context maps for when
 // a normalized sha of the triples ends up being generated.
-
+// assumes glcon is being run from dir with assets
 var vipercontext = []byte(`
 context:
   cache: true
 contextmaps:
-- file: ../../configs/schemaorg-current-https.jsonld
+- file: ./assets/schemaorg-current-https.jsonld
   prefix: https://schema.org/
-- file: ../../configs/schemaorg-current-https.jsonld
+- file: ./assets/schemaorg-current-https.jsonld
   prefix: http://schema.org/
 sources:
 - sourcetype: sitemap
