@@ -17,17 +17,47 @@ package cli
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 )
 
 var jsonVal string
 var idTypeVal string
 var idPathVal string // string separated by a comman
+
+// need a mock config with context maps for when
+// a normalized sha of the triples ends up being generated.
+
+var vipercontext = []byte(`
+context:
+  cache: true
+contextmaps:
+- file: ../../configs/schemaorg-current-https.jsonld
+  prefix: https://schema.org/
+- file: ../../configs/schemaorg-current-https.jsonld
+  prefix: http://schema.org/
+sources:
+- sourcetype: sitemap
+  name: test
+  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+  url: https://opentopography.org/sitemap.xml
+  headless: false
+  pid: https://www.re3data.org/repository/r3d100010655
+  propername: OpenTopography
+  domain: http://www.opentopography.org/
+  active: false
+  credentialsfile: ""
+  other: {}
+  headlesswait: 0
+  delay: 0
+  IdentifierType: filesha
+`)
 
 // batchCmd represents the batch command
 var identifierCmd = &cobra.Command{
@@ -85,6 +115,11 @@ There are three types of idtype:
 		log.Info(jsonld)
 		//uuid := common.GetSHA(jsonld)
 		//uuid, err := common.GetNormSHA(jsonld, gleanerViperVal) // Moved to the normalized sha value
+		if gleanerViperVal == nil {
+			gleanerViperVal = viper.New()
+			gleanerViperVal.SetConfigType("yaml")
+			gleanerViperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+		}
 		identifier, err := common.GenerateIdentifier(gleanerViperVal, source, jsonld)
 		if err != nil {
 			log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
