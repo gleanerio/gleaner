@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gleanerio/gleaner/pkg/cli"
+	log "github.com/sirupsen/logrus"
 )
 
 var VERSION string
 
 func main() {
-	fmt.Println("version: ", VERSION)
+	log.Info("version: ", VERSION)
 	cli.Execute()
 }

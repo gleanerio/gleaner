@@ -12,6 +12,8 @@ func Test(t *testing.T) {
 
 }
 
+// need to have some test that checks if headless is actually running.
+
 func TestHeadlessNG(t *testing.T) {
 	tests := []struct {
 		name         string

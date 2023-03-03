@@ -16,6 +16,7 @@ import (
 	"github.com/ohler55/ojg/oj"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"sort"
 	"strings"
 )
 
@@ -38,6 +39,8 @@ func GenerateIdentifier(v1 *viper.Viper, source config.Sources, jsonld string) (
 		return GenerateIdentiferString(v1, source, jsonld)
 	case config.IdentifierSha:
 		return GenerateIdentifierSha(v1, source, jsonld)
+	case config.NormalizedJsonSha:
+		return GenerateNormalizedSha(v1, jsonld)
 	default: //config.filesha
 		return GenerateFileSha(v1, jsonld)
 
@@ -56,7 +59,15 @@ func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
 	if err != nil {
 		return "", err
 	}
-	return ys, err
+	// we need to sort the results
+	aString := make([]string, len(ys))
+	for i, v := range ys {
+		aString[i] = v.(string)
+	}
+	sort.SliceStable(aString, func(i, j int) bool {
+		return aString[i] < aString[j]
+	})
+	return aString, err
 }
 
 // given a set of json paths return the first to the last.
@@ -127,7 +138,7 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 		}
 
 	}
-	jsonsha, err := GenerateFileSha(v1, jsonld)
+	jsonsha, err := GenerateNormalizedSha(v1, jsonld)
 	if err != nil {
 		return jsonsha, err
 	}
@@ -144,10 +155,10 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 	} else {
 		log.Error(config.IdentifierSha, "Action: Getting normalized sha  Error:", err)
 		// generate a filesha
-		return GenerateFileSha(v1, jsonld)
+		return GenerateNormalizedSha(v1, jsonld)
 	}
 }
-func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
+func GenerateNormalizedSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
 	var id Identifier
 	//uuid := common.GetSHA(jsonld)
 	uuid, err := GetNormSHA(jsonld, v1) // Moved to the normalized sha value
@@ -157,16 +168,17 @@ func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
 		log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
 		id = Identifier{}
 	} else if err != nil {
-		log.Info(" Action: File sha generated sha:", uuid, " Error:", err)
+		// no error, then normalized triples generated
+		log.Info(" Action: Normalize sha generated sha:", uuid, " Error:", err)
 		id = Identifier{UniqueId: uuid,
-			IdentifierType: config.JsonSha,
+			IdentifierType: config.NormalizedJsonSha,
 			JsonSha:        uuid,
 		}
 		err = nil
 	} else {
-		log.Debug(" Action: File sha generated", uuid)
+		log.Debug(" Action: Json sha generated", uuid)
 		id = Identifier{UniqueId: uuid,
-			IdentifierType: config.NormalizedJsonSha,
+			IdentifierType: config.JsonSha,
 			JsonSha:        uuid,
 		}
 	}
@@ -174,4 +186,25 @@ func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
 	log.Trace("jsonsha: ", uuid)
 	//	fmt.Println("\njsonsha:", id)
 	return id, err
+}
+
+func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
+	var id Identifier
+	//uuid := common.GetSHA(jsonld)
+	uuid := GetSHA(jsonld) // Moved to the normalized sha value
+
+	if uuid == "" {
+		// error
+		log.Error("ERROR: uuid generator:", "Action: Getting file sha")
+		id = Identifier{}
+	}
+	log.Debug(" Action: Json sha generated", uuid)
+	id = Identifier{UniqueId: uuid,
+		IdentifierType: config.JsonSha,
+		JsonSha:        uuid,
+	}
+
+	log.Trace("jsonsha: ", uuid)
+	//	fmt.Println("\njsonsha:", id)
+	return id, nil
 }
