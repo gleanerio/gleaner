@@ -25,6 +25,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
+	"path"
 )
 
 var jsonVal string
@@ -76,11 +77,36 @@ There are three types of idtype:
 `,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		//fmt.Println("uuid called")
-		//var runSources []string
-		//if sourceVal != "" {
-		//	runSources = append(runSources, sourceVal)
-		//}
+
+		// need a  config with context maps for when
+		// a normalized sha of the triples ends up being generated.
+		// there is a mock that assumes glcon is being run from dir with assets,
+		// but that is not always the case.
+		var err error
+		if cfgFile != "" {
+			dir, base := path.Split(cfgFile)
+			gleanerViperVal, err = configTypes.ReadGleanerConfig(base, dir)
+			//if err != nil {
+			//	//panic(err)
+			//	fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+			//	log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+			//	os.Exit(66)
+			//}
+		} else {
+			gleanerViperVal, err = configTypes.ReadGleanerConfig(gleanerName, path.Join(cfgPath, cfgName))
+			//if err != nil {
+			//	//panic(err)
+			//	fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+			//	log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+			//	os.Exit(66)
+			//}
+		}
+		if gleanerViperVal == nil {
+			gleanerViperVal = viper.New()
+			gleanerViperVal.SetConfigType("yaml")
+			gleanerViperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+		}
+
 		source := configTypes.Sources{
 			Name:             "identifierCmd",
 			IdentifierType:   idTypeVal,
@@ -115,11 +141,7 @@ There are three types of idtype:
 		log.Info(jsonld)
 		//uuid := common.GetSHA(jsonld)
 		//uuid, err := common.GetNormSHA(jsonld, gleanerViperVal) // Moved to the normalized sha value
-		if gleanerViperVal == nil {
-			gleanerViperVal = viper.New()
-			gleanerViperVal.SetConfigType("yaml")
-			gleanerViperVal.ReadConfig(bytes.NewBuffer(vipercontext))
-		}
+
 		identifier, err := common.GenerateIdentifier(gleanerViperVal, source, jsonld)
 		if err != nil {
 			log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
