@@ -20,6 +20,7 @@ var serversTemplate = map[string]interface{}{
 		"bucket": "gleaner",
 		"domain": "us-east-1",
 	},
+	"identifiertype": JsonSha, // const from config.Sources jsonsha,identifiersha, normalizedjsonsha, identifierstring
 }
 
 func ReadServersConfig(filename string, cfgDir string) (*viper.Viper, error) {

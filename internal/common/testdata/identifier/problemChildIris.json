@@ -1,0 +1,36 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/"
+  },
+  "@id": "https://ds.iris.edu/ds/products/emtf/",
+  "@type": "Dataset",
+  "name": "Magnetotelluric Transfer Functions",
+  "alternateName": [
+    "EMTF"
+  ],
+  "description": "USArray magnetotelluric transfer functions (MT TFs) calculated at USArray MT sites installed by Oregon State University, as well as other community magnetotelluric transfer functions, are available from the \"SPUD EMTF\":http://www.iris.edu/spud/emtf repository in both XML and EDI formats. The international magnetotelluric community is invited to use the EMTF repository to archive their MT TFs. Please contact \"Anna Kelbert\":https://www.usgs.gov/staff-profiles/anna-kelbert for support; all data formats are accepted and a data citation is created upon submission of data to the searchable repository.\r\n\r\nThe XML format for electromagnetic transfer functions and related conversion software was developed at Oregon State University under an NSF award, and later improved and updated by the USGS Geomagnetism Program, with continued support from IRIS. A living software repository is available in the \"SeisCode EMTF-FCU project\":https://seiscode.iris.washington.edu/projects/emtf-fcu File Conversion Utilities project. Detailed documentation and usage examples are provided by \"Kelbert &#40;2009&#41; \":https://library.seg.org/doi/10.1190/geo2018-0679.1.",
+  "url": "https://ds.iris.edu/ds/products/emtf/",
+  "dateCreated": "2013-07-17T22:17:22.003",
+  "dateModified": "2019-11-20T14:48:11.228",
+  "includedInDataCatalog": {
+    "@type": "DataCatalog",
+    "@id": "https://ds.iris.edu/ds/products/",
+    "url": "https://ds.iris.edu/ds/products/"
+  },
+  "keywords": "Transportable Array,magnetotelluric data,seismic,USArray MT,MT data,global magnetotellurics,magnetotelluric impedance,seismology,geophysics,EMTF,impedance database,US magnetotellurics",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "IRIS Data Products"
+    },
+    {
+      "@type": "Person",
+      "name": "Anna Kelbert",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Geomagnetism Program, U.S. Geological Survey"
+      }
+    }
+  ],
+  "image": "https://ds.iris.edu/media/product/emtf/images/mt_func_logo_1.png"
+}

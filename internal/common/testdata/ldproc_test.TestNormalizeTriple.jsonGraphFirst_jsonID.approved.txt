@@ -1,0 +1,2 @@
+_:c14n0 <http://schema.org/name> "Some type in a graph" .
+_:c14n0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <bar> .

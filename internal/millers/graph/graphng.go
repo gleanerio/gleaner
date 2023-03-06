@@ -57,9 +57,9 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		wg.Add(1)
 		go func(object minio.ObjectInfo) {
 			semaphoreChan <- struct{}{}
-			_, err := obj2RDF(bucketName, "milled", mc, object, proc, options)
+			_, err := uploadObj2RDF(bucketName, "milled", mc, object, proc, options)
 			if err != nil {
-				log.Error("obj2RDF", err) // need to log to an "errors" log file
+				log.Error("uploadObj2RDF", err) // need to log to an "errors" log file
 			}
 
 			wg.Done() // tell the wait group that we be done
@@ -92,8 +92,8 @@ func GraphNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	return err
 }
 
-// func obj2RDF(fo io.Reader, key string, mc *minio.Client) (string, int64, error) {
-func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
+// func uploadObj2RDF(fo io.Reader, key string, mc *minio.Client) (string, int64, error) {
+func uploadObj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInfo, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
 	// object is an object reader
 	stat, err := mc.StatObject(context.Background(), bucketName, object.Key, minio.GetObjectOptions{})
 	if stat.Size > 100000 {
@@ -117,15 +117,18 @@ func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInf
 
 	// TODO
 	// Process the bytes in b to RDF (with randomized blank nodes)
-	log.Trace("JLD2NQ call")
-	rdf, err := common.JLD2nq(b.String(), proc, options)
+	//log.Trace("JLD2NQ call")
+	//rdf, err := common.JLD2nq(b.String(), proc, options)
+	//if err != nil {
+	//	return key, err
+	//}
+	//
+	//log.Trace("blank node fix call")
+	//rdfubn := GlobalUniqueBNodes(rdf)
+	rdfubn, err := Obj2RDF(b.String(), proc, options)
 	if err != nil {
 		return key, err
 	}
-
-	log.Trace("blank node fix call")
-	rdfubn := GlobalUniqueBNodes(rdf)
-
 	milledkey := strings.ReplaceAll(key, ".jsonld", ".rdf")
 	milledkey = strings.ReplaceAll(milledkey, "summoned/", "")
 
@@ -141,6 +144,21 @@ func obj2RDF(bucketName, prefix string, mc *minio.Client, object minio.ObjectInf
 	}
 
 	return objectName, nil
+}
+
+func Obj2RDF(jsonld string, proc *ld.JsonLdProcessor, options *ld.JsonLdOptions) (string, error) {
+
+	// Process the bytes in b to RDF (with randomized blank nodes)
+	log.Trace("JLD2NQ call")
+	rdf, err := common.JLD2nq(jsonld, proc, options)
+	if err != nil {
+		return "", err
+	}
+
+	log.Trace("blank node fix call")
+	rdfubn := GlobalUniqueBNodes(rdf)
+
+	return rdfubn, nil
 }
 
 // sugar function for the ui bar

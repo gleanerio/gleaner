@@ -1,6 +1,8 @@
 package cli
 
 import (
+
+	//	"fmt"
 	"errors"
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/check"
@@ -26,6 +28,7 @@ and store to a S3 server:
 		initGleanerConfig()
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		log.Info("gleaner called")
 
 		fmt.Println("gleaner called")
 	},
@@ -33,7 +36,6 @@ and store to a S3 server:
 var modeVal string
 
 func init() {
-
 	rootCmd.AddCommand(gleanerCmd)
 	// Here you will define your flags and configuration settings.
 
