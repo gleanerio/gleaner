@@ -46,7 +46,6 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 		acquire.RetrieveAPIData(apiSources, mc, db, runStats, v1)
 	}
 
-
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
