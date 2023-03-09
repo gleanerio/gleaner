@@ -169,7 +169,8 @@ func fixContextArray(jsonld string, option config.ContextOption) (string, error)
 
 // this just creates a standardized context
 // jsonMap := make(map[string]interface{})
-var StandardHttpsContext = map[string]interface{}{"@vocab": "https://schema.org/",
+var StandardHttpsContext = map[string]interface{}{
+	"@vocab": "https://schema.org/",
 	"adms":   "https://www.w3.org/ns/adms#",
 	"dcat":   "https://www.w3.org/ns/dcat#",
 	"dct":    "https://purl.org/dc/terms/",
