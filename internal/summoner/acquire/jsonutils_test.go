@@ -399,3 +399,72 @@ func TestContextArrayFix(t *testing.T) {
 		assert.Nil(t, err)
 	})
 }
+
+func TestIdIRIFix(t *testing.T) {
+
+	t.Run("It does not make changes if there is a base in the context", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/",
+				"@base": "http://valid-json.com"
+			},
+			"@id": "some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It does not make changes if the id is a full IRI", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "http://www.test.com/some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It makes the id into a file:// url if there is no base in the context and the id is relative", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "some_cool_guid"
+		}
+		`
+		var expected = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "file://some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Nil(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("It does not make changes if there is a base in the context and the id is a full IRI", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/",
+				"@base": "http://valid-json.com"
+			},
+			"@id": "http://www.test.com/some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+}
