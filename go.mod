@@ -104,7 +104,7 @@ require (
 
 require (
 	github.com/boltdb/bolt v1.3.1
-	github.com/gleanerio/nabu v0.0.0-20230123015413-ce97e03918e5
+	github.com/gleanerio/nabu v0.0.0-20230313212528-d96ace03c57d
 	github.com/orandin/lumberjackrus v1.0.1
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/sirupsen/logrus v1.8.1
