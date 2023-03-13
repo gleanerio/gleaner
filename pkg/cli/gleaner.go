@@ -30,7 +30,6 @@ and store to a S3 server:
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("gleaner called")
 
-		fmt.Println("gleaner called")
 	},
 }
 var modeVal string
