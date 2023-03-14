@@ -11,16 +11,22 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	bolt "go.etcd.io/bbolt"
+	"os"
 	//"os"
 )
 
 func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 
 	mcfg := v1.GetStringMapString("gleaner")
-	//mcfg := v1.Sub("gleaner") /// with overrides from batch ends up being nil
+
+	err := check.PreflightChecks(mc, v1)
+	if err != nil {
+		log.Fatal("Failed Preflight connection check to minio. Check configuration", err)
+		os.Exit(66)
+	}
 	// Build the org graph
 	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
-	err := organizations.BuildGraph(mc, v1)
+	err = organizations.BuildGraph(mc, v1)
 	if err != nil {
 		log.Error(err)
 	}
