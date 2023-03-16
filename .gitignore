@@ -11,4 +11,6 @@ configs/local/
 *.log
 **/*.log
 **/credentials/
+.idea
 
+/configs/wifire/

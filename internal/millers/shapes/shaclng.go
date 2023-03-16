@@ -5,7 +5,7 @@ import (
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gosuri/uiprogress"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 	"sync"
 
@@ -64,7 +64,7 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 		Prefix:    "shapes",
 	}
 	for shape := range mc.ListObjects(context.Background(), bucketName, opts2) {
-		// log.Printf("Checking data graphs against shape graph: %s\n", m[j])
+		log.Trace("Checking data graphs against shape graph:", shape)
 
 		//for object := range mc.ListObjectsV2(bucketname, prefix, isRecursive, doneCh) {
 		for object := range mc.ListObjects(context.Background(), prefix, minio.ListObjectsOptions{
@@ -76,13 +76,13 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 				//status := shaclTest(e[k].Urlval, e[k].Jld, m[j].Key, m[j].Jld, &gb)
 				_, err := shaclTestNG(v1, bucketName, "verified", mc, object, shape, proc, options)
 				if err != nil {
-					log.Println(err) // need to log to an "errors" log file
+					log.Error(err)
 				}
 
 				// _, err := obj2RDF(bucketName, prefix, mc, object, proc, options)
 
 				wg.Done() // tell the wait group that we be done
-				// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
+				log.Debug("Doc:", bucketName, "error:", err)
 
 				bar3.Incr()
 				<-semaphoreChan
@@ -106,14 +106,14 @@ func ShapeNG(mc *minio.Client, prefix string, v1 *viper.Viper) error {
 	sp := strings.SplitAfterN(prefix, "/", 2)
 	mcfg := v1.GetStringMapString("gleaner")
 	rslt := fmt.Sprintf("results/%s/%s_verified.nq", mcfg["runid"], sp[1])
-	log.Printf("Assembling result graph for prefix: %s to: %s", prefix, millprefix)
-	log.Printf("Result graph will be at: %s", rslt)
+	log.Info("Assembling result graph for prefix:", prefix, "to:", millprefix)
+	log.Info("Result graph will be at:", rslt)
 
 	err = common.PipeCopyNG(rslt, bucketName, millprefix, mc)
 	if err != nil {
-		log.Printf("Error on pipe copy: %s", err)
+		log.Error("Error on pipe copy:", err)
 	} else {
-		log.Println("Pipe copy for shacl done")
+		log.Info("Pipe copy for shacl done")
 	}
 
 	return err
@@ -155,7 +155,7 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 
 // 			_, err = io.Copy(bw, fo)
 // 			if err != nil {
-// 				log.Println(err)
+// 				log.Error(err)
 // 			}
 
 // 			pw.Write(b.Bytes())
@@ -168,14 +168,14 @@ func rightPad2Len(s string, padStr string, overallLen int) string {
 // 		defer lwg.Done()
 // 		_, err := mc.PutObject(bucketName, name, pr, -1, minio.PutObjectOptions{})
 // 		if err != nil {
-// 			log.Println(err)
+// 			log.Error(err)
 // 		}
 // 	}()
 
 // 	// Note: We can also make a file and pipe write to that, keep this code around in case
 // 	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))  // needs a f.Close() later
 // 	// if err != nil {
-// 	// 	log.Println(err)
+// 	// 	log.Error(err)
 // 	// }
 // 	// go function to write to file from pipe
 // 	// go func() {

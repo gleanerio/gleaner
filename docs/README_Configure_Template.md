@@ -67,10 +67,10 @@ a csv file with the fields below
 This is designed to be edited in a spreadsheet, or exported by url as csv from a google spreadsheet
 
 ```csv
-hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo
-1,sitegraph,FALSE,aquadocs,AquaDocs,https://oih.aquadocs.org/aquadocs.json ,FALSE,https://aquadocs.org,http://hdl.handle.net/1834/41372,
-3,sitemap,TRUE,opentopography,OpenTopography,https://opentopography.org/sitemap.xml,FALSE,http://www.opentopography.org/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
-,sitemap,TRUE,iris,IRIS,http://ds.iris.edu/files/sitemap.xml,FALSE,http://iris.edu,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png
+hack,SourceType,Active,Name,ProperName,URL,Headless,Domain,PID,Logo,CredentialsFile
+1,sitegraph,FALSE,aquadocs,AquaDocs,https://oih.aquadocs.org/aquadocs.json ,FALSE,https://aquadocs.org,http://hdl.handle.net/1834/41372,,
+3,sitemap,TRUE,opentopography,OpenTopography,https://opentopography.org/sitemap.xml,FALSE,http://www.opentopography.org/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png,
+,sitemap,TRUE,iris,IRIS,http://ds.iris.edu/files/sitemap.xml,FALSE,http://iris.edu,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png,
 ```
 
 Fields: 
@@ -85,7 +85,7 @@ Fields:
 8. Domain: 
 9. PID: a unique identifier for the source. Perfered that is is a research id.
 10. Logo: while no longer used, logo of the source
-11. googleapikeyenv: (ONLY NEEDED FOR type:googledrive) environment variable pointing to a google api key.
+11. CredentialsFile: (ONLY NEEDED FOR type:googledrive) environment variable pointing to a google api key.
 12. any additional feilds you wish. This might be used to generate information about sources for a website.
 
 #### Configuration of your source
@@ -111,10 +111,6 @@ sourcesSource:
    type: csv
    location: /home/user/ourSources.csv
 ```
-##### Override Sources via the CLI
-pass --sourcemaps to generate:
-
-`glcon config generate --cfgName test --sourcemaps "My Sources.csv" `
 
 ## GENERATE the configuration files
 ```
@@ -183,20 +179,22 @@ sources:
 
 A few things we need to look at.
 
-First, in the "mino:" section make sure the accessKey and secretKey here are the ones you utlize.
+First, in the "minio:" section make sure the accessKey and secretKey here are the ones you utlize.
 Note: blank these out, and used environment variables (TODO:Need to describe them)
 
 Next, lets look at the "gleaner:" section.  We can set the runid to something.  This is the ID for a run and it allows you to later make different runs and keep the resulting graphs organized.  It can be set to any lower case string with no spaces. 
+
+The "context:" section is about the JSON-LD context, which is a top-level object in each JSON-LD metadata document. Most of the time, it'll look like the example context [here](https://github.com/ESIPFed/science-on-schema.org/blob/cbe618d1896ae8408b3d3575e7be6847129808ab/guides/Dataset.md#common-properties).
+By default, Gleaner will look for common mistakes in the JSON-LD context specification and fix them up. Setting `strict: true` here will disable those fixup operations. It might make things run a little faster to do this.
 
 The miller and summon sections are true and we will leave them that way.  It means we want Gleaner to both fetch the resources and process (mill) them.  
 
 Now look at the "miller:"  section when lets of pick what milling to do.   Currently it is set with only graph set to true.  Let's leave it that way for now.  This means Gleaner will only attempt to make graph and not also run validation or generate prov reports for the process.  
 
 The final section we need to look at is the "sources:" section.   
-Here is where the fun is.  While there are two types, sitegraph and sitemaps we will normally use sitemap type. 
-There is a third type that involves configuring and pulling from a
+Here is where the fun is.  While the most common type of source is a `sitemap`, there are other types available, and examples of each are below.
 
-A standard sitemap is below:
+A standard [sitemap](./SourceSitemap.md) is below:
 ```yaml
 sources:
   - sourcetype: sitemap
@@ -222,6 +220,39 @@ sources:
     propername: AquaDocs
     domain: https://aquadocs.org
     active: false
+```
+
+A [google Drive](./SourceGoogleDrive.md)
+```yaml
+sources:
+- sourcetype: googledrive
+  name: ecrr_submitted
+  logo: https://www.earthcube.org/sites/default/files/doc-repository/logo_earthcube_full_horizontal.png
+  url: https://drive.google.com/drive/u/0/folders/1TacUQqjpBbGsPQ8JPps47lBXMQsNBRnd
+  headless: false
+  pid: ""
+  propername: Earthcube Resource Registry
+  domain: http://www.earthcube.org/resourceregistry/
+  active: true
+  credentialsfile: configs/credentials/gleaner-331805-030e15e1d9c4.json
+  other: {}
+```
+
+A csv
+```
+TODO: I know this exists but I don't know what it looks like
+```
+
+A robots.txt url (which can have links to multiple sitemaps)
+```yaml
+sources:
+- name: npdc
+  sourcetype: robots
+  headless: false
+  url: https://npdc.nl/robots.txt
+  properName: Netherlands Polar Data Center
+  domain: https://npdc.nl
+  active: false
 ```
 These are the sources we wish to pull and process. 
 Each source has a type, and 8 entries though at this time we no longer use the "logo" value. 

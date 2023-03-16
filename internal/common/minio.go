@@ -2,7 +2,7 @@ package common
 
 import (
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/minio/minio-go/v7"
@@ -16,7 +16,7 @@ func MinioConnection(v1 *viper.Viper) *minio.Client {
 	mSub := v1.Sub("minio")
 	mcfg, err := configTypes.ReadMinioConfig(mSub)
 	if err != nil {
-		panic(fmt.Errorf("error when  file minio key: %v", err))
+		log.Panic("error when file minio key:", err)
 	}
 	endpoint := fmt.Sprintf("%s:%d", mcfg.Address, mcfg.Port)
 	accessKeyID := mcfg.Accesskey
@@ -28,7 +28,7 @@ func MinioConnection(v1 *viper.Viper) *minio.Client {
 			Secure: useSSL})
 	// minioClient.SetCustomTransport(&http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}})
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	return minioClient
 }

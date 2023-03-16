@@ -6,7 +6,9 @@ import (
 	nConfig "github.com/gleanerio/nabu/pkg/config"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"os"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -14,12 +16,13 @@ type Source = configTypes.Sources
 type SourceConfig = configTypes.SourcesConfig
 type MinoConfigType = configTypes.Minio
 
-var Prov, Org bool
+var InclProv, InclOrg, UseMilled bool
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
-	Use:   "generate",
-	Short: "generate gleaner.io config files from a directory that has been intialized",
+	Use:              "generate",
+	TraverseChildren: true,
+	Short:            "generate gleaner.io config files from a directory that has been intialized",
 	Long: `Generate creates config files for the gleaner.io tools (gleaner and nabu). Before running command 
 run 
 # gleaner config init --confName {default: local}
@@ -29,15 +32,17 @@ A copy of the files (one per DAY) is saved.
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("generate called")
-		generateCfg(cfgPath, cfgName, sourcesVal)
+		//generateCfg(cfgPath, cfgName, sourcesVal) // sources moved into localConfig
+		generateCfg(cfgPath, cfgName)
 	},
 }
 
 func init() {
 	configCmd.AddCommand(generateCmd)
 	// Here you will define your flags and configuration settings
-	generateCmd.Flags().BoolVar(&Prov, "prov", true, "include prov/source buckets in nabu conf")
-	generateCmd.Flags().BoolVar(&Org, "org", true, "include orgs bucket in nabu conf")
+	generateCmd.Flags().BoolVar(&InclProv, "prov", false, "include prov/source buckets in nabu conf")
+	generateCmd.Flags().BoolVar(&InclOrg, "org", true, "include orgs bucket in nabu conf")
+	generateCmd.Flags().BoolVar(&UseMilled, "milled", false, "use  jsonld summoned file instead of milled in nabu conf")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// generateCmd.PersistentFlags().String("foo", "", "A help for foo")
@@ -48,7 +53,7 @@ func init() {
 }
 
 // need to have more options.
-func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
+func generateCfg(cfgPath string, cfgName string) error {
 	var err error
 	var minioCfg MinoConfigType
 	var gleaner, nabu, servers *viper.Viper
@@ -56,25 +61,37 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 
 	var configDir = path.Join(cfgPath, cfgName)
 
-	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
+	if _, err := os.Stat(configDir); os.IsNotExist(err) {
+		fmt.Println("Cannot find config directory: ", configDir)
+
+		os.Exit(66)
 	}
+
 	servers, err = configTypes.ReadServersConfig(configBaseFiles["servers"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
 	}
 	gleaner, err = configTypes.ReadGleanerConfig(configBaseFiles["gleaner"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
 	}
 	nabu, err = nConfig.ReadNabuConfig(configBaseFiles["nabu"], configDir)
 	if err != nil {
 		fmt.Println(err)
-		panic(err)
+		//panic(err)
+		os.Exit(1)
+	}
+
+	sourcesVal := servers.GetString("sourcesSource.location")
+	sources, err = configTypes.ReadSourcesCSV(sourcesVal, configDir)
+	if err != nil {
+		fmt.Println(err)
+		//panic(err)
+		os.Exit(1)
 	}
 
 	//var mi interface{}
@@ -83,17 +100,22 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 	date = currentTime.Format("20060102")
 	// sources
 	// need a check to see if it is an absolute path, so read not needed, and
-	fmt.Println("make copy of sources")
-	var original = path.Join(configDir, sourcesVal)
-	var config = path.Join(configDir, date+sourcesVal)
-	_, err = copy(original, config)
-	if err != nil {
-		panic(fmt.Errorf("error when copying sources: %v", err))
+	if !(strings.HasPrefix(sourcesVal, "https://") || strings.HasPrefix(sourcesVal, "http://")) {
+		fmt.Println("make copy of sources")
+		var original = path.Join(configDir, sourcesVal)
+		if strings.HasPrefix(sourcesVal, "/") { // how do we test filesystem agnostic
+			original = sourcesVal
+		}
+		var config = path.Join(configDir, date+sourcesVal)
+		_, err = copy(original, config)
+		if err != nil {
+			panic(fmt.Errorf("error when copying sources: %v", err))
+		}
 	}
 
 	fmt.Println("make copy of servers.yaml")
-	original = path.Join(configDir, configBaseFiles["servers"])
-	config = path.Join(configDir, date+configBaseFiles["servers"])
+	original := path.Join(configDir, configBaseFiles["servers"])
+	config := path.Join(configDir, date+configBaseFiles["servers"])
 	_, err = copy(original, config)
 	if err != nil {
 		panic(fmt.Errorf("error when copying servers.yaml: %v", err))
@@ -193,9 +215,16 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 			prefixSources = append(prefixSources, s)
 		}
 	}
-	s3Cfg.Prefix = configTypes.SourceToNabuPrefix(prefixSources, Prov)
-	if Org {
+	s3Cfg.Prefix = configTypes.SourceToNabuPrefix(prefixSources, UseMilled)
+	if InclOrg {
 		s3Cfg.Prefix = append(s3Cfg.Prefix, "org") // TODO: add flags for prov and or
+	}
+	if InclProv {
+		provs := configTypes.SourceToNabuProv(prefixSources)
+		for _, p := range provs {
+			s3Cfg.Prefix = append(s3Cfg.Prefix, p) // TODO: add flags for prov and or
+		}
+
 	}
 
 	//var prefixOff []string
@@ -211,13 +240,34 @@ func generateCfg(cfgPath string, cfgName string, sourcesVal string) error {
 			prefixOffSources = append(prefixOffSources, s)
 		}
 	}
-	s3Cfg.PrefixOff = configTypes.SourceToNabuPrefix(prefixOffSources, Prov)
+	s3Cfg.PrefixOff = configTypes.SourceToNabuPrefix(prefixOffSources, UseMilled)
+	if InclProv {
+		provs := configTypes.SourceToNabuProv(prefixOffSources)
+		for _, p := range provs {
+			s3Cfg.PrefixOff = append(s3Cfg.PrefixOff, p) // TODO: add flags for prov and or
+		}
+
+	}
 	nabu.Set("objects", s3Cfg)
+
 	//nabu.Set("sitemaps", sources)
 	//// hack to get rid of the sourcetype
 	//err =  nabu.UnmarshalKey("sitemaps", &sm)
 	//nabu.Set("sitemaps", sm)
 	fn = path.Join(configDir, nabuFilenameBase)
+	err = nabu.WriteConfigAs(fn)
+	if err != nil {
+		panic(fmt.Errorf("error when writing config: %v", err))
+	}
+
+	// now just write out a nabu prov file
+	s3Cfg.Prefix = configTypes.SourceToNabuProv(prefixSources)
+
+	s3Cfg.PrefixOff = configTypes.SourceToNabuProv(prefixOffSources)
+	s3Cfg.Bucket = "prov"
+
+	nabu.Set("objects", s3Cfg)
+	fn = path.Join(configDir, nabuProvFilenameBase)
 	err = nabu.WriteConfigAs(fn)
 	if err != nil {
 		panic(fmt.Errorf("error when writing config: %v", err))

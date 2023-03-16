@@ -11,6 +11,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/viper"
+	bolt "go.etcd.io/bbolt"
 )
 
 var viperVal string
@@ -65,8 +66,13 @@ func main() {
 	// read config file
 	miniocfg := v1.GetStringMapString("minio")
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
-
-	ru := acquire.ResourceURLs(v1, mc, false)
+	// setup the KV store to hold a record of indexed resources
+	db, err := bolt.Open("gleaner.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	ru, err := acquire.ResourceURLs(v1, mc, false, db)
 	// hru := acquire.ResourceURLs(v1, true)
 	// log.Println(len(ru["samplesearth"].URL))
 	// log.Println(len(hru["samplesearth"].URL))

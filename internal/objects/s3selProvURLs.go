@@ -3,8 +3,8 @@ package objects
 import (
 	"bytes"
 	"context"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"strings"
 	"sync"
 
@@ -52,11 +52,11 @@ func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string)
 		go func(object minio.ObjectInfo) {
 			// oa = append(oa, object.Key) // WARNING  append is not always thread safe..   wg of 1 till I address this
 
-			// log.Printf("Bucket %s  object:%s\n", bucket, object.Key)
+			log.Trace("Bucket", bucket, "object:", object.Key)
 
 			reader, err := minioClient.SelectObjectContent(context.Background(), bucket, object.Key, opts)
 			if err != nil {
-				log.Fatalln(err)
+				log.Fatal(err)
 			}
 			defer reader.Close()
 
@@ -66,13 +66,13 @@ func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string)
 			var r string
 			buf := bytes.NewBufferString(r)
 			if _, err := io.Copy(buf, reader); err != nil {
-				log.Fatalln(err)
+				log.Fatal(err)
 			}
 
 			oa = append(oa, strings.TrimSpace(buf.String()))
 
 			wg.Done() // tell the wait group that we be done
-			// log.Printf("Doc: %s error: %v ", name, err) // why print the status??
+			log.Trace("Doc:", object.Key, "error", err)
 			<-semaphoreChan
 
 		}(object)
@@ -80,7 +80,7 @@ func ProvURLs(v1 *viper.Viper, minioClient *minio.Client, bucket, prefix string)
 
 	}
 
-	log.Printf("bucket %s:%s object count: %d\n", bucket, prefix, len(oa))
+	log.Info("bucket", bucket, ":", prefix, "object count:", len(oa))
 
 	return oa
 }

@@ -1,7 +1,7 @@
 package summoner
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 	"time"
 
 	"github.com/minio/minio-go/v7"
@@ -34,7 +34,7 @@ func RunFeed(v1 *viper.Viper, mc *minio.Client, et time.Time, ru map[string][]st
 	// 1) s3select for object ID associated with URL from sitemap
 	// 2) s3select for description of a given objectID
 
-	log.Println(len(t))
+	log.Info(len(t))
 
 	return nil
 }

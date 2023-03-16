@@ -5,15 +5,15 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"sync"
 
 	minio "github.com/minio/minio-go/v7"
 )
 
 func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
-	log.Println("Start pipe reader / writer sequence")
+	log.Debug("Start pipe reader / writer sequence")
 
 	pr, pw := io.Pipe()     // TeeReader of use?
 	lwg := sync.WaitGroup{} // work group for the pipe writes...
@@ -41,7 +41,7 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 
 			_, err = io.Copy(bw, fo)
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 			}
 
 			pw.Write(b.Bytes())
@@ -49,21 +49,21 @@ func PipeCopyNG(name, bucket, prefix string, mc *minio.Client) error {
 
 	}()
 
-	// log.Printf("%s_graph.nq", name)
+	log.Debug(name, "_graph.nq")
 
 	// go function to write to minio from pipe
 	go func() {
 		defer lwg.Done()
 		_, err := mc.PutObject(context.Background(), bucket, name, pr, -1, minio.PutObjectOptions{})
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 	}()
 
 	// Note: We can also make a file and pipe write to that, keep this code around in case
 	// f, err := os.Create(fmt.Sprintf("%s_graph.nq", prefix))  // needs a f.Close() later
 	// if err != nil {
-	// 	log.Println(err)
+	// 	log.Error(err)
 	// }
 	// go function to write to file from pipe
 	// go func() {

@@ -2,8 +2,8 @@ package acquire
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -32,13 +32,13 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 
 	sources, err := configTypes.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	domains = configTypes.GetActiveSourceByType(sources, siteGraphType)
 
 	for k := range domains {
-		log.Printf("Processing sitegraph file (this can be slow with little feedback): %s", domains[k].URL)
-		log.Printf("Downloading sitegraph file: %s", domains[k].URL)
+		log.Info("Processing sitegraph file (this can be slow with little feedback):", domains[k].URL)
+		log.Info("Downloading sitegraph file:", domains[k].URL)
 
 		d, err := getJSON(domains[k].URL)
 		if err != nil {
@@ -50,14 +50,14 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		sha := common.GetSHA(d) // Don't normalize big files..
 
 		// Upload the file
-		log.Printf("Sitegraph file downloaded. Uploading to %s: %s", bucketName, domains[k].URL)
+		log.Info("Sitegraph file downloaded. Uploading to", bucketName, domains[k].URL)
 
 		objectName := fmt.Sprintf("summoned/%s/%s.jsonld", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(d, bucketName, objectName, mc)
 		if err != nil {
 			return objectName, err
 		}
-		log.Printf("Sitegraph file uploaded to %s. Uploaded : %s", bucketName, domains[k].URL)
+		log.Info("Sitegraph file uploaded to", bucketName, "Uploaded :", domains[k].URL)
 		// mill the json-ld to nq and upload to minio
 		// we bypass graph.GraphNG which does a time consuming blank node fix which is not required
 		// when dealing with a single large file.
@@ -69,13 +69,13 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 			return "", err
 		}
 
-		log.Printf("Processed Sitegraph being uploaded to %s: %s", bucketName, domains[k].URL)
+		log.Info("Processed Sitegraph being uploaded to", bucketName, domains[k].URL)
 		milledName := fmt.Sprintf("milled/%s/%s.rdf", domains[k].Name, sha)
 		_, err = graph.LoadToMinio(rdf, bucketName, milledName, mc)
 		if err != nil {
 			return objectName, err
 		}
-		log.Printf("Processed Sitegraph Upload to %s complete: %s", bucketName, domains[k].URL)
+		log.Info("Processed Sitegraph Upload to", bucketName, "complete:", domains[k].URL)
 
 		// build prov
 		// log.Print("Building prov")
@@ -84,7 +84,7 @@ func GetGraph(mc *minio.Client, v1 *viper.Viper) (string, error) {
 			return objectName, err
 		}
 
-		log.Printf("Loaded: %d", len(d))
+		log.Info("Loaded:", len(d))
 	}
 
 	return "Sitegraph(s) processed", err
@@ -104,7 +104,7 @@ func getJSON(urlloc string) (string, error) {
 	var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
 	req, err := http.NewRequest("GET", urlloc, nil)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 	req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
 	u, err := url.Parse(urlloc)
@@ -114,7 +114,7 @@ func getJSON(urlloc string) (string, error) {
 	req.Header.Set("Host", u.Hostname())
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf(" error on %s : %s  ", urlloc, err) // print an message containing the index (won't keep order)
+		log.Error(" error on", urlloc, err) // print an message containing the index (won't keep order)
 	}
 	defer resp.Body.Close()
 

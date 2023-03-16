@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -22,6 +22,7 @@ var MinioTemplate = map[string]interface{}{
 		"accesskey": "",
 		"secretkey": "",
 		"bucket":    "",
+		"ssl":       "false",
 	},
 }
 
@@ -42,7 +43,7 @@ func ReadMinioConfig(minioSubtress *viper.Viper) (Minio, error) {
 	// config already read. substree passed
 	err := minioSubtress.Unmarshal(&minioCfg)
 	if err != nil {
-		panic(fmt.Errorf("error when parsing minio config: %v", err))
+		log.Fatal("error when parsing minio config: ", err)
 	}
 	return minioCfg, err
 }
@@ -51,7 +52,8 @@ func GetBucketName(v1 *viper.Viper) (string, error) {
 	minSubtree := v1.Sub("minio")
 	miniocfg, err := ReadMinioConfig(minSubtree)
 	if err != nil {
-		panic(err)
+		log.Fatal("Cannot read bucket name from configuration/minio")
+
 	}
 	bucketName := miniocfg.Bucket //miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	return bucketName, err

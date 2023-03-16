@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"os"
 	"path/filepath"
 
@@ -16,22 +17,52 @@ import (
 	"github.com/gleanerio/gleaner/internal/objects"
 )
 
-var viperVal, sourceVal, modeVal string
-var setupVal bool
+var viperVal, sourceVal, modeVal, logVal string
+var setupVal, rudeVal bool
+
+// pass -ldflags "-X main.version=testline"
+// go build -ldflags "-X main.version=testline" main.go
+
+var VERSION string
 
 func init() {
-	log.SetFlags(log.Lshortfile)
-	// log.SetOutput(ioutil.Discard) // turn off all logging
+	// Output to stdout instead of the default stderr. Can be any io.Writer, see below for File example
+	fmt.Println("version: ", VERSION)
+
+	common.InitLogging()
+	//// name the file with the date and time
+	//const layout = "2006-01-02-15-04-05"
+	//t := time.Now()
+	//lf := fmt.Sprintf("gleaner-%s.log", t.Format(layout))
+	//
+	//LogFile := lf // log to custom file
+	//logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	//if err != nil {
+	//	log.Panic(err)
+	//}
+	//
+	//log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
+	//log.SetReportCaller(true)              // include file name and line number
+	//mw := io.MultiWriter(os.Stdout, logFile)
+	//log.SetOutput(mw)
 
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
+	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
+	flag.StringVar(&logVal, "log", "warn", "The log level to output (trace | debug | info | warn | error | fatal)")
 }
 
 func main() {
-	log.Println("EarthCube Gleaner")
+	fmt.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
+	lvl, err := log.ParseLevel(logVal)
+
+	if err != nil {
+		log.Fatal("invalid log level:", err.Error())
+	}
+	log.SetLevel(lvl)
 
 	// BEGIN profile section
 
@@ -55,18 +86,16 @@ func main() {
 	// END profile section
 
 	var v1 *viper.Viper
-	var err error
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
 		//v1, err = readConfig(viperVal, map[string]interface{}{})
 		v1, err = config.ReadGleanerConfig(filepath.Base(viperVal), filepath.Dir(viperVal))
 		if err != nil {
-			log.Printf("error when reading config: %v", err)
-			os.Exit(1)
+			log.Fatal("error when reading config:", err)
 		}
 	} else {
-		log.Println("Gleaner must be run with a config file: -cfg CONFIGFILE")
+		log.Error("Gleaner must be run with a config file: -cfg CONFIGFILE")
 		flag.Usage()
 		os.Exit(0)
 	}
@@ -83,7 +112,7 @@ func main() {
 		var domains []objects.Sources
 		err := v1.UnmarshalKey("sources", &domains)
 		if err != nil {
-			log.Println(err)
+			log.Warn(err)
 		}
 
 		for _, k := range domains {
@@ -93,13 +122,19 @@ func main() {
 		}
 
 		if len(tmp) == 0 {
-			log.Println("CAUTION:  no sources, did your -source VALUE match a sources.name VALUE in your config file?")
+			log.Error("CAUTION:  no matching source, did your -source VALUE match a sources.name VALUE in your config file?")
 			os.Exit(0)
 		}
 
 		configMap := v1.AllSettings()
 		delete(configMap, "sources")
 		v1.Set("sources", tmp)
+
+		if rudeVal {
+			v1.Set("rude", true)
+		}
+	} else if rudeVal {
+		log.Error("--rude can only be used with --source, not globally.")
 	}
 
 	// Parse a new mode entry from command line if present
@@ -114,23 +149,21 @@ func main() {
 
 	// If requested, set up the buckets
 	if setupVal {
-		log.Println("Setting up buckets")
+		log.Info("Setting up buckets")
 		//err := check.MakeBuckets(mc, bucketName)
-		err = pkg.Setup(mc, v1)
+		err = check.Setup(mc, v1)
 		if err != nil {
-			log.Println("Error making buckets for setup call")
-			os.Exit(1)
+			log.Fatal("Error making buckets for setup call")
 		}
 
-		log.Println("Buckets generated.  Object store should be ready for runs")
+		log.Info("Buckets generated. Object store should be ready for runs")
 		os.Exit(0)
 	}
 
 	// Validate Minio access
-	err = pkg.PreflightChecks(mc, v1)
+	err = check.PreflightChecks(mc, v1)
 	if err != nil {
-		log.Printf("Preflight Check failed. Make sure the minio server is running, accessible and has been setup. %s ", err)
-		os.Exit(1)
+		log.Fatal("Preflight Check failed. Make sure the minio server is running, accessible and has been setup.", err)
 	}
 
 	//err = check.ConnCheck(mc)
@@ -153,22 +186,23 @@ func main() {
 	}
 	defer db.Close()
 
+	// Defer a function to be called on successful ending.  Note, if gleaner crashes, this will NOT
+	// get called, do consideration must be taken in such a cases.  Some errors in such cases should
+	// be sent to stdout to be captured by docker, k8s, Airflow etc in case they are being used.
+
+	defer func() {
+		fmt.Println("Calling cleanUp on a successful run")
+		cleanUp()
+	}()
+
 	//cli(mc, v1, db)
 	pkg.Cli(mc, v1, db) // move to a common call in batch.go
 }
 
-//func readConfig(filename string, defaults map[string]interface{}) (*viper.Viper, error) {
-//	v := viper.New()
-//	for key, value := range defaults {
-//		v.SetDefault(key, value)
-//	}
-//	v.SetConfigName(filename)
-//	v.SetConfigType("yaml")
-//	v.AddConfigPath(".")
-//	v.AutomaticEnv()
-//	err := v.ReadInConfig()
-//	return v, err
-//}
+func cleanUp() {
+	// copy log to s3 logs prefix  (make sure log files are unique by time or other)
+	fmt.Println("On success, will, if flagged, copy the log file to object store and delete it")
+}
 
 func isFlagPassed(name string) bool {
 	found := false
@@ -178,12 +212,4 @@ func isFlagPassed(name string) bool {
 		}
 	})
 	return found
-}
-
-// func to support remove elements form the source slice
-func remove(s []objects.Sources, i int) []objects.Sources {
-	fmt.Println("removing")
-
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
 }

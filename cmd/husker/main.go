@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -11,6 +10,7 @@ import (
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 
 	"github.com/spf13/viper"
+	bolt "go.etcd.io/bbolt"
 )
 
 var viperVal string
@@ -54,11 +54,21 @@ func main() {
 	// url := "http://dx.doi.org/10.7288/V4/MAGIC/15032" // magic
 	url := "https://dev.rvdata.us/search/fileset/100142" // rvdata
 	k := "demo"
-	var (
-		buf    bytes.Buffer
-		logger = log.New(&buf, "logger: ", log.Lshortfile)
-	)
-	err = acquire.PageRender(v1, mc, logger, 45*time.Second, url, k)
+	//var (
+	//	buf    bytes.Buffer
+	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
+	//)
+	// setup the KV store to hold a record of indexed resources
+	db, err := bolt.Open("gleaner.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+	rlogginer, _ := common.LogIssues(v1, k)
+
+	runStats := common.NewRunStats()
+	repostats := runStats.Add(k)
+	err = acquire.PageRenderAndUpload(v1, mc, 45*time.Second, url, k, db, rlogginer, repostats)
 	if err != nil {
 		panic(fmt.Errorf("error when reading config: %v", err))
 	}

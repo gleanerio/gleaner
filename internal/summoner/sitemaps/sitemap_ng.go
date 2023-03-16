@@ -7,7 +7,7 @@ package sitemaps
 
 import (
 	"encoding/xml"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"strings"
 
 	sitemap "github.com/oxffaa/gopher-parse-sitemap"
@@ -55,7 +55,7 @@ func DomainSitemap(sm string) (Sitemap, error) {
 	})
 
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 	}
 
 	smsm.URL = urls
@@ -104,11 +104,11 @@ func DomainIndex(sm string) ([]string, error) {
 // 			if smap.URL[i].LastMod != "" {
 // 				t, err := dateparse.ParseAny(smap.URL[i].LastMod)
 // 				if err != nil {
-// 					log.Println(err)
+// 					log.Error(err)
 // 				}
 // 				check, err := time.Parse(time.RFC822, date)
 // 				if err != nil {
-// 					log.Println(err)
+// 					log.Error(err)
 // 				}
 // 				q := afterTime(t, check) // tru if t after check
 
@@ -198,7 +198,7 @@ func DomainIndex(sm string) ([]string, error) {
 // 		// log.Println("Gziped sitemap")
 // 		data, err = gUnzipData(b)
 // 		if err != nil {
-// 			log.Println(err)
+// 			log.Error(err)
 // 		}
 // 	} else {
 // 		// log.Println("Uncompressed XML sitemap")

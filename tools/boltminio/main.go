@@ -68,8 +68,13 @@ func main() {
 	// read config file
 	miniocfg := v1.GetStringMapString("minio")
 	bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+	db, err := bolt.Open("my.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	ru := acquire.ResourceURLs(v1, mc, false)
+	defer db.Close()
+	ru, err := acquire.ResourceURLs(v1, mc, false, db)
 	// hru := acquire.ResourceURLs(v1, true)
 	// log.Println(len(ru["samplesearth"].URL))
 	// log.Println(len(hru["samplesearth"].URL))
@@ -104,13 +109,6 @@ func main() {
 	for k := range diff {
 		fmt.Println(diff[k])
 	}
-
-	db, err := bolt.Open("my.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer db.Close()
 
 }
 

@@ -9,11 +9,11 @@ import (
 	"github.com/gleanerio/gleaner/internal/config"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/knakk/rdf"
+	log "github.com/sirupsen/logrus"
 	"github.com/xitongsys/parquet-go-source/mem"
 	"github.com/xitongsys/parquet-go/writer"
 	"io"
 	"io/ioutil"
-	"log"
 	"strings"
 
 	"github.com/minio/minio-go/v7"
@@ -33,13 +33,13 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
 	bucketName, err := configTypes.GetBucketName(v1)
 
-	log.Print("Building organization graph from config file")
+	log.Info("Building organization graph from config file")
 
 	//var domains []objects.Sources
 	//err := v1.UnmarshalKey("sources", &domains)
 	domains, err := config.GetSources(v1)
 	if err != nil {
-		log.Println(err)
+		log.Error(err)
 		return err
 	}
 
@@ -54,7 +54,7 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 		fw, err := mem.NewMemFileWriter("org.parquet", func(name string, r io.Reader) error {
 			dat, err := ioutil.ReadAll(r)
 			if err != nil {
-				log.Printf("error reading data: %v", err)
+				log.Error("error reading data", err)
 				return err
 			}
 
@@ -67,20 +67,20 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 			// Upload the file with FPutObject
 			_, err = mc.PutObject(context.Background(), bucketName, objectName, br, int64(br.Len()), minio.PutObjectOptions{})
 			if err != nil {
-				log.Printf("%s", objectName)
-				log.Fatalln(err) // Fatal?   seriously?  I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+				log.Fatal(objectName, err)
+				// Fatal?   seriously?  I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 			}
 
 			return err
 		})
 		if err != nil {
-			log.Println("Can't create s3 file writer", err)
+			log.Error("Can't create s3 file writer", err)
 			return err
 		}
 
 		pw, err := writer.NewParquetWriter(fw, new(Qset), 4)
 		if err != nil {
-			log.Println("Can't create parquet writer", err)
+			log.Error("Can't create parquet writer", err)
 			return err
 		}
 
@@ -92,13 +92,13 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 		jld, err := orggraph(domains[k])
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
 		r, err := common.JLD2nq(jld, proc, options)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
@@ -111,42 +111,41 @@ func TEST_BuildGraphMem(mc *minio.Client, v1 *viper.Viper) error {
 
 			spog, err := dec.Decode()
 			if err != nil {
-				log.Println(err)
+				log.Error(err)
 				return err
 			}
 
 			qs := Qset{Subject: spog.Subj.String(), Predicate: spog.Pred.String(), Object: spog.Obj.String(), Graph: spog.Ctx.String()}
 
-			// log.Println(qs)
+			log.Trace(qs)
 
 			if err = pw.Write(qs); err != nil {
-				log.Println("Write error", err)
+				log.Error("Write error", err)
 				return err
 			}
 
 		}
 		if err := scanner.Err(); err != nil {
-			log.Println(err)
+			log.Error(err)
 			return err
 		}
 
 		pw.Flush(true)
 
 		if err = pw.WriteStop(); err != nil {
-			log.Println("WriteStop error", err)
+			log.Error("WriteStop error", err)
 			return err
 		}
 
 		err = fw.Close()
 		if err != nil {
-			log.Println(err)
-			log.Println("Error closing S3 file writer")
+			log.Error("Error closing S3 file writer", err)
 			return err
 		}
 
 		// delete, is this needed since we close above and have a closure call?
 		if err := mem.GetMemFileFs().Remove("org.parquet"); err != nil {
-			log.Printf("error removing file from memfs: %v", err)
+			log.Error("error removing file from memfs:", err)
 
 		}
 	}

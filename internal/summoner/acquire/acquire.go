@@ -1,16 +1,15 @@
 package acquire
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
-	"log"
+	"github.com/gleanerio/gleaner/internal/common"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
@@ -21,239 +20,278 @@ import (
 	bolt "go.etcd.io/bbolt"
 )
 
+const EarthCubeAgent = "EarthCube_DataBot/1.0"
+const JSONContentType = "application/ld+json"
+
 // ResRetrieve is a function to pull down the data graphs at resources
-func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB) {
+func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB, runStats *common.RunStats) {
 	wg := sync.WaitGroup{}
 
 	// Why do I pass the wg pointer?   Just make a new one
 	// for each domain in getDomain and us this one here with a semaphore
 	// to control the loop?
-	for k := range m {
-		// log.Printf("Queuing URLs for %s \n", k)
-		go getDomain(v1, mc, m, k, &wg, db)
+	for domain, urls := range m {
+		r := runStats.Add(domain)
+		r.Set(common.Count, len(urls))
+		r.Set(common.HttpError, 0)
+		r.Set(common.Issues, 0)
+		r.Set(common.Summoned, 0)
+		log.Info("Queuing URLs for ", domain)
+
+		repologger, err := common.LogIssues(v1, domain)
+		if err != nil {
+			log.Error("Error creating a logger for a repository", err)
+		} else {
+			repologger.Info("Queuing URLs for ", domain)
+			repologger.Info("URL Count ", len(urls))
+		}
+		wg.Add(1)
+		//go getDomain(v1, mc, urls, domain, &wg, db)
+		go getDomain(v1, mc, urls, domain, &wg, db, repologger, r)
 	}
 
-	time.Sleep(2 * time.Second) // ?? why is this here?
 	wg.Wait()
 }
 
-func getDomain(v1 *viper.Viper, mc *minio.Client, m map[string][]string, k string, wg *sync.WaitGroup, db *bolt.DB) {
-
-	//// read config file
-	//miniocfg := v1.GetStringMapString("minio")
-	//bucketName := miniocfg["bucket"] //   get the top level bucket for all of gleaner operations from config file
+func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
+	if err != nil {
+		return bucketName, 0, 0, err
+	}
 
-	//mcfg := v1.GetStringMapString("summoner")
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
-	//tc, err := strconv.ParseInt(mcfg["threads"], 10, 64)
+
+	if err != nil {
+		return bucketName, 0, 0, err
+	}
+	// Set default thread counts and global delay
 	tc := mcfg.Threads
+	delay := mcfg.Delay
+
+	if delay != 0 {
+		tc = 1
+	}
+
+	// look for a domain specific override crawl delay
+	sources, err := configTypes.GetSources(v1)
+	source, err := configTypes.GetSourceByName(sources, sourceName)
+
+	if err != nil {
+		return bucketName, tc, delay, err
+	}
+
+	if source.Delay != 0 && source.Delay > delay {
+		delay = source.Delay
+		tc = 1
+		log.Info("Crawl delay set to ", delay, " for ", sourceName)
+	}
+
+	log.Info("Thread count ", tc, " delay ", delay)
+	return bucketName, tc, delay, nil
+}
+
+func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
+	wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) {
+	//func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
+
 	// make the bucket (if it doesn't exist)
 	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte(k))
+		_, err := tx.CreateBucket([]byte(sourceName))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
 		}
 		return nil
 	})
 
-	// tc, err := Threadcount(v1)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
-	// dt, err := Delayrequest(v1)
-	// if err != nil {
-	// 	log.Println(err)
-	// }
+	bucketName, tc, delay, err := getConfig(v1, sourceName)
+	if err != nil {
+		// trying to read a source, so let's not kill everything with a panic/fatal
+		log.Error("Error reading config file ", err)
+		repologger.Error("Error reading config file ", err)
+	}
 
-	delay := mcfg.Delay
-	var dt int64
-	//if delay != "" {
-	if delay != 0 {
-		//log.Printf("Delay set to: %s milliseconds", delay)
-		//dt, err = strconv.ParseInt(delay, 10, 64)
-		dt = delay
-		if err != nil {
-			log.Println(err)
-			log.Panic("Could not convert delay from config file to a value")
-		}
-		// set threads to 1
-		//log.Println("Delay is not 0, threads set to 1")
-		tc = 1
-	} else {
-		dt = 0
-		if dt > 0 {
-			tc = 1 // If the domain requests a delay between request, drop to single threaded and honor delay
-		}
+	var client http.Client
 
-		log.Printf("Thread count %d delay %d\n", tc, dt)
+	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
+	lwg := sync.WaitGroup{}
 
-		semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
-		defer close(semaphoreChan)
-		lwg := sync.WaitGroup{}
-
-		wg.Add(1)       // wg from the calling function
-		defer wg.Done() // tell the wait group that we be done
-
-		count := len(m[k])
-		bar := progressbar.Default(int64(count))
-
-		var (
-			buf    bytes.Buffer
-			logger = log.New(&buf, "logger: ", log.Lshortfile)
-		)
-
-		// var client http.Client
-
-		// we actually go get the URLs now
-		for i := range m[k] {
-			lwg.Add(1)
-			urlloc := m[k][i]
-
-			// TODO / WARNING for large site we can exhaust memory with just the creation of the
-			// go routines. 1 million =~ 4 GB  So we need to control how many routines we
-			// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
-			// library too)
-
-			// log.Println(urlloc)
-
-			go func(i int, k string) {
-				semaphoreChan <- struct{}{}
-
-				logger.Println(urlloc)
-
-				urlloc = strings.ReplaceAll(urlloc, " ", "")
-				urlloc = strings.ReplaceAll(urlloc, "\n", "")
-
-				var client http.Client // why do I make this here..  can I use 1 client?  move up in the loop
-				req, err := http.NewRequest("GET", urlloc, nil)
-				if err != nil {
-					log.Println(err)
-					logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-				}
-				req.Header.Set("User-Agent", "EarthCube_DataBot/1.0")
-				req.Header.Set("Accept", "application/ld+json, text/html")
-
-				resp, err := client.Do(req)
-				if err != nil {
-					logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-					lwg.Done()                                              // tell the wait group that we be done
-					<-semaphoreChan
-					return
-				}
-				defer resp.Body.Close()
-
-				doc, err := goquery.NewDocumentFromResponse(resp)
-				if err != nil {
-					logger.Printf("#%d error on %s : %s  ", i, urlloc, err) // print an message containing the index (won't keep order)
-					lwg.Done()                                              // tell the wait group that we be done
-					<-semaphoreChan
-					return
-				}
-
-				var jsonlds []string
-				var contentTypeHeader = resp.Header["Content-Type"]
-
-				// if
-				// The URL is sending back JSON-LD correctly as application/ld+json
-				// this should not be here IMHO, but need to support people not setting proper header value
-				// The URL is sending back JSON-LD but incorrectly sending as application/json
-				if contains(contentTypeHeader, "application/ld+json") || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
-					logger.Printf("%s as %s", urlloc, contentTypeHeader)
-					jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
-					if err != nil {
-						logger.Printf("Error processing json response from %s: %s", urlloc, err)
-					}
-					// look in the HTML page for <script type=application/ld+json
-				} else {
-					doc.Find("script").Each(func(i int, s *goquery.Selection) {
-						val, _ := s.Attr("type")
-						if val == "application/ld+json" {
-							jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
-							if err != nil {
-								logger.Printf("Error processing script tag in %s: %s", urlloc, err)
-							}
-						}
-					})
-				}
-
-				// For incremental indexing I want to know every URL I visit regardless
-				// if there is a valid JSON-LD document or not.   For "full" indexing we
-				// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
-				// and avoid those during incremental calls.
-
-				// even is no JSON-LD packages found, record the event of checking this URL
-				if len(jsonlds) < 1 {
-					// TODO is her where I then try headless, and scope the following for into an else?
-					log.Printf("Direct access failed, trying headless for  %s ", urlloc)
-					err := PageRender(v1, mc, logger, 60*time.Second, urlloc, k, db) // TODO make delay configurable
-
-					db.Update(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte(k))
-						err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
-						return err
-					})
-					if err != nil {
-						logger.Printf("%s :: %s", urlloc, err)
-					}
-
-				} else {
-					log.Printf("Direct access worked for  %s ", urlloc)
-				}
-
-				for _, jsonld := range jsonlds {
-					if jsonld != "" { // traps out the root domain...   should do this different
-						logger.Printf("#%d Uploading", i)
-						sha, err := Upload(v1, mc, logger, bucketName, k, urlloc, jsonld)
-						if err != nil {
-							logger.Printf("Error uploading jsonld to object store: %s: %s", urlloc, err)
-						}
-						// TODO  Is here where to add an entry to the KV store
-						db.Update(func(tx *bolt.Tx) error {
-							b := tx.Bucket([]byte(k))
-							err := b.Put([]byte(urlloc), []byte(sha))
-							return err
-						})
-					} else {
-						logger.Printf("Empty JSON-LD document found. Continuing.")
-						// TODO  Is here where to add an entry to the KV store
-						db.Update(func(tx *bolt.Tx) error {
-							b := tx.Bucket([]byte(k))
-							err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JOSN-LD found at this URL
-							return err
-						})
-					}
-				}
-
-				bar.Add(1)                                       // bar.Incr()
-				logger.Printf("#%d thread for %s ", i, urlloc)   // print an message containing the index (won't keep order)
-				time.Sleep(time.Duration(dt) * time.Millisecond) // sleep a bit if directed to by the provider
-
-				lwg.Done()
-
-				<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
-			}(i, k)
-
-		}
-
+	defer func() {
 		lwg.Wait()
+		wg.Done()
+		close(semaphoreChan)
+	}()
 
-		// TODO write this to minio in the run ID bucket
-		// return the logger buffer or write to a mutex locked bytes buffer
-		f, err := os.Create(fmt.Sprintf("./%s.log", k))
+	count := len(urls)
+	bar := progressbar.Default(int64(count))
+
+	// we actually go get the URLs now
+	for i := range urls {
+		lwg.Add(1)
+		urlloc := urls[i]
+
+		// TODO / WARNING for large site we can exhaust memory with just the creation of the
+		// go routines. 1 million =~ 4 GB  So we need to control how many routines we
+		// make too..  reference https://github.com/mr51m0n/gorc (but look for someting in the core
+		// library too)
+
+		go func(i int, sourceName string) {
+			semaphoreChan <- struct{}{}
+
+			repologger.Trace("Indexing", urlloc)
+			log.Debug("Indexing ", urlloc)
+
+			req, err := http.NewRequest("GET", urlloc, nil)
+			if err != nil {
+				log.Error(i, err, urlloc)
+			}
+			req.Header.Set("User-Agent", EarthCubeAgent)
+			req.Header.Set("Accept", "application/ld+json, text/html")
+
+			resp, err := client.Do(req)
+			if err != nil {
+				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+				repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+				lwg.Done() // tell the wait group that we be done
+				<-semaphoreChan
+				return
+			}
+			defer resp.Body.Close()
+
+			jsonlds, err := FindJSONInResponse(v1, urlloc, repologger, resp)
+
+			if err != nil {
+				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+				repoStats.Inc(common.Issues)
+				lwg.Done() // tell the wait group that we be done
+				<-semaphoreChan
+				return
+			}
+
+			// For incremental indexing I want to know every URL I visit regardless
+			// if there is a valid JSON-LD document or not.   For "full" indexing we
+			// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
+			// and avoid those during incremental calls.
+
+			// even is no JSON-LD packages found, record the event of checking this URL
+			if len(jsonlds) < 1 {
+				// TODO is her where I then try headless, and scope the following for into an else?
+				log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
+				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
+				err := PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, db, repologger, repoStats)                  // TODO make delay configurable
+
+				if err != nil {
+					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
+				}
+				db.Update(func(tx *bolt.Tx) error {
+					b := tx.Bucket([]byte(sourceName))
+					err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JOSN-LD found at this URL
+					return err
+				})
+				if err != nil {
+					log.Error("DB Update", urlloc, "::", err)
+				}
+
+			} else {
+				log.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace("Direct access worked for ", urlloc)
+				repologger.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace()
+				repoStats.Inc(common.Summoned)
+			}
+
+			UploadWrapper(v1, mc, bucketName, sourceName, urlloc, db, repologger, repoStats, jsonlds)
+
+			bar.Add(1)                                          // bar.Incr()
+			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
+			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
+
+			lwg.Done()
+
+			<-semaphoreChan // clear a spot in the semaphore channel for the next indexing event
+		}(i, sourceName)
+
+	}
+}
+
+func FindJSONInResponse(v1 *viper.Viper, urlloc string, repologger *log.Logger, response *http.Response) ([]string, error) {
+	doc, err := goquery.NewDocumentFromResponse(response)
+	if err != nil {
+		return nil, err
+	}
+
+	contentTypeHeader := response.Header["Content-Type"]
+	var jsonlds []string
+
+	// if the URL is sending back JSON-LD correctly as application/ld+json
+	// this should not be here IMHO, but need to support people not setting proper header value
+	// The URL is sending back JSON-LD but incorrectly sending as application/json
+	if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
+		logFields := log.Fields{"url": urlloc, "contentType": "json or ld_json"}
+		repologger.WithFields(logFields).Debug()
+		log.WithFields(logFields).Debug(urlloc, " as ", contentTypeHeader)
+
+		jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
 		if err != nil {
-			log.Println("Error writing a file")
+			log.WithFields(logFields).Error("Error processing json response from ", urlloc, err)
+			repologger.WithFields(logFields).Error(err)
 		}
+		// look in the HTML response for <script type=application/ld+json>
+	} else {
+		doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
+			jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
+			logFields := log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}
+			repologger.WithFields(logFields).Info()
+			if err != nil {
+				log.WithFields(logFields).Error("Error processing script tag in ", urlloc, err)
+				repologger.WithFields(logFields).Error(err)
+			}
+		})
+	}
 
-		w := bufio.NewWriter(f)
-		bc, err := w.WriteString(buf.String())
-		if err != nil {
-			log.Println("Error writing a file")
+	return jsonlds, nil
+}
+
+func UploadWrapper(v1 *viper.Viper, mc *minio.Client, bucketName string, sourceName string, urlloc string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats, jsonlds []string) {
+	for i, jsonld := range jsonlds {
+		if jsonld != "" { // traps out the root domain...   should do this different
+			logFields := log.Fields{"url": urlloc, "issue": "Uploading"}
+			log.WithFields(logFields).Trace("#", i, "Uploading ")
+			repologger.WithFields(logFields).Trace()
+			sha, err := Upload(v1, mc, bucketName, sourceName, urlloc, jsonld)
+			if err != nil {
+				logFields = log.Fields{"url": urlloc, "sha": sha, "issue": "Error uploading jsonld to object store"}
+				log.WithFields(logFields).Error("Error uploading jsonld to object store: ", urlloc, err)
+				repologger.WithFields(logFields).Error(err)
+				repoStats.Inc(common.StoreError)
+			} else {
+				logFields = log.Fields{"url": urlloc, "sha": sha, "issue": "Uploaded to object store"}
+				repologger.WithFields(logFields).Trace(err)
+				log.WithFields(logFields).Info("Successfully put ", sha, " in summoned bucket for ", urlloc)
+				repoStats.Inc(common.Stored)
+			}
+			// TODO  Is here where to add an entry to the KV store
+			db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(sourceName))
+				err := b.Put([]byte(urlloc), []byte(sha))
+				if err != nil {
+					log.Error("Error writing to bolt ", err)
+				}
+				return nil
+			})
+		} else {
+			logFields := log.Fields{"url": urlloc, "issue": "Empty JSON-LD document found "}
+			log.WithFields(logFields).Info("Empty JSON-LD document found. Continuing.")
+			repologger.WithFields(logFields).Error("Empty JSON-LD document found. Continuing.")
+			// TODO  Is here where to add an entry to the KV store
+			db.Update(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte(sourceName))
+				err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NULL: %s", urlloc))) // no JSON-LD found at this URL
+				if err != nil {
+					log.Error("Error writing to bolt ", err)
+				}
+				return nil
+			})
 		}
-		w.Flush()
-		log.Printf("Wrote log size %d", bc)
-
 	}
 }
 
@@ -265,13 +303,6 @@ func contains(arr []string, str string) bool {
 		}
 	}
 	return false
-}
-
-func rightPad2Len(s string, padStr string, overallLen int) string {
-	var padCountInt int
-	padCountInt = 1 + ((overallLen - len(padStr)) / len(padStr))
-	var retStr = s + strings.Repeat(padStr, padCountInt)
-	return retStr[:overallLen]
 }
 
 func fileExtensionIsJson(rawUrl string) bool {

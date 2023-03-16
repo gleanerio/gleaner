@@ -20,6 +20,7 @@ jobs:
         #goos: [linux, windows, darwin]
         goarch: [amd64, arm64]
         goos: [linux]
+        goarch: [amd64, arm64]
         exclude:
           - goarch: "386"
             goos: darwin
@@ -29,7 +30,10 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v2
       - name: donwload schema
-        run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
+        run: curl https://schema.org/version/latest/schemaorg-current-https.jsonld --output assets/schemaorg-current-https.jsonld
+      - name: donwload schema
+        run: curl https://schema.org/version/latest/schemaorg-current-http.jsonld --output assets/schemaorg-current-http.jsonld
+
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
       - id: binary
@@ -49,14 +53,20 @@ jobs:
       #      - name: Checkout Repo
       #        uses: actions/checkout@v2
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: 'arm64,arm'
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Login to DockerHub
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set variables
+        run: |
+          VER=$(cat ./VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v3
@@ -64,15 +74,17 @@ jobs:
           images: nsfearthcube/gleaner
           flavor: |
             latest=true
+            suffix=-${{ env.VERSION }}
           tags: |
             type=ref,event=tag
             type=ref,event=branch
             type=semver,pattern={{version}}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ./build/Dockerfile

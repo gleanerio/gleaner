@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	minio "github.com/minio/minio-go/v7"
-	"log"
+	log "github.com/sirupsen/logrus"
 )
 
 // GetShapeGraphs gets the shape graphs the shacl miller will use.
@@ -25,20 +25,20 @@ func GetShapeGraphs(mc *minio.Client, bucketname string) []Entry {
 
 	for object := range objectCh {
 		if object.Err != nil {
-			log.Println(object.Err)
+			log.Error(object.Err)
 			return nil
 		}
 
 		//fo, err := mc.GetObject(bucketname, object.Key, minio.GetObjectOptions{})
 		fo, err := mc.GetObject(context.Background(), bucketname, object.Key, minio.GetObjectOptions{})
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 			return nil
 		}
 
 		oi, err := fo.Stat()
 		if err != nil {
-			log.Println("Issue with reading an object..  should I just fatal on this to make sure?")
+			log.Error("Issue with reading an object..  should I just fatal on this to make sure?", err)
 		}
 		urlval := ""
 		sha1val := ""
@@ -60,7 +60,7 @@ func GetShapeGraphs(mc *minio.Client, bucketname string) []Entry {
 
 	}
 
-	log.Println(len(entries))
+	log.Debug(len(entries))
 	// multiCall(entries)
 
 	return entries

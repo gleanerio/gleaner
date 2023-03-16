@@ -1,0 +1,11 @@
+{
+  "@graph":[
+    {
+      "@context": {
+        "SO":"http://schema.org/"
+      },
+      "@type":"bar",
+      "SO:name":"Some type in a graph"
+    }
+  ]
+}

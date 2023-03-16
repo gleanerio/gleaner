@@ -65,7 +65,8 @@ union followed by a
 go mod tidy
 ```
 
-following the merge.  
+following the merge.   Once you have resolved the conflict and done 
+tidy can add, if needed, the go.mod and go.sum files and commit.  
 
 ### Branches
 
@@ -95,5 +96,8 @@ visit:
 * https://book.oceaninfohub.org/indexing/qstart.html
 * https://book.oceaninfohub.org/indexing/cliDocker/README.html
 
-For the best documentation on using Gleaner at this time.  
+For the best documentation on using Gleaner at this time.
 
+## Unit tests
+
+There are some unit tests here; to run them, you can do `go test -v ./...`

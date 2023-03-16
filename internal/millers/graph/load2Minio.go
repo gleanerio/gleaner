@@ -3,7 +3,7 @@ package graph
 import (
 	"bytes"
 	"context"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	minio "github.com/minio/minio-go/v7"
 )
@@ -22,12 +22,11 @@ func LoadToMinio(jsonld, bucketName, objectName string, mc *minio.Client) (int64
 	// Upload the zip file with FPutObject
 	n, err := mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Printf("%s/%s", bucketName, objectName)
-		log.Println(err)
+		log.Error(bucketName, "/", objectName, "error", err)
 		// TODO   should return 0, err here and deal with it on the other end
 	}
 
-	// log.Printf("#%d Uploaded Bucket:%s File:%s Size %d\n", i, bucketName, objectName, n)
+	log.Trace("Uploaded Bucket:", bucketName, "File:", objectName, "Size", n)
 
 	return n.Size, nil
 }

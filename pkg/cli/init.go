@@ -3,8 +3,8 @@ package cli
 import (
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path"
@@ -14,8 +14,9 @@ import (
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "This initialize a config directory which are used create config files",
+	Use:              "init",
+	TraverseChildren: true,
+	Short:            "This initialize a config directory which are used create config files",
 	Long: `config init creates template configuration files. :
 localConfig.yaml - configuration file for services
 sources.csv - a csv listing of sources that are uses to generate lists of files to harvest
@@ -23,10 +24,10 @@ gleaner_base.yaml - base configuration file for gleaner
 nabu_base. yaml - base configuration for nabu
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("init called")
+		log.Info("init called")
 		err := initCfg(cfgPath, cfgName, configBaseFiles)
 		if err != nil {
-			fmt.Println(err)
+			log.Error(err)
 		}
 
 	},
@@ -52,7 +53,7 @@ func initCfg(cfgpath string, cfgName string, configBaseFiles map[string]string) 
 	if _, err := os.Stat(basePath); errors.Is(err, os.ErrNotExist) {
 		err := os.MkdirAll(basePath, os.ModePerm)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 	}
 

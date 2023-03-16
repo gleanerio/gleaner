@@ -2,10 +2,12 @@ package cli
 
 import (
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/common"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"log"
 	"os"
-	"path"
+
+	///"time"
 
 	"github.com/boltdb/bolt"
 	"github.com/spf13/viper"
@@ -47,11 +49,17 @@ func Execute() {
 }
 
 func init() {
-	log.Println("EarthCube Gleaner")
+	log.Info("EarthCube Gleaner")
 	akey := os.Getenv("MINIO_ACCESS_KEY")
 	skey := os.Getenv("MINIO_SECRET_KEY")
-	cobra.OnInitialize(initConfig)
-
+	if skey != "" || akey != "" {
+		fmt.Println(" MINIO_ACCESS_KEY or  MINIO_SECRET_KEY are set")
+		fmt.Println("if this is not intentional, please unset")
+	}
+	// set in in internal/configs
+	//akey := os.Getenv("MINIO_ACCESS_KEY")
+	//skey := os.Getenv("MINIO_SECRET_KEY")
+	//cobra.OnInitialize(initConfig, initLogging)
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -64,11 +72,13 @@ func init() {
 	// minio env variables
 	rootCmd.PersistentFlags().StringVar(&minioVal, "address", "localhost", "FQDN for server")
 	rootCmd.PersistentFlags().StringVar(&portVal, "port", "9000", "Port for minio server, default 9000")
-	rootCmd.PersistentFlags().StringVar(&accessVal, "access", akey, "Access Key ID")
-	rootCmd.PersistentFlags().StringVar(&secretVal, "secret", skey, "Secret access key")
+	//	rootCmd.PersistentFlags().StringVar(&accessVal, "access", akey, "Access Key ID")
+	//	rootCmd.PersistentFlags().StringVar(&secretVal, "secret", skey, "Secret access key")
 	rootCmd.PersistentFlags().StringVar(&bucketVal, "bucket", "gleaner", "The configuration bucket")
 
 	rootCmd.PersistentFlags().BoolVar(&sslVal, "ssl", false, "Use SSL boolean")
+
+	cobra.OnInitialize(initConfig, common.InitLogging)
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -77,45 +87,6 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 
-	gleanerViperVal = viper.New()
-	if cfgFile != "" {
-		// Use config file from the flag.
-		gleanerViperVal.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".gleaner" (without extension).
-		gleanerViperVal.AddConfigPath(home)
-		gleanerViperVal.AddConfigPath(path.Join(cfgPath, cfgName))
-		gleanerViperVal.SetConfigType("yaml")
-		gleanerViperVal.SetConfigName("gleaner")
-	}
-	nabuViperVal = viper.New()
-	if cfgFile != "" {
-		// Use config file from the flag.
-		nabuViperVal.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		cobra.CheckErr(err)
-
-		// Search config in home directory with name ".gleaner" (without extension).
-		nabuViperVal.AddConfigPath(home)
-		nabuViperVal.AddConfigPath(path.Join(cfgPath, cfgName))
-		nabuViperVal.SetConfigType("yaml")
-		nabuViperVal.SetConfigName("nabu")
-	}
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := gleanerViperVal.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using gleaner config file:", gleanerViperVal.ConfigFileUsed())
-	}
-	if err := nabuViperVal.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using nabu config file:", nabuViperVal.ConfigFileUsed())
-	}
 	// Setup the KV store to hold a record of indexed resources
 	var err error
 	db, err = bolt.Open("gleaner.db", 0600, nil)

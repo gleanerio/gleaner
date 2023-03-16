@@ -1,7 +1,9 @@
 package common
 
+// this needs to have some wrapper around normalize to throw an error when things are not right
+
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 
@@ -33,7 +35,7 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 		var s []ContextMapping
 		err := v1.UnmarshalKey("contextmaps", &s)
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 
 		m := make(map[string]string)
@@ -43,7 +45,8 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 				m[s[i].Prefix] = s[i].File
 
 			} else {
-				log.Printf("ERROR: context file location %s is wrong, this is a critical error", s[i].File)
+				// todo: fatal?
+				log.Error("ERROR: context file location", s[i].File, "is wrong, this is a critical error")
 			}
 		}
 
@@ -51,6 +54,8 @@ func JLDProc(v1 *viper.Viper) (*ld.JsonLdProcessor, *ld.JsonLdOptions) { // TODO
 		cdl := ld.NewCachingDocumentLoader(nl)
 		cdl.PreloadWithMapping(m)
 		options.DocumentLoader = cdl
+		// todo: check domain config and see whether it should be processed with 1.0
+		// options.ProcessingMode = "json-ld-1.0"
 	}
 
 	// Set a default format..  let this be set later...

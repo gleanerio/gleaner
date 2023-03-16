@@ -1,0 +1,15 @@
+{
+  "@id":"idenfitier",
+  "url": "http://example.com/",
+  "identifier": [
+    {
+      "@type": "PropertyValue",
+      "@id": "https://doi.org/10.1575/1912/bco-dmo.2343.1",
+      "propertyID": "https://registry.identifiers.org/registry/doi",
+      "value": "doi:10.1575/1912/bco-dmo.2343.1",
+      "url": "https://doi.org/10.1575/1912/bco-dmo.2343.1"
+    }
+  ]
+
+
+}

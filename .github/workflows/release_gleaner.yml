@@ -6,7 +6,7 @@ on:
 
 jobs:
   releases-matrix:
-    name: Release Go Binary
+    name: Release gleaner Go Binary
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -21,8 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: donwload schema
-        run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
- #     - name: Run tests
+        run: curl https://schema.org/version/latest/schemaorg-current-https.jsonld --output assets/schemaorg-current-https.jsonld
+      - name: donwload schema
+        run: curl https://schema.org/version/latest/schemaorg-current-http.jsonld --output assets/schemaorg-current-http.jsonld
+
+      #     - name: Run tests
   #      run: go test -v -p=1 -timeout=0 ./...
       - uses: wangyoucao577/go-release-action@v1.22
         with:
@@ -31,6 +34,6 @@ jobs:
           goarch: ${{ matrix.goarch }}
           project_path: "./cmd/gleaner"
           binary_name: "gleaner"
-          ldflags: "-s -w"
-          extra_files: README.md docs/ configs/ scripts/ schemaorg-current-https.jsonld
+          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }}"
+          extra_files: README.md docs/ configs/ scripts/ assets/
   #         extra_files: LICENSE README.md

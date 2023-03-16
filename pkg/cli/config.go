@@ -22,14 +22,16 @@ nabu uploads and manages data processed by gleaner to a sparql triplestore
 	},
 }
 
-var glrVal, nabuVal, sourcesVal, templateGleaner, templateNabu string
+var glrVal, nabuVal, nabuProvVal, templateGleaner, templateNabu string
 
+// sourcesVal,
 // servers was a list of servers... now a more generic list of options
 var configBaseFiles = map[string]string{"gleaner": "gleaner_base.yaml", "sources": "sources.csv", "sources_min": "sources_min.csv",
 	"nabu": "nabu_base.yaml", "servers": "localConfig.yaml", "readme": "readme.txt", "configdoc": "README_Configure_Template.md"}
 
 var gleanerFileNameBase = "gleaner"
 var nabuFilenameBase = "nabu"
+var nabuProvFilenameBase = "nabu_prov"
 
 func init() {
 	rootCmd.AddCommand(configCmd)
@@ -37,7 +39,8 @@ func init() {
 	configCmd.PersistentFlags().StringVar(&templateNabu, "template_nabu", configBaseFiles["nabu"], "Configuration Template or Cofiguration file")
 	configCmd.PersistentFlags().StringVar(&glrVal, "gleaner", gleanerFileNameBase+".yaml", "output gleaner file to")
 	configCmd.PersistentFlags().StringVar(&nabuVal, "nabu", nabuFilenameBase+".yaml", "output nabu file to")
-	configCmd.PersistentFlags().StringVar(&sourcesVal, "sourcemaps", configBaseFiles["sources"], "sources as csv")
+	configCmd.PersistentFlags().StringVar(&nabuProvVal, "nabuprov", nabuProvFilenameBase+".yaml", "output nabu prov file to")
+	//configCmd.PersistentFlags().StringVar(&sourcesVal, "sourcemaps", configBaseFiles["sources"], "sources as csv")
 	rootCmd.MarkPersistentFlagRequired("cfgName")
 	// Here you will define your flags and configuration settings.
 
