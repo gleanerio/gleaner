@@ -200,8 +200,8 @@ github.com/fsnotify/fsnotify v1.5.4 h1:jRbGcIw6P2Meqdwuo0H1p6JVLbL5DHKAKlYndzMwV
 github.com/fsnotify/fsnotify v1.5.4/go.mod h1:OVB6XrOHzAwXMpEM7uPOzcehqUV2UqJxmVXmkdnm1bU=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/gleanerio/gleaner v0.0.0-20211103190335-f9d8811ee43b/go.mod h1:Xx/8sK0tqQRLSYLsyTR9NeLTGKpwmUOIFat0ilWqguw=
-github.com/gleanerio/nabu v0.0.0-20230313212528-d96ace03c57d h1:fGi5btet7iahXMwyNYcu9baXAW/ukAC9v33C/xZ+AQQ=
-github.com/gleanerio/nabu v0.0.0-20230313212528-d96ace03c57d/go.mod h1:0wdQdUV1gf22ySZhAAqKOQJFoIYk1yW+VKh2BaMtMuY=
+github.com/gleanerio/nabu v0.0.0-20230316180932-b68225cabb13 h1:mZbPFymwB3Wk0yNhB7CsPh/UHjCxCl935qauCK/Fs0o=
+github.com/gleanerio/nabu v0.0.0-20230316180932-b68225cabb13/go.mod h1:0wdQdUV1gf22ySZhAAqKOQJFoIYk1yW+VKh2BaMtMuY=
 github.com/glycerine/go-unsnap-stream v0.0.0-20181221182339-f9677308dec2/go.mod h1:/20jfyN9Y5QPEAprSgKAUr+glWDY39ZiUEAYOEv5dsE=
 github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31/go.mod h1:Ogl1Tioa0aV7gstGFO7KhffUsb9M4ydbEbbxpcEDc24=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
