@@ -41,8 +41,8 @@ jobs:
           go build -o gleaner
         working-directory: ./cmd/gleaner
         env:
-          GOOS: linux
-          GOARCH: amd64
+          GOOS: ${{matrix.goss}}
+          GOARCH: ${{matrix.goarch}}
           CGO_ENABLED: 0
       #  deploy:
       #    needs: build
