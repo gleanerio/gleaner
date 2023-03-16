@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - dev_docker_dev_matrix
   release:
     types: [published]
 
