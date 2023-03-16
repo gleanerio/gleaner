@@ -18,7 +18,7 @@ jobs:
       matrix:
         # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
-        #goarch: [amd64,arm64]
+        goarch: [amd64, arm64]
         goos: [linux]
         goarch: [amd64, arm64]
         exclude:
@@ -43,7 +43,7 @@ jobs:
         working-directory: ./cmd/gleaner
         env:
           GOOS: linux
-          GOARCH: amd64
+          GOARCH: [amd64, arm64]
           CGO_ENABLED: 0
       #  deploy:
       #    needs: build
