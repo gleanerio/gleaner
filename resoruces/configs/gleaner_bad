@@ -1,0 +1,255 @@
+# glcon check to see that a bad connection is killed early.
+# cli:
+# ./glcon gleaner batch --cfg resources/configs/gleaner_bad
+
+context:
+    cache: true
+contextmaps:
+    - file: ./configs/schemaorg-current-https.jsonld
+      prefix: https://schema.org/
+    - file: ./configs/schemaorg-current-https.jsonld
+      prefix: http://schema.org/
+gleaner:
+    mill: true
+    runid: runX
+    summon: true
+millers:
+    graph: true
+minio:
+    address: oss.geocodes-dev.earthcube.org
+    port: 443
+    ssl: true
+    accesskey: badkey
+    secretkey: bad secret
+    bucket: dv-testing
+sources:
+    - sourcetype: sitemap
+      name: magic
+      logo: http://mbobak.ncsa.illinois.edu/ext/ec/magic/MagIC.png
+      url: https://www2.earthref.org/MagIC/contributions.sitemap.xml
+      headless: true
+      pid: http://www.re3data.org/repository/r3d100011910
+      propername: Magnetics Information Consortium (MagIC)
+      domain: https://www.earthref.org/MagIC
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: $.sameAs
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: earthchem
+      logo: http://www.earthchem.org/sites/default/files/files/EC_0-1.png
+      url: https://ecl.earthchem.org/sitemap.xml
+      headless: false
+      pid: https://www.re3data.org/repository/r3d100011538
+      propername: earthchem
+      domain: https://ecl.earthchem.org/home.php
+      active: false
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: $.sameAs
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: opentopography
+      logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+      url: https://opentopography.org/sitemap.xml
+      headless: false
+      pid: https://www.re3data.org/repository/r3d100010655
+      propername: OpenTopography
+      domain: http://www.opentopography.org/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: jsonsha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: linked.earth
+      logo: http://wiki.linked.earth/wiki/images/thumb/5/51/EarthLinked_Banner_blue_NoShadow.jpg/440px-EarthLinked_Banner_blue_NoShadow.jpg
+      url: http://wiki.linked.earth/sitemap.xml
+      headless: false
+      pid: http://wiki.linked.earth
+      propername: Linked Earth
+      domain: http://wiki.linked.earth
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: lipdverse
+      logo: ""
+      url: https://lipdverse.org/sitemap.xml
+      headless: false
+      pid: https://lipdverse.org
+      propername: Linked PaleoData
+      domain: https://lipdverse.org/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: opencoredata
+      logo: https://opencoredata.org/img/logo22small.png
+      url: http://opencoredata.org/sitemap.xml
+      headless: false
+      pid: https://www.re3data.org/repository/r3d100012874
+      propername: opencoredata
+      domain: https://opencoredata.org/
+      active: false
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: neon
+      logo: https://www.neonscience.org/themes/custom/neon/logo.svg
+      url: https://geodex.org/neon_prodcodes_sm.xml
+      headless: false
+      pid: http://www.re3data.org/repository/r3d100010290
+      propername: National Ecological Observatory Network (NEON)
+      domain: http://www.neonscience.org/
+      active: false
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: designsafe
+      logo: ""
+      url: https://www.designsafe-ci.org/sitemap.xml
+      headless: false
+      pid: ""
+      propername: ""
+      domain: https://www.designsafe-ci.org/data/browser/public/
+      active: false
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: r2r
+      logo: https://www.rvdata.us/images/Logo.4b1519be.png
+      url: https://service-dev.rvdata.us/api/sitemap/
+      headless: true
+      pid: http://www.re3data.org/repository/r3d100010735
+      propername: Rolling Deck to Repository Program (R2R)
+      domain: https://www.rvdata.us/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 3
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: geocodes_demo_datasets
+      logo: ""
+      url: https://earthcube.github.io/GeoCODES-Metadata/metadata/Dataset/allgood/sitemap.xml
+      headless: false
+      pid: https://github.com/earthcube/GeoCODES-Metadata/metadata/OtherResources
+      propername: Geocodes Demo Datasets
+      domain: https://www.earthcube.org/datasets/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: usap-dc
+      logo: https://www.usap-dc.org/
+      url: https://www.usap-dc.org/view/dataset/sitemap.xml
+      headless: true
+      pid: https://www.re3data.org/repository/r3d100010660
+      propername: U.S. Antarctic Program Data Center
+      domain: https://www.usap-dc.org/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: cchdo
+      logo: https://cchdo.ucsd.edu/static/svg/logo_cchdo.svg
+      url: https://cchdo.ucsd.edu/sitemap.xml
+      headless: false
+      pid: https://www.re3data.org/repository/r3d100010831
+      propername: CLIVAR and Carbon Hydrographic Data Office
+      domain: https://cchdo.ucsd.edu/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: amgeo
+      logo: https://amgeo.colorado.edu/static/img/amgeosmall.svg
+      url: https://amgeo-dev.colorado.edu/sitemap.xml
+      headless: false
+      pid: ""
+      propername: Assimilative Mapping of Geospace Observations
+      domain: https://amgeo.colorado.edu/
+      active: false
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+    - sourcetype: sitemap
+      name: wifire
+      logo: https://wifire-data.sdsc.edu/uploads/admin/2021-04-22-203649.712143WIFIRECOMMONSSMRES12.png
+      url: https://wifire-data.sdsc.edu/sitemap.xml
+      headless: false
+      pid: https://wifire-data.sdsc.edu/
+      propername: WIFIRE Commons
+      domain: https://wifire-data.sdsc.edu/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      identifiertype: identifiersha
+      fixcontextoption: 0
+summoner:
+    after: ""
+    delay: null
+    headless: http://127.0.0.1:9222
+    mode: full
+    threads: 5

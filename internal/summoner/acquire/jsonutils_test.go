@@ -1,7 +1,6 @@
 package acquire
 
 import (
-	approvals "github.com/approvals/go-approval-tests"
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -230,25 +229,6 @@ func TestContextUrlFix(t *testing.T) {
 "@type":"bar",
 "SO:name":"Some type in a graph"
 }`
-	// now handled by a file load
-	//// ContextObjectGraphJson  from global
-	//var expectedContextObjectGraphJson = ` {
-	//	"@context": {
-	//	"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
-	//		"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-	//		"schema": "https://schema.org/",
-	//		"xsd": "http://www.w3.org/2001/XMLSchema#"
-	//   },
-	//	"@graph": [
-	//	      {
-	//				"@id": "https://wifire-data.sdsc.edu/dataset/a1770ff8-1665-433c-88fb-c8e6863c61fc/resource/b01d00d2-1d64-47b8-aa5c-00410d84e6e6",
-	//				"@type": "schema:DataDownload",
-	//				"schema:encodingFormat": "GeoJSON",
-	//				"schema:name": "GeoJSON",
-	//				"schema:url": "https://gis-calema.opendata.arcgis.com/datasets/34402e97810f410db0ccd1ae345d9807_5.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D"
-	//			}
-	//	]
-	//}`
 
 	t.Run("It rewrites the jsonld context if it does not have a trailing slash", func(t *testing.T) {
 		result, err := fixContextUrl(noSlashContext, httpsContext)
@@ -393,22 +373,16 @@ func TestContextArrayFix(t *testing.T) {
     }`
 	// is this really what we want?
 	// probably want to parameterize,
-	// little hack to show approvals working.
 	t.Run("It rewrites the jsonld context if it is not an object", func(t *testing.T) {
 		result, err := fixContextArray(contextArrayJson, config.Https)
 		//assert.JSONEq(t, contextObjectJson, result)
 		assert.JSONEq(t, contextStandardized, result)
-		approvals.UseFolder("testdata")
-		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 
 	t.Run("It does not change the jsonld context if it is already an object", func(t *testing.T) {
 		result, err := fixContextArray(contextObjectJson, config.Https)
 		assert.JSONEq(t, contextObjectJson, result)
-
-		approvals.UseFolder("testdata")
-		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 
@@ -416,17 +390,81 @@ func TestContextArrayFix(t *testing.T) {
 		result, err := fixContextArray(contextMixedJson, config.Https)
 		//assert.JSONEq(t, contextMixedJson, result)
 		assert.JSONEq(t, contextStandardized, result)
-		approvals.UseFolder("testdata")
-		approvals.VerifyJSONStruct(t, result)
 		assert.Nil(t, err)
 	})
 	t.Run("It should change the  the jsonld context if the 'local' namespace is a string", func(t *testing.T) {
 		result, err := fixContextArray(contextLocalNamspaceJson, config.Https)
 		//assert.JSONEq(t, contextObjectJson, result)
 		assert.JSONEq(t, contextStandardized, result)
+		assert.Nil(t, err)
+	})
+}
 
-		approvals.UseFolder("testdata")
-		approvals.VerifyJSONStruct(t, result)
+func TestIdIRIFix(t *testing.T) {
+
+	t.Run("It does not make changes if there is a base in the context", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/",
+				"@base": "http://valid-json.com"
+			},
+			"@id": "some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It does not make changes if the id is a full IRI", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "http://www.test.com/some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Equal(t, testJson, result)
+		assert.Nil(t, err)
+	})
+
+	t.Run("It makes the id into a file:// url if there is no base in the context and the id is relative", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "some_cool_guid"
+		}
+		`
+		var expected = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@id": "file://some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Nil(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("It does not make changes if there is a base in the context and the id is a full IRI", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/",
+				"@base": "http://valid-json.com"
+			},
+			"@id": "http://www.test.com/some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Equal(t, testJson, result)
 		assert.Nil(t, err)
 	})
 }

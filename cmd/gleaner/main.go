@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
@@ -150,7 +151,7 @@ func main() {
 	if setupVal {
 		log.Info("Setting up buckets")
 		//err := check.MakeBuckets(mc, bucketName)
-		err = pkg.Setup(mc, v1)
+		err = check.Setup(mc, v1)
 		if err != nil {
 			log.Fatal("Error making buckets for setup call")
 		}
@@ -160,7 +161,7 @@ func main() {
 	}
 
 	// Validate Minio access
-	err = pkg.PreflightChecks(mc, v1)
+	err = check.PreflightChecks(mc, v1)
 	if err != nil {
 		log.Fatal("Preflight Check failed. Make sure the minio server is running, accessible and has been setup.", err)
 	}
