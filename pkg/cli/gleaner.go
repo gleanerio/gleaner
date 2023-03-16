@@ -81,6 +81,6 @@ func initGleanerConfig() {
 
 	bucketVal, err = config.GetBucketName(gleanerViperVal)
 	if err != nil {
-		log.Fatal("cannot read bucketname from : %s ", err)
+		log.Fatal("cannot read bucketname from : ", err)
 	}
 }

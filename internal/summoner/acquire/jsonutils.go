@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/config"
 	log "github.com/sirupsen/logrus"
+	"net/url"
 	"reflect"
 	"strings"
 
@@ -53,6 +54,7 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 // context fixes
 // *********
 // let's try to do them all, in one, since that will make the code a bit cleaner and easier to test
+// don' think this is currently called anywhere
 const httpContext = "http://schema.org/"
 const httpsContext = "https://schema.org/"
 
@@ -69,9 +71,7 @@ func fixContext(jsonld string, option config.ContextOption) (string, error) {
 		ctxSchemaOrg = httpContext
 	}
 
-	//switch jsonContext.Value().(type) {
 	switch reflect.ValueOf(jsonContext).Kind() {
-	//case string:
 	case reflect.String:
 		jsonld, err = fixContextString(jsonld, config.Https)
 	case reflect.Slice:
@@ -100,8 +100,6 @@ func fixContextString(jsonld string, option config.ContextOption) (string, error
 // this needs to check all items to see if they match schema.org, then fix.
 func fixContextUrl(jsonld string, ctx string) (string, error) {
 	var err error
-	//context := gjson.Get(jsonld, "@context.@vocab").String()
-
 	contexts := gjson.Get(jsonld, "@context").Map()
 	if _, ok := contexts["@vocab"]; !ok {
 		jsonld, err = sjson.Set(jsonld, "@context.@vocab", httpsContext)
@@ -109,18 +107,7 @@ func fixContextUrl(jsonld string, ctx string) (string, error) {
 	// for range
 	for ns, c := range contexts {
 		var context = c.String()
-		//var changed = false
 		if strings.Contains(context, "schema.org") {
-			//if !strings.HasSuffix(context, "/") {
-			//	context += "/"
-			//	changed = true
-			//}
-			//contextUrl, _ := url.Parse(context)
-			//if contextUrl.Scheme != "https" {
-			//	contextUrl.Scheme = "https"
-			//	context = contextUrl.String()
-			//	changed = true
-			//}
 			if strings.Contains(context, "www.") { // fix www.schema.org
 				var i = strings.Index(context, "schema.org")
 				context = context[i:]
@@ -129,20 +116,14 @@ func fixContextUrl(jsonld string, ctx string) (string, error) {
 			if len(context) < 20 { // https://schema.org/
 				context = ctx
 			}
-
-			//changed=true
 		}
-		//if changed {
-		// contexts[ns] = context
 		var path = "@context." + ns
 		jsonld, err = sjson.Set(jsonld, path, context)
 		if err != nil {
 			log.Error("Error standardizing schema.org" + err.Error())
 		}
-		//}
 
 	}
-	//jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": context})
 	return jsonld, err
 }
 
@@ -151,25 +132,38 @@ func fixContextUrl(jsonld string, ctx string) (string, error) {
 // this function corrects it.
 func fixContextArray(jsonld string, option config.ContextOption) (string, error) {
 	var err error
-	//jsonContext := gjson.Get(jsonld, "@context")
 	contexts := gjson.Get(jsonld, "@context")
-	//switch jsonContext.Value().(type) {
 	switch contexts.Value().(type) {
-	//case string:
 	case []interface{}: // array
 		jsonld, err = standardizeContext(jsonld, config.StandardizedHttps)
 	case map[string]interface{}: // array
-		//jsonld, err = standardizeContext(jsonld, StandardizedHttps)
 		jsonld = jsonld
-		//case nil:
-		//	jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": httpsContext})
+	}
+	return jsonld, err
+}
+
+// if the top-level JSON-LD @id is not an IRI, and there is no base in the context,
+// remove that id
+// see https://github.com/piprate/json-gold/discussions/68#discussioncomment-4782788
+// for details
+func fixId(jsonld string) (string, error) {
+	var err error
+	jsonIdentifier := gjson.Get(jsonld, "@id").String()
+	originalBase := gjson.Get(jsonld, "@context.@base").String()
+	idUrl, err := url.Parse(jsonIdentifier)
+	if originalBase == "" && idUrl.Scheme == "" { // we have a relative url and no base in the context
+		log.Trace("Transforming id: ", jsonIdentifier, " to file:// url because it is relative")
+		jsonld, err = sjson.Set(jsonld, "@id", "file://" + jsonIdentifier)
+	} else {
+		log.Trace("JSON-LD context base or IRI id found: ", originalBase, "ID: ", idUrl)
 	}
 	return jsonld, err
 }
 
 // this just creates a standardized context
 // jsonMap := make(map[string]interface{})
-var StandardHttpsContext = map[string]interface{}{"@vocab": "https://schema.org/",
+var StandardHttpsContext = map[string]interface{}{
+	"@vocab": "https://schema.org/",
 	"adms":   "https://www.w3.org/ns/adms#",
 	"dcat":   "https://www.w3.org/ns/dcat#",
 	"dct":    "https://purl.org/dc/terms/",
@@ -209,12 +203,8 @@ var StandardHttpContext = map[string]interface{}{
 func standardizeContext(jsonld string, option config.ContextOption) (string, error) {
 
 	var err error
-	//jsonContext := gjson.Get(jsonld, "@context")
-	//contexts := gjson.Get(jsonld, "@context").Map()
+
 	switch option {
-	//switch reflect.ValueOf(contexts).Kind() {
-	//case string:
-	//case reflect.Slice:
 	case config.StandardizedHttps:
 		jsonld, err = sjson.Set(jsonld, "@context", StandardHttpsContext)
 	case config.StandardizedHttp:
@@ -258,23 +248,22 @@ func ProcessJson(v1 *viper.Viper,
 		// source level
 
 		log.Info("context.strict is not set to true; doing json-ld fixups.")
-		//contextType := reflect.ValueOf(jsonld).Kind().String()
-		//if strings.HasPrefix(contextType, "string") || strings.HasPrefix(contextType, "map") {
-		//
-		//}
 		jsonld, err = fixContextString(jsonld, srcFixOption)
 		if err != nil {
 			log.Error(
-				"ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from string to be an object Error:", err)
+				"ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context from string to be an object Error: ", err)
 		}
 		jsonld, err = fixContextArray(jsonld, srcFixOption)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from array to be an object Error:", err)
+			log.Error("ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context from array to be an object Error: ", err)
 		}
-		//jsonld, err = fixContextUrl(jsonld, Https)
 		jsonld, err = fixContextUrl(jsonld, srcHttpOption) // CONST for now
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+			log.Error("ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context url scheme and trailing slash Error: ", err)
+		}
+		jsonld, err = fixId(jsonld)
+		if err != nil {
+			log.Error("ERROR: URL: ", urlloc, " Action: Removing relative JSON-LD @id Error: ", err)
 		}
 
 	}
