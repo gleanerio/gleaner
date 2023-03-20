@@ -63,7 +63,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		} else {
 			robots, err = getRobotsForDomain(domain.Domain)
 			if err != nil {
-				log.Error("Error getting robots.txt for ", domain.Name, ", continuing without it.")
+				log.Info("Error getting robots.txt for ", domain.Name, ", continuing without it.")
 				robots = nil
 				group = nil
 			}
@@ -201,7 +201,7 @@ func getRobotsForDomain(url string) (*robotstxt.RobotsData, error) {
 	log.Info("Getting robots.txt from ", robotsUrl)
 	robots, err := getRobotsTxt(robotsUrl)
 	if err != nil {
-		log.Error("error getting robots.txt for ", url, ":", err)
+		log.Info("error getting robots.txt for ", url, ":", err)
 		return nil, err
 	}
 	return robots, nil

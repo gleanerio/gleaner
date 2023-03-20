@@ -20,7 +20,7 @@ func getRobotsTxt(robotsUrl string) (*robotstxt.RobotsData, error) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Error("error fetching robots.txt at ", robotsUrl, err)
+		log.Info("error fetching robots.txt at ", robotsUrl, err)
 		return nil, err
 	}
 
