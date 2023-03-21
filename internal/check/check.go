@@ -12,7 +12,8 @@ import (
 
 // ConnCheck check the connections with a list buckets call
 func ConnCheck(mc *minio.Client) error {
-	_, err := mc.ListBuckets(context.Background())
+	bcukets, err := mc.ListBuckets(context.Background())
+	log.Debug("list buckets", bcukets)
 	return err
 }
 

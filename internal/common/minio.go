@@ -22,13 +22,19 @@ func MinioConnection(v1 *viper.Viper) *minio.Client {
 	accessKeyID := mcfg.Accesskey
 	secretAccessKey := mcfg.Secretkey
 	useSSL := mcfg.Ssl
+	// auth fails if a region is set in minioclient...
+	//	region := mcfg.Region
 
 	minioClient, err := minio.New(endpoint,
 		&minio.Options{Creds: credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
-			Secure: useSSL})
+			Secure: useSSL,
+			//			Region: region,
+		})
+
 	// minioClient.SetCustomTransport(&http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}})
 	if err != nil {
 		log.Fatal(err)
 	}
+	// don't set region until you created the client
 	return minioClient
 }
