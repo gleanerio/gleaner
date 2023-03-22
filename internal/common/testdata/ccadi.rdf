@@ -1,0 +1,723 @@
+_:bcevkkf0edaas73bi7l4g5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7l4g5 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7l4g5 <https://schema.org/email> "amila.desilva@canada.ca" .
+_:bcevkkf0edaas73bi7l4g5 <https://schema.org/telephone> "+1-9052209508" .
+_:bcevkkf0edaas73bi7ks0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7ks0 <https://schema.org/geo> _:bcevkkf0edaas73bi7ksg .
+_:bcevkkf0edaas73bi7kt0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7kt0 <https://schema.org/geo> _:bcevkkf0edaas73bi7lkg4 .
+_:bcevkkf0edaas73bi7ku0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7ku0 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7ku0 <https://schema.org/email> "joannie.ferland@takuvik.ulaval.ca" .
+_:bcevkkf0edaas73bi7ku0 <https://schema.org/telephone> "+1-(418) 656-2131 ext 8831" .
+_:bcevkkf0edaas73bi7kug <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7kug <https://schema.org/item> _:bcevkkf0edaas73bi7kv0 .
+_:bcevkkf0edaas73bi7kug <https://schema.org/position> "17"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7kvg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7kvg <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7me02 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7me02 <https://schema.org/geo> _:bcevkkf0edaas73bi7me03 .
+_:bcevkkf0edaas73bi7l10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7l10 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7l10 <https://schema.org/email> "scott.lamoureux@queensu.ca" .
+_:bcevkkf0edaas73bi7l10 <https://schema.org/telephone> "+1-613-533-6033" .
+_:bcevkkf0edaas73bi7ksg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7ksg <https://schema.org/box> "71.0 -138.0 68.0 -120.0" .
+_:bcevkkf0edaas73bi7l4g9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7l4g9 <https://schema.org/item> _:bcevkkf0edaas73bi7l20 .
+_:bcevkkf0edaas73bi7l4g9 <https://schema.org/position> "5"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7l2g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/creator> _:bcevkkf0edaas73bi7ksg3 .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/dateModified> "2017-09-11" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/description> "The purpose of the Nunavut Database is to provide a single location for finding publications and research project descriptions about Nunavut and Nunavut-based monitoring programs." .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7ksg5 .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/keywords> "Geographic locations -> Nunavut" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/keywords> "Social sciences, economics and policy -> Information sharing" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/keywords> "Social sciences, economics and policy -> Northerners" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/keywords> "Transdisciplinary -> Archive" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/keywords> "Transdisciplinary -> Database (transdisciplinary)" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/keywords> "Transdisciplinary -> Publication" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/name> "Improve access to Nunavut monitoring information using the Nunavut database (NGMP ID LU04)" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7ksg6 .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/temporalCoverage> "2013-Jan-1/2014-Dec-31" .
+_:bcevkkf0edaas73bi7l2g <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12080" .
+_:bcevkkf0edaas73bi7ksg5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7ksg5 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7l4g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/creator> _:bcevkkf0edaas73bi7l50 .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/dateModified> "2015-02-05" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/datePublished> "2015-02-03" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/description> "Our long-term goal is to develop a molecular-level understanding of the uptake pathway, transformation, toxicity and detoxification of methylmercury in the Arctic marine ecosystem. The specific objectives of this project are to: 1) identify and quantify chemical forms of methylmercury and selenium in various tissues of animals at different trophic levels from the Beaufort Sea Arctic marine ecosystem; and, 2) elucidate possible mechanisms involved in methylmercury detoxification in beluga whales." .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7l5g .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/keywords> "Geographic locations -> Beaufort Sea" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/keywords> "Geographic locations -> Mackenzie Shelf" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/keywords> "Health sciences and contaminants -> Bioaccumulation" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/keywords> "Health sciences and contaminants -> Mercury speciation" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/keywords> "Health sciences and contaminants -> Methylmercury" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/name> "Methylmercury Speciation at Different Trophic Levels in the Beaufort Sea Arctic Marine Ecosystem" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7ks0 .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/temporalCoverage> "2008-Jan-1/2008-Dec-31" .
+_:bcevkkf0edaas73bi7l4g <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12070" .
+_:bcevkkf0edaas73bi7me04 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7me04 <https://schema.org/item> _:bcevkkf0edaas73bi7l6g .
+_:bcevkkf0edaas73bi7me04 <https://schema.org/position> "20"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7l70 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/creator> _:bcevkkf0edaas73bi7l7g .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/dateModified> "2015-02-09" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/description> "Collaborative research in the Eastern Canadian Arctic Ocean, aimed to collect data to study the optical properties of seawater, photosynthesis and major organic cycle elements in the Labrador Sea, Baffin Bay and the Lancaster Sound." .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7l80 .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Geographic locations -> Baffin Bay" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Geographic locations -> Canadian Arctic Archipelago" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Natural sciences -> Colored dissolved organic material (CDOM)" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Natural sciences -> Particulate organic carbon" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Natural sciences -> Pigments" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Natural sciences -> Radiometer" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/keywords> "Natural sciences -> Remote sensing data" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/name> "Optical properties and carbon fluxes of the Eastern Canadian Arctic Ocean" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7l8g .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/temporalCoverage> "2014-Jul-8/2014-Sep-25" .
+_:bcevkkf0edaas73bi7l70 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12076" .
+_:bcevkkf0edaas73bi7me07 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7me07 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7me07 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7me07 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7lcg2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7lcg2 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7lcg2 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7lcg2 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7la0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7la0 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7la0 <https://schema.org/email> "kelley@itk.ca" .
+_:bcevkkf0edaas73bi7la0 <https://schema.org/telephone> "+1-613-238-8181" .
+_:bcevkkf0edaas73bi7lag <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7lag <https://schema.org/box> "74.9 -109.5 74.9 -109.5" .
+_:bcevkkf0edaas73bi7lkg7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7lkg7 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7lkg8 .
+_:bcevkkf0edaas73bi7lkg7 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lk019 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7lk019 <https://schema.org/box> "77.22 -83.2 70.77 -69.07" .
+_:bcevkkf0edaas73bi7lcg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7lcg <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7lk01 .
+_:bcevkkf0edaas73bi7lcg <https://schema.org/name> "Caroline Bouchard" .
+_:bcevkkf0edaas73bi7l505 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7l505 <https://schema.org/box> "75.0 -95.0 74.5 -94.0" .
+_:bcevkkf0edaas73bi7l507 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/creator> _:bcevkkf0edaas73bi7leg .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/dateModified> "2021-02-01" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/datePublished> "2015-02-05" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/description> "Monitoring of weasel (Mustela erminea) abundance, reproductive activity and predation rate on lemmings" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mtg0 .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Geographic locations -> Bylot Island" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Abundance" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Ermine" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Lemmings" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Monitoring" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Predation" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Tundra" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/keywords> "Natural sciences -> Weasels" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/name> "Weasel population monitoring on Bylot Island, Nunavut" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7lfg .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/temporalCoverage> "2007-Jun-16/Not Defined" .
+_:bcevkkf0edaas73bi7l507 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12075" .
+_:bcevkkf0edaas73bi7lg0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7lg0 <https://schema.org/box> "73.2 -80.2 72.8 -79.6" .
+_:bcevkkf0edaas73bi7ks05 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/creator> _:bcevkkf0edaas73bi7ks06 .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/dateModified> "2017-09-11" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/description> "The overall goal of the project was to assess the quality of potable water in Nunavut communities from source-to-tap. This monitoring approach will allow us to identify components of the water supply system where contaminants could be introduced to potable water. Remediation strategies can then be developed to specifically address these issues, and therefore improve the quality and safety of water delivered to community residents.  One of the primary goals of this project was to develop local capacity for advanced water analysis. Standard operating procedures for sampling and lab analysis will be developed, and hands-on training will be provided to Nunavut Research Institute staff, to allow for future sampling of this nature. It is the intent that this initiative will lead to a longer-term monitoring program in several other Nunavut communities." .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7ks08 .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/keywords> "Health sciences and contaminants -> Water quality" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/keywords> "Northern communities -> Iqaluit" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/keywords> "Northern communities -> Pangnirtung" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/keywords> "Northern communities -> Pond Inlet" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/keywords> "Social sciences, economics and policy -> Resource development" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/keywords> "Social sciences, economics and policy -> Wellness" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/name> "Nunavut drinking water quality: Source to tap monitoring 2013/2014 (NGMP ID SE03)" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7li0 .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/temporalCoverage> "2013-May-1/2014-Mar-31" .
+_:bcevkkf0edaas73bi7ks05 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12079" .
+_:bcevkkf0edaas73bi7lig <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lig <https://schema.org/item> _:bcevkkf0edaas73bi7lj0 .
+_:bcevkkf0edaas73bi7lig <https://schema.org/position> "13"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7ljg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ItemList> .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lk0 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lkg .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7ll0 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7l4g2 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7l4g9 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lm0 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lmg .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7ln0 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lng .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lo0 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7ksg1 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7ksg8 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lig .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7mbg2 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7mbg9 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lcg6 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7kug .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lr0 .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7lrg .
+_:bcevkkf0edaas73bi7ljg <https://schema.org/itemListElement> _:bcevkkf0edaas73bi7me04 .
+_:bcevkkf0edaas73bi7ll0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7ll0 <https://schema.org/item> _:bcevkkf0edaas73bi7ls0 .
+_:bcevkkf0edaas73bi7ll0 <https://schema.org/position> "3"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7l4g6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7l4g6 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7lj0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/creator> _:bcevkkf0edaas73bi7lkg7 .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/dateModified> "2017-09-11" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/description> "The project will establish a long-term community-based monitoring program for fishery-dependent data collection for Cambridge Bay Arctic Char. Educating and training local monitors and fishers will facilitate documentation of river-specific catch and effort information by and for community resource users. Total harvest removal estimates will allow managers to determine the current status of a fishery and whether the quotas support sustainable harvest levels. The data produced from catch and effort estimates can be used as a proxy for population abundance and for monitoring long term trends in the fishery. These data can be integrated into models to better predict the outcome of alternative management regimes or what effect current management approaches may have on the stock. An established time series is critical to achieve greater accuracy in the population estimates and implement improved management strategies that will ensure Arctic Char are managed in a sustainable manor. This monitoring program will occur annually at commercial waterbodies, (i.e., Ekalluk, Halovik, Lauchlan, Paliryuak, and Jayco rivers) typically spanning from early July to late September. The initial length of the project will be seven years, reflecting given that the minimum number of years needed to collect catch-per-unit-effort (CPUE) data is five years. This will also allow for modifications to the study design and monitoring protocol. Training and education of local monitors and fishers will benefit the community in the long-term, increasing the community's scientific knowledge of their fish resource and the framework applied for co-management decision making. The knowledge transfer and subsequent skills developed through this monitoring program will be a valuable asset which will allow Inuinuktut and other northerners to initiate and further engage in future cumulative impact monitoring programs and fish stock assessment surveys in the Canadian north." .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7lkg9 .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Natural sciences -> Arctic char" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Natural sciences -> Community-based monitoring" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Natural sciences -> Fisheries" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Natural sciences -> Fishes" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Natural sciences -> Freshwaters" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Social sciences, economics and policy -> Education" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/keywords> "Social sciences, economics and policy -> Training" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/name> "Establishing a long-term, river-based monitoring system for Arctic Char in the Cambridge Bay area, Nunavut (NGMP ID EC02)" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7mbg0 .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/temporalCoverage> "2011-Mar-1/2018-Sep-1" .
+_:bcevkkf0edaas73bi7lj0 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12082" .
+_:bcevkkf0edaas73bi7lu0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7lu0 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7me00 .
+_:bcevkkf0edaas73bi7lu0 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lk0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lk0 <https://schema.org/item> _:bcevkkf0edaas73bi7l4g .
+_:bcevkkf0edaas73bi7lk0 <https://schema.org/position> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7lcg5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7lcg5 <https://schema.org/box> "73.04 -86.24 66.15 -65.7" .
+_:bcevkkf0edaas73bi7lvg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7lvg <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7me06 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7me06 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7me07 .
+_:bcevkkf0edaas73bi7me06 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7m0g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7m0g <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7m10 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7m10 <https://schema.org/box> "81.22 -149.0 53.92 -55.38" .
+_:bcevkkf0edaas73bi7ks00 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7ks00 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7ks00 <https://schema.org/email> "scott.lamoureux@queensu.ca" .
+_:bcevkkf0edaas73bi7ks00 <https://schema.org/telephone> "+1-613-533-6033" .
+_:bcevkkf0edaas73bi7lkg1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7lkg1 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7lkg1 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7lkg1 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7lkg9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7lkg9 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7mbg1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mbg1 <https://schema.org/box> "69.1 -105.25 69.1 -105.13" .
+_:bcevkkf0edaas73bi7mbg8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mbg8 <https://schema.org/box> "65.28 -70.92 65.28 -64.08" .
+_:bcevkkf0edaas73bi7m3g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7m3g <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7m40 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7m40 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7ksg3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7ksg3 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7m4g .
+_:bcevkkf0edaas73bi7ksg3 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lkg2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7lkg2 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7m5g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7m5g <https://schema.org/geo> _:bcevkkf0edaas73bi7mt00 .
+_:bcevkkf0edaas73bi7m6g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7m6g <https://schema.org/geo> _:bcevkkf0edaas73bi7lag .
+_:bcevkkf0edaas73bi7m70 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7m70 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7l10 .
+_:bcevkkf0edaas73bi7m70 <https://schema.org/name> "Scott Lamoureux" .
+_:bcevkkf0edaas73bi7mbg4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7mbg4 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7mbg5 .
+_:bcevkkf0edaas73bi7mbg4 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lcg4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7lcg4 <https://schema.org/geo> _:bcevkkf0edaas73bi7lcg5 .
+_:bcevkkf0edaas73bi7m405 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7m405 <https://schema.org/geo> _:bcevkkf0edaas73bi7m9g .
+_:bcevkkf0edaas73bi7l4g2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7l4g2 <https://schema.org/item> _:bcevkkf0edaas73bi7l4g3 .
+_:bcevkkf0edaas73bi7l4g2 <https://schema.org/position> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7li0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7li0 <https://schema.org/geo> _:bcevkkf0edaas73bi7mag .
+_:bcevkkf0edaas73bi7mb0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7mb0 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7mb0 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7mb0 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7lkg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lkg <https://schema.org/item> _:bcevkkf0edaas73bi7mbg .
+_:bcevkkf0edaas73bi7lkg <https://schema.org/position> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7mc0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7mc0 <https://schema.org/geo> _:bcevkkf0edaas73bi7mcg .
+_:bcevkkf0edaas73bi7mtg0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mtg0 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7lmg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lmg <https://schema.org/item> _:bcevkkf0edaas73bi7l70 .
+_:bcevkkf0edaas73bi7lmg <https://schema.org/position> "7"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7md0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7md0 <https://schema.org/geo> _:bcevkkf0edaas73bi7mdg .
+_:bcevkkf0edaas73bi7mbg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/creator> _:bcevkkf0edaas73bi7lcg .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/dateModified> "2015-04-07" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/datePublished> "2015-02-04" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/description> "Arctic marine food webs are centered on polar cod (Boreogadus saida), a small, largely pelagic gadid, which movement and migration remain unclear, especially for the early life stages. The present study examined the otolith chemistry of juvenile polar cod from six oceanographic regions of the Arctic Ocean in order to document patterns of spatial segregation, dispersion and migration during the species early life. The freshwater winter refuge hypothesis, suggesting that polar cod larvae start to hatch in winter in freshwater-influenced regions but only later in the season in purely marine regions, was also tested." .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7m40 .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Geographic locations -> Amundsen Gulf" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Geographic locations -> Baffin Bay" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Geographic locations -> Frobisher Bay" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Geographic locations -> Hudson Bay" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Geographic locations -> Lancaster Sound" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Geographic locations -> Laptev Sea" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Natural sciences -> Arctic cod" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/keywords> "Natural sciences -> Otolith" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/name> "Otolith microchemistry of polar cod (Boreogadus saida) from six Arctic regions" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7me0 .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/temporalCoverage> "2005-Aug-1/2006-Oct-29" .
+_:bcevkkf0edaas73bi7mbg <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12071" .
+_:bcevkkf0edaas73bi7meg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7meg <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7ks00 .
+_:bcevkkf0edaas73bi7meg <https://schema.org/name> "Scott Lamoureux" .
+_:bcevkkf0edaas73bi7mbg9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7mbg9 <https://schema.org/item> _:bcevkkf0edaas73bi7mf0 .
+_:bcevkkf0edaas73bi7mbg9 <https://schema.org/position> "15"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7lcg3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7lcg3 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7lcg7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/creator> _:bcevkkf0edaas73bi7lcg8 .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/dateModified> "2017-09-08" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/datePublished> "2015-02-10" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/description> "The general objective of this project was to monitor the three species of large terrestrial carnivores of Nunavut: wolverine (Gulo gulo), wolf (Canis lupus), and grizzly bear (Ursus arctos). These three species play essential functions in the terrestrial ecosystem of Nunavut and are also tightly linked with some traditional activities, skills and knowledge of the Inuit people. Wolverine, wolf and grizzly bear also represent key indicators of environmental health because their demography depends on a large prey base and is influenced by the various pressures arising from changes in both local land use and the global environment. The specific objectives of this project were: i) to analyse ecological samples and data collected in previous years of the project, ii) to enhance and pursue our community-based harvest collection program of carcasses of wolverine, wolf, and grizzly bear, and iii) to collect Inuit Qaujimajatuqangit (IQ) to document trends in the abundance and distribution of these three species and to document important information on their ecology. (This project is part of a larger research program which has as main objectives to: 1) Assess large carnivores population status, distribution and spatio-temporal trends across Nunavut; 2) Better understand the role of large carnivores in the functioning of the Arctic terrestrial ecosystem and their potential implication in the recent decline of several tundra caribou herds; 3) Develop ecological indicators of environmental change using large carnivores; and 4) Develop community-based ecological monitoring through a combination of scientific methods and IQ)." .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mh0 .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Inuktitut keywords -> Inuit Qaujimajatuqangit" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Natural sciences -> Carnivores" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Natural sciences -> Grizzly bear" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Natural sciences -> Habitats" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Natural sciences -> Mammals" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Natural sciences -> Predation" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/keywords> "Natural sciences -> Stomach contents" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/name> "Monitoring of Nunavut Large Terrestrial Carnivores: Wolverine, Wolves, and Grizzly Bear (NGMP ID EC10)" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7md0 .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/temporalCoverage> "2009-Jan-1/2014-Dec-31" .
+_:bcevkkf0edaas73bi7lcg7 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12085" .
+_:bcevkkf0edaas73bi7lcg9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7lcg9 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7lcg9 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7lcg9 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7mi0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7mi0 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7mb0 .
+_:bcevkkf0edaas73bi7mi0 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7l4g0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7l4g0 <https://schema.org/geo> _:bcevkkf0edaas73bi7l4g1 .
+_:bcevkkf0edaas73bi7l80 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7l80 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7mjg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/creator> _:bcevkkf0edaas73bi7m70 .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/dateModified> "2019-11-04" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/description> "Water jet drilled bore holes at two locations at the Cape Bounty Arctic Watershed Observatory (CBAWO) to 7 m depth.  Sensors installed to measure temperature throughout the year to determine changes to the thermal state of the upper permafrost.  Stations are located UTM 12X WGS84 0540791 8313018 and 0540879 8316305." .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mk0 .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/keywords> "Geographic locations -> Cape Bounty" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/keywords> "Natural sciences -> Active layer" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/keywords> "Natural sciences -> Climate" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/keywords> "Natural sciences -> Permafrost" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/keywords> "Natural sciences -> Soil temperature" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/keywords> "Natural sciences -> Temperature" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/name> "2012-2019 Borehole temperature profiles, Cape Bounty, Nunavut" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7mkg .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/temporalCoverage> "2012-Jul-15/2019-Jul-31" .
+_:bcevkkf0edaas73bi7mjg <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12077" .
+_:bcevkkf0edaas73bi7mkg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7mkg <https://schema.org/geo> _:bcevkkf0edaas73bi7ml0 .
+_:bcevkkf0edaas73bi7ksg1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7ksg1 <https://schema.org/item> _:bcevkkf0edaas73bi7l2g .
+_:bcevkkf0edaas73bi7ksg1 <https://schema.org/position> "11"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7lkg0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7lkg0 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7lkg1 .
+_:bcevkkf0edaas73bi7lkg0 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7mm0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7mm0 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7lcg2 .
+_:bcevkkf0edaas73bi7mm0 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lcg8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7lcg8 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7lcg9 .
+_:bcevkkf0edaas73bi7lcg8 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lfg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7lfg <https://schema.org/geo> _:bcevkkf0edaas73bi7lg0 .
+_:bcevkkf0edaas73bi7l4g4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Organization> .
+_:bcevkkf0edaas73bi7l4g4 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7l4g5 .
+_:bcevkkf0edaas73bi7l4g4 <https://schema.org/name> "Environment and Climate Change Canada, Government of Canada" .
+_:bcevkkf0edaas73bi7l4g4 <https://schema.org/url> "https://open.canada.ca/data/en/dataset/45321640-4ef9-42e9-ab49-a781b69e6267" .
+_:bcevkkf0edaas73bi7mn0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7mn0 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7mn0 <https://schema.org/email> "gilles.gauthier@bio.ulaval.ca" .
+_:bcevkkf0edaas73bi7mn0 <https://schema.org/telephone> "+1-1-418-656-5507" .
+_:bcevkkf0edaas73bi7mag <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mag <https://schema.org/box> "72.7 -77.96 63.75 -65.7" .
+_:bcevkkf0edaas73bi7kv0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/creator> _:bcevkkf0edaas73bi7mng .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/dateModified> "2017-09-08" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/datePublished> "2015-02-10" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/description> "The purpose of this study was to establish the present composition, concentrations and fluxes of petroleum hydrocarbons (alkanes, cycloalkanes aromatics) and polyaromatic hydrocarbons (PAHs) in surface sediments across the Baffin Bay - eastern Lancaster Sound region, prior to any oil and gas exploration and exploitation in the area; to assess the geographical variability of current hydrocarbon levels in this region; and to determine their natural variability over time prior to the industrial period (i.e. about pre-1850). The short-term objective to achieving this was to determine hydrocarbon concentrations in 40 samples of marine sediments from sediment cores recently collected from 10 locations across the region. From each core, 4 slices were analyzed (4 slices - 1 at surface, and 3 lower down) representing different time periods from pre-industrial to present. The longer-term objective was to use hydrocarbon composition biomarkers derived from these data to establish their sources (natural seeps, terrestrial run-off, oil/gas combustion-related) in the marine ecosystem in this part of the Canadian Arctic, prior to any future oil and gas exploration in the region and prior to the likely expansion of shipping traffic through the Northwest Passage." .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7lvg .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/keywords> "Health sciences and contaminants -> Hydrocarbon" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/keywords> "Health sciences and contaminants -> Water quality" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/keywords> "Natural sciences -> Coastal dynamics" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/keywords> "Natural sciences -> Invertebrates" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/keywords> "Natural sciences -> Marine sediments" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/name> "Spatial and temporal variations of petroleum hydrocarbons in marine sediments of Baffin Bay, Eastern Canadian Arctic (NGMP ID EC13)" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7mo0 .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/temporalCoverage> "2011-Jan-1/2013-Dec-31" .
+_:bcevkkf0edaas73bi7kv0 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12086" .
+_:bcevkkf0edaas73bi7mng <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7mng <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7mog .
+_:bcevkkf0edaas73bi7mng <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7lrg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lrg <https://schema.org/item> _:bcevkkf0edaas73bi7mp0 .
+_:bcevkkf0edaas73bi7lrg <https://schema.org/position> "19"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7l6g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/creator> _:bcevkkf0edaas73bi7me06 .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/dateModified> "2017-09-08" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/datePublished> "2015-02-10" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/description> "The specific study objectives are to: 1. Provide basic information about demography, diet, and space-use of the seal population in Gulf of Boothia and thereby serve as a reference for future studies; 2. Collect blubber samples from seals that can be used to estimate the diets of polar bears using a technique known as fatty acid signature analysis. Polar bear fat samples will come from bears taken in the annual subsistence hunt and sampled according to current harvest regulations; 3. Build predictive models of seal population dynamics in the context of climate warming; 4. Monitor the body condition of seals; 5. Propose conservation initiatives to mitigate environmental impacts of climate warming and increased economic activities that may negatively affect seals and, to monitor their success in an adaptive management regime; 6. Work with the community of Kugaaruk to develop and implement a long-term Community-Based Monitoring (CBM) network program." .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mpg .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Inuktitut keywords -> Inuit Qaujimajatuqangit" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Climate change" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Community-based monitoring" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Ecology" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Polar bear" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Predation" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Sea ice" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/keywords> "Natural sciences -> Seals" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/name> "Community-Based Monitoring of Ice-Breeding Seals and Polar Bear Feeding in the Gulf of Boothia (NGMP ID EC23)" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7m5g .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/temporalCoverage> "2012-Jan-1/2015-Mar-31" .
+_:bcevkkf0edaas73bi7l6g <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12089" .
+_:bcevkkf0edaas73bi7l4g3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/creator> _:bcevkkf0edaas73bi7l4g4 .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/dateModified> "2021-03-29" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/datePublished> "2015-02-04" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/description> "The purpose of this project is to develop information on levels and time trends of contaminants in the Arctic ocean waters using a community based approach. The project was initiated in 2007 by PhD student Adam Morris working with Peter Amaraulik Sr. from Resolute Bay as part of his PhD research and continued as an Northern Contaminates Program (NCP) funded project in 2011-12 and again in 2014-15 and 2015-16. The project is now part of NCP's core monitoring program and has expanded in scope on a geographic scale, sampling strategies, and targeted contaminants. Currently, this project uses ultratrace analysis of seawater for mercury and methyl mercury species, perfluoroalkyl substances (PFAS), organophosphate ester flame retardants (OPE), brominated flame retardants (BFR), polychlorinated biphenyls (PCB), polycyclic aromatic carbons (PACs/PAH), and several other legacy persistent organic pollutants (POPs). To the greatest extent possible, we partner with community members to lead sampling. The communities we work with include: Resolute Bay, Nain, and Cambridge Bay." .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7l4g6 .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Geographic locations -> Arctic Ocean" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Geographic locations -> Barrow Strait" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Geographic locations -> Labrador Sea" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Geographic locations -> Nunatsiavut" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Geographic locations -> Nunavut" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Geographic locations -> Resolute Bay" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Health sciences and contaminants -> Mercury" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Health sciences and contaminants -> Methylmercury" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Health sciences and contaminants -> Perfluorinated alkylated substances" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Health sciences and contaminants -> Perfluorooctanesulfonate" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Health sciences and contaminants -> Persistent organic pollutants (POPs)" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Natural sciences -> Community-based monitoring" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Natural sciences -> Contaminants" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Natural sciences -> Seawater" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Natural sciences -> Water" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Northern communities -> Cambridge Bay" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Northern communities -> Nain" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Northern communities -> Qausuittuq" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/keywords> "Social sciences, economics and policy -> Capacity building" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/name> "Community Based Seawater Monitoring for Organic Contaminants and Mercury in the Canadian Arctic" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7mc0 .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/temporalCoverage> "2007-May-1/Not Defined" .
+_:bcevkkf0edaas73bi7l4g3 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12073" .
+_:bcevkkf0edaas73bi7mo0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7mo0 <https://schema.org/geo> _:bcevkkf0edaas73bi7lk019 .
+_:bcevkkf0edaas73bi7mbg6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mbg6 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7lng <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lng <https://schema.org/item> _:bcevkkf0edaas73bi7mqg .
+_:bcevkkf0edaas73bi7lng <https://schema.org/position> "9"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7lr0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lr0 <https://schema.org/item> _:bcevkkf0edaas73bi7m401 .
+_:bcevkkf0edaas73bi7lr0 <https://schema.org/position> "18"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7mrg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Organization> .
+_:bcevkkf0edaas73bi7mrg <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7la0 .
+_:bcevkkf0edaas73bi7mrg <https://schema.org/name> "Inuit Qaujisarvingat, Inuit Tapiriit Kanatami" .
+_:bcevkkf0edaas73bi7mrg <https://schema.org/url> "www.inuitknowledge.ca" .
+_:bcevkkf0edaas73bi7ks06 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7ks06 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7ks07 .
+_:bcevkkf0edaas73bi7ks06 <https://schema.org/name> "Nunavut General Monitoring Plan" .
+_:bcevkkf0edaas73bi7ksg8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7ksg8 <https://schema.org/item> _:bcevkkf0edaas73bi7ksg9 .
+_:bcevkkf0edaas73bi7ksg8 <https://schema.org/position> "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7lkg8 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7lkg8 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7lkg8 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7lkg8 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7mt0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mt0 <https://schema.org/box> "81.0 -155.0 62.0 135.0" .
+_:bcevkkf0edaas73bi7l7g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7l7g <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7ku0 .
+_:bcevkkf0edaas73bi7l7g <https://schema.org/name> "Joannie Ferland" .
+_:bcevkkf0edaas73bi7mqg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/creator> _:bcevkkf0edaas73bi7meg .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/dateModified> "2015-02-18" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/description> "The river thermal, hydrochemical and isotopic composition was surveyed and sampled through the baseflow period (July) to determine the contributions of lateral inflows from slopes to river flow.  Temperature was measured with a high sensitivity tow devise along the river channel and sampling was carried out at fixed stations at regular intervals.  The goal was to improve our understanding of slope-channel water exchanges in Arctic rivers." .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7m0g .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Geographic locations -> Cape Bounty" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> Hydrology" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> Isotopes" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> River" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> Soil moisture" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> Stable isotope tracers" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> Water chemistry" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/keywords> "Natural sciences -> Water temperature" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/name> "2014 West River thermal, hydrochemical and isotopic profiling" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7m6g .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/temporalCoverage> "2014-Jul-6/2014-Jul-27" .
+_:bcevkkf0edaas73bi7mqg <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12078" .
+_:bcevkkf0edaas73bi7m4g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7m4g <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7m4g <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7m4g <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7mtg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7mtg <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7mtg <https://schema.org/email> "wangf@ms.umanitoba.ca" .
+_:bcevkkf0edaas73bi7mtg <https://schema.org/telephone> "+1-(204) 474-6250" .
+_:bcevkkf0edaas73bi7lcg6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lcg6 <https://schema.org/item> _:bcevkkf0edaas73bi7lcg7 .
+_:bcevkkf0edaas73bi7lcg6 <https://schema.org/position> "16"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7me03 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7me03 <https://schema.org/box> "76.25 -96.32 75.82 -89.25" .
+_:bcevkkf0edaas73bi7mcg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mcg <https://schema.org/box> "75.0 -104.0 55.0 -62.0" .
+_:bcevkkf0edaas73bi7mog <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7mog <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7mog <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7mog <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7l50 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7l50 <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7mtg .
+_:bcevkkf0edaas73bi7l50 <https://schema.org/name> "Feiyue Wang" .
+_:bcevkkf0edaas73bi7mu0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mu0 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7l20 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/creator> _:bcevkkf0edaas73bi7mug .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/dateModified> "2021-02-12" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/datePublished> "2015-02-04" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/description> "This purpose of this project is to study how food webs influence the transfer of contaminants to the top predator, landlocked Arctic char, in the Northern Contaminants Program's (NCP) 'focal ecosystem' lakes on Cornwallis Island. Previous studies have shown that mercury and perfluorinated chemicals are carried into Arctic lakes during spring melt and are taken up and concentrated through the food web into char. This research examined food web accumulation of mercury, which has both natural and human sources and undergoes complex transformations in lakes, and of perfluorinated chemicals, which are entirely human-made, arrive solely by atmospheric deposition, and are not transformed in the environment. We built on previous research by contrasting how these two persistent contaminants concentrate through lake food webs and examining factors that affect their levels in char and other organisms in High Arctic lakes. The research focused on lakes in the Resolute Bay area (North, Small, Meretta, Resolute, 9 Mile, Char), because the arctic char and the supporting food webs of these lakes hd already been studied." .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mv0 .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Geographic locations -> Cornwallis Island" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Geographic locations -> Resolute Bay" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Health sciences and contaminants -> Mercury" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Health sciences and contaminants -> Perfluorinated alkylated substances" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Natural sciences -> Arctic char" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Natural sciences -> Chironomids" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Natural sciences -> Food web" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/keywords> "Natural sciences -> Lake" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/name> "Contaminant Bioaccumulation in Landlocked Char Food Webs in the High Arctic" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7mvg .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/temporalCoverage> "2010-Jun-1/2012-Mar-28" .
+_:bcevkkf0edaas73bi7l20 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12074" .
+_:bcevkkf0edaas73bi7ln0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7ln0 <https://schema.org/item> _:bcevkkf0edaas73bi7mjg .
+_:bcevkkf0edaas73bi7ln0 <https://schema.org/position> "8"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7ml0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7ml0 <https://schema.org/box> "74.9 -109.5 74.9 -109.5" .
+_:bcevkkf0edaas73bi7ks07 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7ks07 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7ks07 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7ks07 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7ksg9 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/creator> _:bcevkkf0edaas73bi7lkg0 .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/dateModified> "2017-09-11" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/description> "This project will review, evaluate and present oil slick detection and modelling solutions using Earth Observation (EO) technology for the Hudson and Davis Strait regions. The project will show how these technologies can be included in local response, including how community involvement can be integrated into preparation for and response to oil spills in local waters. The three specific objectives of the project include: 1) To review and evaluate the state of the art in EO for oil spill detection solutions that is relevant to the Hudson and Davis Strait areas; 2) To identify gaps where local knowledge and capacity can contribute to improved oil spill surveillance and response; and 3) To show how EO technology can be better integrated into response efforts in local Nunavut communities." .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7lkg2 .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Geographic locations -> Davis Strait" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Health sciences and contaminants -> Water quality" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Natural sciences -> Contaminants" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Natural sciences -> Remote sensing data" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Natural sciences -> Sea ice" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Social sciences, economics and policy -> Economics" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Social sciences, economics and policy -> Environment surveillance" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Social sciences, economics and policy -> Food security" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Social sciences, economics and policy -> Transportation" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/keywords> "Transdisciplinary -> Petroleum industry" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/name> "Oil spill detection and modelling solutions for Hudson and Davis Strait (NGMP ID LU06)" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7kt0 .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/temporalCoverage> "2013-May-1/2013-Dec-31" .
+_:bcevkkf0edaas73bi7ksg9 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12081" .
+_:bcevkkf0edaas73bi7n00 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7n00 <https://schema.org/geo> _:bcevkkf0edaas73bi7mbg8 .
+_:bcevkkf0edaas73bi7me0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7me0 <https://schema.org/geo> _:bcevkkf0edaas73bi7mt0 .
+_:bcevkkf0edaas73bi7ks08 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7ks08 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7lkg4 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7lkg4 <https://schema.org/box> "72.0 -74.0 61.0 -60.0" .
+_:bcevkkf0edaas73bi7me00 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7me00 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7me00 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7me00 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7mk0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mk0 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7leg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7leg <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7mn0 .
+_:bcevkkf0edaas73bi7leg <https://schema.org/name> "Gilles Gauthier" .
+_:bcevkkf0edaas73bi7mbg2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7mbg2 <https://schema.org/item> _:bcevkkf0edaas73bi7mbg3 .
+_:bcevkkf0edaas73bi7mbg2 <https://schema.org/position> "14"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7m9g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7m9g <https://schema.org/box> "65.1 -82.92 61.82 -67.52" .
+_:bcevkkf0edaas73bi7mv0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mv0 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7ls0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/creator> _:bcevkkf0edaas73bi7mrg .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/dateModified> "2015-03-17" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/datePublished> "2015-02-04" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/description> "To share Inuit perspectives on security, patriotism and sovereignty." .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mu0 .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/keywords> "Geographic locations -> Inuit Nunangat" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/keywords> "Social sciences, economics and policy -> Governmental policies" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/keywords> "Social sciences, economics and policy -> Inuit Knowledge" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/keywords> "Social sciences, economics and policy -> Sovereignty" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/keywords> "Social sciences, economics and policy -> Traditional Knowledge" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/keywords> "Transdisciplinary -> Publication" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/name> "Nilliajut: Inuit Perspectives of Security, Patriotism and Sovereignty" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7l4g0 .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/temporalCoverage> "2012-Jul-1/2013-Mar-31" .
+_:bcevkkf0edaas73bi7ls0 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12072" .
+_:bcevkkf0edaas73bi7l8g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7l8g <https://schema.org/geo> _:bcevkkf0edaas73bi7m10 .
+_:bcevkkf0edaas73bi7lo0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lo0 <https://schema.org/item> _:bcevkkf0edaas73bi7ks05 .
+_:bcevkkf0edaas73bi7lo0 <https://schema.org/position> "10"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7ksg6 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7ksg6 <https://schema.org/geo> _:bcevkkf0edaas73bi7ksg7 .
+_:bcevkkf0edaas73bi7mbg0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7mbg0 <https://schema.org/geo> _:bcevkkf0edaas73bi7mbg1 .
+_:bcevkkf0edaas73bi7mp0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/creator> _:bcevkkf0edaas73bi7lu0 .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/dateModified> "2017-09-08" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/datePublished> "2015-02-10" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/description> "The purpose and short-term objectives of this project were to summarize available information and establish baseline data (western scientific and (Inuit Qaujimajatuqangit) IQ data on biodiversity, contaminants, breeding biology) on wildlife and environmental features at two small polynyas in the Canadian High Arctic, and to develop a suitable protocol for environmental monitoring at these sites. The long-term objectives were to establish these two polynyas as suitable locations for intermittent, long-term data collection, and to use the established protocol to recommend other locations and features that could be monitored at polynyas elsewhere in Nunavut." .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7m3g .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Geographic locations -> Devon Island" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Inuktitut keywords -> Inuit Qaujimajatuqangit" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Natural sciences -> Marine birds" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Natural sciences -> Meteorology" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Natural sciences -> Polynya" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Natural sciences -> Vegetation" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/keywords> "Natural sciences -> Weather" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/name> "Small polynyas in Nunavut: targets for biodiversity, climate change and contamination (NGMP ID EC22)" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7me02 .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/temporalCoverage> "2011-Nov-1/2014-Mar-1" .
+_:bcevkkf0edaas73bi7mp0 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12088" .
+_:bcevkkf0edaas73bi7lk01 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7lk01 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7lk01 <https://schema.org/email> "cabo@natur.gl" .
+_:bcevkkf0edaas73bi7lk01 <https://schema.org/telephone> "+1-418-634-0590 6228" .
+_:bcevkkf0edaas73bi7mug <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Person> .
+_:bcevkkf0edaas73bi7mug <https://schema.org/contactPoint> _:bcevkkf0edaas73bi7n1g .
+_:bcevkkf0edaas73bi7mug <https://schema.org/name> "Derek Muir" .
+_:bcevkkf0edaas73bi7mvg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Place> .
+_:bcevkkf0edaas73bi7mvg <https://schema.org/geo> _:bcevkkf0edaas73bi7l505 .
+_:bcevkkf0edaas73bi7mpg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mpg <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7l5g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7l5g <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7lm0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ListItem> .
+_:bcevkkf0edaas73bi7lm0 <https://schema.org/item> _:bcevkkf0edaas73bi7l507 .
+_:bcevkkf0edaas73bi7lm0 <https://schema.org/position> "6"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bcevkkf0edaas73bi7mbg3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/creator> _:bcevkkf0edaas73bi7mbg4 .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/dateModified> "2017-09-11" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/datePublished> "2015-02-09" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/description> "The purpose of this project is to develop and implement a community-based fishery monitoring program and stock assessment framework for Arctic Char in partnership with the Pangnirtung community/HTA. The project consists in the identification of indicator stock(s) for Arctic Char in the Cumberland Sound Area. The indicator stock(s) will be the focus of annual sampling and monitoring efforts during five consecutive years, including: (i) a test fishery program with progressive increase in harvest; (ii) biological sampling of fish; (iii) harvest monitoring; and (iv) monitoring of selected environmental parameters related to Arctic Char movement, habitat and fishery productivity. The project involves a platform for IQ gathering and synthesis and for knowledge co-production on Arctic Char and freshwater ecosystems from Cumberland Sound. Expected outputs include significant data development on Arctic Char, information gap-filling on the responses of Char populations to fishing pressure and selected environmental drivers, and the provision of integrated IQ-science advice for fisheries co-management of the species. Community involvement and participation is at the core of this project, which is designed to stimulate and enhance local capacity for data collection and knowledge gathering and to integrate traditional practices with scientific expertise. Long-term goals are to demonstrate the effectiveness of community-based monitoring and knowledge co-production for realizing conservation and simultaneous optimization of Arctic Char resources in Nunavut and for fostering community involvement in stock assessment and decision-making processes. The implementation and fine-tuning of a community-based fishery monitoring program/stock assessment framework for Arctic Char in Pangnirtung should facilitate future expansions to other Baffin Island communities, which is the intended scope of the project." .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7mbg6 .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Natural sciences -> Arctic char" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Natural sciences -> Community-based monitoring" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Natural sciences -> Fisheries" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Natural sciences -> Freshwaters" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Natural sciences -> Hydrology" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Social sciences, economics and policy -> Economics" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Social sciences, economics and policy -> Education" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Social sciences, economics and policy -> Food security" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Social sciences, economics and policy -> Resource development" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/keywords> "Social sciences, economics and policy -> Training" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/name> "Development and implementation of a community-based fishery monitoring programme and stock assessment framework for Arctic Char in Baffin Region, Nunavut (NGMP ID EC03)" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7n00 .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/temporalCoverage> "2011-Nov-1/2017-Mar-1" .
+_:bcevkkf0edaas73bi7mbg3 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12083" .
+_:bcevkkf0edaas73bi7mbg5 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7mbg5 <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7mbg5 <https://schema.org/email> "ngmp-psgn@aandc-aadnc.gc.ca" .
+_:bcevkkf0edaas73bi7mbg5 <https://schema.org/telephone> "+1-867-975-4654" .
+_:bcevkkf0edaas73bi7mf0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/creator> _:bcevkkf0edaas73bi7mm0 .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/dateModified> "2017-09-08" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/datePublished> "2015-02-10" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/description> "Understanding Eastern Canadian Arctic (ECA) killer whale distribution and diet is fundamental to developing appropriate management plans to address conservation challenges to predator and prey posed by a changing Arctic ecosystem. The study objectives include: 1) determine killer whale distribution and movement patterns in the Eastern Canadian Arctic and North Atlantic using satellite telemetry and photo identification, 2) study killer whale diet using stable isotope (SI) and fatty acid (FA) analyses of biopsied skin and blubber, including assessment of the degree of dietary specialization (i.e. individual foraging preferences), 3) assess killer whale hunting behavior by collecting sightings reports from Northerners across Nunavut, 4) estimate killer whale population size in the Eastern Canadian Arctic using photo identification, 5) assess group and population structure of eastern Canadian Arctic killer whales using genetic analysis of biopsied skin, and 6) develop a long-term network of research teams comprising Northerners in several communities across Nunavut who are trained and equipped to independently satellite tag, biopsy, and photograph killer whales." .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7lcg3 .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Natural sciences -> Beluga" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Natural sciences -> Bowhead whale" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Natural sciences -> Marine mammals" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Natural sciences -> Narwhals" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Natural sciences -> Whales" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Northern communities -> Arctic Bay" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Northern communities -> Pangnirtung" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Northern communities -> Pond Inlet" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/keywords> "Northern communities -> Repulse Bay" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/name> "Eastern Canadian Arctic Killer Whale Tagging, Biopsy, and Monitoring (NGMP ID EC05)" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7lcg4 .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/temporalCoverage> "2013-Apr-1/2016-Mar-31" .
+_:bcevkkf0edaas73bi7mf0 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12084" .
+_:bcevkkf0edaas73bi7mdg <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mdg <https://schema.org/box> "69.54 -115.14 61.09 -81.26" .
+_:bcevkkf0edaas73bi7l4g1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7l4g1 <https://schema.org/box> "90.0 -180.0 50.0 180.0" .
+_:bcevkkf0edaas73bi7ksg7 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7ksg7 <https://schema.org/box> "83.0 -121.0 52.0 -61.0" .
+_:bcevkkf0edaas73bi7mh0 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/DataCatalog> .
+_:bcevkkf0edaas73bi7mh0 <https://schema.org/name> "polardata.ca" .
+_:bcevkkf0edaas73bi7m401 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/Dataset> .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/creator> _:bcevkkf0edaas73bi7mi0 .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/dateModified> "2017-09-11" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/datePublished> "2015-02-10" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/description> "The purpose of this project is to estimate the distribution and abundance of marine birds in the Hudson Strait-Foxe Basin region during the summer breeding season and assess their vulnerability to development activities and potential industrial accidents.  The research will also examine potential cascading ecological impacts resulting from the loss of summer sea ice on marine bird populations from increased predation by polar bears. Specific study objectives include: 1) Compilation of baseline data on eider and other marine bird abundance and distributions in coastal areas, 2) Estimation of the number and proportion of nests potentially susceptible to flooding by ships wakes, 3) Identification of critical habitats for nesting and brood rearing that could be damaged by industrial accidents such as oil discharge or grounding, 4) Monitoring of polar bear activity on bird colonies and quantify the extent of bear predation of bird nests, and  5) Documenting TEK of changing relationships between polar bear, seals, and birds as they relate to sea-ice conditions and climate change." .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/includedInDataCatalog> _:bcevkkf0edaas73bi7kvg .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Common eider" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Community-based monitoring" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Glaucous gull" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Guillemots" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Habitats" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Herring gull" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Loons" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Marine birds" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Marine mammals" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/keywords> "Natural sciences -> Polar bear" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/license> "https://www.polardata.ca/pdcinput/public/termsofuse" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/name> "Hudson Strait-Foxe Basin Marine Coastal Monitoring Surveys: Assessing the Impacts of Declining Summer Sea-Ice and Northern Development (NGMP ID EC20)" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/spatialCoverage> _:bcevkkf0edaas73bi7m405 .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/temporalCoverage> "2011-Nov-1/2014-Mar-1" .
+_:bcevkkf0edaas73bi7m401 <https://schema.org/url> "https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12087" .
+_:bcevkkf0edaas73bi7mt00 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/GeoShape> .
+_:bcevkkf0edaas73bi7mt00 <https://schema.org/box> "68.53 -89.83 68.53 -89.83" .
+_:bcevkkf0edaas73bi7n1g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://schema.org/ContactPoint> .
+_:bcevkkf0edaas73bi7n1g <https://schema.org/contactType> "technical support" .
+_:bcevkkf0edaas73bi7n1g <https://schema.org/email> "derek.muir@ec.gc.ca" .
+_:bcevkkf0edaas73bi7n1g <https://schema.org/telephone> "+1-905-319-6921" .

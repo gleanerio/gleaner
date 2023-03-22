@@ -148,15 +148,41 @@ func fixContextArray(jsonld string, option config.ContextOption) (string, error)
 // for details
 func fixId(jsonld string) (string, error) {
 	var err error
-	jsonIdentifier := gjson.Get(jsonld, "@id").String()
 	originalBase := gjson.Get(jsonld, "@context.@base").String()
-	idUrl, err := url.Parse(jsonIdentifier)
-	if originalBase == "" && idUrl.Scheme == "" { // we have a relative url and no base in the context
-		log.Trace("Transforming id: ", jsonIdentifier, " to file:// url because it is relative")
-		jsonld, err = sjson.Set(jsonld, "@id", "file://" + jsonIdentifier)
-	} else {
-		log.Trace("JSON-LD context base or IRI id found: ", originalBase, "ID: ", idUrl)
+	if originalBase != "" { // if we have a context base, there is no need to do any of this
+		return jsonld, err
 	}
+	topLevelType := gjson.Get(jsonld, "@type").String()
+	var selector string
+	var formatter func(index int) string
+	if topLevelType == "Dataset" {
+		selector = "@id"
+		formatter = func(index int) string { return "@id"}
+	} else if topLevelType == "ItemList" {
+		selector = "itemListElement.#.item.@id"
+		formatter = func(index int) string { return fmt.Sprintf("itemListElement.%v.item.@id", index) }
+	} else { // we don't know how to fix any of these other things
+		log.Trace("Found a top-level type of ", topLevelType, " in this jsonld document")
+		return jsonld, err
+	}
+	jsonIdentifiers := gjson.Get(jsonld, selector)
+	index := 0
+	jsonIdentifiers.ForEach(func(key, jsonResult gjson.Result) bool {
+		jsonIdentifier := jsonResult.String()
+		idUrl, idErr := url.Parse(jsonIdentifier)
+		if idUrl.Scheme == "" { // we have a relative url and no base in the context
+			log.Trace("Transforming id: ", jsonIdentifier, " to file:// url because it is relative")
+			jsonld, idErr = sjson.Set(jsonld, formatter(index), "file://" + jsonIdentifier)
+		} else {
+			log.Trace("JSON-LD context base or IRI id found: ", originalBase, "ID: ", idUrl)
+		}
+		if idErr != nil {
+			err = idErr
+			return false
+		}
+		index++
+		return true
+	})
 	return jsonld, err
 }
 
