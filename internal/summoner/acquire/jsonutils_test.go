@@ -409,6 +409,7 @@ func TestIdIRIFix(t *testing.T) {
 				"@vocab": "https://schema.org/",
 				"@base": "http://valid-json.com"
 			},
+			"@type": "Dataset",
 			"@id": "some_cool_guid"
 		}
 		`
@@ -423,6 +424,7 @@ func TestIdIRIFix(t *testing.T) {
 			"@context": 	{
 				"@vocab": "https://schema.org/"
 			},
+			"@type": "Dataset",
 			"@id": "http://www.test.com/some_cool_guid"
 		}
 		`
@@ -437,6 +439,7 @@ func TestIdIRIFix(t *testing.T) {
 			"@context": 	{
 				"@vocab": "https://schema.org/"
 			},
+			"@type": "Dataset",
 			"@id": "some_cool_guid"
 		}
 		`
@@ -445,7 +448,70 @@ func TestIdIRIFix(t *testing.T) {
 			"@context": 	{
 				"@vocab": "https://schema.org/"
 			},
+			"@type": "Dataset",
 			"@id": "file://some_cool_guid"
+		}
+		`
+		result, err := fixId(testJson)
+		assert.Nil(t, err)
+		assert.Equal(t, expected, result)
+	})
+
+	t.Run("It makes the ids in a list of datasets into file:// urls if there is no base in the context and the ids are relative", func(t *testing.T) {
+		var testJson = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@type":"ItemList",
+			"@id": "Some id we do not need to worry about"
+	   		"itemListElement":
+	   		[
+				{
+					"@type": "ListItem",
+					"@id": "A list item id, perhaps"
+					"item": {
+						"@type": "Dataset",
+						"@id": "some_cool_guid"
+					}
+				},
+				{
+					"@type": "ListItem",
+					"@id": "A list item id, perhaps"
+					"item": {
+						"@type": "Dataset",
+						"@id": "another_cool_guid"
+					}
+				},
+			]
+		}
+		`
+		var expected = `
+		{
+			"@context": 	{
+				"@vocab": "https://schema.org/"
+			},
+			"@type":"ItemList",
+			"@id": "Some id we do not need to worry about"
+	   		"itemListElement":
+	   		[
+				{
+					"@type": "ListItem",
+					"@id": "A list item id, perhaps"
+					"item": {
+						"@type": "Dataset",
+						"@id": "file://some_cool_guid"
+					}
+				},
+				{
+					"@type": "ListItem",
+					"@id": "A list item id, perhaps"
+					"item": {
+						"@type": "Dataset",
+						"@id": "file://another_cool_guid"
+					}
+				},
+			]
 		}
 		`
 		result, err := fixId(testJson)
@@ -460,6 +526,7 @@ func TestIdIRIFix(t *testing.T) {
 				"@vocab": "https://schema.org/",
 				"@base": "http://valid-json.com"
 			},
+			"@type": "Dataset",
 			"@id": "http://www.test.com/some_cool_guid"
 		}
 		`
