@@ -153,7 +153,7 @@ func fixId(jsonld string) (string, error) {
 	idUrl, err := url.Parse(jsonIdentifier)
 	if originalBase == "" && idUrl.Scheme == "" { // we have a relative url and no base in the context
 		log.Trace("Transforming id: ", jsonIdentifier, " to file:// url because it is relative")
-		jsonld, err = sjson.Set(jsonld, "@id", "file://" + jsonIdentifier)
+		jsonld, err = sjson.Set(jsonld, "@id", "file://"+jsonIdentifier)
 	} else {
 		log.Trace("JSON-LD context base or IRI id found: ", originalBase, "ID: ", idUrl)
 	}
@@ -380,7 +380,7 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	// ProcessJson the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Errorf("{s}: {s}", objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 	log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
 	return sha, err
