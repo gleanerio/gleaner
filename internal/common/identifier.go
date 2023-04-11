@@ -62,7 +62,8 @@ func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
 	// we need to sort the results
 	aString := make([]string, len(ys))
 	for i, v := range ys {
-		aString[i] = v.(string)
+		aString[i] = fmt.Sprint(v)
+
 	}
 	sort.SliceStable(aString, func(i, j int) bool {
 		return aString[i] < aString[j]
