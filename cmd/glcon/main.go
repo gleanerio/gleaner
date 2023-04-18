@@ -8,6 +8,6 @@ import (
 var VERSION string
 
 func main() {
-	log.Info("version: ", VERSION)
+	log.Print("version: ", VERSION)
 	cli.Execute()
 }

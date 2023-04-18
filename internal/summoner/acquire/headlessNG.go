@@ -164,9 +164,10 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 
 	jsonlds, err := PageRender(v1, timeout, url, k, repologger, repoStats)
 
-	if err != nil { // from page render
+	if err == nil { // from page render. If there are no errros, upload.
 		if len(jsonlds) > 1 {
-			repologger.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Debug(err)
+			log.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Info("Error uploading jsonld to object store:", url)
+			repologger.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Debug()
 		}
 		for _, jsonld := range jsonlds {
 			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
@@ -175,6 +176,7 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
 				repoStats.Inc(common.StoreError)
 			} else {
+				log.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Info("Uploaded JSONLD to object store:", url, err, sha)
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Debug()
 				repoStats.Inc(common.Stored)
 			}
@@ -198,6 +200,7 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, k)
 	headlessWait := source.HeadlessWait
+
 	if timeout*time.Duration(retries) < time.Duration(headlessWait)*time.Second {
 		timeout = time.Duration(headlessWait) * time.Second
 	}
@@ -389,24 +392,8 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
 			response = append(response, jsonld)
 			err = nil
-			//sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
-			//if err != nil {
-			//	log.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store:", url, err, sha)
-			//	repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
-			//	repoStats.Inc(common.StoreError)
-			//} else {
-			//	repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Debug()
-			//	repoStats.Inc(common.Stored)
-			//}
-			//// TODO  Is here where to add an entry to the KV store
-			//err = db.Update(func(tx *bolt.Tx) error {
-			//	b := tx.Bucket([]byte(k))
-			//	err := b.Put([]byte(url), []byte(sha))
-			//	if err != nil {
-			//		log.Error("Error writing to bolt", err)
-			//	}
-			//	return nil
-			//})
+			// need to just return a list
+
 		} else {
 			// there could be one bad jsonld, and one good. We want to process the jsonld
 			// so, do not set an err
