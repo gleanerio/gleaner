@@ -14,9 +14,10 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20211020200912-82fc2684cc48
 	github.com/gorilla/mux v1.8.0
 	github.com/gosuri/uiprogress v0.0.1
+	github.com/k4s/webrowser v0.0.0-20160107091637-934d526d0f27
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/mafredri/cdp v0.32.0
-	github.com/minio/minio-go/v7 v7.0.51
+	github.com/minio/minio-go/v7 v7.0.52
 	github.com/ohler55/ojg v1.14.5
 	github.com/piprate/json-gold v0.5.0
 	github.com/rs/xid v1.4.0
@@ -27,7 +28,6 @@ require (
 	github.com/valyala/fasttemplate v1.2.2
 	github.com/xitongsys/parquet-go v1.6.0
 	github.com/xitongsys/parquet-go-source v0.0.0-20211010230925-397910c5e371
-	go.etcd.io/bbolt v1.3.6
 	golang.org/x/crypto v0.6.0
 )
 
@@ -57,6 +57,7 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/k4s/phantomgo v0.0.0-20161104020322-11963773aa04 // indirect
 	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
@@ -102,7 +103,6 @@ require (
 //replace  github.com/boltdb/bolt v1.3.1 => "go.etcd.io/bbolt" v1.3.6
 
 require (
-	github.com/boltdb/bolt v1.3.1
 	github.com/gleanerio/nabu v0.0.0-20230316180932-b68225cabb13
 	github.com/orandin/lumberjackrus v1.0.1
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
