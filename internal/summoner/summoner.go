@@ -70,6 +70,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	}
 	// just report the error, and then run gathered urls
 	if len(hru) > 0 {
+		log.Info("running headless:")
 		acquire.HeadlessNG(v1, mc, hru, db, runStats)
 	}
 
