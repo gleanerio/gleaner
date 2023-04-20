@@ -91,7 +91,6 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
-	//func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string, wg *sync.WaitGroup, db *bolt.DB) {
 
 	bucketName, tc, delay, err := getConfig(v1, sourceName)
 	if err != nil {

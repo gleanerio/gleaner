@@ -99,9 +99,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-// just using bolt github.com/boltdb/bolt would be ok... but it complains if we mix.
-//replace  github.com/boltdb/bolt v1.3.1 => "go.etcd.io/bbolt" v1.3.6
-
 require (
 	github.com/gleanerio/nabu v0.0.0-20230316180932-b68225cabb13
 	github.com/orandin/lumberjackrus v1.0.1
