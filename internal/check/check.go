@@ -12,9 +12,21 @@ import (
 
 // ConnCheck check the connections with a list buckets call
 func ConnCheck(mc *minio.Client) error {
-	bcukets, err := mc.ListBuckets(context.Background())
-	log.Debug("list buckets", bcukets)
+
+	buckets, err := mc.ListBuckets(context.Background())
+	log.Trace(buckets)
+
 	return err
+}
+
+func isExists(value string, data []minio.BucketInfo) (exists bool) {
+
+	for _, search := range data {
+		if search.Name == value {
+			return true
+		}
+	}
+	return false
 }
 
 // Buckets checks the setup
@@ -22,7 +34,9 @@ func Buckets(mc *minio.Client, bucket string) error {
 	var err error
 
 	// for i := range bl {
-	found, err := mc.BucketExists(context.Background(), bucket)
+	//found, err := mc.BucketExists(context.Background(), bucket) // returns a redirect if region is not correct
+	buckets, err := mc.ListBuckets(context.Background())
+	found := isExists(bucket, buckets)
 	if err != nil {
 		return err
 	}
@@ -103,13 +117,16 @@ func PreflightChecks(mc *minio.Client, v1 *viper.Viper) error {
 	// Validate Minio access
 	bucketName, err := config.GetBucketName(v1)
 
+	if err != nil {
+		log.Error("missing bucket name.", err)
+		return err
+	}
 	err = ConnCheck(mc)
 	if err != nil {
 		log.Error("Connection issue, make sure the minio server is running and accessible.", err)
 		return err
 	}
-
-	// Check our bucket is ready
+	//Check our bucket is ready
 	err = Buckets(mc, bucketName)
 	if err != nil {
 		log.Error("Can not find bucket.", err)

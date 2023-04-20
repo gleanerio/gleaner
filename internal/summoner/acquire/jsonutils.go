@@ -149,6 +149,7 @@ func fixContextArray(jsonld string, option config.ContextOption) (string, error)
 func fixId(jsonld string) (string, error) {
 	var err error
 	originalBase := gjson.Get(jsonld, "@context.@base").String()
+
 	if originalBase != "" { // if we have a context base, there is no need to do any of this
 		return jsonld, err
 	}
@@ -406,7 +407,7 @@ func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, u
 	// ProcessJson the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Errorf("%s: %s", objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 	log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
 	return sha, err
