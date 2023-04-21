@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"fmt"
+	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
@@ -11,13 +13,11 @@ var versionCmd = &cobra.Command{
 	TraverseChildren: true,
 	Short:            "returns version ",
 	Long: `returns version
-`, PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		initGleanerConfig()
-	},
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Info("gleaner called")
-		log.Info("gleaner called")
+		log.Info("version called")
 
+		returnVersion()
 	},
 }
 
@@ -35,5 +35,5 @@ func init() {
 }
 
 func returnVersion() {
-	log.Println("Version")
+	fmt.Println("Version: " + pkg.VERSION)
 }
