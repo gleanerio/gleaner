@@ -38,7 +38,7 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 		return err
 	}
 
-	// Moved to the normalized sha value since normalized sha only valid for JSON-LD
+	// Moved to the simple sha value since normalized sha only valid for JSON-LD
 	provsha := common.GetSHA(p)
 	// provsha, err := common.GetNormSHA(p, v1) // Moved to the normalized sha value
 	// if err != nil {
