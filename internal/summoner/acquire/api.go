@@ -7,7 +7,6 @@ import (
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 	"net/http"
 	"sync"
 	"time"
@@ -33,7 +32,7 @@ func RetrieveAPIEndpoints(v1 *viper.Viper) ([]configTypes.Sources, error) {
 
 // given a paged API url template, iterate through the pages until we get
 // all the results we want.
-func RetrieveAPIData(apiSources []configTypes.Sources, mc *minio.Client, db *bolt.DB, runStats *common.RunStats, v1 *viper.Viper) {
+func RetrieveAPIData(apiSources []configTypes.Sources, mc *minio.Client, runStats *common.RunStats, v1 *viper.Viper) {
 	wg := sync.WaitGroup{}
 
 	for _, source := range apiSources {
@@ -50,21 +49,13 @@ func RetrieveAPIData(apiSources []configTypes.Sources, mc *minio.Client, db *bol
 			repologger.Info("Queuing API calls for ", source.Name)
 		}
 		wg.Add(1)
-		go getAPISource(v1, mc, source, &wg, db, repologger, r)
+		go getAPISource(v1, mc, source, &wg, repologger, r)
 	}
 
 	wg.Wait()
 }
 
-func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources, wg *sync.WaitGroup, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) {
-	// make the bucket (if it doesn't exist)
-	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte(source.Name))
-		if err != nil {
-			return fmt.Errorf("create bucket: %s", err)
-		}
-		return nil
-	})
+func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources, wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
 
 	bucketName, tc, delay, err := getConfig(v1, source.Name)
 	if err != nil {
@@ -140,19 +131,13 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 				log.WithFields(log.Fields{"url": urlloc, "contentType": "No JSON-LD found']"}).Info("No JSON-LD found at ", urlloc)
 				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "No JSON-LD found']"}).Error() // this needs to go into the issues file
 
-				db.Update(func(tx *bolt.Tx) error {
-					b := tx.Bucket([]byte(sourceName))
-					err := b.Put([]byte(urlloc), []byte(fmt.Sprintf("NILL: %s", urlloc))) // no JSON-LD found at this URL
-					return err
-				})
-
 			} else {
 				log.WithFields(log.Fields{"url": urlloc, "issue": "Indexed"}).Trace("Indexed ", urlloc)
 				repologger.WithFields(log.Fields{"url": urlloc, "issue": "Indexed"}).Trace()
 				repoStats.Inc(common.Summoned)
 			}
 
-			UploadWrapper(v1, mc, bucketName, sourceName, urlloc, db, repologger, repoStats, jsonlds)
+			UploadWrapper(v1, mc, bucketName, sourceName, urlloc, repologger, repoStats, jsonlds)
 
 			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider

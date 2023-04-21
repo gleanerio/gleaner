@@ -3,6 +3,7 @@ package summoner
 import (
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
@@ -10,9 +11,7 @@ import (
 	"time"
 
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
-	"github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 )
 
 func runStatsOutput(runStats *common.RunStats) {
@@ -32,7 +31,7 @@ func runStatsOutput(runStats *common.RunStats) {
 
 // Summoner pulls the resources from the data facilities
 // func Summoner(mc *minio.Client, cs utils.Config) {
-func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
+func Summoner(mc *minio.Client, v1 *viper.Viper) {
 
 	st := time.Now()
 	log.Info("Summoner start time:", st) // Log the time at start for the record
@@ -43,7 +42,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	if err != nil {
 		log.Error("Error getting API endpoint sources:", err)
 	} else if len(apiSources) > 0 {
-		acquire.RetrieveAPIData(apiSources, mc, db, runStats, v1)
+		acquire.RetrieveAPIData(apiSources, mc, runStats, v1)
 	}
 
 	c := make(chan os.Signal)
@@ -55,23 +54,23 @@ func Summoner(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) {
 	}()
 
 	// Get a list of resource URLs that do and don't require headless processing
-	ru, err := acquire.ResourceURLs(v1, mc, false, db)
+	ru, err := acquire.ResourceURLs(v1, mc, false)
 	if err != nil {
 		log.Info("Error getting urls that do not require headless processing:", err)
 	}
 	// just report the error, and then run gathered urls
 	if len(ru) > 0 {
-		acquire.ResRetrieve(v1, mc, ru, db, runStats) // TODO  These can be go funcs that run all at the same time..
+		acquire.ResRetrieve(v1, mc, ru, runStats) // TODO  These can be go funcs that run all at the same time..
 	}
 
-	hru, err := acquire.ResourceURLs(v1, mc, true, db)
+	hru, err := acquire.ResourceURLs(v1, mc, true)
 	if err != nil {
 		log.Info("Error getting urls that require headless processing:", err)
 	}
 	// just report the error, and then run gathered urls
 	if len(hru) > 0 {
 		log.Info("running headless:")
-		acquire.HeadlessNG(v1, mc, hru, db, runStats)
+		acquire.HeadlessNG(v1, mc, hru, runStats)
 	}
 
 	// Time report
