@@ -18,13 +18,12 @@ import (
 	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 	"github.com/valyala/fasttemplate"
-	bolt "go.etcd.io/bbolt"
 )
 
 // HeadlessNG gets schema.org entries in sites that put the JSON-LD in dynamically with JS.
 // It uses a chrome headless instance (which MUST BE RUNNING).
 // TODO..  trap out error where headless is NOT running
-func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bolt.DB, runStats *common.RunStats) {
+func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runStats *common.RunStats) {
 	// NOTE   this function compares to ResRetrieve in acquire.go.  They both approach things
 	// in same ways due to hwo we deal with threading (opportunities).   We don't queue up domains
 	// multiple times since we are dealing with our local resource now in the form of the headless tooling.
@@ -45,17 +44,10 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 		} else {
 			repologger.Info("Headless chrome call to ", k)
 		}
-		db.Update(func(tx *bolt.Tx) error {
-			_, err := tx.CreateBucket([]byte(k))
-			if err != nil {
-				return fmt.Errorf("create bucket: %s", err)
-			}
-			return nil
-		})
 
 		for i := range m[k] {
 
-			err := PageRenderAndUpload(v1, mc, 60*time.Second, m[k][i], k, db, repologger, r) // TODO make delay configurable
+			err := PageRenderAndUpload(v1, mc, 60*time.Second, m[k][i], k, repologger, r) // TODO make delay configurable
 			if err != nil {
 				log.Error(m[k][i], "::", err)
 			}
@@ -148,7 +140,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, db *bo
 //
 //}
 
-func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, db *bolt.DB, repologger *log.Logger, repoStats *common.RepoStats) error {
+func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats) error {
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRenderAndUpload")
 	// page render handles this
 	//ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -180,15 +172,6 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Debug()
 				repoStats.Inc(common.Stored)
 			}
-			// TODO  Is here where to add an entry to the KV store
-			err = db.Update(func(tx *bolt.Tx) error {
-				b := tx.Bucket([]byte(k))
-				err := b.Put([]byte(url), []byte(sha))
-				if err != nil {
-					log.Error("Error writing to bolt", err)
-				}
-				return nil
-			})
 		}
 	}
 	return err
