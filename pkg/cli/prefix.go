@@ -9,7 +9,7 @@ import (
 
 // checkCmd represents the check command
 var prefixCmd = &cobra.Command{
-	Use:              "prefix",
+	Use:              "prefix [flags] configName",
 	TraverseChildren: true,
 	Short:            "nabu prefix command",
 	Long:             `Load graphs from prefix to triplestore`,

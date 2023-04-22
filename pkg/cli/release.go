@@ -9,7 +9,7 @@ import (
 
 // checkCmd represents the check command
 var releaseCmd = &cobra.Command{
-	Use:              "release",
+	Use:              "release [flags] configName",
 	TraverseChildren: true,
 	Short:            "nabu release command",
 	Long:             `Load graphs from prefix to triplestore`,

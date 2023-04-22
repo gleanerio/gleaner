@@ -19,8 +19,9 @@ var gleanerViperVal, nabuViperVal *viper.Viper
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:              "glcon",
+	Use:              "glcon [flags] configName",
 	TraverseChildren: true,
+	Args:             cobra.RangeArgs(0, 1),
 	Short:            "Gleaner Console - Gleaner Extracts JSON-LD from web pages exposed in a domains sitemap file. ",
 	Long: `The gleaner.io stack harvests JSON-LD from webpages using sitemaps and other tools
 store files in S3 (we use minio), uploads triples to be processed by nabu (the next step in the process)
@@ -32,7 +33,14 @@ process to configure and run is:
 * glcon gleaner Setup --cfgName  {default:local}
 * glcon gleaner batch  --cfgName  {default:local}
 * run nabu (better description)
-`,
+`, PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if len(args) > 0 {
+			cfgName = args[0]
+		} else {
+			cfgName = "local"
+		}
+
+	},
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -61,7 +69,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.PersistentFlags().StringVar(&cfgPath, "cfgPath", "configs", "base location for config files (default is configs/)")
-	rootCmd.PersistentFlags().StringVar(&cfgName, "cfgName", "local", "config file (default is local so configs/local)")
+	rootCmd.PersistentFlags().StringVar(&cfgName, "cfgName", "", "config file (default is local so configs/local)")
 	rootCmd.PersistentFlags().StringVar(&gleanerName, "gleanerName", "gleaner", "config file (default is local so configs/local)")
 	rootCmd.PersistentFlags().StringVar(&nabuName, "nabuName", "nabu", "config file (default is local so configs/local)")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "cfg", "", "compatibility/overload: full path to config file (default location gleaner in configs/local)")

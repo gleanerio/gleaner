@@ -8,7 +8,7 @@ import (
 
 // validateCmd represents the validate command
 var validateCmd = &cobra.Command{
-	Use:              "validate",
+	Use:              "validate [flags] configName",
 	TraverseChildren: true,
 	Short:            "(not implemented)validate gleaner.io files",
 	Long:             `(not implemented)This should read and validate the gleaner and nabu files`,

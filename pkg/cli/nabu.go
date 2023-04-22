@@ -25,6 +25,7 @@ var NabuCmd = &cobra.Command{
 --cfgName
 --mode
 `, PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		cmd.Parent().PersistentPreRun(cmd.Parent(), args)
 		initNabuConfig()
 	},
 	Run: func(cmd *cobra.Command, args []string) {

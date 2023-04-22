@@ -14,7 +14,7 @@ import (
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:              "init",
+	Use:              "init [flags] configName",
 	TraverseChildren: true,
 	Short:            "This initialize a config directory which are used create config files",
 	Long: `config init creates template configuration files. :
@@ -25,6 +25,7 @@ nabu_base. yaml - base configuration for nabu
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("init called")
+		//cfgName = args[0]
 		err := initCfg(cfgPath, cfgName, configBaseFiles)
 		if err != nil {
 			log.Error(err)

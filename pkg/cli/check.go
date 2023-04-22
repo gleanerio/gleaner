@@ -15,10 +15,10 @@ import (
 
 // checkCmd represents the check command
 var checkCmd = &cobra.Command{
-	Use:              "check",
+	Use:              "check [flags] configName",
 	TraverseChildren: true,
-	Short:            "(not implemented)Check the connectivity to the Minio server",
-	Long:             `(not implemented)This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
+	Short:            "Check the connectivity to the Minio server",
+	Long:             `This will read the configs/{cfgPath}/gleaner file, and try to connect to the minio server`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("check called")
 		doCheck(glrVal, cfgPath, cfgName)

@@ -20,7 +20,7 @@ var InclProv, InclOrg, UseMilled bool
 
 // generateCmd represents the generate command
 var generateCmd = &cobra.Command{
-	Use:              "generate",
+	Use:              "generate [flags] configName",
 	TraverseChildren: true,
 	Short:            "generate gleaner.io config files from a directory that has been intialized",
 	Long: `Generate creates config files for the gleaner.io tools (gleaner and nabu). Before running command 

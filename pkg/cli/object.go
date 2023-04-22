@@ -11,7 +11,7 @@ var objectVal string
 
 // checkCmd represents the check command
 var objectCmd = &cobra.Command{
-	Use:              "object ",
+	Use:              "object [flags] configName",
 	TraverseChildren: true,
 	Short:            "nabu object command",
 	Long:             `Load a graph object to triplestore`,

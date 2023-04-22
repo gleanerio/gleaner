@@ -8,7 +8,7 @@ import (
 
 // configCmd represents the config command
 var configCmd = &cobra.Command{
-	Use:              "config",
+	Use:              "config [flags] configName",
 	TraverseChildren: true,
 	Short:            "commands to intialize, and generate tools: gleaner and nabu",
 	Long: `This command is used to initialize configuration files for the gleaner.io ecosystem. 

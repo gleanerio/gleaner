@@ -33,7 +33,7 @@ var millVal bool
 
 // batchCmd represents the batch command
 var batchCmd = &cobra.Command{
-	Use:              "batch",
+	Use:              "batch [flags] configName",
 	TraverseChildren: true,
 	Short:            "Execute gleaner process",
 	Long: `run gleaner process to extract JSON-LD from pages using sitemaps, conver to triples

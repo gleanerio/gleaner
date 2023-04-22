@@ -25,6 +25,7 @@ and store to a S3 server:
 --cfgName
 --mode
 `, PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		cmd.Parent().PersistentPreRun(cmd.Parent(), args)
 		initGleanerConfig()
 	},
 	Run: func(cmd *cobra.Command, args []string) {

@@ -62,7 +62,7 @@ sources:
 
 // batchCmd represents the batch command
 var identifierCmd = &cobra.Command{
-	Use:              "id",
+	Use:              "id [flags] configName",
 	TraverseChildren: true,
 	Short:            "Generate the identifier a jsonld string",
 	Long: `Execute gleaner to generate the identifier a jsonld string. 
