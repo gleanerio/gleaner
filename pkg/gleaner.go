@@ -14,7 +14,11 @@ import (
 	//"os"
 )
 
+
+var VERSION string
+
 func Cli(mc *minio.Client, v1 *viper.Viper) error {
+
 
 	mcfg := v1.GetStringMapString("gleaner")
 
