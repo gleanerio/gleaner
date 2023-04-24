@@ -14,7 +14,6 @@ require (
 	github.com/gocarina/gocsv v0.0.0-20211020200912-82fc2684cc48
 	github.com/gorilla/mux v1.8.0
 	github.com/gosuri/uiprogress v0.0.1
-	github.com/k4s/webrowser v0.0.0-20160107091637-934d526d0f27
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/mafredri/cdp v0.32.0
 	github.com/minio/minio-go/v7 v7.0.52
@@ -57,7 +56,6 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/k4s/phantomgo v0.0.0-20161104020322-11963773aa04 // indirect
 	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
