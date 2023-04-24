@@ -51,17 +51,17 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSt
 	wg.Wait()
 }
 
-func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
+func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
 	if err != nil {
-		return bucketName, 0, 0, err
+		return bucketName, 0, 0, 0, err
 	}
 
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	if err != nil {
-		return bucketName, 0, 0, err
+		return bucketName, 0, 0, 0, err
 	}
 	// Set default thread counts and global delay
 	tc := mcfg.Threads
@@ -74,9 +74,9 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 	// look for a domain specific override crawl delay
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, sourceName)
-
+	hw := source.HeadlessWait
 	if err != nil {
-		return bucketName, tc, delay, err
+		return bucketName, tc, delay, hw, err
 	}
 
 	if source.Delay != 0 && source.Delay > delay {
@@ -84,15 +84,14 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, error) {
 		tc = 1
 		log.Info("Crawl delay set to ", delay, " for ", sourceName)
 	}
-
 	log.Info("Thread count ", tc, " delay ", delay)
-	return bucketName, tc, delay, nil
+	return bucketName, tc, delay, hw, nil
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
 
-	bucketName, tc, delay, err := getConfig(v1, sourceName)
+	bucketName, tc, delay, headlessWait, err := getConfig(v1, sourceName)
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
 		log.Error("Error reading config file ", err)
@@ -164,16 +163,14 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			// even is no JSON-LD packages found, record the event of checking this URL
 			if len(jsonlds) < 1 {
 				// TODO is her where I then try headless, and scope the following for into an else?
-				log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
-				err := PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats)                      // TODO make delay configurable
-
-				if err != nil {
-					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
-					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
-				}
-				if err != nil {
-					log.Error("DB Update", urlloc, "::", err)
+				if headlessWait >= 0 {
+					log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
+					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
+					err := PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats)                      // TODO make delay configurable
+					if err != nil {
+						log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+						repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
+					}
 				}
 
 			} else {

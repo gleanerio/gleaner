@@ -183,6 +183,10 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, k)
 	headlessWait := source.HeadlessWait
+	if headlessWait < 0 {
+		log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
+		headlessWait = 0 // if someone screws up the config, be good
+	}
 
 	if timeout*time.Duration(retries) < time.Duration(headlessWait)*time.Second {
 		timeout = time.Duration(headlessWait) * time.Second
