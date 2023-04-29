@@ -1,7 +1,10 @@
 package cli
 
 import (
+	"bytes"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+
 	//	"fmt"
 	"github.com/spf13/cobra"
 )
@@ -40,7 +43,14 @@ var toolsCmd = &cobra.Command{
 	TraverseChildren: true,
 	Short:            "command to execute tools from gleaner and nabu",
 	Long: `These are small tools that do things like generate uuids
-`,
+`, PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		//gleanerViperVal no longer init'd at the root level. so create one for running tools.
+		if gleanerViperVal == nil {
+			gleanerViperVal = viper.New()
+			gleanerViperVal.SetConfigType("yaml")
+			gleanerViperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("tools called")
 	},
