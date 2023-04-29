@@ -25,7 +25,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
-	"path"
 )
 
 var jsonVal string
@@ -35,30 +34,30 @@ var idPathVal string // string separated by a comman
 // need a mock config with context maps for when
 // a normalized sha of the triples ends up being generated.
 // assumes glcon is being run from dir with assets
-var vipercontext = []byte(`
-context:
-  cache: true
-contextmaps:
-- file: ./assets/schemaorg-current-https.jsonld
-  prefix: https://schema.org/
-- file: ./assets/schemaorg-current-https.jsonld
-  prefix: http://schema.org/
-sources:
-- sourcetype: sitemap
-  name: test
-  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
-  url: https://opentopography.org/sitemap.xml
-  headless: false
-  pid: https://www.re3data.org/repository/r3d100010655
-  propername: OpenTopography
-  domain: http://www.opentopography.org/
-  active: false
-  credentialsfile: ""
-  other: {}
-  headlesswait: 0
-  delay: 0
-  IdentifierType: filesha
-`)
+//var vipercontext = []byte(`
+//context:
+//  cache: true
+//contextmaps:
+//- file: ./assets/schemaorg-current-https.jsonld
+//  prefix: https://schema.org/
+//- file: ./assets/schemaorg-current-https.jsonld
+//  prefix: http://schema.org/
+//sources:
+//- sourcetype: sitemap
+//  name: test
+//  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+//  url: https://opentopography.org/sitemap.xml
+//  headless: false
+//  pid: https://www.re3data.org/repository/r3d100010655
+//  propername: OpenTopography
+//  domain: http://www.opentopography.org/
+//  active: false
+//  credentialsfile: ""
+//  other: {}
+//  headlesswait: 0
+//  delay: 0
+//  IdentifierType: filesha
+//`)
 
 // batchCmd represents the batch command
 var identifierCmd = &cobra.Command{
@@ -83,24 +82,7 @@ There are three types of idtype:
 		// there is a mock that assumes glcon is being run from dir with assets,
 		// but that is not always the case.
 		var err error
-		if cfgFile != "" {
-			dir, base := path.Split(cfgFile)
-			gleanerViperVal, err = configTypes.ReadGleanerConfig(base, dir)
-			//if err != nil {
-			//	//panic(err)
-			//	fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
-			//	log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
-			//	os.Exit(66)
-			//}
-		} else {
-			gleanerViperVal, err = configTypes.ReadGleanerConfig(gleanerName, path.Join(cfgPath, cfgName))
-			//if err != nil {
-			//	//panic(err)
-			//	fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
-			//	log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
-			//	os.Exit(66)
-			//}
-		}
+
 		if gleanerViperVal == nil {
 			gleanerViperVal = viper.New()
 			gleanerViperVal.SetConfigType("yaml")

@@ -6,6 +6,34 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// need a mock config with context maps for when
+// a normalized sha of the triples ends up being generated.
+// assumes glcon is being run from dir with assets
+var vipercontext = []byte(`
+context:
+  cache: true
+contextmaps:
+- file: ./assets/schemaorg-current-https.jsonld
+  prefix: https://schema.org/
+- file: ./assets/schemaorg-current-https.jsonld
+  prefix: http://schema.org/
+sources:
+- sourcetype: sitemap
+  name: test
+  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+  url: https://opentopography.org/sitemap.xml
+  headless: false
+  pid: https://www.re3data.org/repository/r3d100010655
+  propername: OpenTopography
+  domain: http://www.opentopography.org/
+  active: false
+  credentialsfile: ""
+  other: {}
+  headlesswait: 0
+  delay: 0
+  IdentifierType: filesha
+`)
+
 // gleanerCmd represents the run command
 var toolsCmd = &cobra.Command{
 	Use:              "tools",
