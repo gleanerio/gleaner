@@ -74,7 +74,7 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, str
 	// look for a domain specific override crawl delay
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, sourceName)
-	acceptContent := source.AccceptContentType
+	acceptContent := source.AcceptContentType
 	jsonProfile := source.JsonProfile
 	hw := source.HeadlessWait
 	if err != nil {
@@ -149,7 +149,30 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			defer resp.Body.Close()
 
 			jsonlds, err := FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
-
+			// there was an issue with sitemaps... but now this code
+			//if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") {
+			//
+			//	b, err := io.ReadAll(resp.Body)
+			//	// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
+			//	if err != nil {
+			//		log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+			//		repoStats.Inc(common.Issues)
+			//		lwg.Done() // tell the wait group that we be done
+			//		<-semaphoreChan
+			//		return
+			//	}
+			//	jsonlds = []string{string(b)}
+			//} else {
+			//	var err error
+			//	jsonlds, err = FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
+			//	if err != nil {
+			//		log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+			//		repoStats.Inc(common.Issues)
+			//		lwg.Done() // tell the wait group that we be done
+			//		<-semaphoreChan
+			//		return
+			//	}
+			//}
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
 				repoStats.Inc(common.Issues)

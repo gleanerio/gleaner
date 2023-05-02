@@ -71,14 +71,14 @@ type Sources struct {
 	// SitemapFormat string
 	// Active        bool
 
-	HeadlessWait       int    // if loading is slow, wait
-	Delay              int64  // A domain-specific crawl delay value
-	IdentifierPath     string // JSON Path to the identifier
-	ApiPageLimit       int
-	IdentifierType     string
-	FixContextOption   ContextOption
-	AccceptContentType string // accept content type string for http request
-	JsonProfile        string // jsonprofile
+	HeadlessWait      int    // if loading is slow, wait
+	Delay             int64  // A domain-specific crawl delay value
+	IdentifierPath    string // JSON Path to the identifier
+	ApiPageLimit      int
+	IdentifierType    string
+	FixContextOption  ContextOption
+	AcceptContentType string `default:"application/ld+json, text/html"` // accept content type string for http request
+	JsonProfile       string // jsonprofile
 }
 
 // add needed for file
@@ -92,13 +92,13 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait       int    // is loading is slow, wait
-	Delay              int64  // A domain-specific crawl delay value
-	IdentifierPath     string // JSON Path to the identifier
-	IdentifierType     string
-	FixContextOption   ContextOption
-	AccceptContentType string // accept content type string for http request
-	JsonProfile        string // jsonprofile
+	HeadlessWait      int    // is loading is slow, wait
+	Delay             int64  // A domain-specific crawl delay value
+	IdentifierPath    string // JSON Path to the identifier
+	IdentifierType    string
+	FixContextOption  ContextOption
+	AcceptContentType string `default:"application/ld+json, text/html"` // accept content type string for http request
+	JsonProfile       string // jsonprofile
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -125,6 +125,12 @@ var SourcesTemplate = map[string]interface{}{
 func populateDefaults(s Sources) Sources {
 	if s.SourceType == "" {
 		s.SourceType = "sitemap"
+	}
+	if s.AcceptContentType == "" {
+		s.AcceptContentType = "application/ld+json, text/html"
+	}
+	if s.JsonProfile == "" {
+		s.JsonProfile = "application/ld+json"
 	}
 	// fix issues, too. Space from CSV causing url errors
 	s.URL = strings.TrimSpace(s.URL)
