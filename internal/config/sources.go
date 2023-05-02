@@ -32,6 +32,7 @@ const (
 	StandardizedHttps
 	StandardizedHttp
 )
+const AccceptContentType string = "application/ld+json, text/html"
 
 func (s ContextOption) String() string {
 	switch s {
@@ -70,12 +71,14 @@ type Sources struct {
 	// SitemapFormat string
 	// Active        bool
 
-	HeadlessWait     int    // if loading is slow, wait
-	Delay            int64  // A domain-specific crawl delay value
-	IdentifierPath   string // JSON Path to the identifier
-	ApiPageLimit     int
-	IdentifierType   string
-	FixContextOption ContextOption
+	HeadlessWait       int    // if loading is slow, wait
+	Delay              int64  // A domain-specific crawl delay value
+	IdentifierPath     string // JSON Path to the identifier
+	ApiPageLimit       int
+	IdentifierType     string
+	FixContextOption   ContextOption
+	AccceptContentType string // accept content type string for http request
+	JsonProfile        string // jsonprofile
 }
 
 // add needed for file
@@ -89,29 +92,33 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait     int    // is loading is slow, wait
-	Delay            int64  // A domain-specific crawl delay value
-	IdentifierPath   string // JSON Path to the identifier
-	IdentifierType   string
-	FixContextOption ContextOption
+	HeadlessWait       int    // is loading is slow, wait
+	Delay              int64  // A domain-specific crawl delay value
+	IdentifierPath     string // JSON Path to the identifier
+	IdentifierType     string
+	FixContextOption   ContextOption
+	AccceptContentType string // accept content type string for http request
+	JsonProfile        string // jsonprofile
 }
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype":       "sitemap",
-		"name":             "",
-		"url":              "",
-		"logo":             "",
-		"headless":         "",
-		"pid":              "",
-		"propername":       "",
-		"domain":           "",
-		"credentialsfile":  "",
-		"headlesswait":     "0",
-		"delay":            "0",
-		"identifierpath":   "",
-		"identifiertype":   JsonSha,
-		"fixcontextoption": "https",
+		"sourcetype":        "sitemap",
+		"name":              "",
+		"url":               "",
+		"logo":              "",
+		"headless":          "",
+		"pid":               "",
+		"propername":        "",
+		"domain":            "",
+		"credentialsfile":   "",
+		"headlesswait":      "0",
+		"delay":             "0",
+		"identifierpath":    "",
+		"identifiertype":    JsonSha,
+		"fixcontextoption":  "https",
+		"acceptcontenttype": "application/ld+json, text/html",
+		"jsonprofile":       "",
 	},
 }
 

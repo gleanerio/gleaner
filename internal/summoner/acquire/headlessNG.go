@@ -292,7 +292,7 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	expressionTmpl := `
 		function getMetadata() {
 			return new Promise((resolve, reject) => {
-				const elements = document.querySelectorAll('script[type="application/ld+json"]');
+				const elements = document.querySelectorAll('script[type^="application/ld+json"]');
 				let metadata = [];
 				elements.forEach(function(element) {
 					if(element && element.innerText) {

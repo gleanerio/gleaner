@@ -51,17 +51,17 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSt
 	wg.Wait()
 }
 
-func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, error) {
+func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, string, string, error) {
 	bucketName, err := configTypes.GetBucketName(v1)
 	if err != nil {
-		return bucketName, 0, 0, 0, err
+		return bucketName, 0, 0, 0, configTypes.AccceptContentType, "", err
 	}
 
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	if err != nil {
-		return bucketName, 0, 0, 0, err
+		return bucketName, 0, 0, 0, configTypes.AccceptContentType, "", err
 	}
 	// Set default thread counts and global delay
 	tc := mcfg.Threads
@@ -74,9 +74,11 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, err
 	// look for a domain specific override crawl delay
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, sourceName)
+	acceptContent := source.AccceptContentType
+	jsonProfile := source.JsonProfile
 	hw := source.HeadlessWait
 	if err != nil {
-		return bucketName, tc, delay, hw, err
+		return bucketName, tc, delay, hw, acceptContent, jsonProfile, err
 	}
 
 	if source.Delay != 0 && source.Delay > delay {
@@ -85,13 +87,14 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, err
 		log.Info("Crawl delay set to ", delay, " for ", sourceName)
 	}
 	log.Info("Thread count ", tc, " delay ", delay)
-	return bucketName, tc, delay, hw, nil
+
+	return bucketName, tc, delay, hw, acceptContent, jsonProfile, nil
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
 
-	bucketName, tc, delay, headlessWait, err := getConfig(v1, sourceName)
+	bucketName, tc, delay, headlessWait, acceptContent, jsonProfile, err := getConfig(v1, sourceName)
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
 		log.Error("Error reading config file ", err)
@@ -133,7 +136,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 				log.Error(i, err, urlloc)
 			}
 			req.Header.Set("User-Agent", EarthCubeAgent)
-			req.Header.Set("Accept", "application/ld+json, text/html")
+			req.Header.Set("Accept", acceptContent)
 
 			resp, err := client.Do(req)
 			if err != nil {
@@ -145,7 +148,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			}
 			defer resp.Body.Close()
 
-			jsonlds, err := FindJSONInResponse(v1, urlloc, repologger, resp)
+			jsonlds, err := FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
 
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
@@ -193,7 +196,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 }
 
-func FindJSONInResponse(v1 *viper.Viper, urlloc string, repologger *log.Logger, response *http.Response) ([]string, error) {
+func FindJSONInResponse(v1 *viper.Viper, urlloc string, jsonProfile string, repologger *log.Logger, response *http.Response) ([]string, error) {
 	doc, err := goquery.NewDocumentFromResponse(response)
 	if err != nil {
 		return nil, err
@@ -205,6 +208,8 @@ func FindJSONInResponse(v1 *viper.Viper, urlloc string, repologger *log.Logger, 
 	// if the URL is sending back JSON-LD correctly as application/ld+json
 	// this should not be here IMHO, but need to support people not setting proper header value
 	// The URL is sending back JSON-LD but incorrectly sending as application/json
+	// would like to add contains(contentTypeHeader, jsonProfile)
+	// but empty profile strings matching all
 	if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") || fileExtensionIsJson(urlloc) {
 		logFields := log.Fields{"url": urlloc, "contentType": "json or ld_json"}
 		repologger.WithFields(logFields).Debug()
@@ -215,9 +220,11 @@ func FindJSONInResponse(v1 *viper.Viper, urlloc string, repologger *log.Logger, 
 			log.WithFields(logFields).Error("Error processing json response from ", urlloc, err)
 			repologger.WithFields(logFields).Error(err)
 		}
-		// look in the HTML response for <script type=application/ld+json>
+		// look in the HTML response for <script type=application/ld+json> ^
 	} else {
-		doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
+		//doc.Find("script[type='application/ld+json']").Each(func(i int, s *goquery.Selection) {
+		//Please note that Cascadia's selectors do not necessarily match all supported selectors of jQuery (Sizzle).  https://github.com/andybalholm/cascadia
+		doc.Find("script[type^='application/ld+json']").Each(func(i int, s *goquery.Selection) {
 			jsonlds, err = addToJsonListIfValid(v1, jsonlds, s.Text())
 			logFields := log.Fields{"url": urlloc, "contentType": "script[type='application/ld+json']"}
 			repologger.WithFields(logFields).Info()
