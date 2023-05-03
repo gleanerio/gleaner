@@ -21,14 +21,47 @@ import (
 // / A utility to keep a list of JSON-LD files that we have found
 // in or on a page
 func addToJsonListIfValid(v1 *viper.Viper, jsonlds []string, new_json string) ([]string, error) {
+
 	valid, err := isValid(v1, new_json)
 	if err != nil {
+		isValidGraphArray, jsonlds, _ := isGraphArray(v1, new_json)
+		if isValidGraphArray {
+			return jsonlds, nil
+		}
 		return jsonlds, fmt.Errorf("error checking for valid json: %s", err)
 	}
 	if !valid {
+
 		return jsonlds, fmt.Errorf("invalid json; continuing")
 	}
 	return append(jsonlds, new_json), nil
+}
+
+func isGraphArray(v1 *viper.Viper, jsonld string) (bool, []string, error) {
+	var errs error
+	jsonlds := []string{}
+	var myArray []interface{}
+	err := json.Unmarshal([]byte(jsonld), &myArray)
+	if err == nil {
+		var myArray []interface{}
+		err := json.Unmarshal([]byte(jsonld), &myArray)
+		if err == nil {
+			for _, j := range myArray {
+				jsonld, _ := json.Marshal(j) // we just unmarshaled it.
+				valid, err := isValid(v1, string(jsonld))
+				if valid && err == nil {
+					jsonlds = append(jsonlds, string(jsonld))
+				} else {
+					errs = err
+				}
+			}
+			if len(jsonlds) > 0 {
+				return true, jsonlds, errs
+			}
+
+		}
+	}
+	return false, jsonlds, errs
 }
 
 // / Validate JSON-LD that we get
@@ -38,8 +71,6 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	var myInterface map[string]interface{}
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
 	if err != nil {
-		var myArray []interface{}
-		err := json.Unmarshal([]byte(jsonld), &myArray)
 		if err != nil {
 			return false, fmt.Errorf("Error in unmarshaling json: %s", err)
 		}
