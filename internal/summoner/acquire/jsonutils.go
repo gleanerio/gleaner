@@ -36,10 +36,13 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	proc, options := common.JLDProc(v1)
 
 	var myInterface map[string]interface{}
-
 	err := json.Unmarshal([]byte(jsonld), &myInterface)
 	if err != nil {
-		return false, fmt.Errorf("Error in unmarshaling json: %s", err)
+		var myArray []interface{}
+		err := json.Unmarshal([]byte(jsonld), &myArray)
+		if err != nil {
+			return false, fmt.Errorf("Error in unmarshaling json: %s", err)
+		}
 	}
 
 	_, err = proc.ToRDF(myInterface, options) // returns triples but toss them, just validating
@@ -158,7 +161,7 @@ func fixId(jsonld string) (string, error) {
 	var formatter func(index int) string
 	if topLevelType == "Dataset" {
 		selector = "@id"
-		formatter = func(index int) string { return "@id"}
+		formatter = func(index int) string { return "@id" }
 	} else if topLevelType == "ItemList" {
 		selector = "itemListElement.#.item.@id"
 		formatter = func(index int) string { return fmt.Sprintf("itemListElement.%v.item.@id", index) }
@@ -173,7 +176,7 @@ func fixId(jsonld string) (string, error) {
 		idUrl, idErr := url.Parse(jsonIdentifier)
 		if idUrl.Scheme == "" { // we have a relative url and no base in the context
 			log.Trace("Transforming id: ", jsonIdentifier, " to file:// url because it is relative")
-			jsonld, idErr = sjson.Set(jsonld, formatter(index), "file://" + jsonIdentifier)
+			jsonld, idErr = sjson.Set(jsonld, formatter(index), "file://"+jsonIdentifier)
 		} else {
 			log.Trace("JSON-LD context base or IRI id found: ", originalBase, "ID: ", idUrl)
 		}

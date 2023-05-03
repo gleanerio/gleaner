@@ -237,8 +237,8 @@ func FindJSONInResponse(v1 *viper.Viper, urlloc string, jsonProfile string, repo
 		logFields := log.Fields{"url": urlloc, "contentType": "json or ld_json"}
 		repologger.WithFields(logFields).Debug()
 		log.WithFields(logFields).Debug(urlloc, " as ", contentTypeHeader)
-
-		jsonlds, err = addToJsonListIfValid(v1, jsonlds, doc.Text())
+		resp_text := doc.Text()
+		jsonlds, err = addToJsonListIfValid(v1, jsonlds, resp_text)
 		if err != nil {
 			log.WithFields(logFields).Error("Error processing json response from ", urlloc, err)
 			repologger.WithFields(logFields).Error(err)
