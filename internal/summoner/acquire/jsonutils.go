@@ -43,7 +43,7 @@ func isGraphArray(v1 *viper.Viper, jsonld string) (bool, []string, error) {
 	var myArray []interface{}
 	err := json.Unmarshal([]byte(jsonld), &myArray)
 	if err == nil {
-		var myArray []interface{}
+		var myArray []map[string]interface{}
 		err := json.Unmarshal([]byte(jsonld), &myArray)
 		if err == nil {
 			for _, j := range myArray {
