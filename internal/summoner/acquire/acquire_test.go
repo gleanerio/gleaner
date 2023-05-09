@@ -28,7 +28,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 5, tc)
 		assert.Equal(t, int64(0), delay)
@@ -43,7 +43,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 1, tc)
 		assert.Equal(t, int64(1000), delay)
@@ -58,7 +58,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 5, tc)
 		assert.Equal(t, int64(0), delay)
@@ -73,7 +73,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 1, tc)
 		assert.Equal(t, int64(100), delay)
@@ -88,7 +88,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 1, tc)
 		assert.Equal(t, int64(50), delay)
@@ -102,7 +102,7 @@ func TestFindJSONInResponse(t *testing.T) {
 	}
 	viper := ConfigSetupHelper(conf)
 	logger := log.New()
-
+	const JSONContentType = "application/ld+json"
 	testJson := `{
 	    "@graph":[
 	        {
@@ -128,7 +128,7 @@ func TestFindJSONInResponse(t *testing.T) {
 	}
 
 	t.Run("It returns an error if the response document cannot be parsed", func(t *testing.T) {
-		result, err := FindJSONInResponse(viper, urlloc, logger, nil)
+		result, err := FindJSONInResponse(viper, urlloc, JSONContentType, logger, nil)
 		assert.Nil(t, result)
 		assert.Equal(t, errors.New("Response is nil"), err)
 	})
@@ -140,7 +140,7 @@ func TestFindJSONInResponse(t *testing.T) {
 		response.ContentLength = int64(len(html))
 		var expected []string
 
-		result, err := FindJSONInResponse(viper, urlloc, logger, response)
+		result, err := FindJSONInResponse(viper, urlloc, JSONContentType, logger, response)
 		assert.Nil(t, err)
 		assert.Equal(t, result, append(expected, testJson))
 	})
@@ -150,7 +150,7 @@ func TestFindJSONInResponse(t *testing.T) {
 		response.ContentLength = int64(len(testJson))
 		var expected []string
 
-		result, err := FindJSONInResponse(viper, "test.json", logger, response)
+		result, err := FindJSONInResponse(viper, "test.json", JSONContentType, logger, response)
 		assert.Nil(t, err)
 		assert.Equal(t, result, append(expected, testJson))
 	})
@@ -161,7 +161,7 @@ func TestFindJSONInResponse(t *testing.T) {
 		response.Header.Add("Content-Type", JSONContentType)
 		var expected []string
 
-		result, err := FindJSONInResponse(viper, urlloc, logger, response)
+		result, err := FindJSONInResponse(viper, urlloc, JSONContentType, logger, response)
 		assert.Nil(t, err)
 		assert.Equal(t, result, append(expected, testJson))
 	})
@@ -172,7 +172,7 @@ func TestFindJSONInResponse(t *testing.T) {
 		response.Header.Add("Content-Type", "application/json; charset=utf-8")
 		var expected []string
 
-		result, err := FindJSONInResponse(viper, urlloc, logger, response)
+		result, err := FindJSONInResponse(viper, urlloc, JSONContentType, logger, response)
 		assert.Nil(t, err)
 		assert.Equal(t, result, append(expected, testJson))
 	})
