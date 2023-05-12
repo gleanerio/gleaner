@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func runStatsOutput(runStats *common.RunStats) {
+func RunStatsOutput(runStats *common.RunStats) {
 	fmt.Print(runStats.Output())
 	const layout = "2006-01-02-15-04-05"
 	t := time.Now()
@@ -49,7 +49,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		runStatsOutput(runStats)
+		RunStatsOutput(runStats)
 		os.Exit(1)
 	}()
 
@@ -78,7 +78,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	diff := et.Sub(st)
 	log.Info("Summoner end time:", et)
 	log.Info("Summoner run time:", diff.Minutes())
-	runStatsOutput(runStats)
+	RunStatsOutput(runStats)
 	// What do I need to the "run" prov
 	// the URLs indexed  []string
 	// the graph generated?  "version" the graph by the build date

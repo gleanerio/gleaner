@@ -52,6 +52,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSta
 				log.Error(m[k][i], "::", err)
 			}
 		}
+		common.RunRepoStatsOutput(r, k)
 
 	}
 
