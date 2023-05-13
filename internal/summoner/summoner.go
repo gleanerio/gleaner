@@ -49,6 +49,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
+		runStats.StopReason = "User Interrupt or Fatal Error"
 		RunStatsOutput(runStats)
 		os.Exit(1)
 	}()
@@ -78,6 +79,7 @@ func Summoner(mc *minio.Client, v1 *viper.Viper) {
 	diff := et.Sub(st)
 	log.Info("Summoner end time:", et)
 	log.Info("Summoner run time:", diff.Minutes())
+	runStats.StopReason = "Complete"
 	RunStatsOutput(runStats)
 	// What do I need to the "run" prov
 	// the URLs indexed  []string

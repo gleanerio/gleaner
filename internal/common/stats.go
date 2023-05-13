@@ -9,9 +9,10 @@ import (
 )
 
 type RunStats struct {
-	mu        sync.Mutex
-	Date      time.Time
-	RepoStats map[string]*RepoStats
+	mu         sync.Mutex
+	Date       time.Time
+	StopReason string
+	RepoStats  map[string]*RepoStats
 }
 
 func NewRunStats() *RunStats {
@@ -93,7 +94,8 @@ func (c *RepoStats) Value(key string) int {
 func (c *RunStats) Output() string {
 	out := fmt.Sprintln("RunStats:")
 	out += fmt.Sprintf("  Start: %s\n", c.Date)
-	out += fmt.Sprintf("  Repositories:\n")
+	out += fmt.Sprintf("  Reason: %s\n", c.StopReason)
+	out += fmt.Sprintf("  Soruce:\n")
 	for name, repo := range c.RepoStats {
 
 		out += fmt.Sprintf("    - name: %s\n", name)
@@ -108,10 +110,10 @@ func (c *RunStats) Output() string {
 
 func (c *RepoStats) Output() string {
 	c.setEndTime()
-	out := fmt.Sprintln("RepoStats:")
+	out := fmt.Sprintln("SourceStats:")
 	out += fmt.Sprintf("  Start: %s\n", c.Start)
 	out += fmt.Sprintf("  End: %s\n", c.End)
-	out += fmt.Sprintf("  Repository:\n")
+	out += fmt.Sprintf("  Soruce:\n")
 
 	out += fmt.Sprintf("    - name: %s\n", c.Name)
 	for r, count := range c.counts {
