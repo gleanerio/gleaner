@@ -1,15 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"github.com/tidwall/gjson"
+
 	"github.com/gleanerio/gleaner/internal/config"
+	"github.com/piprate/json-gold/ld"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
@@ -74,6 +78,42 @@ func main() {
 	jsonlds, err := acquire.PageRender(v1, timeout, url, k, repologger, repostats)
 
 	fmt.Println(jsonlds[0])
+
+	proc := ld.NewJsonLdProcessor()
+	options := ld.NewJsonLdOptions("")
+
+	// 		"@requireAll": true,
+	// 		"@explicit":   true,
+
+	frame := map[string]interface{}{
+		"@context":  "https://schema.org/",
+		"@explicit": true,
+		"@type":     "DataCatalog",
+		"name":      "",
+		"isBasedOn": "",
+		"url":       "",
+	}
+
+	var myInterface interface{}
+	err = json.Unmarshal([]byte(jsonlds[0]), &myInterface)
+	if err != nil {
+		log.Println("Error when transforming JSON-LD document to interface:", err)
+	}
+
+	framedDoc, err := proc.Frame(myInterface, frame, options)
+	if err != nil {
+		panic(err)
+	}
+
+	//	ld.PrintDocument("JSON-LD framing succeeded", framedDoc)
+
+	graph := framedDoc["@graph"]
+	ld.PrintDocument("JSON-LD graph section", graph) // debug print....
+
+	value := gjson.Get(jsonlds[0], "hasPart.#.url")
+	fmt.Println("------------------------------------")
+	fmt.Println(value.String())
+
 }
 
 func isFlagPassed(name string) bool {
