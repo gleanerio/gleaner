@@ -147,4 +147,5 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 		status = <-responseStatusChan
 		i++
 	}
+	common.RunRepoStatsOutput(repoStats, source.Name)
 }
