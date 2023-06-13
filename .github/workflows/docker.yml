@@ -19,26 +19,26 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - goarch: amd64
-            goos: "linux"
-          - goarch: arm64
-            goos: "linux"
+#        include:
+#          - goarch: amd64
+#            goos: "linux"
+#          - goarch: arm64
+#            goos: "linux"
 
           # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
         # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
-#        goos: [linux]
-#        goarch: [amd64, arm64]
-#        platforms: [linux/amd64,linux/arm64]
+        goos: [linux]
+        goarch: [amd64, arm64]
+        platforms: [linux/amd64,linux/arm64]
 #        exclude:
 #          - goarch: "386"
 #            goos: darwin
     steps:
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
       - name: checkout code
         uses: actions/checkout@v2
       - name: donwload schema
@@ -104,26 +104,26 @@ jobs:
 
     strategy:
       matrix:
-        include:
-          - goarch: amd64
-            goos: "linux"
-          - goarch: arm64
-            goos: "linux"
+#        include:
+#          - goarch: amd64
+#            goos: "linux"
+#          - goarch: arm64
+#            goos: "linux"
 
        # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
             # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
-#        goos: [linux]
-#        goarch: [amd64, arm64]
-#        platforms: [linux/amd64,linux/arm64]
+        goos: [linux]
+        goarch: [amd64, arm64]
+        platforms: [linux/amd64,linux/arm64]
 #        exclude:
 #          - goarch: "386"
 #            goos: darwin
     steps:
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
       - name: checkout code
         uses: actions/checkout@v2
       - name: donwload schema
