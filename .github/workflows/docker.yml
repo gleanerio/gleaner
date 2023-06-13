@@ -19,13 +19,12 @@ jobs:
 
     strategy:
       matrix:
+        platforms: [linux/amd64,linux/arm64]
         include:
           - goarch: amd64
             goos: "linux"
-            platforms: linux/amd64
           - goarch: arm64
             goos: "linux"
-            platforms: linux/arm64
 
           # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
@@ -106,13 +105,12 @@ jobs:
 
     strategy:
       matrix:
+        platforms: [linux/amd64,linux/arm64]
         include:
           - goarch: amd64
             goos: "linux"
-            platforms: linux/amd64
           - goarch: arm64
             goos: "linux"
-            platforms: linux/arm64
 
        # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
