@@ -19,20 +19,21 @@ jobs:
 
     strategy:
       matrix:
-#        include:
-#          - goarch: amd64
-#            goos: "linux"
-#          - goarch: arm64
-#            goos: "linux"
+        - goarch: amd64
+          goos: "linux"
+          platform: linux/amd64
+        - goarch: arm64
+          goos: "linux"
+          platform: linux/arm64
 
           # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
         # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
-        goos: [linux]
-        goarch: [amd64, arm64]
-        platform: [linux/amd64,linux/arm64]
+#        goos: [linux]
+#        goarch: [amd64, arm64]
+#        platform: [linux/amd64,linux/arm64]
 #        exclude:
 #          - goarch: "386"
 #            goos: darwin
@@ -104,20 +105,22 @@ jobs:
 
     strategy:
       matrix:
-#        include:
-#          - goarch: amd64
-#            goos: "linux"
-#          - goarch: arm64
-#            goos: "linux"
+        include:
+          - goarch: amd64
+            goos: "linux"
+            platform: linux/amd64
+          - goarch: arm64
+            goos: "linux"
+            platform: linux/arm64
 
        # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
             # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
-        #goarch: [amd64,arm64]
-        goos: [linux]
-        goarch: [amd64, arm64]
-        platform: [linux/amd64,linux/arm64]
+#        #goarch: [amd64,arm64]
+#        goos: [linux]
+#        goarch: [amd64, arm64]
+#        platform: [linux/amd64,linux/arm64]
 #        exclude:
 #          - goarch: "386"
 #            goos: darwin
