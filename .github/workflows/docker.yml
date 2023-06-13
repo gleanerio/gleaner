@@ -32,7 +32,7 @@ jobs:
         #goarch: [amd64,arm64]
         goos: [linux]
         goarch: [amd64, arm64]
-        platforms: [linux/amd64,linux/arm64]
+        platform: [linux/amd64,linux/arm64]
 #        exclude:
 #          - goarch: "386"
 #            goos: darwin
@@ -117,7 +117,7 @@ jobs:
         #goarch: [amd64,arm64]
         goos: [linux]
         goarch: [amd64, arm64]
-        platforms: [linux/amd64,linux/arm64]
+        platform: [linux/amd64,linux/arm64]
 #        exclude:
 #          - goarch: "386"
 #            goos: darwin
