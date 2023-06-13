@@ -178,7 +178,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          platforms: ${{platforms}}
+          platforms: ${{matrix.platforms}}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ./build/Dockerfile_glcon
