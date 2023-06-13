@@ -20,13 +20,14 @@ jobs:
     strategy:
       matrix:
         include:
-          - goarch: "linux"
-            goos: amd64
+          - goarch: amd64
+            goos: "linux"
             platforms: linux/amd64
-          - goarch: "linux"
-            goos: arm64
+          - goarch: arm64
+            goos: "linux"
             platforms: linux/arm64
-        # above is explict build lists, otherwise we get amd64 on linux/arm as an option
+
+          # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
         # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
