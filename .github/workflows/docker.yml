@@ -14,20 +14,29 @@ on:
 
 jobs:
   gleaner:
-    name: Release Go Binary
+    name: Docker gleaner
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
+        include:
+          - goarch: "linux"
+            goos: amd64
+            platforms: linux/amd64
+          - goarch: "linux"
+            goos: arm64
+            platforms: linux/arm64
+        # above is explict build lists, otherwise we get amd64 on linux/arm as an option
+
         # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
-        goos: [linux]
-        goarch: [amd64, arm64]
-        platforms: [linux/amd64,linux/arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
+#        goos: [linux]
+#        goarch: [amd64, arm64]
+#        platforms: [linux/amd64,linux/arm64]
+#        exclude:
+#          - goarch: "386"
+#            goos: darwin
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
@@ -96,15 +105,25 @@ jobs:
 
     strategy:
       matrix:
-        # build and publish in parallel: linux/amd64
+        include:
+          - goarch: "linux"
+            goos: amd64
+            platforms: linux/amd64
+          - goarch: "linux"
+            goos: arm64
+            platforms: linux/arm64
+
+       # above is explict build lists, otherwise we get amd64 on linux/arm as an option
+
+            # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
         #goarch: [amd64,arm64]
-        goos: [linux]
-        goarch: [amd64, arm64]
-        platforms: [linux/amd64,linux/arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
+#        goos: [linux]
+#        goarch: [amd64, arm64]
+#        platforms: [linux/amd64,linux/arm64]
+#        exclude:
+#          - goarch: "386"
+#            goos: darwin
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
