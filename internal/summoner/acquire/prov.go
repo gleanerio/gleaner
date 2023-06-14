@@ -68,7 +68,7 @@ func StoreProv(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc string) error {
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
-	contentType := "application/ld+json"
+	contentType := JSONContentType
 
 	// Upload the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
@@ -110,12 +110,12 @@ func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix st
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
-	contentType := "application/ld+json"
+	contentType := JSONContentType
 
 	// Upload the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Fatal(objectName, err)
+		log.Errorf("%s: %s", objectName, err)
 		// Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 
@@ -382,7 +382,7 @@ func provTemplate() string {
 // 	usermeta["url"] = urlloc
 // 	usermeta["sha1"] = sha // recall this is the sha of the about object, not the prov graph itself
 
-// 	contentType := "application/ld+json"
+// 	contentType := JSONContentType
 
 // 	// Upload the file with FPutObject
 // 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})

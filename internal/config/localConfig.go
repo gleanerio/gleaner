@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// auth fails if a region is set in minioclient...
 var serversTemplate = map[string]interface{}{
 	"minio": map[string]string{
 		"address":   "localhost",
@@ -11,6 +12,7 @@ var serversTemplate = map[string]interface{}{
 		"accesskey": "",
 		"secretkey": "",
 		"bucket":    "",
+		//		"region":    "us-east-1",
 	},
 	"sparql": map[string]string{
 		"endpoint": "localhost",
@@ -20,6 +22,7 @@ var serversTemplate = map[string]interface{}{
 		"bucket": "gleaner",
 		"domain": "us-east-1",
 	},
+	"identifiertype": JsonSha, // const from config.Sources jsonsha,identifiersha, normalizedjsonsha, identifierstring
 }
 
 func ReadServersConfig(filename string, cfgDir string) (*viper.Viper, error) {
@@ -33,6 +36,7 @@ func ReadServersConfig(filename string, cfgDir string) (*viper.Viper, error) {
 	v.BindEnv("minio.accesskey", "MINIO_ACCESS_KEY")
 	v.BindEnv("minio.secretkey", "MINIO_SECRET_KEY")
 	v.BindEnv("minio.bucket", "MINIO_BUCKET")
+	//	v.BindEnv("minio.region", "MINIO_REGION")
 	v.BindEnv("sparql.endpoint", "SPARQL_ENDPOINT")
 	v.BindEnv("sparql.authenticate", "SPARQL_AUTHENTICATE")
 	v.BindEnv("sparql.username", "SPARQL_USERNAME")

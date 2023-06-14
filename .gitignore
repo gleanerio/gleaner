@@ -14,3 +14,4 @@ configs/local/
 **/credentials/
 .idea
 
+/configs/wifire/

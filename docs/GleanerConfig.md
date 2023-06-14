@@ -76,7 +76,7 @@ The miller and summon sections are true and we will leave them that way.  It mea
 Now look at the "miller:"  section when lets of pick what milling to do.   Currently it is set with only graph set to true.  Let's leave it that way for now.  This means Gleaner will only attempt to make graph and not also run validation or generate prov reports for the process.  
 
 The final section we need to look at is the "sources:" section.   
-Here is where the fun is.  While there are two types, sitegraph and sitemaps we will normally use sitemap type. 
+Here is where the fun is.  While there multiple types, sitegraph, sitemaps, googledrive and api, we will normally use sitemap type.
 
 
 A standard [sitemap](./SourceSitemap.md) is below:
@@ -122,6 +122,19 @@ sources:
   credentialsfile: configs/credentials/gleaner-331805-030e15e1d9c4.json
   other: {}
 ```
+
+An [API endpoint](./SourceAPI.md)
+```yaml
+sources:
+- sourcetype: api
+  name: example
+  url: http://test-metadata-api.com?query=something&page=%d
+  properName: Example JSON-LD API Source
+  domain: http://test-metadata-api.com
+  active: true
+  apipagelimit: 200
+```
+
 These are the sources we wish to pull and process. 
 Each source has a type, and 8 entries though at this time we no longer use the "logo" value. 
 It was used in the past to provide a page showing all the sources and 

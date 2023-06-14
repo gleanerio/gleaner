@@ -137,7 +137,7 @@ func PrqtRDFToS3(v1 *viper.Viper, bucket, key, region string, rbb *bytes.Buffer)
 
 	// aws.Config{}
 	// // LOCAL create new S3 file writer
-	fw, err := s3.NewS3FileWriter(ctx, bucket, key, nil, &aws.Config{Region: aws.String(region),
+	fw, err := s3.NewS3FileWriter(ctx, bucket, key, "", &aws.Config{Region: aws.String(region),
 		Endpoint:         aws.String("http://192.168.86.45:32773"),
 		Credentials:      awscred.NewStaticCredentials(accessKeyID, secretAccessKey, ""),
 		DisableSSL:       aws.Bool(true),

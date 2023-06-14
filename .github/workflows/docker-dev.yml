@@ -18,9 +18,8 @@ jobs:
       matrix:
         # build and publish in parallel: linux/amd64
         #goos: [linux, windows, darwin]
-        #goarch: [amd64,arm64]
-        goos: [linux]
         goarch: [amd64, arm64]
+        goos: [linux]
         exclude:
           - goarch: "386"
             goos: darwin
@@ -30,7 +29,10 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v2
       - name: donwload schema
-        run: curl -O https://schema.org/version/latest/schemaorg-current-https.jsonld
+        run: curl https://schema.org/version/latest/schemaorg-current-https.jsonld --output assets/schemaorg-current-https.jsonld
+      - name: donwload schema
+        run: curl https://schema.org/version/latest/schemaorg-current-http.jsonld --output assets/schemaorg-current-http.jsonld
+
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
       - id: binary
@@ -39,8 +41,8 @@ jobs:
           go build -o gleaner
         working-directory: ./cmd/gleaner
         env:
-          GOOS: linux
-          GOARCH: amd64
+          GOOS: ${{matrix.goss}}
+          GOARCH: ${{matrix.goarch}}
           CGO_ENABLED: 0
       #  deploy:
       #    needs: build

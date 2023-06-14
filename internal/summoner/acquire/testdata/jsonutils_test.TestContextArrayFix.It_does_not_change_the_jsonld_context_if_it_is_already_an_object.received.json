@@ -1,0 +1,1 @@
+"{\n\t\"@context\": {\n\t\t\"@vocab\":\"http://schema.org/\"\n\t    },\n     \"@type\":\"bar\",\n      \"SO:name\":\"Some type in a graph\"\n\t}"

@@ -1,0 +1,77 @@
+
+      [
+  {
+    "@graph": [
+      {
+        "@id": "_:bbj6tcaftr9b9lopa6ebg",
+        "@type": [
+          "https://schema.org/PropertyValue"
+        ],
+        "https://schema.org/propertyID": [
+          {
+            "@value": "SHA256"
+          }
+        ],
+        "https://schema.org/value": [
+          {
+            "@value": "2e754b001472bab1ecba463a2784b97c0b8bbc5f6e3d19d9cbcc8b6807df8bdb"
+          }
+        ]
+      },
+      {
+        "@id": "https://opencoredata.org/id/csdco/do/2e754b001472bab1ecba463a2784b97c0b8bbc5f6e3d19d9cbcc8b6807df8bdb",
+        "@type": [
+          "http://www.schema.org/DigitalDocument"
+        ],
+        "https://schema.org/additionType": [
+          {
+            "@id": "https://opencoredata.org/voc/csdco/v1/Image"
+          }
+        ],
+        "https://schema.org/dateCreated": [
+          {
+            "@value": "2016-10-26"
+          }
+        ],
+        "https://schema.org/description": [
+          {
+            "@value": "Digital object of type Images named GOTHOT-GND16-1A-5L-1-W.jpg for CSDCO project GOTHOT"
+          }
+        ],
+        "https://schema.org/encodingFormat": [
+          {
+            "@value": "image/jpeg"
+          }
+        ],
+        "https://schema.org/identifier": [
+          {
+            "@id": "_:bbj6tcaftr9b9lopa6ebg"
+          }
+        ],
+        "https://schema.org/isRelatedTo": [
+          {
+            "@value": "GOTHOT"
+          }
+        ],
+        "https://schema.org/license": [
+          {
+            "@id": "http://example.com/cc0.html"
+          }
+        ],
+        "https://schema.org/name": [
+          {
+            "@value": "GOTHOT-GND16-1A-5L-1-W.jpg"
+          }
+        ],
+        "https://schema.org/url": [
+          {
+            "@id": "https://opencoredata.org/id/csdco/do/2e754b001472bab1ecba463a2784b97c0b8bbc5f6e3d19d9cbcc8b6807df8bdb"
+          }
+        ]
+      }
+    ],
+    "@id": "https://opencoredata.org/objectgraph/id/2e754b001472bab1ecba463a2784b97c0b8bbc5f6e3d19d9cbcc8b6807df8bdb"
+  }
+]
+
+  

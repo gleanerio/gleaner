@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// auth fails if a region is set in minioclient...
 // frig frig... do not use lowercase... those are private variables
 type Minio struct {
 	Address   string // `mapstructure:"MINIO_ADDRESS"`
@@ -13,8 +14,10 @@ type Minio struct {
 	Accesskey string //`mapstructure:"MINIO_ACCESS_KEY"`
 	Secretkey string // `mapstructure:"MINIO_SECRET_KEY"`
 	Bucket    string
+	//	Region    string
 }
 
+// auth fails if a region is set in minioclient...
 var MinioTemplate = map[string]interface{}{
 	"minio": map[string]string{
 		"address":   "localhost",
@@ -22,6 +25,8 @@ var MinioTemplate = map[string]interface{}{
 		"accesskey": "",
 		"secretkey": "",
 		"bucket":    "",
+		"ssl":       "false",
+		//		"region":    "us-east-1",
 	},
 }
 
@@ -38,11 +43,12 @@ func ReadMinioConfig(minioSubtress *viper.Viper) (Minio, error) {
 	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
 	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
 	minioSubtress.BindEnv("bucket", "MINIO_BUCKET")
+	//	minioSubtress.BindEnv("region", "MINIO_REGION")
 	minioSubtress.AutomaticEnv()
 	// config already read. substree passed
 	err := minioSubtress.Unmarshal(&minioCfg)
 	if err != nil {
-		log.Fatal("error when parsing minio config: %v", err)
+		log.Fatal("error when parsing minio config: ", err)
 	}
 	return minioCfg, err
 }

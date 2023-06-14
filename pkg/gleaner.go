@@ -10,17 +10,26 @@ import (
 	"github.com/minio/minio-go/v7"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
+	"os"
 	//"os"
 )
 
-func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
+
+var VERSION string
+
+func Cli(mc *minio.Client, v1 *viper.Viper) error {
+
 
 	mcfg := v1.GetStringMapString("gleaner")
-	//mcfg := v1.Sub("gleaner") /// with overrides from batch ends up being nil
+
+	err := check.PreflightChecks(mc, v1)
+	if err != nil {
+		log.Fatal("Failed Preflight connection check to minio. Check configuration", err)
+		os.Exit(66)
+	}
 	// Build the org graph
 	// err := organizations.BuildGraphMem(mc, v1) // parfquet testing
-	err := organizations.BuildGraph(mc, v1)
+	err = organizations.BuildGraph(mc, v1)
 	if err != nil {
 		log.Error(err)
 	}
@@ -34,7 +43,7 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 		}
 		log.Info(fn)
 		// summon sitemaps
-		summoner.Summoner(mc, v1, db)
+		summoner.Summoner(mc, v1)
 		acquire.GetFromGDrive(mc, v1)
 	}
 
@@ -45,9 +54,9 @@ func Cli(mc *minio.Client, v1 *viper.Viper, db *bolt.DB) error {
 	return err
 }
 
-/**
+/*
+*
 Setup Gleaner buckets
-
 */
 func Setup(mc *minio.Client, v1 *viper.Viper) error {
 	ms := v1.Sub("minio")
@@ -82,8 +91,6 @@ func Setup(mc *minio.Client, v1 *viper.Viper) error {
 
 /*
 Check to see we can connect to s3 instance, and that buckets exist
-Might also be used to flight check bolt database, and if containers are up
-
 */
 func PreflightChecks(mc *minio.Client, v1 *viper.Viper) error {
 	// Validate Minio access

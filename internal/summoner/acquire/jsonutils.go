@@ -5,10 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
-	"strings"
-
+	"github.com/gleanerio/gleaner/internal/config"
 	log "github.com/sirupsen/logrus"
+	"net/url"
+	"reflect"
+	"strings"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	minio "github.com/minio/minio-go/v7"
@@ -49,10 +50,41 @@ func isValid(v1 *viper.Viper, jsonld string) (bool, error) {
 	return true, nil
 }
 
+// *********
+// context fixes
+// *********
+// let's try to do them all, in one, since that will make the code a bit cleaner and easier to test
+// don' think this is currently called anywhere
+const httpContext = "http://schema.org/"
+const httpsContext = "https://schema.org/"
+
+func fixContext(jsonld string, option config.ContextOption) (string, error) {
+	var err error
+
+	if option == config.Strict {
+		return jsonld, nil
+	}
+	jsonContext := gjson.Get(jsonld, "@context")
+
+	var ctxSchemaOrg = httpsContext
+	if option == config.Http {
+		ctxSchemaOrg = httpContext
+	}
+
+	switch reflect.ValueOf(jsonContext).Kind() {
+	case reflect.String:
+		jsonld, err = fixContextString(jsonld, config.Https)
+	case reflect.Slice:
+		jsonld, err = fixContextArray(jsonld, config.Https)
+	}
+	jsonld, err = fixContextUrl(jsonld, ctxSchemaOrg)
+	return jsonld, err
+}
+
 // Our first json fixup in existence.
 // If the top-level JSON-LD context is a string instead of an object,
 // this function corrects it.
-func fixContextString(jsonld string) (string, error) {
+func fixContextString(jsonld string, option config.ContextOption) (string, error) {
 	var err error
 	jsonContext := gjson.Get(jsonld, "@context")
 
@@ -65,209 +97,317 @@ func fixContextString(jsonld string) (string, error) {
 
 // If the top-level JSON-LD context does not end with a trailing slash or use https,
 // this function corrects it.
-func fixContextUrl(jsonld string) (string, error) {
+// this needs to check all items to see if they match schema.org, then fix.
+func fixContextUrl(jsonld string, ctx string) (string, error) {
 	var err error
-	context := gjson.Get(jsonld, "@context.@vocab").String()
-	if !strings.HasSuffix(context, "/") {
-		context += "/"
+	contexts := gjson.Get(jsonld, "@context").Map()
+	if _, ok := contexts["@vocab"]; !ok {
+		jsonld, err = sjson.Set(jsonld, "@context.@vocab", httpsContext)
 	}
-	contextUrl, err := url.Parse(context)
-	if contextUrl.Scheme != "https" {
-		contextUrl.Scheme = "https"
-		context = contextUrl.String()
-	}
+	// for range
+	for ns, c := range contexts {
+		var context = c.String()
+		if strings.Contains(context, "schema.org") {
+			if strings.Contains(context, "www.") { // fix www.schema.org
+				var i = strings.Index(context, "schema.org")
+				context = context[i:]
+				context = ctx + context
+			}
+			if len(context) < 20 { // https://schema.org/
+				context = ctx
+			}
+		}
+		var path = "@context." + ns
+		jsonld, err = sjson.Set(jsonld, path, context)
+		if err != nil {
+			log.Error("Error standardizing schema.org" + err.Error())
+		}
 
-	jsonld, err = sjson.Set(jsonld, "@context", map[string]interface{}{"@vocab": context})
+	}
 	return jsonld, err
 }
 
-// fixContext unifies and updates the context string altering.  It replaces both fixContextUrl and
-
-// fixContext unifies and updates the context string altering.  It replaces both fixContextUrl and
-func fixContext(jsonld string) (string, error) {
+// Our first json fixup in existence.
+// If the top-level JSON-LD context is a string instead of an object,
+// this function corrects it.
+func fixContextArray(jsonld string, option config.ContextOption) (string, error) {
 	var err error
+	contexts := gjson.Get(jsonld, "@context")
+	switch contexts.Value().(type) {
+	case []interface{}: // array
+		jsonld, err = standardizeContext(jsonld, config.StandardizedHttps)
+	case map[string]interface{}: // array
+		jsonld = jsonld
+	}
+	return jsonld, err
+}
 
-	sdoc := "https://schema.org/" // eventually set in config so ignore always true/false conditional test below for now
+// if the top-level JSON-LD @id is not an IRI, and there is no base in the context,
+// remove that id
+// see https://github.com/piprate/json-gold/discussions/68#discussioncomment-4782788
+// for details
+func fixId(jsonld string) (string, error) {
+	var err error
+	originalBase := gjson.Get(jsonld, "@context.@base").String()
 
-	// grab the cotext
-	c := gjson.Get(jsonld, "@context")
-
-	// check to see if we can cast this to a map
-	cm, ok := c.Value().(map[string]interface{})
-	if !ok {
-
-		// check to see if we can cast this to an []map
-		acm, ok := c.Value().([]interface{})
-		if !ok {
-			// we are not a recognized context
-			log.Println("This is not a recognized []map context either, will drop throgh to string check")
+	if originalBase != "" { // if we have a context base, there is no need to do any of this
+		return jsonld, err
+	}
+	topLevelType := gjson.Get(jsonld, "@type").String()
+	var selector string
+	var formatter func(index int) string
+	if topLevelType == "Dataset" {
+		selector = "@id"
+		formatter = func(index int) string { return "@id"}
+	} else if topLevelType == "ItemList" {
+		selector = "itemListElement.#.item.@id"
+		formatter = func(index int) string { return fmt.Sprintf("itemListElement.%v.item.@id", index) }
+	} else { // we don't know how to fix any of these other things
+		log.Trace("Found a top-level type of ", topLevelType, " in this jsonld document")
+		return jsonld, err
+	}
+	jsonIdentifiers := gjson.Get(jsonld, selector)
+	index := 0
+	jsonIdentifiers.ForEach(func(key, jsonResult gjson.Result) bool {
+		jsonIdentifier := jsonResult.String()
+		idUrl, idErr := url.Parse(jsonIdentifier)
+		if idUrl.Scheme == "" { // we have a relative url and no base in the context
+			log.Trace("Transforming id: ", jsonIdentifier, " to file:// url because it is relative")
+			jsonld, idErr = sjson.Set(jsonld, formatter(index), "file://" + jsonIdentifier)
 		} else {
-			for x := range acm {
-				e := acm[x].(map[string]interface{})
-				//cm2, _ := acm[x].Value().(map[string]interface{}) // should an OK check
-				for k, v := range e {
-					//fmt.Printf("Key: %s  Value: %s\n", k, v)
-
-					// seed if v can do v.(string) and if not continue on..   don't deal with this gnis_url type things
-					//"schema": "http://schema.org/",
-					//	"NAME": "schema:name",
-					//	"gnis_url": {
-					//	"@id": "schema:subjectOf",
-					//		"@type": "@id"
-					//}
-
-					if _, ok := v.(string); !ok {
-						continue
-					}
-
-					if strings.HasPrefix(v.(string), "https://schema.org") {
-						if v.(string) == sdoc {
-							// we are good..  including trailing / as well, so leave
-							return jsonld, nil
-						} else {
-							tns := fmt.Sprintf("@context.%s", k)
-							jsonld, err = sjson.Set(jsonld, tns, sdoc)
-							//return jsonld, err
-						}
-					} else if strings.HasPrefix(v.(string), "http://schema.org") {
-						tns := ""
-						if v.(string) == sdoc {
-							// we are good..  including trailing / as well, so leave
-							return jsonld, nil
-						} else {
-							if strings.HasPrefix(k, "@") {
-								tns = fmt.Sprintf("@context.%d.\\%s", x, k) ////@context/@vocab
-							} else {
-								tns = fmt.Sprintf("@context.%d.%s", x, k) ////@context/@vocab
-							}
-							//fmt.Printf("FIRST CHECK MARK:%s:%s\n", tns, sdoc)
-							jsonld, err = sjson.Set(jsonld, tns, sdoc)
-						}
-					}
-				}
-			}
-			return jsonld, err
+			log.Trace("JSON-LD context base or IRI id found: ", originalBase, "ID: ", idUrl)
 		}
-
-		if _, ok := c.Value().(string); !ok { // had a nil case..  hope this will catch it.. https://geoconnex.us/ref/gages/1094660
-			return "", err
+		if idErr != nil {
+			err = idErr
+			return false
 		}
-
-		// if not it's a string and we can just regex it..  let's not promote to map
-		// check for https://schema.org/   (trailing / ?)  and fix
-		if c.Value().(string) == "http://schema.org/" {
-			if strings.Compare(sdoc, "http://schema.org/") == 0 {
-				return jsonld, nil // all good, return
-			} else {
-				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
-				return jsonld, nil
-			}
-		} else if c.Value().(string) == "https://schema.org/" {
-			if strings.Compare(sdoc, "https://schema.org/") == 0 {
-				return jsonld, nil // all good, return
-			} else {
-				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
-				return jsonld, nil
-			}
-		}
-		// repeat the above with the error of a missing trailing /
-		// check for this second so we don't match the shorter substring pattern first, if the string
-		// with the / is there we want to find it and leave this function first.
-		if c.Value().(string) == "http://schema.org" {
-			if strings.Compare(sdoc, "http://schema.org") == 0 {
-				return jsonld, nil // all good, return
-			} else {
-				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
-				return jsonld, nil
-			}
-		} else if c.Value().(string) == "https://schema.org" {
-			if strings.Compare(sdoc, "https://schema.org") == 0 {
-				return jsonld, nil // all good, return
-			} else {
-				jsonld, err = sjson.Set(jsonld, "@context", sdoc)
-				return jsonld, nil
-			}
-		}
-	} else {
-		for k, v := range cm {
-			//fmt.Printf("Key: %s  Value: %s\n", k, v)
-
-			// if value is our schema.org issue then update this key
-			// try to ready this for a "config"  option
-
-			// NOTE we are checking the namespace as a prefix WITHOUT the training / to check
-			// on it too in the logic
-			if strings.HasPrefix(v.(string), "https://schema.org") {
-				if v.(string) == sdoc {
-					// we are good..  including trailing / as well, so leave
-					return jsonld, nil
-				} else {
-					tns := fmt.Sprintf("@context.%s", k)
-					jsonld, err = sjson.Set(jsonld, tns, sdoc)
-					return jsonld, err
-				}
-			} else if strings.HasPrefix(v.(string), "http://schema.org") {
-				tns := ""
-				if v.(string) == sdoc {
-					// we are good..  including trailing / as well, so leave
-					return jsonld, nil
-				} else {
-					if strings.HasPrefix(k, "@") {
-						tns = fmt.Sprintf("@context.\\%s", k) ////@context/@vocab
-					} else {
-						tns = fmt.Sprintf("@context.%s", k) ////@context/@vocab
-					}
-					//fmt.Printf("CHECK MARK:%s:%s\n", tns, sdoc)
-					jsonld, err = sjson.Set(jsonld, tns, sdoc)
-					return jsonld, err
-				}
-			}
-		}
-	}
-
-	// if we are still here, just return what we showed up with
+		index++
+		return true
+	})
 	return jsonld, err
 }
 
-func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
+// this just creates a standardized context
+// jsonMap := make(map[string]interface{})
+var StandardHttpsContext = map[string]interface{}{
+	"@vocab": "https://schema.org/",
+	"adms":   "https://www.w3.org/ns/adms#",
+	"dcat":   "https://www.w3.org/ns/dcat#",
+	"dct":    "https://purl.org/dc/terms/",
+	"foaf":   "https://xmlns.com/foaf/0.1/",
+	"gsp":    "https://www.opengis.net/ont/geosparql#",
+	"locn":   "https://www.w3.org/ns/locn#",
+	"owl":    "https://www.w3.org/2002/07/owl#",
+	"rdf":    "https://www.w3.org/1999/02/22-rdf-syntax-ns#",
+	"rdfs":   "https://www.w3.org/2000/01/rdf-schema#",
+	"schema": "https://schema.org/",
+	"skos":   "https://www.w3.org/2004/02/skos/core#",
+	"spdx":   "https://spdx.org/rdf/terms#",
+	"time":   "https://www.w3.org/2006/time",
+	"vcard":  "https://www.w3.org/2006/vcard/ns#",
+	"xsd":    "https://www.w3.org/2001/XMLSchema#",
+}
+
+var StandardHttpContext = map[string]interface{}{
+	"@vocab": "http://schema.org/",
+	"adms":   "http://www.w3.org/ns/adms#",
+	"dcat":   "http://www.w3.org/ns/dcat#",
+	"dct":    "http://purl.org/dc/terms/",
+	"foaf":   "http://xmlns.com/foaf/0.1/",
+	"gsp":    "http://www.opengis.net/ont/geosparql#",
+	"locn":   "http://www.w3.org/ns/locn#",
+	"owl":    "http://www.w3.org/2002/07/owl#",
+	"rdf":    "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+	"rdfs":   "http://www.w3.org/2000/01/rdf-schema#",
+	"schema": "http://schema.org/",
+	"skos":   "http://www.w3.org/2004/02/skos/core#",
+	"spdx":   "http://spdx.org/rdf/terms#",
+	"time":   "http://www.w3.org/2006/time",
+	"vcard":  "http://www.w3.org/2006/vcard/ns#",
+	"xsd":    "http://www.w3.org/2001/XMLSchema#",
+}
+
+func standardizeContext(jsonld string, option config.ContextOption) (string, error) {
+
+	var err error
+
+	switch option {
+	case config.StandardizedHttps:
+		jsonld, err = sjson.Set(jsonld, "@context", StandardHttpsContext)
+	case config.StandardizedHttp:
+		jsonld, err = sjson.Set(jsonld, "@context", StandardHttpContext)
+	}
+	return jsonld, err
+}
+
+// there is a cleaner way to handle this...
+func getOptions(ctxOption config.ContextOption) (config.ContextOption, string) {
+	var fixTpye = config.Https
+	var ctxString = httpsContext
+	if ctxOption != config.Strict {
+		if ctxOption == config.Https || ctxOption == config.StandardizedHttps {
+			fixTpye = config.Https
+			ctxString = httpsContext
+		} else {
+			fixTpye = config.Http
+			ctxString = httpContext
+		}
+		return fixTpye, ctxString
+	} else {
+		return config.Strict, ctxString
+	}
+
+}
+
+// ##### end contxt fixes
+func ProcessJson(v1 *viper.Viper,
+	source *config.Sources, urlloc string, jsonld string) (string, common.Identifier, error) {
 	mcfg := v1.GetStringMapString("context")
 	var err error
+	//sources, err := config.GetSources(v1)
+	//source, err := config.GetSourceByName(sources, site)
+	srcFixOption, srcHttpOption := getOptions(source.FixContextOption)
+
 	// In the config file, context { strict: true } bypasses these fixups.
 	// Strict defaults to false.
-	if strict, ok := mcfg["strict"]; !(ok && strict == "true") {
+	// this is a command level
+	if strict, ok := mcfg["strict"]; !(ok && strict == "true") || (srcFixOption != config.Strict) {
+		// source level
+
 		log.Info("context.strict is not set to true; doing json-ld fixups.")
-		jsonld, err = fixContext(jsonld)
+		jsonld, err = fixContextString(jsonld, srcFixOption)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context to be an object Error:", err)
+			log.Error(
+				"ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context from string to be an object Error: ", err)
 		}
-		jsonld, err = fixContextUrl(jsonld)
+		jsonld, err = fixContextArray(jsonld, srcFixOption)
 		if err != nil {
-			log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+			log.Error("ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context from array to be an object Error: ", err)
 		}
+		jsonld, err = fixContextUrl(jsonld, srcHttpOption) // CONST for now
+		if err != nil {
+			log.Error("ERROR: URL: ", urlloc, " Action: Fixing JSON-LD context url scheme and trailing slash Error: ", err)
+		}
+		jsonld, err = fixId(jsonld)
+		if err != nil {
+			log.Error("ERROR: URL: ", urlloc, " Action: Removing relative JSON-LD @id Error: ", err)
+		}
+
 	}
-	sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	//sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	identifier, err := common.GenerateIdentifier(v1, *source, jsonld)
 	if err != nil {
 		log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
 	}
+	//sha := identifier.UniqueId
+	//objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
+	//contentType := "application/ld+json"
+	//b := bytes.NewBufferString(jsonld)
+	//// size := int64(b.Len()) // gets set to 0 after upload for some reason
+	//
+	//usermeta := make(map[string]string) // what do I want to know?
+	//usermeta["url"] = urlloc
+	//usermeta["sha1"] = sha
+	//usermeta["uniqueid"] = sha
+	//usermeta["jsonsha"] = identifier.JsonSha
+	//usermeta["identifiertype"] = identifier.IdentifierType
+	//if identifier.MatchedPath != "" {
+	//	usermeta["matchedpath"] = identifier.MatchedPath
+	//	usermeta["matchedstring"] = identifier.MatchedString
+	//}
+	//if config.IdentifierString == source.IdentifierType {
+	//	usermeta["sha1"] = identifier.JsonSha
+	//}
+	//if source.IdentifierType == config.SourceUrl {
+	//	log.Info("not suppported, yet. needs url sanitizing")
+	//}
+	// write the prov entry for this object
+	//err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
+	//if err != nil {
+	//	log.Error(err)
+	//}
+	//
+	//// ProcessJson the file with FPutObject
+	//_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
+	//if err != nil {
+	//	log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+	//}
+	//log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
+	return jsonld, identifier, err
+}
+
+func Upload(v1 *viper.Viper, mc *minio.Client, bucketName string, site string, urlloc string, jsonld string) (string, error) {
+	var err error
+	//mcfg := v1.GetStringMapString("context")
+	sources, err := config.GetSources(v1)
+	source, err := config.GetSourceByName(sources, site)
+	//srcFixOption, srcHttpOption := getOptions(source.FixContextOption)
+
+	//// In the config file, context { strict: true } bypasses these fixups.
+	//// Strict defaults to false.
+	//// this is a command level
+	//if strict, ok := mcfg["strict"]; !(ok && strict == "true") || (srcFixOption != config.Strict) {
+	//	// source level
+	//
+	//	log.Info("context.strict is not set to true; doing json-ld fixups.")
+	//	//contextType := reflect.ValueOf(jsonld).Kind().String()
+	//	//if strings.HasPrefix(contextType, "string") || strings.HasPrefix(contextType, "map") {
+	//	//
+	//	//}
+	//	jsonld, err = fixContextString(jsonld, srcFixOption)
+	//	if err != nil {
+	//		log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from string to be an object Error:", err)
+	//	}
+	//	jsonld, err = fixContextArray(jsonld, srcFixOption)
+	//	if err != nil {
+	//		log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context from array to be an object Error:", err)
+	//	}
+	//	//jsonld, err = fixContextUrl(jsonld, Https)
+	//	jsonld, err = fixContextUrl(jsonld, srcHttpOption) // CONST for now
+	//	if err != nil {
+	//		log.Error("ERROR: URL:", urlloc, "Action: Fixing JSON-LD context url scheme and trailing slash Error:", err)
+	//	}
+	//
+	//}
+	////sha, err := common.GetNormSHA(jsonld, v1) // Moved to the normalized sha value
+	//identifier, err := common.GenerateIdentifier(v1, *source, jsonld)
+	//if err != nil {
+	//	log.Error("ERROR: URL:", urlloc, "Action: Getting normalized sha  Error:", err)
+	//}
+	jsonld, identifier, err := ProcessJson(v1, source, urlloc, jsonld)
+
+	sha := identifier.UniqueId
 	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", site, sha)
-	contentType := "application/ld+json"
+	contentType := JSONContentType
 	b := bytes.NewBufferString(jsonld)
 	// size := int64(b.Len()) // gets set to 0 after upload for some reason
 
 	usermeta := make(map[string]string) // what do I want to know?
 	usermeta["url"] = urlloc
 	usermeta["sha1"] = sha
-
+	usermeta["uniqueid"] = sha
+	usermeta["jsonsha"] = identifier.JsonSha
+	usermeta["identifiertype"] = identifier.IdentifierType
+	if identifier.MatchedPath != "" {
+		usermeta["matchedpath"] = identifier.MatchedPath
+		usermeta["matchedstring"] = identifier.MatchedString
+	}
+	if config.IdentifierString == source.IdentifierType {
+		usermeta["sha1"] = identifier.JsonSha
+	}
+	if source.IdentifierType == config.SourceUrl {
+		log.Info("not suppported, yet. needs url sanitizing")
+	}
 	// write the prov entry for this object
 	err = StoreProvNG(v1, mc, site, sha, urlloc, "milled")
 	if err != nil {
 		log.Error(err)
 	}
 
-	// Upload the file with FPutObject
+	// ProcessJson the file with FPutObject
 	_, err = mc.PutObject(context.Background(), bucketName, objectName, b, int64(b.Len()), minio.PutObjectOptions{ContentType: contentType, UserMetadata: usermeta})
 	if err != nil {
-		log.Fatal(objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
+		log.Errorf("%s: %s", objectName, err) // Fatal?   seriously?    I guess this is the object write, so the run is likely a bust at this point, but this seems a bit much still.
 	}
 	log.Debug("Uploaded Bucket:", bucketName, " File:", objectName, "Size", int64(b.Len()))
 	return sha, err

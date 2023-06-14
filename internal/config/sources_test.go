@@ -7,10 +7,11 @@ import (
 
 var sources = []Sources{
 	{
-		Name:       "test1",
-		Headless:   true,
-		Active:     true,
-		SourceType: "sitemap",
+		Name:           "test1",
+		Headless:       true,
+		Active:         true,
+		SourceType:     "sitemap",
+		IdentifierType: IdentifierSha,
 	},
 	{
 		Name:       "test2",
@@ -19,10 +20,11 @@ var sources = []Sources{
 		SourceType: "robots",
 	},
 	{
-		Name:       "test3",
-		Headless:   false,
-		Active:     false,
-		SourceType: "sitemap",
+		Name:           "test3",
+		Headless:       false,
+		Active:         false,
+		SourceType:     "sitemap",
+		IdentifierType: JsonSha,
 	},
 	{
 		Name:       "test4",
@@ -38,16 +40,18 @@ func TestGetSourceByType(t *testing.T) {
 	t.Run("It gets sources of the given type", func(t *testing.T) {
 		expected := []Sources{
 			{
-				Name:       "test1",
-				Headless:   true,
-				Active:     true,
-				SourceType: "sitemap",
+				Name:           "test1",
+				Headless:       true,
+				Active:         true,
+				SourceType:     "sitemap",
+				IdentifierType: IdentifierSha,
 			},
 			{
-				Name:       "test3",
-				Headless:   false,
-				Active:     false,
-				SourceType: "sitemap",
+				Name:           "test3",
+				Headless:       false,
+				Active:         false,
+				SourceType:     "sitemap",
+				IdentifierType: JsonSha,
 			},
 			{
 				Name:       "test4",
@@ -79,6 +83,19 @@ func TestGetActiveSourceByType(t *testing.T) {
 				Headless:   true,
 				Active:     true,
 				SourceType: "sitemap",
+				Logo: "",
+				URL: "",
+				PID: "",
+				ProperName: "",
+				Domain: "",
+				CredentialsFile: "",
+				Other: nil,
+				HeadlessWait: 0,
+				Delay: 0,
+				IdentifierPath: "",
+				ApiPageLimit: 0,
+				IdentifierType: IdentifierSha,
+				FixContextOption: 0,
 			},
 		}
 		results := GetActiveSourceByType(sources, "sitemap")
@@ -104,6 +121,19 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 				Headless:   true,
 				Active:     true,
 				SourceType: "sitemap",
+				Logo: "",
+				URL: "",
+				PID: "",
+				ProperName: "",
+				Domain: "",
+				CredentialsFile: "",
+				Other: nil,
+				HeadlessWait: 0,
+				Delay: 0,
+				IdentifierPath: "",
+				ApiPageLimit: 0,
+				IdentifierType: IdentifierSha,
+				FixContextOption: 0,
 			},
 		}
 		results := GetActiveSourceByHeadless(sources, true)
@@ -115,6 +145,19 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 				Headless:   false,
 				Active:     true,
 				SourceType: "robots",
+				Logo: "",
+				URL: "",
+				PID: "",
+				ProperName: "",
+				Domain: "",
+				CredentialsFile: "",
+				Other: nil,
+				HeadlessWait: 0,
+				Delay: 0,
+				IdentifierPath: "",
+				ApiPageLimit: 0,
+				IdentifierType: "",
+				FixContextOption: 0,
 			},
 		}
 		results = GetActiveSourceByHeadless(sources, false)
@@ -159,6 +202,19 @@ func TestGetSourceByName(t *testing.T) {
 			Headless:   true,
 			Active:     true,
 			SourceType: "sitemap",
+			Logo: "",
+			URL: "",
+			PID: "",
+			ProperName: "",
+			Domain: "",
+			CredentialsFile: "",
+			Other: nil,
+			HeadlessWait: 0,
+			Delay: 0,
+			IdentifierPath: "",
+			ApiPageLimit: 0,
+			IdentifierType: IdentifierSha,
+			FixContextOption: 0,
 		}
 
 		results, err := GetSourceByName(sources, "test1")
