@@ -10,12 +10,12 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0
 	github.com/approvals/go-approval-tests v0.0.0-20220530063708-32d5677069bd
 	github.com/aws/aws-sdk-go v1.41.12
-	github.com/chromedp/chromedp v0.6.5
+	github.com/chromedp/chromedp v0.9.1
 	github.com/gocarina/gocsv v0.0.0-20211020200912-82fc2684cc48
 	github.com/gorilla/mux v1.8.0
 	github.com/gosuri/uiprogress v0.0.1
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
-	github.com/mafredri/cdp v0.32.0
+	github.com/mafredri/cdp v0.34.1
 	github.com/minio/minio-go/v7 v7.0.52
 	github.com/ohler55/ojg v1.14.5
 	github.com/piprate/json-gold v0.5.0
@@ -35,14 +35,14 @@ require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/apache/thrift v0.14.1 // indirect
-	github.com/chromedp/cdproto v0.0.0-20210122124816-7a656c010d57 // indirect
+	github.com/chromedp/cdproto v0.0.0-20230220211738-2b1ec77315c9 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
-	github.com/gobwas/ws v1.0.4 // indirect
+	github.com/gobwas/ws v1.1.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -85,7 +85,7 @@ require (
 	github.com/valyala/fasthttp v1.37.1-0.20220607072126-8a320890c08d // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
