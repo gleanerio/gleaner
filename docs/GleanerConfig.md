@@ -1,12 +1,31 @@
 # Gleaner Configuration file
 
-This assumes that you have a container stack running
+The Gleaner stack requires a set of supporting services for full operation.
 
+These are:
+
+* s3 store: Such as Minio, AWS S3 or Google Cloud Services
+* triple store: (optional) A graph database that supports RDF if you wish to load the harvestd JSON-LD data graphs for query
+* headless: (optional) A headless browser such as Chrome or Firefox for use in those cases where the JSON-LD is not not staticly in the page DOM, but rather called and inserted by javascript on page load.
+
+## Important Note regarding S3
+In the case of AWS S3, it is important to use the region specific version of the AWS API URL.  Such as;
+
+```yaml
+minio:
+address: s3.us-west-2.amazonaws.com
+port: 443
+ssl: true
+accesskey:
+secretkey:
+bucket: ec-geocodes
+region: us-west-2
 ```
-s3 store
-triple store
-headless
-```
+
+rather than _s3.amazonaws.com_.   This avoids an auth error that is raised when the region specifid is different
+than the default region in your AWS credentials file.
+
+
 ## Gleaner Configuration generation
 Files can be generated using glcon. Described in [README_CONFIGURE_Template](./README_Configure_Template.md)
 
@@ -24,6 +43,7 @@ minio:
   secretKey: worldsbestsecretkey
   ssl: false
   bucket: gleaner
+  region: us-west-2
 gleaner:
   runid: runX # this will be the bucket the output is placed in...
   summon: true # do we want to visit the web sites and pull down the files
