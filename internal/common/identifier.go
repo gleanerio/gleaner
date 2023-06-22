@@ -62,7 +62,8 @@ func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
 	// we need to sort the results
 	aString := make([]string, len(ys))
 	for i, v := range ys {
-		aString[i] = v.(string)
+		//aString[i] = v.(string)
+		aString[i] = fmt.Sprint(v) // v not always a single string
 	}
 	sort.SliceStable(aString, func(i, j int) bool {
 		return aString[i] < aString[j]
@@ -153,7 +154,7 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 		}
 		return id, err
 	} else {
-		log.Error(config.IdentifierSha, "Action: Getting normalized sha  Error:", err)
+		log.Info(config.IdentifierSha, "Action: Getting normalized sha  Error:", err)
 		// generate a filesha
 		return GenerateNormalizedSha(v1, jsonld)
 	}

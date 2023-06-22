@@ -17,11 +17,13 @@ package cli
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/internal/summoner/acquire"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 )
 
@@ -48,6 +50,13 @@ There are three types of idtype:
 		//if sourceVal != "" {
 		//	runSources = append(runSources, sourceVal)
 		//}
+
+		if gleanerViperVal == nil {
+			gleanerViperVal = viper.New()
+			gleanerViperVal.SetConfigType("yaml")
+			gleanerViperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+		}
+
 		source := configTypes.Sources{
 			Name:             "jsonldCmd",
 			IdentifierType:   idTypeVal,

@@ -27,6 +27,10 @@ jobs:
 
       #     - name: Run tests
   #      run: go test -v -p=1 -timeout=0 ./...
+      - name: Set variables
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
       - uses: wangyoucao577/go-release-action@v1.22
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -34,6 +38,6 @@ jobs:
           goarch: ${{ matrix.goarch }}
           project_path: "./cmd/gleaner"
           binary_name: "gleaner"
-          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }}"
+          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
           extra_files: README.md docs/ configs/ scripts/ assets/
   #         extra_files: LICENSE README.md

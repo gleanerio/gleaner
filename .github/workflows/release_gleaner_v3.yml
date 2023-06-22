@@ -37,6 +37,6 @@ jobs:
           goarch: ${{ matrix.goarch }}
           project_path: "./cmd/glcon"
           binary_name: "glcon"
-          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }}"
+          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
           extra_files: README.md docs/ configs/ scripts/  assets/
   #         extra_files: LICENSE README.md

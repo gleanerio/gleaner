@@ -2,14 +2,17 @@ package common
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
+	"os"
 	"sync"
 	"time"
 )
 
 type RunStats struct {
-	mu        sync.Mutex
-	Date      time.Time
-	RepoStats map[string]*RepoStats
+	mu         sync.Mutex
+	Date       time.Time
+	StopReason string
+	RepoStats  map[string]*RepoStats
 }
 
 func NewRunStats() *RunStats {
@@ -23,6 +26,7 @@ func (c *RunStats) Add(repo string) *RepoStats {
 	c.mu.Lock()
 	r := NewRepoStats(repo)
 	r.Name = repo
+	r.Start = time.Now()
 	// Lock so only one goroutine at a time can access the map c.v.
 	c.RepoStats[repo] = r
 	c.mu.Unlock()
@@ -30,8 +34,10 @@ func (c *RunStats) Add(repo string) *RepoStats {
 }
 
 type RepoStats struct {
-	mu   sync.Mutex
-	Name string
+	mu    sync.Mutex
+	Name  string
+	Start time.Time
+	End   time.Time
 	//SitemapCount     int
 	//SitemapHttpError int
 	//SitemapIssues    int
@@ -43,6 +49,12 @@ func NewRepoStats(name string) *RepoStats {
 	r := RepoStats{Name: name}
 	r.counts = make(map[string]int)
 	return &r
+}
+func (c *RepoStats) setEndTime() {
+	c.mu.Lock()
+	// Lock so only one goroutine at a time can access the map c.v.
+	defer c.mu.Unlock()
+	c.End = time.Now()
 }
 
 const Count string = "SitemapCount"
@@ -78,16 +90,50 @@ func (c *RepoStats) Value(key string) int {
 	defer c.mu.Unlock()
 	return c.counts[key]
 }
+
 func (c *RunStats) Output() string {
 	out := fmt.Sprintln("RunStats:")
 	out += fmt.Sprintf("  Start: %s\n", c.Date)
-	out += fmt.Sprintf("  Repositories:\n")
+	out += fmt.Sprintf("  Reason: %s\n", c.StopReason)
+	out += fmt.Sprintf("  Soruce:\n")
 	for name, repo := range c.RepoStats {
 
 		out += fmt.Sprintf("    - name: %s\n", name)
+		out += fmt.Sprintf("      Start: %s\n", repo.Start)
+		out += fmt.Sprintf("      End: %s\n", repo.End)
 		for r, count := range repo.counts {
 			out += fmt.Sprintf("      %s: %d \n", r, count)
 		}
 	}
 	return out
+}
+
+func (c *RepoStats) Output() string {
+	c.setEndTime()
+	out := fmt.Sprintln("SourceStats:")
+	out += fmt.Sprintf("  Start: %s\n", c.Start)
+	out += fmt.Sprintf("  End: %s\n", c.End)
+	out += fmt.Sprintf("  Soruce:\n")
+
+	out += fmt.Sprintf("    - name: %s\n", c.Name)
+	for r, count := range c.counts {
+		out += fmt.Sprintf("      %s: %d \n", r, count)
+	}
+
+	return out
+}
+
+func RunRepoStatsOutput(repoStats *RepoStats, source string) {
+	fmt.Print(repoStats.Output())
+	const layout = "2006-01-02-15-04-05"
+	t := time.Now()
+	lf := fmt.Sprintf("%s/repo-%s-stats-%s.log", Logpath, source, t.Format(layout))
+
+	LogFile := lf // log to custom file
+	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	logFile.WriteString(repoStats.Output())
+	logFile.Close()
 }

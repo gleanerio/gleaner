@@ -30,7 +30,6 @@ and store to a S3 server:
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("gleaner called")
 
-		fmt.Println("gleaner called")
 	},
 }
 var modeVal string
@@ -82,6 +81,6 @@ func initGleanerConfig() {
 
 	bucketVal, err = config.GetBucketName(gleanerViperVal)
 	if err != nil {
-		log.Fatalf("cannot read bucketname from : %s ", err)
+		log.Fatal("cannot read bucketname from : ", err)
 	}
 }

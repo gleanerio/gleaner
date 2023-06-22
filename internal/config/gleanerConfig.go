@@ -6,12 +6,14 @@ import (
 	"github.com/spf13/viper"
 )
 
+// auth fails if a region is set in minioclient...
 var gleanerTemplate = map[string]interface{}{
 	"minio": map[string]string{
 		"address":   "localhost",
 		"port":      "9000",
 		"accesskey": "",
 		"secretkey": "",
+		//		"region":    "us-east-1",
 	},
 	"gleaner":     map[string]string{},
 	"context":     map[string]string{},

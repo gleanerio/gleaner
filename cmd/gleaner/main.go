@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gleanerio/gleaner/internal/check"
 	"github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
@@ -10,7 +11,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/objects"
@@ -150,7 +150,7 @@ func main() {
 	if setupVal {
 		log.Info("Setting up buckets")
 		//err := check.MakeBuckets(mc, bucketName)
-		err = pkg.Setup(mc, v1)
+		err = check.Setup(mc, v1)
 		if err != nil {
 			log.Fatal("Error making buckets for setup call")
 		}
@@ -160,7 +160,7 @@ func main() {
 	}
 
 	// Validate Minio access
-	err = pkg.PreflightChecks(mc, v1)
+	err = check.PreflightChecks(mc, v1)
 	if err != nil {
 		log.Fatal("Preflight Check failed. Make sure the minio server is running, accessible and has been setup.", err)
 	}
@@ -178,13 +178,6 @@ func main() {
 	//	os.Exit(1)
 	//}
 
-	// setup the KV store to hold a record of indexed resources
-	db, err := bolt.Open("gleaner.db", 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
 	// Defer a function to be called on successful ending.  Note, if gleaner crashes, this will NOT
 	// get called, do consideration must be taken in such a cases.  Some errors in such cases should
 	// be sent to stdout to be captured by docker, k8s, Airflow etc in case they are being used.
@@ -195,7 +188,7 @@ func main() {
 	}()
 
 	//cli(mc, v1, db)
-	pkg.Cli(mc, v1, db) // move to a common call in batch.go
+	pkg.Cli(mc, v1) // move to a common call in batch.go
 }
 
 func cleanUp() {

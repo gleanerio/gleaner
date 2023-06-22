@@ -1,0 +1,78 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "@id": "doi:null",
+  "additionalType": [
+    "geolink:Dataset",
+    "vivo:Dataset"
+  ],
+  "name": "CH0509 ctd (SeaBird SBE-911+)",
+  "description": "This is a placeholder for the abstract for this fileset.",
+  "datePublished": null,
+  "keywords": [
+    "HatterasCH0509ctdCTDSeaBird SBE-911+102458Sea-Bird CTD original filesCH0509 ctd (SeaBird SBE-911+)rawr2rctd"
+  ],
+  "creator": {
+    "@type": "Person",
+    "additionalType": "geolink:Person",
+    "name": "Unknown",
+    "affiliation": {
+      "@type": "Organization",
+      "name": "Unknown"
+    }
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "@id": "http://dx.doi.org/null",
+      "additionalType": "dcat:distribution",
+      "url": "http://dx.doi.org/null",
+      "encodingFormat": "Sea-Bird CTD original files",
+      "name": "landing page",
+      "description": "Link to a web page related to the resource. Service Protocol: Link to a web page related to the resource.. Link Function: information"
+    },
+    {
+      "@type": "DataDownload",
+      "@id": "https://www.rvdata.us/search/fileset/102458",
+      "additionalType": "dcat:distribution",
+      "url": "https://www.rvdata.us/search/fileset/102458",
+      "encodingFormat": "Sea-Bird CTD original files",
+      "name": "landing page",
+      "description": "Link to a web page related to the resource. Service Protocol: Link to a web page related to the resource.. Link Function: information"
+    }
+  ],
+  "identifier": {
+    "@type": "PropertyValue",
+    "propertyID": "dataset identifier",
+    "value": "doi:null"
+  },
+  "license": [
+    {
+      "@type": "CreativeWork",
+      "url": "https://creativecommons.org/licenses/by-nc-sa/3.0/us/",
+      "name": "MD_Constraints",
+      "description": "useLimitation: Creative Commons Attribution-NonCommercial-Share Alike 3.0 United States [CC BY-NC-SA 3.0]."
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "MD_LegalConstraints",
+      "description": "accessConstraints: license.    otherConstraints: Creative Commons Attribution-NonCommercial-Share Alike 3.0 United States [CC BY-NC-SA 3.0].   "
+    },
+    {
+      "@type": "CreativeWork",
+      "name": "MD_SecurityConstraints",
+      "description": "classification: "
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "Rolling Deck to Repository"
+  },
+  "spatialCoverage": {
+    "@type": "Place",
+    "geo": {
+      "@type": "GeoShape",
+      "box": "-77.07728, 33.91943,-76.39163,34.71767"
+    }
+  }
+}

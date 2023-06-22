@@ -4,17 +4,39 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
+	"net/http"
 	"testing"
 	"time"
 )
 
-func Test(t *testing.T) {
+var HEADLESS_URL = "http://127.0.0.1:9222"
 
+func PingHeadless() (int, error) {
+	var client = http.Client{
+	   Timeout: 2 * time.Second,
+	}
+
+	req, err := http.NewRequest("HEAD", HEADLESS_URL, nil)
+    if err != nil {
+       return 0, err
+    }
+    resp, err := client.Do(req)
+    if err != nil {
+       return 0, err
+    }
+    resp.Body.Close()
+    return resp.StatusCode, nil
 }
 
 // need to have some test that checks if headless is actually running.
 
 func TestHeadlessNG(t *testing.T) {
+	status, err := PingHeadless()
+
+	if(err != nil || status != 200) {
+		t.Skip("Skipping headless tests because no headless browser is running.")
+	}
+
 	tests := []struct {
 		name         string
 		url          string
@@ -40,7 +62,7 @@ func TestHeadlessNG(t *testing.T) {
 		runstats := common.NewRepoStats(test.name)
 		conf := map[string]interface{}{
 			"minio":    map[string]interface{}{"bucket": "test"},
-			"summoner": map[string]interface{}{"threads": "5", "delay": 10, "headless": "http://127.0.0.1:9222"},
+			"summoner": map[string]interface{}{"threads": "5", "delay": 10, "headless": HEADLESS_URL},
 			"sources":  []map[string]interface{}{{"name": test.name, "headlessWait": test.headlessWait}},
 		}
 

@@ -21,12 +21,9 @@ import (
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/pkg"
 	"github.com/spf13/viper"
-	bolt "go.etcd.io/bbolt"
 	"os"
 
 	log "github.com/sirupsen/logrus"
-	"path"
-
 	"github.com/spf13/cobra"
 )
 
@@ -83,12 +80,7 @@ func Batch(v1 *viper.Viper, mode string, runSources []string) {
 	//}
 
 	mc := common.MinioConnection(v1)
-	// setup the KV store to hold a record of indexed resources
-	db, err := bolt.Open(path.Join(cfgPath, cfgName, "gleaner.db"), 0600, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
+
 	//var gln = v1.Sub("gleaner")
 	gln := v1.GetStringMapString("gleaner")
 	if millVal {
@@ -103,11 +95,12 @@ func Batch(v1 *viper.Viper, mode string, runSources []string) {
 	}
 	if len(runSources) > 0 {
 
+		var err error = nil
 		v1, err = configTypes.PruneSources(v1, runSources)
 		if err != nil {
 			log.Fatal(err)
 			os.Exit(1)
 		}
 	}
-	pkg.Cli(mc, v1, db)
+	pkg.Cli(mc, v1)
 }

@@ -1,0 +1,929 @@
+{
+   "@context":{"@vocab":"https://schema.org/"},
+   "@type":"ItemList",
+   "itemListElement":
+   [
+      {
+      "@type":"ListItem",
+      "position":1,
+      "item":{
+         "@type":"Dataset",
+         "name":"Methylmercury Speciation at Different Trophic Levels in the Beaufort Sea Arctic Marine Ecosystem",
+         "datePublished": "2015-02-03",
+         "dateModified": "2015-02-05",
+         "description":"Our long-term goal is to develop a molecular-level understanding of the uptake pathway, transformation, toxicity and detoxification of methylmercury in the Arctic marine ecosystem. The specific objectives of this project are to: 1) identify and quantify chemical forms of methylmercury and selenium in various tissues of animals at different trophic levels from the Beaufort Sea Arctic marine ecosystem; and, 2) elucidate possible mechanisms involved in methylmercury detoxification in beluga whales.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12070",
+         "keywords":
+         [
+            "Geographic locations -> Beaufort Sea",
+            "Geographic locations -> Mackenzie Shelf",
+            "Health sciences and contaminants -> Bioaccumulation",
+            "Health sciences and contaminants -> Mercury speciation",
+            "Health sciences and contaminants -> Methylmercury"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Feiyue Wang",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-(204) 474-6250",
+               "email":"wangf@ms.umanitoba.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2008-Jan-1/2008-Dec-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"71.0 -138.0 68.0 -120.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":2,
+      "item":{
+         "@type":"Dataset",
+         "name":"Otolith microchemistry of polar cod (Boreogadus saida) from six Arctic regions",
+         "datePublished": "2015-02-04",
+         "dateModified": "2015-04-07",
+         "description":"Arctic marine food webs are centered on polar cod (Boreogadus saida), a small, largely pelagic gadid, which movement and migration remain unclear, especially for the early life stages. The present study examined the otolith chemistry of juvenile polar cod from six oceanographic regions of the Arctic Ocean in order to document patterns of spatial segregation, dispersion and migration during the species early life. The freshwater winter refuge hypothesis, suggesting that polar cod larvae start to hatch in winter in freshwater-influenced regions but only later in the season in purely marine regions, was also tested.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12071",
+         "keywords":
+         [
+            "Geographic locations -> Amundsen Gulf",
+            "Geographic locations -> Baffin Bay",
+            "Geographic locations -> Frobisher Bay",
+            "Geographic locations -> Hudson Bay",
+            "Geographic locations -> Lancaster Sound",
+            "Geographic locations -> Laptev Sea",
+            "Natural sciences -> Arctic cod",
+            "Natural sciences -> Otolith"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Caroline Bouchard",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-418-634-0590 6228",
+               "email":"cabo@natur.gl"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2005-Aug-1/2006-Oct-29",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"81.0 -155.0 62.0 135.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":3,
+      "item":{
+         "@type":"Dataset",
+         "name":"Nilliajut: Inuit Perspectives of Security, Patriotism and Sovereignty",
+         "datePublished": "2015-02-04",
+         "dateModified": "2015-03-17",
+         "description":"To share Inuit perspectives on security, patriotism and sovereignty.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12072",
+         "keywords":
+         [
+            "Geographic locations -> Inuit Nunangat",
+            "Social sciences, economics and policy -> Governmental policies",
+            "Social sciences, economics and policy -> Inuit Knowledge",
+            "Social sciences, economics and policy -> Sovereignty",
+            "Social sciences, economics and policy -> Traditional Knowledge",
+            "Transdisciplinary -> Publication"
+         ],
+         "creator":{
+            "@type":"Organization",
+            "url":"www.inuitknowledge.ca",
+            "name":"Inuit Qaujisarvingat, Inuit Tapiriit Kanatami",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-613-238-8181",
+               "email":"kelley@itk.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2012-Jul-1/2013-Mar-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"90.0 -180.0 50.0 180.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":4,
+      "item":{
+         "@type":"Dataset",
+         "name":"Community Based Seawater Monitoring for Organic Contaminants and Mercury in the Canadian Arctic",
+         "datePublished": "2015-02-04",
+         "dateModified": "2021-03-29",
+         "description":"The purpose of this project is to develop information on levels and time trends of contaminants in the Arctic ocean waters using a community based approach. The project was initiated in 2007 by PhD student Adam Morris working with Peter Amaraulik Sr. from Resolute Bay as part of his PhD research and continued as an Northern Contaminates Program (NCP) funded project in 2011-12 and again in 2014-15 and 2015-16. The project is now part of NCP's core monitoring program and has expanded in scope on a geographic scale, sampling strategies, and targeted contaminants. Currently, this project uses ultratrace analysis of seawater for mercury and methyl mercury species, perfluoroalkyl substances (PFAS), organophosphate ester flame retardants (OPE), brominated flame retardants (BFR), polychlorinated biphenyls (PCB), polycyclic aromatic carbons (PACs/PAH), and several other legacy persistent organic pollutants (POPs). To the greatest extent possible, we partner with community members to lead sampling. The communities we work with include: Resolute Bay, Nain, and Cambridge Bay.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12073",
+         "keywords":
+         [
+            "Geographic locations -> Arctic Ocean",
+            "Geographic locations -> Barrow Strait",
+            "Geographic locations -> Labrador Sea",
+            "Geographic locations -> Nunatsiavut",
+            "Geographic locations -> Nunavut",
+            "Geographic locations -> Resolute Bay",
+            "Health sciences and contaminants -> Mercury",
+            "Health sciences and contaminants -> Methylmercury",
+            "Health sciences and contaminants -> Perfluorinated alkylated substances",
+            "Health sciences and contaminants -> Perfluorooctanesulfonate",
+            "Health sciences and contaminants -> Persistent organic pollutants (POPs)",
+            "Natural sciences -> Community-based monitoring",
+            "Natural sciences -> Contaminants",
+            "Natural sciences -> Seawater",
+            "Natural sciences -> Water",
+            "Northern communities -> Cambridge Bay",
+            "Northern communities -> Nain",
+            "Northern communities -> Qausuittuq",
+            "Social sciences, economics and policy -> Capacity building"
+         ],
+         "creator":{
+            "@type":"Organization",
+            "url":"https://open.canada.ca/data/en/dataset/45321640-4ef9-42e9-ab49-a781b69e6267",
+            "name":"Environment and Climate Change Canada, Government of Canada",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-9052209508",
+               "email":"amila.desilva@canada.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2007-May-1/Not Defined",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"75.0 -104.0 55.0 -62.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":5,
+      "item":{
+         "@type":"Dataset",
+         "name":"Contaminant Bioaccumulation in Landlocked Char Food Webs in the High Arctic",
+         "datePublished": "2015-02-04",
+         "dateModified": "2021-02-12",
+         "description":"This purpose of this project is to study how food webs influence the transfer of contaminants to the top predator, landlocked Arctic char, in the Northern Contaminants Program's (NCP) 'focal ecosystem' lakes on Cornwallis Island. Previous studies have shown that mercury and perfluorinated chemicals are carried into Arctic lakes during spring melt and are taken up and concentrated through the food web into char. This research examined food web accumulation of mercury, which has both natural and human sources and undergoes complex transformations in lakes, and of perfluorinated chemicals, which are entirely human-made, arrive solely by atmospheric deposition, and are not transformed in the environment. We built on previous research by contrasting how these two persistent contaminants concentrate through lake food webs and examining factors that affect their levels in char and other organisms in High Arctic lakes. The research focused on lakes in the Resolute Bay area (North, Small, Meretta, Resolute, 9 Mile, Char), because the arctic char and the supporting food webs of these lakes hd already been studied.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12074",
+         "keywords":
+         [
+            "Geographic locations -> Cornwallis Island",
+            "Geographic locations -> Resolute Bay",
+            "Health sciences and contaminants -> Mercury",
+            "Health sciences and contaminants -> Perfluorinated alkylated substances",
+            "Natural sciences -> Arctic char",
+            "Natural sciences -> Chironomids",
+            "Natural sciences -> Food web",
+            "Natural sciences -> Lake"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Derek Muir",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-905-319-6921",
+               "email":"derek.muir@ec.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2010-Jun-1/2012-Mar-28",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"75.0 -95.0 74.5 -94.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":6,
+      "item":{
+         "@type":"Dataset",
+         "name":"Weasel population monitoring on Bylot Island, Nunavut",
+         "datePublished": "2015-02-05",
+         "dateModified": "2021-02-01",
+         "description":"Monitoring of weasel (Mustela erminea) abundance, reproductive activity and predation rate on lemmings",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12075",
+         "keywords":
+         [
+            "Geographic locations -> Bylot Island",
+            "Natural sciences -> Abundance",
+            "Natural sciences -> Ermine",
+            "Natural sciences -> Lemmings",
+            "Natural sciences -> Monitoring",
+            "Natural sciences -> Predation",
+            "Natural sciences -> Tundra",
+            "Natural sciences -> Weasels"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Gilles Gauthier",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-1-418-656-5507",
+               "email":"gilles.gauthier@bio.ulaval.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2007-Jun-16/Not Defined",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"73.2 -80.2 72.8 -79.6"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":7,
+      "item":{
+         "@type":"Dataset",
+         "name":"Optical properties and carbon fluxes of the Eastern Canadian Arctic Ocean",
+         "datePublished": "2015-02-09",
+         "dateModified": "2015-02-09",
+         "description":"Collaborative research in the Eastern Canadian Arctic Ocean, aimed to collect data to study the optical properties of seawater, photosynthesis and major organic cycle elements in the Labrador Sea, Baffin Bay and the Lancaster Sound.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12076",
+         "keywords":
+         [
+            "Geographic locations -> Baffin Bay",
+            "Geographic locations -> Canadian Arctic Archipelago",
+            "Natural sciences -> Colored dissolved organic material (CDOM)",
+            "Natural sciences -> Particulate organic carbon",
+            "Natural sciences -> Pigments",
+            "Natural sciences -> Radiometer",
+            "Natural sciences -> Remote sensing data"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Joannie Ferland",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-(418) 656-2131 ext 8831",
+               "email":"joannie.ferland@takuvik.ulaval.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2014-Jul-8/2014-Sep-25",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"81.22 -149.0 53.92 -55.38"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":8,
+      "item":{
+         "@type":"Dataset",
+         "name":"2012-2019 Borehole temperature profiles, Cape Bounty, Nunavut",
+         "datePublished": "2015-02-09",
+         "dateModified": "2019-11-04",
+         "description":"Water jet drilled bore holes at two locations at the Cape Bounty Arctic Watershed Observatory (CBAWO) to 7 m depth.  Sensors installed to measure temperature throughout the year to determine changes to the thermal state of the upper permafrost.  Stations are located UTM 12X WGS84 0540791 8313018 and 0540879 8316305.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12077",
+         "keywords":
+         [
+            "Geographic locations -> Cape Bounty",
+            "Natural sciences -> Active layer",
+            "Natural sciences -> Climate",
+            "Natural sciences -> Permafrost",
+            "Natural sciences -> Soil temperature",
+            "Natural sciences -> Temperature"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Scott Lamoureux",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-613-533-6033",
+               "email":"scott.lamoureux@queensu.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2012-Jul-15/2019-Jul-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"74.9 -109.5 74.9 -109.5"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":9,
+      "item":{
+         "@type":"Dataset",
+         "name":"2014 West River thermal, hydrochemical and isotopic profiling",
+         "datePublished": "2015-02-09",
+         "dateModified": "2015-02-18",
+         "description":"The river thermal, hydrochemical and isotopic composition was surveyed and sampled through the baseflow period (July) to determine the contributions of lateral inflows from slopes to river flow.  Temperature was measured with a high sensitivity tow devise along the river channel and sampling was carried out at fixed stations at regular intervals.  The goal was to improve our understanding of slope-channel water exchanges in Arctic rivers.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12078",
+         "keywords":
+         [
+            "Geographic locations -> Cape Bounty",
+            "Natural sciences -> Hydrology",
+            "Natural sciences -> Isotopes",
+            "Natural sciences -> River",
+            "Natural sciences -> Soil moisture",
+            "Natural sciences -> Stable isotope tracers",
+            "Natural sciences -> Water chemistry",
+            "Natural sciences -> Water temperature"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Scott Lamoureux",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-613-533-6033",
+               "email":"scott.lamoureux@queensu.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2014-Jul-6/2014-Jul-27",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"74.9 -109.5 74.9 -109.5"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":10,
+      "item":{
+         "@type":"Dataset",
+         "name":"Nunavut drinking water quality: Source to tap monitoring 2013/2014 (NGMP ID SE03)",
+         "datePublished": "2015-02-09",
+         "dateModified": "2017-09-11",
+         "description":"The overall goal of the project was to assess the quality of potable water in Nunavut communities from source-to-tap. This monitoring approach will allow us to identify components of the water supply system where contaminants could be introduced to potable water. Remediation strategies can then be developed to specifically address these issues, and therefore improve the quality and safety of water delivered to community residents.  One of the primary goals of this project was to develop local capacity for advanced water analysis. Standard operating procedures for sampling and lab analysis will be developed, and hands-on training will be provided to Nunavut Research Institute staff, to allow for future sampling of this nature. It is the intent that this initiative will lead to a longer-term monitoring program in several other Nunavut communities.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12079",
+         "keywords":
+         [
+            "Health sciences and contaminants -> Water quality",
+            "Northern communities -> Iqaluit",
+            "Northern communities -> Pangnirtung",
+            "Northern communities -> Pond Inlet",
+            "Social sciences, economics and policy -> Resource development",
+            "Social sciences, economics and policy -> Wellness"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2013-May-1/2014-Mar-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"72.7 -77.96 63.75 -65.7"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":11,
+      "item":{
+         "@type":"Dataset",
+         "name":"Improve access to Nunavut monitoring information using the Nunavut database (NGMP ID LU04)",
+         "datePublished": "2015-02-09",
+         "dateModified": "2017-09-11",
+         "description":"The purpose of the Nunavut Database is to provide a single location for finding publications and research project descriptions about Nunavut and Nunavut-based monitoring programs.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12080",
+         "keywords":
+         [
+            "Geographic locations -> Nunavut",
+            "Social sciences, economics and policy -> Information sharing",
+            "Social sciences, economics and policy -> Northerners",
+            "Transdisciplinary -> Archive",
+            "Transdisciplinary -> Database (transdisciplinary)",
+            "Transdisciplinary -> Publication"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2013-Jan-1/2014-Dec-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"83.0 -121.0 52.0 -61.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":12,
+      "item":{
+         "@type":"Dataset",
+         "name":"Oil spill detection and modelling solutions for Hudson and Davis Strait (NGMP ID LU06)",
+         "datePublished": "2015-02-09",
+         "dateModified": "2017-09-11",
+         "description":"This project will review, evaluate and present oil slick detection and modelling solutions using Earth Observation (EO) technology for the Hudson and Davis Strait regions. The project will show how these technologies can be included in local response, including how community involvement can be integrated into preparation for and response to oil spills in local waters. The three specific objectives of the project include: 1) To review and evaluate the state of the art in EO for oil spill detection solutions that is relevant to the Hudson and Davis Strait areas; 2) To identify gaps where local knowledge and capacity can contribute to improved oil spill surveillance and response; and 3) To show how EO technology can be better integrated into response efforts in local Nunavut communities.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12081",
+         "keywords":
+         [
+            "Geographic locations -> Davis Strait",
+            "Health sciences and contaminants -> Water quality",
+            "Natural sciences -> Contaminants",
+            "Natural sciences -> Remote sensing data",
+            "Natural sciences -> Sea ice",
+            "Social sciences, economics and policy -> Economics",
+            "Social sciences, economics and policy -> Environment surveillance",
+            "Social sciences, economics and policy -> Food security",
+            "Social sciences, economics and policy -> Transportation",
+            "Transdisciplinary -> Petroleum industry"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2013-May-1/2013-Dec-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"72.0 -74.0 61.0 -60.0"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":13,
+      "item":{
+         "@type":"Dataset",
+         "name":"Establishing a long-term, river-based monitoring system for Arctic Char in the Cambridge Bay area, Nunavut (NGMP ID EC02)",
+         "datePublished": "2015-02-09",
+         "dateModified": "2017-09-11",
+         "description":"The project will establish a long-term community-based monitoring program for fishery-dependent data collection for Cambridge Bay Arctic Char. Educating and training local monitors and fishers will facilitate documentation of river-specific catch and effort information by and for community resource users. Total harvest removal estimates will allow managers to determine the current status of a fishery and whether the quotas support sustainable harvest levels. The data produced from catch and effort estimates can be used as a proxy for population abundance and for monitoring long term trends in the fishery. These data can be integrated into models to better predict the outcome of alternative management regimes or what effect current management approaches may have on the stock. An established time series is critical to achieve greater accuracy in the population estimates and implement improved management strategies that will ensure Arctic Char are managed in a sustainable manor. This monitoring program will occur annually at commercial waterbodies, (i.e., Ekalluk, Halovik, Lauchlan, Paliryuak, and Jayco rivers) typically spanning from early July to late September. The initial length of the project will be seven years, reflecting given that the minimum number of years needed to collect catch-per-unit-effort (CPUE) data is five years. This will also allow for modifications to the study design and monitoring protocol. Training and education of local monitors and fishers will benefit the community in the long-term, increasing the community's scientific knowledge of their fish resource and the framework applied for co-management decision making. The knowledge transfer and subsequent skills developed through this monitoring program will be a valuable asset which will allow Inuinuktut and other northerners to initiate and further engage in future cumulative impact monitoring programs and fish stock assessment surveys in the Canadian north.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12082",
+         "keywords":
+         [
+            "Natural sciences -> Arctic char",
+            "Natural sciences -> Community-based monitoring",
+            "Natural sciences -> Fisheries",
+            "Natural sciences -> Fishes",
+            "Natural sciences -> Freshwaters",
+            "Social sciences, economics and policy -> Education",
+            "Social sciences, economics and policy -> Training"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2011-Mar-1/2018-Sep-1",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"69.1 -105.25 69.1 -105.13"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":14,
+      "item":{
+         "@type":"Dataset",
+         "name":"Development and implementation of a community-based fishery monitoring programme and stock assessment framework for Arctic Char in Baffin Region, Nunavut (NGMP ID EC03)",
+         "datePublished": "2015-02-09",
+         "dateModified": "2017-09-11",
+         "description":"The purpose of this project is to develop and implement a community-based fishery monitoring program and stock assessment framework for Arctic Char in partnership with the Pangnirtung community/HTA. The project consists in the identification of indicator stock(s) for Arctic Char in the Cumberland Sound Area. The indicator stock(s) will be the focus of annual sampling and monitoring efforts during five consecutive years, including: (i) a test fishery program with progressive increase in harvest; (ii) biological sampling of fish; (iii) harvest monitoring; and (iv) monitoring of selected environmental parameters related to Arctic Char movement, habitat and fishery productivity. The project involves a platform for IQ gathering and synthesis and for knowledge co-production on Arctic Char and freshwater ecosystems from Cumberland Sound. Expected outputs include significant data development on Arctic Char, information gap-filling on the responses of Char populations to fishing pressure and selected environmental drivers, and the provision of integrated IQ-science advice for fisheries co-management of the species. Community involvement and participation is at the core of this project, which is designed to stimulate and enhance local capacity for data collection and knowledge gathering and to integrate traditional practices with scientific expertise. Long-term goals are to demonstrate the effectiveness of community-based monitoring and knowledge co-production for realizing conservation and simultaneous optimization of Arctic Char resources in Nunavut and for fostering community involvement in stock assessment and decision-making processes. The implementation and fine-tuning of a community-based fishery monitoring program/stock assessment framework for Arctic Char in Pangnirtung should facilitate future expansions to other Baffin Island communities, which is the intended scope of the project.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12083",
+         "keywords":
+         [
+            "Natural sciences -> Arctic char",
+            "Natural sciences -> Community-based monitoring",
+            "Natural sciences -> Fisheries",
+            "Natural sciences -> Freshwaters",
+            "Natural sciences -> Hydrology",
+            "Social sciences, economics and policy -> Economics",
+            "Social sciences, economics and policy -> Education",
+            "Social sciences, economics and policy -> Food security",
+            "Social sciences, economics and policy -> Resource development",
+            "Social sciences, economics and policy -> Training"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2011-Nov-1/2017-Mar-1",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"65.28 -70.92 65.28 -64.08"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":15,
+      "item":{
+         "@type":"Dataset",
+         "name":"Eastern Canadian Arctic Killer Whale Tagging, Biopsy, and Monitoring (NGMP ID EC05)",
+         "datePublished": "2015-02-10",
+         "dateModified": "2017-09-08",
+         "description":"Understanding Eastern Canadian Arctic (ECA) killer whale distribution and diet is fundamental to developing appropriate management plans to address conservation challenges to predator and prey posed by a changing Arctic ecosystem. The study objectives include: 1) determine killer whale distribution and movement patterns in the Eastern Canadian Arctic and North Atlantic using satellite telemetry and photo identification, 2) study killer whale diet using stable isotope (SI) and fatty acid (FA) analyses of biopsied skin and blubber, including assessment of the degree of dietary specialization (i.e. individual foraging preferences), 3) assess killer whale hunting behavior by collecting sightings reports from Northerners across Nunavut, 4) estimate killer whale population size in the Eastern Canadian Arctic using photo identification, 5) assess group and population structure of eastern Canadian Arctic killer whales using genetic analysis of biopsied skin, and 6) develop a long-term network of research teams comprising Northerners in several communities across Nunavut who are trained and equipped to independently satellite tag, biopsy, and photograph killer whales.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12084",
+         "keywords":
+         [
+            "Natural sciences -> Beluga",
+            "Natural sciences -> Bowhead whale",
+            "Natural sciences -> Marine mammals",
+            "Natural sciences -> Narwhals",
+            "Natural sciences -> Whales",
+            "Northern communities -> Arctic Bay",
+            "Northern communities -> Pangnirtung",
+            "Northern communities -> Pond Inlet",
+            "Northern communities -> Repulse Bay"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2013-Apr-1/2016-Mar-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"73.04 -86.24 66.15 -65.7"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":16,
+      "item":{
+         "@type":"Dataset",
+         "name":"Monitoring of Nunavut Large Terrestrial Carnivores: Wolverine, Wolves, and Grizzly Bear (NGMP ID EC10)",
+         "datePublished": "2015-02-10",
+         "dateModified": "2017-09-08",
+         "description":"The general objective of this project was to monitor the three species of large terrestrial carnivores of Nunavut: wolverine (Gulo gulo), wolf (Canis lupus), and grizzly bear (Ursus arctos). These three species play essential functions in the terrestrial ecosystem of Nunavut and are also tightly linked with some traditional activities, skills and knowledge of the Inuit people. Wolverine, wolf and grizzly bear also represent key indicators of environmental health because their demography depends on a large prey base and is influenced by the various pressures arising from changes in both local land use and the global environment. The specific objectives of this project were: i) to analyse ecological samples and data collected in previous years of the project, ii) to enhance and pursue our community-based harvest collection program of carcasses of wolverine, wolf, and grizzly bear, and iii) to collect Inuit Qaujimajatuqangit (IQ) to document trends in the abundance and distribution of these three species and to document important information on their ecology. (This project is part of a larger research program which has as main objectives to: 1) Assess large carnivores population status, distribution and spatio-temporal trends across Nunavut; 2) Better understand the role of large carnivores in the functioning of the Arctic terrestrial ecosystem and their potential implication in the recent decline of several tundra caribou herds; 3) Develop ecological indicators of environmental change using large carnivores; and 4) Develop community-based ecological monitoring through a combination of scientific methods and IQ).",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12085",
+         "keywords":
+         [
+            "Inuktitut keywords -> Inuit Qaujimajatuqangit",
+            "Natural sciences -> Carnivores",
+            "Natural sciences -> Grizzly bear",
+            "Natural sciences -> Habitats",
+            "Natural sciences -> Mammals",
+            "Natural sciences -> Predation",
+            "Natural sciences -> Stomach contents"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2009-Jan-1/2014-Dec-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"69.54 -115.14 61.09 -81.26"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":17,
+      "item":{
+         "@type":"Dataset",
+         "name":"Spatial and temporal variations of petroleum hydrocarbons in marine sediments of Baffin Bay, Eastern Canadian Arctic (NGMP ID EC13)",
+         "datePublished": "2015-02-10",
+         "dateModified": "2017-09-08",
+         "description":"The purpose of this study was to establish the present composition, concentrations and fluxes of petroleum hydrocarbons (alkanes, cycloalkanes aromatics) and polyaromatic hydrocarbons (PAHs) in surface sediments across the Baffin Bay - eastern Lancaster Sound region, prior to any oil and gas exploration and exploitation in the area; to assess the geographical variability of current hydrocarbon levels in this region; and to determine their natural variability over time prior to the industrial period (i.e. about pre-1850). The short-term objective to achieving this was to determine hydrocarbon concentrations in 40 samples of marine sediments from sediment cores recently collected from 10 locations across the region. From each core, 4 slices were analyzed (4 slices - 1 at surface, and 3 lower down) representing different time periods from pre-industrial to present. The longer-term objective was to use hydrocarbon composition biomarkers derived from these data to establish their sources (natural seeps, terrestrial run-off, oil/gas combustion-related) in the marine ecosystem in this part of the Canadian Arctic, prior to any future oil and gas exploration in the region and prior to the likely expansion of shipping traffic through the Northwest Passage.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12086",
+         "keywords":
+         [
+            "Health sciences and contaminants -> Hydrocarbon",
+            "Health sciences and contaminants -> Water quality",
+            "Natural sciences -> Coastal dynamics",
+            "Natural sciences -> Invertebrates",
+            "Natural sciences -> Marine sediments"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2011-Jan-1/2013-Dec-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"77.22 -83.2 70.77 -69.07"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":18,
+      "item":{
+         "@type":"Dataset",
+         "name":"Hudson Strait-Foxe Basin Marine Coastal Monitoring Surveys: Assessing the Impacts of Declining Summer Sea-Ice and Northern Development (NGMP ID EC20)",
+         "datePublished": "2015-02-10",
+         "dateModified": "2017-09-11",
+         "description":"The purpose of this project is to estimate the distribution and abundance of marine birds in the Hudson Strait-Foxe Basin region during the summer breeding season and assess their vulnerability to development activities and potential industrial accidents.  The research will also examine potential cascading ecological impacts resulting from the loss of summer sea ice on marine bird populations from increased predation by polar bears. Specific study objectives include: 1) Compilation of baseline data on eider and other marine bird abundance and distributions in coastal areas, 2) Estimation of the number and proportion of nests potentially susceptible to flooding by ships wakes, 3) Identification of critical habitats for nesting and brood rearing that could be damaged by industrial accidents such as oil discharge or grounding, 4) Monitoring of polar bear activity on bird colonies and quantify the extent of bear predation of bird nests, and  5) Documenting TEK of changing relationships between polar bear, seals, and birds as they relate to sea-ice conditions and climate change.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12087",
+         "keywords":
+         [
+            "Natural sciences -> Common eider",
+            "Natural sciences -> Community-based monitoring",
+            "Natural sciences -> Glaucous gull",
+            "Natural sciences -> Guillemots",
+            "Natural sciences -> Habitats",
+            "Natural sciences -> Herring gull",
+            "Natural sciences -> Loons",
+            "Natural sciences -> Marine birds",
+            "Natural sciences -> Marine mammals",
+            "Natural sciences -> Polar bear"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2011-Nov-1/2014-Mar-1",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"65.1 -82.92 61.82 -67.52"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":19,
+      "item":{
+         "@type":"Dataset",
+         "name":"Small polynyas in Nunavut: targets for biodiversity, climate change and contamination (NGMP ID EC22)",
+         "datePublished": "2015-02-10",
+         "dateModified": "2017-09-08",
+         "description":"The purpose and short-term objectives of this project were to summarize available information and establish baseline data (western scientific and (Inuit Qaujimajatuqangit) IQ data on biodiversity, contaminants, breeding biology) on wildlife and environmental features at two small polynyas in the Canadian High Arctic, and to develop a suitable protocol for environmental monitoring at these sites. The long-term objectives were to establish these two polynyas as suitable locations for intermittent, long-term data collection, and to use the established protocol to recommend other locations and features that could be monitored at polynyas elsewhere in Nunavut.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12088",
+         "keywords":
+         [
+            "Geographic locations -> Devon Island",
+            "Inuktitut keywords -> Inuit Qaujimajatuqangit",
+            "Natural sciences -> Marine birds",
+            "Natural sciences -> Meteorology",
+            "Natural sciences -> Polynya",
+            "Natural sciences -> Vegetation",
+            "Natural sciences -> Weather"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2011-Nov-1/2014-Mar-1",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"76.25 -96.32 75.82 -89.25"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      },
+      {
+      "@type":"ListItem",
+      "position":20,
+      "item":{
+         "@type":"Dataset",
+         "name":"Community-Based Monitoring of Ice-Breeding Seals and Polar Bear Feeding in the Gulf of Boothia (NGMP ID EC23)",
+         "datePublished": "2015-02-10",
+         "dateModified": "2017-09-08",
+         "description":"The specific study objectives are to: 1. Provide basic information about demography, diet, and space-use of the seal population in Gulf of Boothia and thereby serve as a reference for future studies; 2. Collect blubber samples from seals that can be used to estimate the diets of polar bears using a technique known as fatty acid signature analysis. Polar bear fat samples will come from bears taken in the annual subsistence hunt and sampled according to current harvest regulations; 3. Build predictive models of seal population dynamics in the context of climate warming; 4. Monitor the body condition of seals; 5. Propose conservation initiatives to mitigate environmental impacts of climate warming and increased economic activities that may negatively affect seals and, to monitor their success in an adaptive management regime; 6. Work with the community of Kugaaruk to develop and implement a long-term Community-Based Monitoring (CBM) network program.",
+         "url":"https://www.polardata.ca/pdcsearch/PDCSearch.jsp?doi_id=12089",
+         "keywords":
+         [
+            "Inuktitut keywords -> Inuit Qaujimajatuqangit",
+            "Natural sciences -> Climate change",
+            "Natural sciences -> Community-based monitoring",
+            "Natural sciences -> Ecology",
+            "Natural sciences -> Polar bear",
+            "Natural sciences -> Predation",
+            "Natural sciences -> Sea ice",
+            "Natural sciences -> Seals"
+         ],
+         "creator":{
+            "@type":"Person",
+            "name":"Nunavut General Monitoring Plan",
+            "contactPoint":{
+               "@type":"ContactPoint",
+               "contactType":"technical support",
+               "telephone":"+1-867-975-4654",
+               "email":"ngmp-psgn@aandc-aadnc.gc.ca"
+            }
+         },
+         "includedInDataCatalog":{
+            "@type":"DataCatalog",
+            "name":"polardata.ca"
+         },
+         "temporalCoverage":"2012-Jan-1/2015-Mar-31",
+         "spatialCoverage":{
+         "@type":"Place",
+            "geo":{
+                  "@type":"GeoShape",
+               "box":"68.53 -89.83 68.53 -89.83"
+            }
+         },
+         "license":"https://www.polardata.ca/pdcinput/public/termsofuse"
+         }
+      }
+   ]
+}

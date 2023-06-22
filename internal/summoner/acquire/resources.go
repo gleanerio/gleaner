@@ -1,14 +1,12 @@
 package acquire
 
 import (
-	"fmt"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"strings"
 	"time"
 
 	configTypes "github.com/gleanerio/gleaner/internal/config"
-	bolt "go.etcd.io/bbolt"
 
 	"github.com/temoto/robotstxt"
 
@@ -37,7 +35,7 @@ const robotsType = "robots"
 
 // ResourceURLs looks gets the resource URLs for a domain.  The results is a
 // map with domain name as key and []string of the URLs to process.
-func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB) (map[string][]string, error) {
+func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool) (map[string][]string, error) {
 	domainsMap := make(map[string][]string)
 	var repoFatalErrors common.MultiError
 	// Know whether we are running in diff mode, in order to exclude urls that have already
@@ -63,7 +61,7 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 		} else {
 			robots, err = getRobotsForDomain(domain.Domain)
 			if err != nil {
-				log.Error("Error getting robots.txt for ", domain.Name, ", continuing without it.")
+				log.Info("Error getting robots.txt for ", domain.Name, ", continuing without it.")
 				robots = nil
 				group = nil
 			}
@@ -79,7 +77,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			//return domainsMap, err // returning means that domains after broken one do not get indexed.
 		}
 		if mcfg.Mode == "diff" {
-			urls = excludeAlreadySummoned(domain.Name, urls, db)
+			log.Error("Mode diff is not currently supported")
+			//urls = excludeAlreadySummoned(domain.Name, urls)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, group)
 		domainsMap[domain.Name] = urls
@@ -110,7 +109,8 @@ func ResourceURLs(v1 *viper.Viper, mc *minio.Client, headless bool, db *bolt.DB)
 			urls = append(urls, sitemapUrls...)
 		}
 		if mcfg.Mode == "diff" {
-			urls = excludeAlreadySummoned(domain.Name, urls, db)
+			log.Error("Mode diff is not currently supported")
+			//urls = excludeAlreadySummoned(domain.Name, urls)
 		}
 		overrideCrawlDelayFromRobots(v1, domain.Name, mcfg.Delay, group)
 		domainsMap[domain.Name] = urls
@@ -201,33 +201,36 @@ func getRobotsForDomain(url string) (*robotstxt.RobotsData, error) {
 	log.Info("Getting robots.txt from ", robotsUrl)
 	robots, err := getRobotsTxt(robotsUrl)
 	if err != nil {
-		log.Error("error getting robots.txt for ", url, ":", err)
+		log.Info("error getting robots.txt for ", url, ":", err)
 		return nil, err
 	}
 	return robots, nil
 }
 
-func excludeAlreadySummoned(domainName string, urls []string, db *bolt.DB) []string {
-	//  TODO if we check for URLs in prov..  do that here..
-	//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", domain.Name))
+// TODO, with bolt gone, this capacity is no longer in Gleaner.  That is fine, it
+// is likely best done in other ways, but this function will also need to be removed above.
 
-	oa := []string{}
-	db.View(func(tx *bolt.Tx) error {
-		// Assume bucket exists and has keys
-		b := tx.Bucket([]byte(domainName))
-		c := b.Cursor()
-
-		for key, _ := c.First(); key != nil; key, _ = c.Next() {
-			//fmt.Printf("key=%s, value=%s\n", k, v)
-			oa = append(oa, fmt.Sprintf("%s", key))
-		}
-
-		return nil
-	})
-
-	d := difference(urls, oa)
-	return d
-}
+//func excludeAlreadySummoned(domainName string, urls []string, db *bolt.DB) []string {
+//	//  TODO if we check for URLs in prov..  do that here..
+//	//oa := objects.ProvURLs(v1, mc, bucketName, fmt.Sprintf("prov/%s", domain.Name))
+//
+//	oa := []string{}
+//	db.View(func(tx *bolt.Tx) error {
+//		// Assume bucket exists and has keys
+//		b := tx.Bucket([]byte(domainName))
+//		c := b.Cursor()
+//
+//		for key, _ := c.First(); key != nil; key, _ = c.Next() {
+//			//fmt.Printf("key=%s, value=%s\n", k, v)
+//			oa = append(oa, fmt.Sprintf("%s", key))
+//		}
+//
+//		return nil
+//	})
+//
+//	d := difference(urls, oa)
+//	return d
+//}
 
 // difference returns the elements in `a` that aren't in `b`.
 func difference(a, b []string) []string {

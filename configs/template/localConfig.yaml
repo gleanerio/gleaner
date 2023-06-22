@@ -1,15 +1,21 @@
+# NOTE: while you can, it's not always a good pattern to put a comment after a property: value
+#     property: value # comment
+# sometimes things do not go well
 ---
 minio:
   address: 0.0.0.0
+# aws need to include the region in the bucket. eg: s3.us-west-2.amazonaws.com
   port: 9000
   accessKey: worldsbestaccesskey
   secretKey: worldsbestsecretkey
   ssl: false
-  bucket: gleaner # can be overridden with MINIO_BUCKET
+  bucket: gleaner
+  # can be overridden with MINIO_BUCKET
 sparql:
   endpoint: http://localhost/blazegraph/namespace/earthcube/sparql
 s3:
-  bucket: gleaner # sync with above... can be overridden with MINIO_BUCKET... get's zapped if it's not here.
+  bucket: gleaner
+  # sync with above... can be overridden with MINIO_BUCKET... get's zapped if it's not here.
   domain: us-east-1
 
 #headless field in gleaner.summoner
