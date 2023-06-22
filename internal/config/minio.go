@@ -11,10 +11,11 @@ type Minio struct {
 	Address   string // `mapstructure:"MINIO_ADDRESS"`
 	Port      int    //`mapstructure:"MINIO_PORT"`
 	Ssl       bool   //`mapstructure:"MINIO_USE_SSL"`
-	Accesskey string //`mapstructure:"MINIO_ACCESS_KEY"`
-	Secretkey string // `mapstructure:"MINIO_SECRET_KEY"`
 	Bucket    string
 	Region    string
+	Accesskey string //`mapstructure:"MINIO_ACCESS_KEY"`
+	Secretkey string // `mapstructure:"MINIO_SECRET_KEY"`
+
 }
 
 // auth fails if a region is set in minioclient...
@@ -22,11 +23,11 @@ var MinioTemplate = map[string]interface{}{
 	"minio": map[string]string{
 		"address":   "localhost",
 		"port":      "9000",
-		"accesskey": "",
-		"secretkey": "",
 		"bucket":    "",
 		"ssl":       "false",
 		"region":    "",
+		"accesskey": "",
+		"secretkey": "",
 	},
 }
 
@@ -39,11 +40,11 @@ func ReadMinioConfig(minioSubtress *viper.Viper) (Minio, error) {
 	minioSubtress.BindEnv("address", "MINIO_ADDRESS")
 	minioSubtress.BindEnv("port", "MINIO_PORT")
 	minioSubtress.BindEnv("ssl", "MINIO_USE_SSL")
-	minioSubtress.BindEnv("accesskey", "MINIO_ACCESS_KEY")
-	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
-	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
 	minioSubtress.BindEnv("bucket", "MINIO_BUCKET")
 	minioSubtress.BindEnv("region", "MINIO_REGION")
+	minioSubtress.BindEnv("accesskey", "MINIO_ACCESS_KEY")
+	minioSubtress.BindEnv("secretkey", "MINIO_SECRET_KEY")
+
 	minioSubtress.AutomaticEnv()
 	// config already read. substree passed
 	err := minioSubtress.Unmarshal(&minioCfg)
