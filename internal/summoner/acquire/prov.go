@@ -28,6 +28,13 @@ type ProvData struct {
 	DOMAIN string
 }
 
+// Gleaner prov data needs to align with the ADR published in Nabu for named graphs patterns.
+// This can be found at (https://github.com/gleanerio/nabu/blob/df-dev/decisions/0001-URN-decision.md)
+// which is a reference that needs updating when this is pushed to master.
+// The pattern should be like:
+// urn:{program}:{organization}:{provider}:{sha}
+// urn:gleaner.io:earthcube:edmo:0255293683036aac2a95a2479cc841189c0ac3f8
+
 func StoreProvNG(v1 *viper.Viper, mc *minio.Client, k, sha, urlloc, objprefix string) error {
 	bucketName, err := configTypes.GetBucketName(v1)
 
@@ -89,6 +96,9 @@ func provOGraph(v1 *viper.Viper, k, sha, urlloc, objprefix string) (string, erro
 	// TODO make an extracted function to share with nabu
 	// make the URN string
 
+	// urn:{program}:{organization}:{provider}:{sha}
+	//
+	//urn:gleaner.io:earthcube:edmo:0255293683036aac2a95a2479cc841189c0ac3f8
 	var objectURN string
 	objectURN = fmt.Sprintf("%s:%s", k, sha)
 
