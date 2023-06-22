@@ -6,10 +6,12 @@ minio:
   address: 0.0.0.0
 # aws need to include the region in the bucket. eg: s3.us-west-2.amazonaws.com
   port: 9000
-  accessKey: worldsbestaccesskey
-  secretKey: worldsbestsecretkey
   ssl: false
   bucket: gleaner
+  region:
+  accessKey: worldsbestaccesskey
+  secretKey: worldsbestsecretkey
+
   # can be overridden with MINIO_BUCKET
 sparql:
   endpoint: http://localhost/blazegraph/namespace/earthcube/sparql
@@ -25,7 +27,13 @@ sourcesSource:
   location: sources.csv
 # this can be a remote csv
 #  type: csv
-#  location: https://docs.google.com/spreadsheets/d/{key}/gviz/tq?tqx=out:csv&sheet={sheet_name}
+#  location: https://docs.google.com/spreadsheets/d/e/2PACX-1vTt_45dYd5LMFK9Qm_lCg6P7YxG-ae0GZEtrHMZmNbI-y5tVDd8ZLqnEeIAa-SVTSztejfZeN6xmRZF/pub?gid=1277688039&single=true&output=csv
+#### GOOGLE SHEETS ====
+# urls changed. Sheet needs to be shared now.
+# share> publish to web >
+# select sheet, and format csv
+# paste url in location
+####
 # TBD -- Just use the sources in the gleaner file.
 #  type: yaml
 #  location: gleaner.yaml

@@ -9,10 +9,10 @@ var serversTemplate = map[string]interface{}{
 	"minio": map[string]string{
 		"address":   "localhost",
 		"port":      "9000",
+		"bucket":    "",
+		"region":    "",
 		"accesskey": "",
 		"secretkey": "",
-		"bucket":    "",
-		//		"region":    "us-east-1",
 	},
 	"sparql": map[string]string{
 		"endpoint": "localhost",
@@ -20,7 +20,7 @@ var serversTemplate = map[string]interface{}{
 	"headless": "",
 	"s3": map[string]string{
 		"bucket": "gleaner",
-		"domain": "us-east-1",
+		"domain": "",
 	},
 	"identifiertype": JsonSha, // const from config.Sources jsonsha,identifiersha, normalizedjsonsha, identifierstring
 }

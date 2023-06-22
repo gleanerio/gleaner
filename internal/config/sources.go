@@ -32,6 +32,7 @@ const (
 	StandardizedHttps
 	StandardizedHttp
 )
+const AccceptContentType string = "application/ld+json, text/html"
 
 func (s ContextOption) String() string {
 	switch s {
@@ -70,12 +71,14 @@ type Sources struct {
 	// SitemapFormat string
 	// Active        bool
 
-	HeadlessWait     int    // if loading is slow, wait
-	Delay            int64  // A domain-specific crawl delay value
-	IdentifierPath   string // JSON Path to the identifier
-	ApiPageLimit     int
-	IdentifierType   string
-	FixContextOption ContextOption
+	HeadlessWait      int    // if loading is slow, wait
+	Delay             int64  // A domain-specific crawl delay value
+	IdentifierPath    string // JSON Path to the identifier
+	ApiPageLimit      int
+	IdentifierType    string
+	FixContextOption  ContextOption
+	AcceptContentType string `default:"application/ld+json, text/html"` // accept content type string for http request
+	JsonProfile       string // jsonprofile
 }
 
 // add needed for file
@@ -89,35 +92,45 @@ type SourcesConfig struct {
 	Domain     string
 	// SitemapFormat string
 	// Active        bool
-	HeadlessWait     int    // is loading is slow, wait
-	Delay            int64  // A domain-specific crawl delay value
-	IdentifierPath   string // JSON Path to the identifier
-	IdentifierType   string
-	FixContextOption ContextOption
+	HeadlessWait      int    // is loading is slow, wait
+	Delay             int64  // A domain-specific crawl delay value
+	IdentifierPath    string // JSON Path to the identifier
+	IdentifierType    string
+	FixContextOption  ContextOption
+	AcceptContentType string `default:"application/ld+json, text/html"` // accept content type string for http request
+	JsonProfile       string // jsonprofile
 }
 
 var SourcesTemplate = map[string]interface{}{
 	"sources": map[string]string{
-		"sourcetype":       "sitemap",
-		"name":             "",
-		"url":              "",
-		"logo":             "",
-		"headless":         "",
-		"pid":              "",
-		"propername":       "",
-		"domain":           "",
-		"credentialsfile":  "",
-		"headlesswait":     "0",
-		"delay":            "0",
-		"identifierpath":   "",
-		"identifiertype":   JsonSha,
-		"fixcontextoption": "https",
+		"sourcetype":        "sitemap",
+		"name":              "",
+		"url":               "",
+		"logo":              "",
+		"headless":          "",
+		"pid":               "",
+		"propername":        "",
+		"domain":            "",
+		"credentialsfile":   "",
+		"headlesswait":      "0",
+		"delay":             "0",
+		"identifierpath":    "",
+		"identifiertype":    JsonSha,
+		"fixcontextoption":  "https",
+		"acceptcontenttype": "application/ld+json, text/html",
+		"jsonprofile":       "",
 	},
 }
 
 func populateDefaults(s Sources) Sources {
 	if s.SourceType == "" {
 		s.SourceType = "sitemap"
+	}
+	if s.AcceptContentType == "" {
+		s.AcceptContentType = "application/ld+json, text/html"
+	}
+	if s.JsonProfile == "" {
+		s.JsonProfile = "application/ld+json"
 	}
 	// fix issues, too. Space from CSV causing url errors
 	s.URL = strings.TrimSpace(s.URL)
@@ -151,10 +164,22 @@ func ReadSourcesCSV(filename string, cfgPath string) ([]Sources, error) {
 		return gocsv.LazyCSVReader(in) // Allows use of quotes in CSV
 	})
 
-	if err := gocsv.Unmarshal(f, &sources); err != nil {
+	err = gocsv.Unmarshal(f, &sources)
+	if err != nil {
 		fmt.Println("error:", err)
-	}
 
+	}
+	if len(sources) < 1 {
+		if strings.HasPrefix(filename, "https://") || strings.HasPrefix(filename, "http://") {
+
+			msg := fmt.Sprintf("no sources try downloading csv '%v', and using a local file. %v"+
+				" if google share, publish to web single page csv", filename, err)
+			log.Fatal(msg)
+		} else {
+			log.Fatalf("no sources in '%v', error parsing csv used for sources %v", filename, err)
+		}
+
+	}
 	for i, u := range sources {
 		sources[i] = populateDefaults(u)
 		fmt.Printf("%+v\n", u)
