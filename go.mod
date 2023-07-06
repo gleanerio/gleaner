@@ -98,7 +98,7 @@ require (
 )
 
 require (
-	github.com/gleanerio/nabu v0.0.0-20230316180932-b68225cabb13
+	github.com/gleanerio/nabu v0.0.0-20230706181847-6f70c4ce9069
 	github.com/orandin/lumberjackrus v1.0.1
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/sirupsen/logrus v1.9.0
