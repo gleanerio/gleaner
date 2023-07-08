@@ -25,9 +25,9 @@ jobs:
           - goarch: amd64
             goos: "linux"
             platform: linux/amd64
-#          - goarch: arm64
-#            goos: "linux"
-#            platform: linux/arm64
+          - goarch: arm64
+            goos: "linux"
+            platform: linux/arm64
 
           # above is explict build lists, otherwise we get amd64 on linux/arm as an option
 
@@ -52,15 +52,29 @@ jobs:
 
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
-      - id: binary
-        name: build
+#      - id: binary
+#        name: build
+#        run: |
+#          go build -o gleaner
+#        working-directory: ./cmd/gleaner
+#        env:
+#          GOOS: ${{matrix.goss}}
+#          GOARCH: ${{matrix.goarch}}
+#          CGO_ENABLED: 0
+      - name: Set variables
         run: |
-          go build -o gleaner
-        working-directory: ./cmd/gleaner
-        env:
-          GOOS: ${{matrix.goss}}
-          GOARCH: ${{matrix.goarch}}
-          CGO_ENABLED: 0
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      - name: Build Gleaner
+        uses: wangyoucao577/go-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          project_path: "./cmd/gleaner"
+          binary_name: "gleaner"
+          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+
       #  deploy:
       #    needs: build
       #    name: Dockerize Gleaner
@@ -140,15 +154,29 @@ jobs:
 
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
-      - id: binary
-        name: build
+#      - id: binary
+#        name: build
+#        run: |
+#          go build -o glcon
+#        working-directory: ./cmd/glcon
+#        env:
+#          GOOS: ${{matrix.goss}}
+#          GOARCH: ${{matrix.goarch}}
+#          CGO_ENABLED: 0
+      - name: Set variables
         run: |
-          go build -o glcon
-        working-directory: ./cmd/glcon
-        env:
-          GOOS: ${{matrix.goss}}
-          GOARCH: ${{matrix.goarch}}
-          CGO_ENABLED: 0
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      - name: Build Gleaner
+        uses: wangyoucao577/go-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          project_path: "./cmd/glcon"
+          binary_name: "glcon"
+          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+
       #  deploy:
       #    needs: build
       #    name: Dockerize Gleaner
@@ -183,8 +211,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          #          platforms: ${{ matrix.platform }}
-          platforms: linux/amd64,linux/arm64
+          platforms: ${{ matrix.platform }}
+          #platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           file: ./build/Dockerfile_glcon

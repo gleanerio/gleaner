@@ -57,7 +57,7 @@ func ReadGleanerConfig(filename string, cfgDir string) (*viper.Viper, error) {
 	err := v.ReadInConfig()
 	if err != nil {
 		fmt.Printf("Error Reading Config: {err}")
-		log.Error("Error Reading Config: {err}")
+		log.Fatalf("Error Reading Config: {err}")
 		//panic(err)
 	}
 	return v, err
