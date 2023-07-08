@@ -52,28 +52,29 @@ jobs:
 
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
-#      - id: binary
-#        name: build
-#        run: |
-#          go build -o gleaner
-#        working-directory: ./cmd/gleaner
-#        env:
-#          GOOS: ${{matrix.goss}}
-#          GOARCH: ${{matrix.goarch}}
-#          CGO_ENABLED: 0
       - name: Set variables
         run: |
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
-      - name: Build Gleaner
-        uses: wangyoucao577/go-release-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          project_path: "./cmd/gleaner"
-          binary_name: "gleaner"
-          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+      - id: binary
+        name: build
+        run: |
+          go build -o gleaner -ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+        working-directory: ./cmd/gleaner
+        env:
+          GOOS: ${{matrix.goss}}
+          GOARCH: ${{matrix.goarch}}
+          CGO_ENABLED: 0
+
+#      - name: Build Gleaner
+#        uses: wangyoucao577/go-release-action@v1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          goos: ${{ matrix.goos }}
+#          goarch: ${{ matrix.goarch }}
+#          project_path: "./cmd/gleaner"
+#          binary_name: "gleaner"
+#          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
 
       #  deploy:
       #    needs: build
@@ -154,19 +155,21 @@ jobs:
 
       #     - name: Run tests
       #      run: go test -v -p=1 -timeout=0 ./...
-#      - id: binary
-#        name: build
-#        run: |
-#          go build -o glcon
-#        working-directory: ./cmd/glcon
-#        env:
-#          GOOS: ${{matrix.goss}}
-#          GOARCH: ${{matrix.goarch}}
-#          CGO_ENABLED: 0
       - name: Set variables
         run: |
           VER=$(cat VERSION)
           echo "VERSION=$VER" >> $GITHUB_ENV
+      - id: binary
+        name: build
+        run: |
+          go build -o glcon  -ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+
+        working-directory: ./cmd/glcon
+        env:
+          GOOS: ${{matrix.goss}}
+          GOARCH: ${{matrix.goarch}}
+          CGO_ENABLED: 0
+
       - name: Build Gleaner
         uses: wangyoucao577/go-release-action@v1
         with:
