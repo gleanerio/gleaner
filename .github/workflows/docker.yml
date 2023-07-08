@@ -59,7 +59,7 @@ jobs:
       - id: binary
         name: build
         run: |
-          go build -o gleaner -ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+          go build -o gleaner -ldflags "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
         working-directory: ./cmd/gleaner
         env:
           GOOS: ${{matrix.goss}}
@@ -162,7 +162,7 @@ jobs:
       - id: binary
         name: build
         run: |
-          go build -o glcon  -ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+          go build -o glcon  -ldflags "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
 
         working-directory: ./cmd/glcon
         env:
@@ -170,15 +170,15 @@ jobs:
           GOARCH: ${{matrix.goarch}}
           CGO_ENABLED: 0
 
-      - name: Build Gleaner
-        uses: wangyoucao577/go-release-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          project_path: "./cmd/glcon"
-          binary_name: "glcon"
-          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
+#      - name: Build Gleaner
+#        uses: wangyoucao577/go-release-action@v1
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          goos: ${{ matrix.goos }}
+#          goarch: ${{ matrix.goarch }}
+#          project_path: "./cmd/glcon"
+#          binary_name: "glcon"
+#          ldflags: "-s -w -X main.VERSION=${{ env.VERSION }} -X github.com/gleanerio/gleaner/pkg.VERSION=${{ env.VERSION }}"
 
       #  deploy:
       #    needs: build
