@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - master
-      - dev_docker_glcon
+      - dev_ec
     tags:
       - v3.*
   release:
