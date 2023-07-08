@@ -4,6 +4,8 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"os"
+	"path"
 )
 
 // auth fails if a region is set in minioclient...
@@ -37,7 +39,11 @@ func ReadGleanerConfig(filename string, cfgDir string) (*viper.Viper, error) {
 	for key, value := range gleanerTemplate {
 		v.SetDefault(key, value)
 	}
-
+	if _, err := os.Stat(path.Join(cfgDir, filename)); err != nil {
+		fmt.Printf("File does not exist\n")
+		fmt.Printf("cannot find config file. '%v' If glcon Did you 'glcon generate --cfgName XXX' \n", filename)
+		log.Fatalf("cannot find config file. '%v' Did you 'glcon generate --cfgName XXX' ", filename)
+	}
 	v.SetConfigName(fileNameWithoutExtTrimSuffix(filename))
 	v.AddConfigPath(cfgDir)
 	v.SetConfigType("yaml")
@@ -50,8 +56,8 @@ func ReadGleanerConfig(filename string, cfgDir string) (*viper.Viper, error) {
 	v.AutomaticEnv()
 	err := v.ReadInConfig()
 	if err != nil {
-		fmt.Printf("cannot find config file. '%v' If glcon Did you 'glcon generate --cfgName XXX' \n", filename)
-		log.Fatalf("cannot find config file. '%v' Did you 'glcon generate --cfgName XXX' ", filename)
+		fmt.Printf("Error Reading Config: {err}")
+		log.Error("Error Reading Config: {err}")
 		//panic(err)
 	}
 	return v, err

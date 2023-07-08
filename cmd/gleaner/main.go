@@ -48,7 +48,7 @@ func init() {
 	flag.BoolVar(&setupVal, "setup", false, "Run Gleaner configuration check and exit")
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
-	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
+	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. --cfg file not --cfg file.yml")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
 	flag.StringVar(&logVal, "log", "warn", "The log level to output (trace | debug | info | warn | error | fatal)")
 }
@@ -56,6 +56,8 @@ func init() {
 func main() {
 	fmt.Println("EarthCube Gleaner")
 	flag.Parse() // parse any command line flags...
+	log.Debug("NFlags:", flag.NFlag())
+	log.Debug("Args:", flag.Args())
 	lvl, err := log.ParseLevel(logVal)
 
 	if err != nil {
@@ -94,7 +96,7 @@ func main() {
 			log.Fatal("error when reading config:", err)
 		}
 	} else {
-		log.Error("Gleaner must be run with a config file: -cfg CONFIGFILE")
+		log.Error("Gleaner must be run with a config file: --cfg CONFIGFILE")
 		flag.Usage()
 		os.Exit(0)
 	}
