@@ -1,4 +1,4 @@
-name: Dockerize  Gleaner
+name: Dockerize  glcon  gleaner console
 # need to look at this to do it right
 # https://namiops.medium.com/golang-multi-arch-docker-image-with-github-action-b59a62c8d2bd
 on:
