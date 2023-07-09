@@ -102,7 +102,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
          # tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: ./build/Dockerfile
+          file: ./build/Dockerfile_glcon
           context: .
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
