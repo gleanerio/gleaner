@@ -22,6 +22,8 @@ RUN mkdir /assets
 RUN curl https://schema.org/version/latest/schemaorg-current-https.jsonld --output /assets/schemaorg-current-https.jsonld
 RUN curl https://schema.org/version/latest/schemaorg-current-http.jsonld --output /assets/schemaorg-current-http.jsonld
 
+RUN mkdir /configs
+
 # ADD ../web/static  /static   # Replace with -v mounting the /web/static directory
 # static is in the .dockerignore..  so an emptry dir is made unless static is removed
 # from the ignore file... we mount the volume via compose from the local FS
