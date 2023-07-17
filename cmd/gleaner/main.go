@@ -118,6 +118,7 @@ func main() {
 
 		for _, k := range domains {
 			if sourceVal == k.Name {
+				k.Active = true
 				tmp = append(tmp, k)
 			}
 		}
