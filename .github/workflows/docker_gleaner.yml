@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - dev_ec
-      - dev_docker_multipleimage
+      - dev
     tags:
       - v3.*
   release:
