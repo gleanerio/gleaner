@@ -6,7 +6,7 @@ on:
     branches:
       - master
       - dev_docker_glcon
-      - dev_docker_multipleimage
+      - dev
     tags:
       - v3.*
   release:
