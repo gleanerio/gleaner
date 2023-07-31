@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="cli generate --cfgName ecrr (2)" type="GoApplicationRunConfiguration" factoryName="Go Application" folderName="ecrr">
+  <configuration default="false" name="nabu prefix -cfgName ecrr (2)" type="GoApplicationRunConfiguration" factoryName="Go Application" folderName="ecrr">
     <module name="gleaner" />
     <working_directory value="$PROJECT_DIR$" />
-    <parameters value="config generate --cfgName ecrr --sourcemaps &quot;CDFSources - ecrr.csv&quot; " />
+    <parameters value="nabu prefix --cfgName ecrr" />
     <EXTENSION ID="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />
@@ -10,7 +10,7 @@
       <option name="IS_IGNORE_MISSING_FILES" value="false" />
       <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
       <ENTRIES>
-        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
       </ENTRIES>
     </EXTENSION>
     <kind value="FILE" />

@@ -122,7 +122,7 @@ func main() {
 
 		if len(tmp) == 0 {
 			log.Error("CAUTION:  no matching source, did your -source VALUE match a sources.name VALUE in your config file?")
-			os.Exit(0)
+			os.Exit(1)
 		}
 
 		configMap := v1.AllSettings()
@@ -156,7 +156,7 @@ func main() {
 		}
 
 		log.Info("Buckets generated. Object store should be ready for runs")
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	// Validate Minio access
@@ -188,7 +188,11 @@ func main() {
 	}()
 
 	//cli(mc, v1, db)
-	pkg.Cli(mc, v1) // move to a common call in batch.go
+	err = pkg.Cli(mc, v1) // move to a common call in batch.go
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
 }
 
 func cleanUp() {
