@@ -1,0 +1,74 @@
+[
+  {
+    "@graph": [
+      {
+        "@id": "_:bbj6sl3ntr9b9lop9uoig",
+        "@type": [
+          "https://schema.org/PropertyValue"
+        ],
+        "https://schema.org/propertyID": [
+          {
+            "@value": "SHA256"
+          }
+        ],
+        "https://schema.org/value": [
+          {
+            "@value": "000355176249738e6b0530130d21c9051c30b1ca865bd52b2ee75343e9986c73"
+          }
+        ]
+      },
+      {
+        "@id": "https://opencoredata.org/id/csdco/do/000355176249738e6b0530130d21c9051c30b1ca865bd52b2ee75343e9986c73",
+        "@type": [
+          "http://www.schema.org/DigitalDocument"
+        ],
+        "https://schema.org/additionType": [
+          {
+            "@id": "https://opencoredata.org/voc/csdco/v1/ICDFiles"
+          }
+        ],
+        "https://schema.org/dateCreated": [
+          {
+            "@value": "2004-03-10"
+          }
+        ],
+        "https://schema.org/description": [
+          {
+            "@value": "Digital object of type ICD named GLAD2-LT01-2A-13H-2.pdf for CSDCO project GLAD2"
+          }
+        ],
+        "https://schema.org/encodingFormat": [
+          {
+            "@value": "application/pdf"
+          }
+        ],
+        "https://schema.org/identifier": [
+          {
+            "@id": "_:bbj6sl3ntr9b9lop9uoig"
+          }
+        ],
+        "https://schema.org/isRelatedTo": [
+          {
+            "@value": "GLAD2"
+          }
+        ],
+        "https://schema.org/license": [
+          {
+            "@id": "http://example.com/cc0.html"
+          }
+        ],
+        "https://schema.org/name": [
+          {
+            "@value": "GLAD2-LT01-2A-13H-2.pdf"
+          }
+        ],
+        "https://schema.org/url": [
+          {
+            "@id": "https://opencoredata.org/id/csdco/do/000355176249738e6b0530130d21c9051c30b1ca865bd52b2ee75343e9986c73"
+          }
+        ]
+      }
+    ],
+    "@id": "https://opencoredata.org/objectgraph/id/000355176249738e6b0530130d21c9051c30b1ca865bd52b2ee75343e9986c73"
+  }
+]
