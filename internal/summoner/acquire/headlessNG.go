@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -11,10 +12,8 @@ import (
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 
 	"github.com/mafredri/cdp"
-	"github.com/mafredri/cdp/devtool"
 	"github.com/mafredri/cdp/protocol/page"
 	"github.com/mafredri/cdp/protocol/runtime"
-	"github.com/mafredri/cdp/rpcc"
 	minio "github.com/minio/minio-go/v7"
 	"github.com/spf13/viper"
 	"github.com/valyala/fasttemplate"
@@ -47,7 +46,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSta
 
 		for i := range m[k] {
 
-			err := PageRenderAndUpload(v1, mc, 60*time.Second, m[k][i], k, repologger, r) // TODO make delay configurable
+			err := PageRenderAndUpload(v1, mc, 60*time.Second, m[k][i], k, repologger, r, nil) // TODO make delay configurable
 			if err != nil {
 				log.Error(m[k][i], "::", err)
 			}
@@ -141,7 +140,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSta
 //
 //}
 
-func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats) error {
+func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats, client *cdp.Client) error {
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRenderAndUpload")
 	// page render handles this
 	//ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -155,7 +154,7 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 	//mcfg := v1.GetStringMapString("summoner")
 	//mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
-	jsonlds, err := PageRender(v1, timeout, url, k, repologger, repoStats)
+	jsonlds, err := PageRender(v1, timeout, url, k, repologger, repoStats, client)
 
 	if err == nil { // from page render. If there are no errros, upload.
 		if len(jsonlds) > 1 {
@@ -178,12 +177,13 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 	return err
 }
 
-func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats) ([]string, error) {
+func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats, client *cdp.Client) ([]string, error) {
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRender")
 	retries := 3
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, k)
 	headlessWait := source.HeadlessWait
+	response := []string{}
 	if headlessWait < 0 {
 		log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
 		headlessWait = 0 // if someone screws up the config, be good
@@ -196,68 +196,69 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
 	//ctx, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
 	defer cancel()
-	//ctx, cancel = chromedp.NewContext(ctx)
-	//defer cancel()
-	response := []string{}
-	// read config file
-	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
-
-	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
-	//devt := devtool.New(mcfg["headless"])
-	devt := devtool.New(mcfg.Headless)
-
-	pt, err := devt.Get(ctx, devtool.Page)
-	if err != nil {
-		pt, err = devt.Create(ctx)
-		if err != nil {
-			log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
-			repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
-			repoStats.Inc(common.HeadlessError)
-			return response, err
-		}
-	}
-
-	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
-	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
-	if err != nil {
-		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
-		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
-		repoStats.Inc(common.HeadlessError)
-		return response, err
-	}
-	defer conn.Close() // Leaving connections open will leak memory.
-
-	// attempt to use session. failed.
-	//sessionclient := cdp.NewClient(conn) // conn created via rpcc.Dial.
-	//m, err := session.NewManager(sessionclient)
-	//if err != nil {
-	//	// Handle error.
-	//}
-	//defer m.Close()
+	ctx, cancel = chromedp.NewContext(ctx)
+	defer cancel()
 	//
-	//newPage, err := sessionclient.Target.CreateTarget(ctx,
-	//	target.NewCreateTargetArgs("about:blank"))
+	//// read config file
+	//mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+	//
+	//// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
+	////devt := devtool.New(mcfg["headless"])
+	//devt := devtool.New(mcfg.Headless)
+	//
+	//pt, err := devt.Get(ctx, devtool.Page)
 	//if err != nil {
-	//	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
-	//	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+	//	pt, err = devt.Create(ctx)
+	//	if err != nil {
+	//		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+	//		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+	//		repoStats.Inc(common.HeadlessError)
+	//		return response, err
+	//	}
+	//}
+	//
+	//// Initiate a new RPC connection to the Chrome DevTools Protocol target.
+	//conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
+	//if err != nil {
+	//	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+	//	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
 	//	repoStats.Inc(common.HeadlessError)
 	//	return response, err
 	//}
+	//defer conn.Close() // Leaving connections open will leak memory.
 	//
-	//// newPageConn uses the underlying conn without establishing a new
-	//// websocket connection.
-	//newPageConn, err := m.Dial(ctx, newPage.TargetID)
-	//if err != nil {
-	//	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
-	//	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
-	//	repoStats.Inc(common.HeadlessError)
-	//	return response, err
-	//}
-	//defer newPageConn.Close()
+	//// attempt to use session. failed.
+	////sessionclient := cdp.NewClient(conn) // conn created via rpcc.Dial.
+	////m, err := session.NewManager(sessionclient)
+	////if err != nil {
+	////	// Handle error.
+	////}
+	////defer m.Close()
+	////
+	////newPage, err := sessionclient.Target.CreateTarget(ctx,
+	////	target.NewCreateTargetArgs("about:blank"))
+	////if err != nil {
+	////	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+	////	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+	////	repoStats.Inc(common.HeadlessError)
+	////	return response, err
+	////}
+	////
+	////// newPageConn uses the underlying conn without establishing a new
+	////// websocket connection.
+	////newPageConn, err := m.Dial(ctx, newPage.TargetID)
+	////if err != nil {
+	////	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+	////	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+	////	repoStats.Inc(common.HeadlessError)
+	////	return response, err
+	////}
+	////defer newPageConn.Close()
+	////
+	////c := cdp.NewClient(newPageConn)
 	//
-	//c := cdp.NewClient(newPageConn)
-
-	c := cdp.NewClient(conn)
+	//c := cdp.NewClient(conn)
+	c := client
 	// Listen to Page events so we can receive DomContentEventFired, which
 	// is what tells us when the page is done loading
 	err = c.Page.Enable(ctx)

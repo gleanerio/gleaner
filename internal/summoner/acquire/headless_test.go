@@ -13,25 +13,25 @@ var HEADLESS_URL = "http://127.0.0.1:9222"
 
 func PingHeadless() (int, error) {
 	var client = http.Client{
-	   Timeout: 2 * time.Second,
+		Timeout: 2 * time.Second,
 	}
 
 	req, err := http.NewRequest("HEAD", HEADLESS_URL, nil)
-    if err != nil {
-       return 0, err
-    }
-    resp, err := client.Do(req)
-    if err != nil {
-       return 0, err
-    }
-    resp.Body.Close()
-    return resp.StatusCode, nil
+	if err != nil {
+		return 0, err
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return 0, err
+	}
+	resp.Body.Close()
+	return resp.StatusCode, nil
 }
 
 func TestHeadlessNG(t *testing.T) {
 	status, err := PingHeadless()
 
-	if(err != nil || status != 200) {
+	if err != nil || status != 200 {
 		t.Skip("Skipping headless tests because no headless browser is running.")
 	}
 
@@ -70,7 +70,7 @@ func TestHeadlessNG(t *testing.T) {
 		}
 		repoLogger, _ := common.LogIssues(viper, test.name)
 		t.Run(test.name, func(t *testing.T) {
-			jsonlds, err := PageRender(viper, 5*time.Second, test.url, test.name, repoLogger, runstats)
+			jsonlds, err := PageRender(viper, 5*time.Second, test.url, test.name, repoLogger, runstats, nil)
 			if !test.expectedFail {
 				assert.Equal(t, test.jsonldcount, len(jsonlds))
 			} else {

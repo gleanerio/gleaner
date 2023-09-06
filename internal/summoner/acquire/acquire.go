@@ -1,7 +1,14 @@
 package acquire
 
 import (
+	"context"
+	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/mafredri/cdp"
+	"github.com/mafredri/cdp/devtool"
+	"github.com/mafredri/cdp/protocol/target"
+	"github.com/mafredri/cdp/rpcc"
+	"github.com/mafredri/cdp/session"
 	"net/http"
 	"net/url"
 	"strings"
@@ -95,6 +102,9 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, str
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
 
+	var timeout = 20 * time.Second
+	var retries = 3
+
 	bucketName, tc, delay, headlessWait, acceptContent, jsonProfile, err, headless := getConfig(v1, sourceName)
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
@@ -103,6 +113,57 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 
 	var client http.Client
+
+	// stuff to setup headless sessions
+	if headlessWait < 0 {
+		log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
+		headlessWait = 0 // if someone screws up the config, be good
+	}
+
+	if timeout*time.Duration(retries) < time.Duration(headlessWait)*time.Second {
+		timeout = time.Duration(headlessWait) * time.Second
+	}
+	//ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+	//ctx, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
+	//defer cancel()
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	// read config file
+	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+
+	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
+	//devt := devtool.New(mcfg["headless"])
+	devt := devtool.New(mcfg.Headless)
+
+	pt, err := devt.Get(ctx, devtool.Page)
+	if err != nil {
+		pt, err = devt.Create(ctx)
+		if err != nil {
+			log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+			repologger.WithFields(log.Fields{}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+			repoStats.Inc(common.HeadlessError)
+			return
+		}
+	}
+
+	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
+	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
+	if err != nil {
+		log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+		repoStats.Inc(common.HeadlessError)
+		return
+	}
+	defer conn.Close()
+	sessionclient := cdp.NewClient(conn)
+	m, err := session.NewManager(sessionclient)
+	if err != nil {
+		// Handle error.
+	}
+	defer m.Close()
+
+	// session
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	lwg := sync.WaitGroup{}
@@ -134,13 +195,76 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 
 			if headless {
 				log.WithFields(log.Fields{"url": urlloc, "issue": "running headless"}).Trace("Headless ", urlloc)
+				args := target.NewCreateTargetArgs("")
+				//args.SetNewWindow(true)
+				newPage, err := sessionclient.Target.CreateTarget(ctx,
+					args)
+				if err != nil {
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+					repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+					repoStats.Inc(common.HeadlessError)
+					<-semaphoreChan
+					return
+				}
+				closeArgs := target.NewCloseTargetArgs(newPage.TargetID)
+				defer func(Target cdp.Target, ctx context.Context, args *target.CloseTargetArgs) {
+					log.Info("Close Target Defer")
+					_, err := Target.CloseTarget(ctx, args)
+					if err != nil {
+						log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 
-				err := PageRenderAndUpload(v1, mc, 20*time.Second, urlloc, sourceName, repologger, repoStats) // TODO make delay configurable
+					}
+				}(sessionclient.Target, ctx, closeArgs)
+				// newPageConn uses the underlying conn without establishing a new
+				// websocket connection.
+				newPageConn, err := m.Dial(ctx, newPage.TargetID)
+				if err != nil {
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+					repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+					repoStats.Inc(common.HeadlessError)
+					<-semaphoreChan
+					return
+				}
+				//defer func(newPageConn *rpcc.Conn) {
+				//	log.Info("NewPageConn defer")
+				//	err := newPageConn.Close()
+				//	if err != nil {
+				//		log.WithFields(log.Fields{"url": urlloc, "issue": "error clocing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+				//
+				//	}
+				//}(newPageConn)
+
+				c := cdp.NewClient(newPageConn)
+				err = PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats, c) // TODO make delay configurable
+
 				if err != nil {
 					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
-				}
+					//err = newPageConn.Close()
+					//if err != nil {
+					//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+					//
+					//}
+					closeTargetResp, err := sessionclient.Target.CloseTarget(ctx, closeArgs)
+					log.Info(closeTargetResp)
+					if err != nil {
+						log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 
+					}
+					<-semaphoreChan
+					return
+				}
+				//err = newPageConn.Close()
+				//if err != nil {
+				//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+				//
+				//}
+				//closeTargetResp, err := sessionclient.Target.CloseTarget(ctx, closeArgs)
+				//log.Info(closeTargetResp)
+				//if err != nil {
+				//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+				//
+				//}
 			} else {
 				req, err := http.NewRequest("GET", urlloc, nil)
 				if err != nil {
@@ -228,7 +352,47 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 					if headlessWait >= 0 {
 						log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
 						repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
-						err := PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats)                      // TODO make delay configurable
+						args := target.NewCreateTargetArgs("")
+						//args.SetNewWindow(true)
+						newPage, err := sessionclient.Target.CreateTarget(ctx,
+							args)
+						if err != nil {
+							log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+							repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+							repoStats.Inc(common.HeadlessError)
+							<-semaphoreChan
+							return
+						}
+						closeArgs := target.NewCloseTargetArgs(newPage.TargetID)
+						defer func(Target cdp.Target, ctx context.Context, args *target.CloseTargetArgs) {
+							log.Info("Close Target Defer")
+							_, err := Target.CloseTarget(ctx, args)
+							if err != nil {
+								log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+
+							}
+						}(sessionclient.Target, ctx, closeArgs)
+						// newPageConn uses the underlying conn without establishing a new
+						// websocket connection.
+						newPageConn, err := m.Dial(ctx, newPage.TargetID)
+						if err != nil {
+							log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+							repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+							repoStats.Inc(common.HeadlessError)
+							<-semaphoreChan
+							return
+						}
+						defer func(newPageConn *rpcc.Conn) {
+							log.Info("NewPageConn defer")
+							err := newPageConn.Close()
+							if err != nil {
+								log.WithFields(log.Fields{"url": urlloc, "issue": "error clocing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+
+							}
+						}(newPageConn)
+
+						c := cdp.NewClient(newPageConn)
+						err = PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats, c) // TODO make delay configurable
 						if err != nil {
 							log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 							repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
