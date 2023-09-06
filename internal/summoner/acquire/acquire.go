@@ -135,7 +135,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			if headless {
 				log.WithFields(log.Fields{"url": urlloc, "issue": "running headless"}).Trace("Headless ", urlloc)
 
-				err := PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats) // TODO make delay configurable
+				err := PageRenderAndUpload(v1, mc, 20*time.Second, urlloc, sourceName, repologger, repoStats) // TODO make delay configurable
 				if err != nil {
 					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)

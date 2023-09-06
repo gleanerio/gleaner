@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -195,9 +194,10 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+	//ctx, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
 	defer cancel()
-	ctx, cancel = chromedp.NewContext(ctx)
-	defer cancel()
+	//ctx, cancel = chromedp.NewContext(ctx)
+	//defer cancel()
 	response := []string{}
 	// read config file
 	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
@@ -227,8 +227,37 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	}
 	defer conn.Close() // Leaving connections open will leak memory.
 
-	c := cdp.NewClient(conn)
+	// attempt to use session. failed.
+	//sessionclient := cdp.NewClient(conn) // conn created via rpcc.Dial.
+	//m, err := session.NewManager(sessionclient)
+	//if err != nil {
+	//	// Handle error.
+	//}
+	//defer m.Close()
+	//
+	//newPage, err := sessionclient.Target.CreateTarget(ctx,
+	//	target.NewCreateTargetArgs("about:blank"))
+	//if err != nil {
+	//	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+	//	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+	//	repoStats.Inc(common.HeadlessError)
+	//	return response, err
+	//}
+	//
+	//// newPageConn uses the underlying conn without establishing a new
+	//// websocket connection.
+	//newPageConn, err := m.Dial(ctx, newPage.TargetID)
+	//if err != nil {
+	//	log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+	//	repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+	//	repoStats.Inc(common.HeadlessError)
+	//	return response, err
+	//}
+	//defer newPageConn.Close()
+	//
+	//c := cdp.NewClient(newPageConn)
 
+	c := cdp.NewClient(conn)
 	// Listen to Page events so we can receive DomContentEventFired, which
 	// is what tells us when the page is done loading
 	err = c.Page.Enable(ctx)
@@ -262,6 +291,7 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	// Create the Navigate arguments with the optional Referrer field set.
 	navArgs := page.NewNavigateArgs(url)
 	nav, err := c.Page.Navigate(ctx, navArgs)
+
 	if err != nil {
 		log.WithFields(log.Fields{"url": url, "issue": "Navigate To Headless"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Navigate To Headless"}).Error(err)
