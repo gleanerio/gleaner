@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
 	log "github.com/sirupsen/logrus"
 	"time"
@@ -160,17 +161,17 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 	if err == nil { // from page render. If there are no errros, upload.
 		if len(jsonlds) > 1 {
 			log.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Info("Error uploading jsonld to object store:", url)
-			repologger.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Debug()
+			repologger.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Info()
 		}
-		for _, jsonld := range jsonlds {
-			sha, err := Upload(v1, mc, bucketName, k, url, jsonld)
-			if err != nil {
-				log.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store:", url, err, sha)
-				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Error uploading jsonld to object store"}).Error(err)
+		for i, jsonld := range jsonlds {
+			sha, err2 := Upload(v1, mc, bucketName, k, url, jsonld)
+			if err2 != nil {
+				log.WithFields(log.Fields{"url": url, "sha": sha, "jsonld#": i, "issue": "Error uploading jsonld to object store"}).Error("Error uploading jsonld to object store:", url, err2, sha)
+				repologger.WithFields(log.Fields{"url": url, "sha": sha, "jsonld#": i, "issue": "Error uploading jsonld to object store"}).Error(err2)
 				repoStats.Inc(common.StoreError)
 			} else {
-				log.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Info("Uploaded JSONLD to object store:", url, err, sha)
-				repologger.WithFields(log.Fields{"url": url, "sha": sha, "issue": "Uploaded JSONLD to object store"}).Debug()
+				log.WithFields(log.Fields{"url": url, "sha": sha, "jsonld#": i, "issue": "Uploaded JSONLD to object store"}).Info("Uploaded JSONLD to object store:", url, sha)
+				repologger.WithFields(log.Fields{"url": url, "sha": sha, "jsonld#": i, "issue": "Uploaded JSONLD to object store"}).Info()
 				repoStats.Inc(common.Stored)
 			}
 		}
@@ -194,6 +195,8 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+	defer cancel()
+	ctx, cancel = chromedp.NewContext(ctx)
 	defer cancel()
 	response := []string{}
 	// read config file
@@ -386,7 +389,7 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 			// there could be one bad jsonld, and one good. We want to process the jsonld
 			// so, do not set an err
 			log.Info("Empty JSON-LD document found. Continuing.", url)
-			repologger.WithFields(log.Fields{"url": url, "issue": "Empty JSON-LD document found"}).Debug()
+			repologger.WithFields(log.Fields{"url": url, "issue": "Empty JSON-LD document found"}).Error()
 			repoStats.Inc(common.EmptyDoc)
 			// TODO  Is here where to add an entry to the KV store
 			//err = db.Update(func(tx *bolt.Tx) error {
