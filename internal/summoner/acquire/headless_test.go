@@ -70,7 +70,7 @@ func TestHeadlessNG(t *testing.T) {
 		}
 		repoLogger, _ := common.LogIssues(viper, test.name)
 		t.Run(test.name, func(t *testing.T) {
-			jsonlds, err := PageRender(viper, 5*time.Second, test.url, test.name, repoLogger, runstats, nil)
+			jsonlds, err := PageRender(viper, 5*time.Second, test.url, test.name, repoLogger, runstats, nil, nil)
 			if !test.expectedFail {
 				assert.Equal(t, test.jsonldcount, len(jsonlds))
 			} else {

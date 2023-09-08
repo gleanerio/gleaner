@@ -19,6 +19,7 @@ const (
 	NormalizedJsonSha        = "normalizedjsonsha"
 	IdentifierString         = "identifierstring"
 	SourceUrl                = "sourceurl"
+	FileSha                  = "filesha"
 )
 
 type ContextOption int64

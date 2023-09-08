@@ -4,8 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	target2 "github.com/chromedp/cdproto/target"
 	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/mafredri/cdp/devtool"
+	"github.com/mafredri/cdp/protocol/target"
+	"github.com/mafredri/cdp/rpcc"
+	"github.com/mafredri/cdp/session"
 	log "github.com/sirupsen/logrus"
 	"time"
 
@@ -31,6 +36,9 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSta
 	//	buf    bytes.Buffer
 	//	logger = log.New(&buf, "logger: ", log.Lshortfile)
 	//)
+	var timeout = 60 * time.Second
+	var retries = 3
+	var totalTimeout = timeout * time.Duration(retries+1)
 
 	for k := range m {
 		r := runStats.Add(k)
@@ -43,10 +51,83 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSta
 		} else {
 			repologger.Info("Headless chrome call to ", k)
 		}
+		_, _, _, headlessWait, _, _, err, _ := getConfig(v1, k)
+		if err != nil {
+			// trying to read a source, so let's not kill everything with a panic/fatal
+			log.Error("Error reading config file ", err)
+			repologger.Error("Error reading config file ", err)
+		}
+		// stuff to setup headless sessions
+		if headlessWait < 0 {
+			log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
+			headlessWait = 0 // if someone screws up the config, be good
+		}
 
+		if totalTimeout < time.Duration(headlessWait)*time.Second {
+			timeout = time.Duration(headlessWait) * time.Second
+		}
+		//ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+		//ctx, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
+		//defer cancel()
+		ctx, cancel := chromedp.NewContext(context.TODO())
+		defer cancel()
+
+		// read config file
+		mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+
+		// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
+		//devt := devtool.New(mcfg["headless"])
+		devt := devtool.New(mcfg.Headless)
+
+		pt, err := devt.Get(ctx, devtool.Page)
+		if err != nil {
+			pt, err = devt.Create(ctx)
+			if err != nil {
+				log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+				repologger.WithFields(log.Fields{}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+
+				return
+			}
+		}
+
+		// Initiate a new RPC connection to the Chrome DevTools Protocol target.
+		conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
+		if err != nil {
+			log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+			repologger.WithFields(log.Fields{}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+
+			return
+		}
+		defer conn.Close()
+		sessionclient := cdp.NewClient(conn)
+		manager, err := session.NewManager(sessionclient)
+		if err != nil {
+			// Handle error.
+		}
+		defer manager.Close()
+
+		// session
 		for i := range m[k] {
+			args := target.NewCreateTargetArgs("")
+			//args.SetNewWindow(true)
+			newPage, err := sessionclient.Target.CreateTarget(ctx,
+				args)
+			if err != nil {
+				log.WithFields(log.Fields{"url": m[k][i], "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+				repologger.WithFields(log.Fields{"url": m[k][i]}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
 
-			err := PageRenderAndUpload(v1, mc, 60*time.Second, m[k][i], k, repologger, r, nil) // TODO make delay configurable
+				return
+			}
+			closeArgs := target.NewCloseTargetArgs(newPage.TargetID)
+			defer func(Target cdp.Target, ctx context.Context, args *target.CloseTargetArgs) {
+				log.Info("Close Target Defer")
+				_, err := Target.CloseTarget(ctx, args)
+				if err != nil {
+					log.WithFields(log.Fields{"url": m[k][i], "issue": "error closing target"}).Error("PageRenderAndUpload ", m[k][i], " ::", err)
+
+				}
+			}(sessionclient.Target, ctx, closeArgs)
+			err = PageRenderAndUpload(v1, mc, timeout, m[k][i], k, repologger, r, manager, newPage.TargetID) // TODO make delay configurable
 			if err != nil {
 				log.Error(m[k][i], "::", err)
 			}
@@ -140,7 +221,7 @@ func HeadlessNG(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSta
 //
 //}
 
-func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats, client *cdp.Client) error {
+func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats, m *session.Manager, targetID target.ID) error {
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRenderAndUpload")
 	// page render handles this
 	//ctx, cancel := context.WithTimeout(context.Background(), timeout)
@@ -154,7 +235,7 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 	//mcfg := v1.GetStringMapString("summoner")
 	//mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
-	jsonlds, err := PageRender(v1, timeout, url, k, repologger, repoStats, client)
+	jsonlds, err := PageRender(v1, timeout, url, k, repologger, repoStats, m, targetID)
 
 	if err == nil { // from page render. If there are no errros, upload.
 		if len(jsonlds) > 1 {
@@ -177,9 +258,11 @@ func PageRenderAndUpload(v1 *viper.Viper, mc *minio.Client, timeout time.Duratio
 	return err
 }
 
-func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats, client *cdp.Client) ([]string, error) {
+func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologger *log.Logger, repoStats *common.RepoStats, m *session.Manager, targetID target.ID) ([]string, error) {
+
 	repologger.WithFields(log.Fields{"url": url}).Trace("PageRender")
 	retries := 3
+	var totalTimeout = timeout * time.Duration(retries+1) //add some time for cleanup.
 	sources, err := configTypes.GetSources(v1)
 	source, err := configTypes.GetSourceByName(sources, k)
 	headlessWait := source.HeadlessWait
@@ -193,11 +276,41 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 		timeout = time.Duration(headlessWait) * time.Second
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+	// context for rpcc.Conn with timeout.
+	//ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+	//ctxrRcc, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
+	//defer cancel()
+	ctxPrcc, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	newPageConn, err := m.Dial(ctxPrcc, targetID)
+	log.Infof("headless context targetID: %s  url: %s", targetID, url)
+	if err != nil {
+		log.WithFields(log.Fields{"url": url, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{"url": url}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+		repoStats.Inc(common.HeadlessError)
+
+		return nil, err
+	}
+	//defer func(newPageConn *rpcc.Conn) {
+	//	log.Info("NewPageConn defer")
+	//	err := newPageConn.Close()
+	//	if err != nil {
+	//		log.WithFields(log.Fields{"url": urlloc, "issue": "error clocing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+	//
+	//	}
+	//}(newPageConn)
+
+	// context for page rendering. Separate from the rpcc.Conn
+	ctx, cancel := context.WithTimeout(context.TODO(), totalTimeout)
+	defer cancel()
+	ctx, cancel = chromedp.NewContext(ctx, chromedp.WithTargetID(target2.ID(targetID)))
+	defer cancel()
+
+	client := cdp.NewClient(newPageConn)
+
 	//ctx, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
-	defer cancel()
-	ctx, cancel = chromedp.NewContext(ctx)
-	defer cancel()
+
 	//
 	//// read config file
 	//mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
@@ -300,14 +413,21 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 		return response, err
 	}
 
-	_, err = loadEventFired.Recv()
-	if err != nil {
-		return nil, err
+	if _, err = loadEventFired.Recv(); err != nil {
+
+		log.Errorf(" loadEventFired error  original targetID: %s  url: %s", targetID, url)
+		log.Errorf("loadEventFired  error context    TargetID: %s  url: %s", ctx.Value("targetId"), url)
+		log.WithFields(log.Fields{"url": url, "issue": "Headless Load Event Error"}).Error(err)
+		repologger.WithFields(log.Fields{"url": url, "issue": "Headless Load Event Error"}).Error(err)
+		repoStats.Inc(common.HeadlessError)
+		return response, err
 	}
 	loadEventFired.Close()
 
 	// Wait until we have a DOMContentEventFired event.
 	if _, err = domContent.Recv(); err != nil {
+		log.Errorf(" domContent.Recv error  original targetID: %s  url: %s", targetID, url)
+		log.Errorf("domContent.Recv  error context    TargetID: %s  url: %s", ctx.Value("targetId"), url)
 		log.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
 		repologger.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
 		repoStats.Inc(common.HeadlessError)
@@ -338,7 +458,7 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 					resolve(metadata);
 				}
 				else {
-					reject("No JSON-LD present after {{timeout}} second.");
+					reject("No JSON-LD present after {{timeout}} milliseconds.");
 				}
 			});
 		}
@@ -404,34 +524,39 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 		repologger.WithFields(log.Fields{"url": url, "issue": "Multiple JSON"}).Debug(err)
 	}
 	for _, jsonld := range jsonlds {
-		valid, err := isValid(v1, jsonld)
-		if err != nil {
-			// there could be one bad jsonld, and one good. We want to process the jsonld
-			// so, do not set an err
-			log.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error("error checking for valid json :", err)
-			repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
-			repoStats.Inc(common.Issues)
-		} else if valid && jsonld != "" { // traps out the root domain...   should do this different
+		// just grab them all maybe we fix later in upload process.
+		if jsonld != "" {
 			response = append(response, jsonld)
-			err = nil
-			// need to just return a list
-
-		} else {
-			// there could be one bad jsonld, and one good. We want to process the jsonld
-			// so, do not set an err
-			log.Info("Empty JSON-LD document found. Continuing.", url)
-			repologger.WithFields(log.Fields{"url": url, "issue": "Empty JSON-LD document found"}).Error()
-			repoStats.Inc(common.EmptyDoc)
-			// TODO  Is here where to add an entry to the KV store
-			//err = db.Update(func(tx *bolt.Tx) error {
-			//	b := tx.Bucket([]byte(k))
-			//	err := b.Put([]byte(url), []byte("NULL")) // no JOSN-LD found at this URL
-			//	if err != nil {
-			//		log.Error("Error writing to bolt", err)
-			//	}
-			//	return nil
-			//})
 		}
+
+		//valid, err := isValid(v1, jsonld)
+		//if err != nil {
+		//	// there could be one bad jsonld, and one good. We want to process the jsonld
+		//	// so, do not set an err
+		//	log.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error("error checking for valid json :", err)
+		//	repologger.WithFields(log.Fields{"url": url, "issue": "invalid JSON"}).Error(err)
+		//	repoStats.Inc(common.Issues)
+		//} else if valid && jsonld != "" { // traps out the root domain...   should do this different
+		//	response = append(response, jsonld)
+		//	err = nil
+		//	// need to just return a list
+		//
+		//} else {
+		//	// there could be one bad jsonld, and one good. We want to process the jsonld
+		//	// so, do not set an err
+		//	log.Info("Empty JSON-LD document found. Continuing.", url)
+		//	repologger.WithFields(log.Fields{"url": url, "issue": "Empty JSON-LD document found"}).Error()
+		//	repoStats.Inc(common.EmptyDoc)
+		//	// TODO  Is here where to add an entry to the KV store
+		//	//err = db.Update(func(tx *bolt.Tx) error {
+		//	//	b := tx.Bucket([]byte(k))
+		//	//	err := b.Put([]byte(url), []byte("NULL")) // no JOSN-LD found at this URL
+		//	//	if err != nil {
+		//	//		log.Error("Error writing to bolt", err)
+		//	//	}
+		//	//	return nil
+		//	//})
+		//}
 	}
 
 	return response, err
