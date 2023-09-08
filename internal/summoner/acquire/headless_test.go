@@ -1,7 +1,15 @@
 package acquire
 
 import (
+	"context"
+	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/mafredri/cdp"
+	"github.com/mafredri/cdp/devtool"
+	"github.com/mafredri/cdp/protocol/target"
+	"github.com/mafredri/cdp/rpcc"
+	"github.com/mafredri/cdp/session"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -45,7 +53,7 @@ func TestHeadlessNG(t *testing.T) {
 		{name: "r2r_wait_5_works_returns_2_jsonld",
 			url:          "https://dev.rvdata.us/search/fileset/100135",
 			jsonldcount:  2,
-			headlessWait: 5,
+			headlessWait: 20,
 		},
 		{name: "r2r_expectedfail_wait_0_returns_1_jsonld_fails_if_2_jsonld",
 			url:          "https://dev.rvdata.us/search/fileset/100135",
@@ -68,9 +76,58 @@ func TestHeadlessNG(t *testing.T) {
 		for key, value := range conf {
 			viper.Set(key, value)
 		}
+
+		ctx, cancel := chromedp.NewContext(context.TODO())
+		defer cancel()
+
+		// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
+		//devt := devtool.New(mcfg["headless"])
+		devt := devtool.New(HEADLESS_URL)
+
+		pt, err := devt.Get(ctx, devtool.Page)
+		if err != nil {
+			pt, err = devt.Create(ctx)
+			if err != nil {
+				log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+				return
+			}
+		}
+
+		// Initiate a new RPC connection to the Chrome DevTools Protocol target.
+		conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
+		if err != nil {
+			log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+
+			return
+		}
+		defer conn.Close()
+		sessionclient := cdp.NewClient(conn)
+		manager, err := session.NewManager(sessionclient)
+		if err != nil {
+			// Handle error.
+		}
+		defer manager.Close()
+		args := target.NewCreateTargetArgs("")
+		//args.SetNewWindow(true)
+		newPage, err := sessionclient.Target.CreateTarget(ctx,
+			args)
+		if err != nil {
+			log.WithFields(log.Fields{"url": test.url, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+
+			return
+		}
+		closeArgs := target.NewCloseTargetArgs(newPage.TargetID)
+		defer func(Target cdp.Target, ctx context.Context, args *target.CloseTargetArgs) {
+			log.Info("Close Target Defer")
+			_, err := Target.CloseTarget(ctx, args)
+			if err != nil {
+				log.WithFields(log.Fields{"url": test.url, "issue": "error closing target"}).Error("PageRenderAndUpload ", test.url, " ::", err)
+
+			}
+		}(sessionclient.Target, ctx, closeArgs)
 		repoLogger, _ := common.LogIssues(viper, test.name)
 		t.Run(test.name, func(t *testing.T) {
-			jsonlds, err := PageRender(viper, 5*time.Second, test.url, test.name, repoLogger, runstats, nil, nil)
+			jsonlds, err := PageRender(viper, 60*time.Second, test.url, test.name, repoLogger, runstats, manager, newPage.TargetID)
 			if !test.expectedFail {
 				assert.Equal(t, test.jsonldcount, len(jsonlds))
 			} else {

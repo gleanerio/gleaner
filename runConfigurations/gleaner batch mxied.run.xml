@@ -3,7 +3,7 @@
     <module name="gleaner" />
     <working_directory value="$PROJECT_DIR$" />
     <go_parameters value="-ldflags &quot;-X main.VERSION=testline&quot;" />
-    <parameters value="--cfg configs/test_sources/gleaner --source mixed" />
+    <parameters value="--cfg configs/test_sources/gleaner --source mixed --log info" />
     <EXTENSION ID="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />
