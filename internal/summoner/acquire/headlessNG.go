@@ -413,8 +413,8 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 		return response, err
 	}
 
-	if _, err = loadEventFired.Recv(); err != nil {
-
+	if loadEventReply, err := loadEventFired.Recv(); err != nil {
+		log.Trace(loadEventReply)
 		log.Errorf(" loadEventFired error  original targetID: %s  url: %s", targetID, url)
 		log.Errorf("loadEventFired  error context    TargetID: %s  url: %s", ctx.Value("targetId"), url)
 		log.WithFields(log.Fields{"url": url, "issue": "Headless Load Event Error"}).Error(err)
@@ -425,7 +425,8 @@ func PageRender(v1 *viper.Viper, timeout time.Duration, url, k string, repologge
 	loadEventFired.Close()
 
 	// Wait until we have a DOMContentEventFired event.
-	if _, err = domContent.Recv(); err != nil {
+	if contentReply, err := domContent.Recv(); err != nil {
+		log.Trace(contentReply)
 		log.Errorf(" domContent.Recv error  original targetID: %s  url: %s", targetID, url)
 		log.Errorf("domContent.Recv  error context    TargetID: %s  url: %s", ctx.Value("targetId"), url)
 		log.WithFields(log.Fields{"url": url, "issue": "Dom Error"}).Error(err)
