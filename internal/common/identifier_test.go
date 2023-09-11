@@ -482,6 +482,77 @@ sources:
 	}
 }
 
+// this always uses configTypes.IdentifierSha.
+func testGenerateIdentifierFallthrough(tests []jsonexpectations, t *testing.T) {
+
+	//mock configre file
+	// paths are relative to the code
+	var vipercontext = []byte(`
+context:
+  cache: true
+contextmaps:
+- file: ../../configs/schemaorg-current-https.jsonld
+  prefix: https://schema.org/
+- file: ../../configs/schemaorg-current-https.jsonld
+  prefix: http://schema.org/
+sources:
+- sourcetype: sitemap
+  name: test
+  logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+  url: https://opentopography.org/sitemap.xml
+  headless: false
+  pid: https://www.re3data.org/repository/r3d100010655
+  propername: OpenTopography
+  domain: http://www.opentopography.org/
+  active: false
+  credentialsfile: ""
+  other: {}
+  headlesswait: 0
+  delay: 0
+  IdentifierType: identifiersha
+`)
+
+	for _, test := range tests {
+		for i, json := range test.json {
+			// needs to be defiend in the loop, so that each run has it's own configuration.
+			// otherwise changing the sources information in a multi-threaded ent has issues
+			viperVal := viper.New()
+			viperVal.SetConfigType("yaml")
+			viperVal.ReadConfig(bytes.NewBuffer(vipercontext))
+			sources, err := configTypes.GetSources(viperVal)
+
+			if err != nil {
+				assert.Fail(t, err.Error())
+			}
+
+			s := sources[0]
+			s.IdentifierType = configTypes.IdentifierSha
+			s.IdentifierPath = test.IdentifierPaths
+			t.Run(fmt.Sprint(test.name, "_", i), func(t *testing.T) {
+				if test.ignore {
+					return
+				}
+				path := filepath.Join("testdata", "identifier", json)
+				assert.FileExistsf(t, path, "Datafile Missing: {path}")
+				source, err := os.ReadFile(path)
+				if err != nil {
+					t.Fatal("error reading source file:", err)
+				}
+				result, err := GenerateIdentifier(viperVal, s, string(source))
+				//valStr := fmt.Sprint(result.uniqueId)
+				assert.Equal(t, test.expected, result.UniqueId, "uuid faild")
+				assert.Equal(t, test.expectedPath, result.MatchedPath, "matched path failed")
+				assert.Equal(t, test.IdentifierType, result.IdentifierType, "identifier failed")
+				if test.errorExpected {
+					assert.NotNil(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+
+			})
+		}
+	}
+}
 func TestGenerateFileShaIdentifier(t *testing.T) {
 
 	var tests = []jsonexpectations{
@@ -627,4 +698,39 @@ func TestValidJsonPathGraphInput(t *testing.T) {
 	}
 
 	testValidJsonPaths(tests, t)
+}
+
+func TestGenerateBadIdentifier(t *testing.T) {
+
+	var tests = []jsonexpectations{
+		// default
+		// should work for all
+
+		{
+			name: "extra_slash_jsonsha",
+			json: map[string]string{
+				"bad_json": "bad_json.jsonld",
+			},
+			errorExpected:   true,
+			IdentifierType:  configTypes.FileSha,
+			IdentifierPaths: "",
+			expected:        "cc8c395af8163203dda2c6bee35fd728071bd809",
+			expectedPath:    "",
+			ignore:          false,
+		},
+		//{
+		//	name: "extra_slash_identifier",
+		//	json: map[string]string{
+		//		"bad_json": "bad_json.jsonld",
+		//	},
+		//	errorExpected:   false,
+		//	IdentifierType:  configTypes.FileSha,
+		//	IdentifierPaths: "",
+		//	expected:        "cc8c395af8163203dda2c6bee35fd728071bd809",
+		//	expectedPath:    "",
+		//	ignore:          false,
+		//},
+	}
+
+	testGenerateIdentifierFallthrough(tests, t)
 }

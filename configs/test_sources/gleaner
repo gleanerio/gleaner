@@ -1,0 +1,66 @@
+context:
+    cache: true
+contextmaps:
+    - file: ./configs/schemaorg-current-https.jsonld
+      prefix: https://schema.org/
+    - file: ./configs/schemaorg-current-https.jsonld
+      prefix: http://schema.org/
+gleaner:
+    mill: true
+    runid: runX
+    summon: true
+millers:
+    graph: true
+minio:
+    address: oss.geocodes-aws-dev.earthcube.org
+    port: 443
+    ssl: true
+    bucket: dvtest
+    region: ""
+    accesskey: worldsbestaccesskey
+    secretkey: worldsbestsecretkey
+sources:
+    - sourcetype: sitemap
+      name: headless
+      logo: https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+      url: https://earthcube.github.io/GeoCODES-Metadata/site/sitemaps/headless.xml
+      headless: true
+      pid: https://www.re3data.org/repository/r3d100010655
+      propername: TEST HEADLESS SOURCES
+      domain: http://wwwearthcube.org/headless/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ' "$.distribution.contentUrl"'
+      apipagelimit: 0
+      identifiertype: identifiersha
+      fixcontextoption: 0
+      acceptcontenttype: application/ld+json, text/html
+      jsonprofile: application/ld+json
+    - sourcetype: sitemap
+      name: mixed
+      logo: http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png
+      url: http://ds.iris.edu/files/sitemap.xml
+      headless: false
+      pid: https://www.re3data.org/repository/r3d100010268
+      propername: TEST MIXED SOURCES
+      domain: http://wwwearthcube.org/headless/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 0
+      identifierpath: ""
+      apipagelimit: 0
+      identifiertype: identifiersha
+      fixcontextoption: 0
+      acceptcontenttype: application/ld+json, text/html
+      jsonprofile: application/ld+json
+summoner:
+    after: ""
+    delay: null
+    headless: http://127.0.0.1:9222
+    mode: full
+    threads: 5

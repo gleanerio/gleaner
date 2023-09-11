@@ -1,7 +1,14 @@
 package acquire
 
 import (
+	"context"
+	"github.com/chromedp/chromedp"
 	"github.com/gleanerio/gleaner/internal/common"
+	"github.com/mafredri/cdp"
+	"github.com/mafredri/cdp/devtool"
+	"github.com/mafredri/cdp/protocol/target"
+	"github.com/mafredri/cdp/rpcc"
+	"github.com/mafredri/cdp/session"
 	"net/http"
 	"net/url"
 	"strings"
@@ -51,17 +58,17 @@ func ResRetrieve(v1 *viper.Viper, mc *minio.Client, m map[string][]string, runSt
 	wg.Wait()
 }
 
-func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, string, string, error) {
+func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, string, string, error, bool) {
 	bucketName, err := configTypes.GetBucketName(v1)
 	if err != nil {
-		return bucketName, 0, 0, 0, configTypes.AccceptContentType, "", err
+		return bucketName, 0, 0, 0, configTypes.AccceptContentType, "", err, false
 	}
 
 	var mcfg configTypes.Summoner
 	mcfg, err = configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
 
 	if err != nil {
-		return bucketName, 0, 0, 0, configTypes.AccceptContentType, "", err
+		return bucketName, 0, 0, 0, configTypes.AccceptContentType, "", err, false
 	}
 	// Set default thread counts and global delay
 	tc := mcfg.Threads
@@ -77,8 +84,9 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, str
 	acceptContent := source.AcceptContentType
 	jsonProfile := source.JsonProfile
 	hw := source.HeadlessWait
+	headless := source.Headless
 	if err != nil {
-		return bucketName, tc, delay, hw, acceptContent, jsonProfile, err
+		return bucketName, tc, delay, hw, acceptContent, jsonProfile, err, false
 	}
 
 	if source.Delay != 0 && source.Delay > delay {
@@ -88,13 +96,17 @@ func getConfig(v1 *viper.Viper, sourceName string) (string, int, int64, int, str
 	}
 	log.Info("Thread count ", tc, " delay ", delay)
 
-	return bucketName, tc, delay, hw, acceptContent, jsonProfile, nil
+	return bucketName, tc, delay, hw, acceptContent, jsonProfile, nil, headless
 }
 
 func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName string,
 	wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
 
-	bucketName, tc, delay, headlessWait, acceptContent, jsonProfile, err := getConfig(v1, sourceName)
+	var timeout = 60 * time.Second
+	var retries = 3
+	var totalTimeout = timeout * time.Duration(retries+1)
+
+	bucketName, tc, delay, headlessWait, acceptContent, jsonProfile, err, headless := getConfig(v1, sourceName)
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
 		log.Error("Error reading config file ", err)
@@ -102,6 +114,58 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 
 	var client http.Client
+
+	// stuff to setup headless sessions
+	if headlessWait < 0 {
+		log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
+		headlessWait = 0 // if someone screws up the config, be good
+	}
+
+	if totalTimeout < time.Duration(headlessWait)*time.Second {
+		timeout = time.Duration(headlessWait) * time.Second
+	}
+	/// if you cancel here, then everything after first times out
+	//ctx, cancel := context.WithTimeout(context.Background(), timeout*time.Duration(retries))
+	//ctx, cancel := context.WithTimeout(context.TODO(), timeout*time.Duration(retries))
+	//defer cancel()
+	ctx, cancel := chromedp.NewContext(context.Background())
+	defer cancel()
+
+	// read config file
+	mcfg, err := configTypes.ReadSummmonerConfig(v1.Sub("summoner"))
+
+	// Use the DevTools HTTP/JSON API to manage targets (e.g. pages, webworkers).
+	//devt := devtool.New(mcfg["headless"])
+	devt := devtool.New(mcfg.Headless)
+
+	pt, err := devt.Get(ctx, devtool.Page)
+	if err != nil {
+		pt, err = devt.Create(ctx)
+		if err != nil {
+			log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+			repologger.WithFields(log.Fields{}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+			repoStats.Inc(common.HeadlessError)
+			return
+		}
+	}
+
+	// Initiate a new RPC connection to the Chrome DevTools Protocol target.
+	conn, err := rpcc.DialContext(ctx, pt.WebSocketDebuggerURL)
+	if err != nil {
+		log.WithFields(log.Fields{"issue": "Not REPO FAULT. Devtools... Is Headless Container running?"}).Error(err)
+		repologger.WithFields(log.Fields{}).Error("Not REPO FAULT. Devtools... Is Headless Container running?")
+		repoStats.Inc(common.HeadlessError)
+		return
+	}
+	defer conn.Close()
+	sessionclient := cdp.NewClient(conn)
+	m, err := session.NewManager(sessionclient)
+	if err != nil {
+		// Handle error.
+	}
+	defer m.Close()
+
+	// session
 
 	semaphoreChan := make(chan struct{}, tc) // a blocking channel to keep concurrency under control
 	lwg := sync.WaitGroup{}
@@ -131,82 +195,225 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 			repologger.Trace("Indexing", urlloc)
 			log.Debug("Indexing ", urlloc)
 
-			req, err := http.NewRequest("GET", urlloc, nil)
-			if err != nil {
-				log.Error(i, err, urlloc)
-			}
-			req.Header.Set("User-Agent", EarthCubeAgent)
-			req.Header.Set("Accept", acceptContent)
-
-			resp, err := client.Do(req)
-			if err != nil {
-				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-				repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
-				lwg.Done() // tell the wait group that we be done
-				<-semaphoreChan
-				return
-			}
-			defer resp.Body.Close()
-
-			jsonlds, err := FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
-			// there was an issue with sitemaps... but now this code
-			//if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") {
-			//
-			//	b, err := io.ReadAll(resp.Body)
-			//	// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
-			//	if err != nil {
-			//		log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-			//		repoStats.Inc(common.Issues)
-			//		lwg.Done() // tell the wait group that we be done
-			//		<-semaphoreChan
-			//		return
-			//	}
-			//	jsonlds = []string{string(b)}
-			//} else {
-			//	var err error
-			//	jsonlds, err = FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
-			//	if err != nil {
-			//		log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-			//		repoStats.Inc(common.Issues)
-			//		lwg.Done() // tell the wait group that we be done
-			//		<-semaphoreChan
-			//		return
-			//	}
-			//}
-			if err != nil {
-				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
-				repoStats.Inc(common.Issues)
-				lwg.Done() // tell the wait group that we be done
-				<-semaphoreChan
-				return
-			}
-
-			// For incremental indexing I want to know every URL I visit regardless
-			// if there is a valid JSON-LD document or not.   For "full" indexing we
-			// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
-			// and avoid those during incremental calls.
-
-			// even is no JSON-LD packages found, record the event of checking this URL
-			if len(jsonlds) < 1 {
-				// TODO is her where I then try headless, and scope the following for into an else?
-				if headlessWait >= 0 {
-					log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
-					repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
-					err := PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats)                      // TODO make delay configurable
+			if headless {
+				log.WithFields(log.Fields{"url": urlloc, "issue": "running headless"}).Trace("Headless ", urlloc)
+				args := target.NewCreateTargetArgs("")
+				//args.SetNewWindow(true)
+				newPage, err := sessionclient.Target.CreateTarget(ctx,
+					args)
+				if err != nil {
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+					repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+					repoStats.Inc(common.HeadlessError)
+					lwg.Done()
+					<-semaphoreChan
+					return
+				}
+				closeArgs := target.NewCloseTargetArgs(newPage.TargetID)
+				defer func(Target cdp.Target, ctx context.Context, args *target.CloseTargetArgs) {
+					log.Infof("Close Target Defer targetID: %s  url: %s ", newPage.TargetID, urlloc)
+					_, err := Target.CloseTarget(ctx, args)
 					if err != nil {
-						log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
-						repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
+						log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+
 					}
+				}(sessionclient.Target, ctx, closeArgs)
+				// newPageConn uses the underlying conn without establishing a new
+				// websocket connection.
+				//newPageConn, err := m.Dial(ctx, newPage.TargetID)
+				//if err != nil {
+				//	log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+				//	repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+				//	repoStats.Inc(common.HeadlessError)
+				//	lwg.Done()
+				//	<-semaphoreChan
+				//	return
+				//}
+				////defer func(newPageConn *rpcc.Conn) {
+				////	log.Info("NewPageConn defer")
+				////	err := newPageConn.Close()
+				////	if err != nil {
+				////		log.WithFields(log.Fields{"url": urlloc, "issue": "error clocing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+				////
+				////	}
+				////}(newPageConn)
+				//
+				//c := cdp.NewClient(newPageConn)
+				err = PageRenderAndUpload(v1, mc, timeout, urlloc, sourceName, repologger, repoStats, m, newPage.TargetID) // TODO make delay configurable
+
+				if err != nil {
+					log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, " ::", err)
+					repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
+					//err = newPageConn.Close()
+					//if err != nil {
+					//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing connection"}).Error("PageRenderAndUpload ", urlloc, " ::", err)
+					//
+					//}
+					//closeTargetResp, err := sessionclient.Target.CloseTarget(ctx, closeArgs)
+					//log.Info(closeTargetResp)
+					//if err != nil {
+					//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, " ::", err)
+					//
+					//}
+					lwg.Done()
+					<-semaphoreChan
+					return
+				}
+				//err = newPageConn.Close()
+				//if err != nil {
+				//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing connection"}).Error("PageRenderAndUpload ", urlloc, " ::", err)
+				//
+				//}
+				//closeTargetResp, err := sessionclient.Target.CloseTarget(ctx, closeArgs)
+				//log.Info(closeTargetResp)
+				//if err != nil {
+				//	log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, " ::", err)
+				//
+				//}
+			} else {
+				req, err := http.NewRequest("GET", urlloc, nil)
+				if err != nil {
+					log.Error(i, err, urlloc)
+				}
+				req.Header.Set("User-Agent", EarthCubeAgent)
+				req.Header.Set("Accept", acceptContent)
+
+				resp, err := client.Do(req)
+				if err != nil {
+					log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+					repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+					lwg.Done() // tell the wait group that we be done
+					<-semaphoreChan
+					return
+				}
+				defer resp.Body.Close()
+
+				// if there is an error, then don't try again.
+				if (resp.StatusCode >= 400) && (resp.StatusCode < 600) {
+					switch resp.StatusCode {
+					case 403:
+						log.Error("#", i, " not authorized ", urlloc, err) // print an message containing the index (won't keep order)
+						repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+						repoStats.Inc(common.NotAuthorized)
+					case 404:
+						log.Error("#", i, " bad url ", urlloc, err) // print an message containing the index (won't keep order)
+						repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+						repoStats.Inc(common.BadUrl)
+					case 500:
+						log.Error("#", i, " server arror ", urlloc, err) // print an message containing the index (won't keep order)
+						repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+						repoStats.Inc(common.RepoServerError)
+					default:
+						log.Error("#", i, " generic arror ", urlloc, err) // print an message containing the index (won't keep order)
+						repologger.WithFields(log.Fields{"url": urlloc}).Error(err)
+						repoStats.Inc(common.GenericIssue)
+					}
+					lwg.Done() // tell the wait group that we be done
+					<-semaphoreChan
+					return
 				}
 
-			} else {
-				log.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace("Direct access worked for ", urlloc)
-				repologger.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace()
-				repoStats.Inc(common.Summoned)
-			}
+				jsonlds, err := FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
+				// there was an issue with sitemaps... but now this code
+				//if contains(contentTypeHeader, JSONContentType) || contains(contentTypeHeader, "application/json") {
+				//
+				//	b, err := io.ReadAll(resp.Body)
+				//	// b, err := ioutil.ReadAll(resp.Body)  Go.1.15 and earlier
+				//	if err != nil {
+				//		log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+				//		repoStats.Inc(common.Issues)
+				//		lwg.Done() // tell the wait group that we be done
+				//		<-semaphoreChan
+				//		return
+				//	}
+				//	jsonlds = []string{string(b)}
+				//} else {
+				//	var err error
+				//	jsonlds, err = FindJSONInResponse(v1, urlloc, jsonProfile, repologger, resp)
+				//	if err != nil {
+				//		log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+				//		repoStats.Inc(common.Issues)
+				//		lwg.Done() // tell the wait group that we be done
+				//		<-semaphoreChan
+				//		return
+				//	}
+				//}
+				if err != nil {
+					log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)
+					repoStats.Inc(common.Issues)
+					lwg.Done() // tell the wait group that we be done
+					<-semaphoreChan
+					return
+				}
 
-			UploadWrapper(v1, mc, bucketName, sourceName, urlloc, repologger, repoStats, jsonlds)
+				// For incremental indexing I want to know every URL I visit regardless
+				// if there is a valid JSON-LD document or not.   For "full" indexing we
+				// visit ALL URLs.  However, many will not have JSON-LD, so let's also record
+				// and avoid those during incremental calls.
 
+				// even is no JSON-LD packages found, record the event of checking this URL
+				if len(jsonlds) < 1 {
+					// TODO is her where I then try headless, and scope the following for into an else?
+					if headlessWait >= 0 {
+						log.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Info("Direct access failed, trying headless for ", urlloc)
+						repologger.WithFields(log.Fields{"url": urlloc, "contentType": "Direct access failed, trying headless']"}).Error() // this needs to go into the issues file
+						args := target.NewCreateTargetArgs("")
+						//args.SetNewWindow(true)
+						newPage, err := sessionclient.Target.CreateTarget(ctx,
+							args)
+						if err != nil {
+							log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?"}).Error(err)
+							repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. NewCreateTargetArgs... Is Headless Container running?")
+							repoStats.Inc(common.HeadlessError)
+							lwg.Done()
+							<-semaphoreChan
+							return
+						}
+						closeArgs := target.NewCloseTargetArgs(newPage.TargetID)
+						defer func(Target cdp.Target, ctx context.Context, args *target.CloseTargetArgs) {
+							log.Info("Close Target Defer")
+							_, err := Target.CloseTarget(ctx, args)
+							if err != nil {
+								log.WithFields(log.Fields{"url": urlloc, "issue": "error closing target"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+
+							}
+						}(sessionclient.Target, ctx, closeArgs)
+						// newPageConn uses the underlying conn without establishing a new
+						// websocket connection.
+						//newPageConn, err := m.Dial(ctx, newPage.TargetID)
+						//if err != nil {
+						//	log.WithFields(log.Fields{"url": urlloc, "issue": "Not REPO FAULT. newPageConn... Is Headless Container running?"}).Error(err)
+						//	repologger.WithFields(log.Fields{"url": urlloc}).Error("Not REPO FAULT. newPageConn... Is Headless Container running?")
+						//	repoStats.Inc(common.HeadlessError)
+						//	lwg.Done()
+						//	<-semaphoreChan
+						//	return
+						//}
+						//defer func(newPageConn *rpcc.Conn) {
+						//	log.Info("NewPageConn defer")
+						//	err := newPageConn.Close()
+						//	if err != nil {
+						//		log.WithFields(log.Fields{"url": urlloc, "issue": "error clocing connection"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+						//
+						//	}
+						//}(newPageConn)
+						//
+						//c := cdp.NewClient(newPageConn)
+						err = PageRenderAndUpload(v1, mc, 60*time.Second, urlloc, sourceName, repologger, repoStats, m, newPage.TargetID) // TODO make delay configurable
+						if err != nil {
+							log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
+							repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
+						}
+					}
+
+				} else {
+					log.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace("Direct access worked for ", urlloc)
+					repologger.WithFields(log.Fields{"url": urlloc, "issue": "Direct access worked"}).Trace()
+					repoStats.Inc(common.Summoned)
+				}
+
+				UploadWrapper(v1, mc, bucketName, sourceName, urlloc, repologger, repoStats, jsonlds)
+			} // else headless
 			bar.Add(1)                                          // bar.Incr()
 			log.Trace("#", i, "thread for", urlloc)             // print an message containing the index (won't keep order)
 			time.Sleep(time.Duration(delay) * time.Millisecond) // sleep a bit if directed to by the provider
