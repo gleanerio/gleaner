@@ -57,7 +57,7 @@ func RetrieveAPIData(apiSources []configTypes.Sources, mc *minio.Client, runStat
 
 func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources, wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
 
-	bucketName, tc, delay, _, err := getConfig(v1, source.Name) // _ is headless wait
+	bucketName, tc, delay, _, acceptContent, jsonProfile, err := getConfig(v1, source.Name) // _ is headless wait
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
 		log.Error("Error reading config file ", err)
@@ -92,8 +92,8 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 				log.Error(i, err, urlloc)
 			}
 			req.Header.Set("User-Agent", EarthCubeAgent)
-			req.Header.Set("Accept", "application/ld+json, text/html")
-
+			//req.Header.Set("Accept", "application/ld+json, text/html")
+			req.Header.Set("Accept", acceptContent)
 			response, err := client.Do(req)
 
 			if err != nil {
@@ -116,7 +116,7 @@ func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources,
 			log.Trace("Response status ", response.StatusCode, " from ", urlloc)
 			responseStatusChan <- response.StatusCode
 
-			jsonlds, err := FindJSONInResponse(v1, urlloc, repologger, response)
+			jsonlds, err := FindJSONInResponse(v1, urlloc, jsonProfile, repologger, response)
 
 			if err != nil {
 				log.Error("#", i, " error on ", urlloc, err) // print an message containing the index (won't keep order)

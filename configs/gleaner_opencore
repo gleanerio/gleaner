@@ -1,0 +1,45 @@
+context:
+    cache: true
+contextmaps:
+    - file: ./assets/schemaorg-current-https.jsonld
+      prefix: https://schema.org/
+    - file: ./assets/schemaorg-current-http.jsonld
+      prefix: http://schema.org/
+gleaner:
+    mill: true
+    runid: runX
+    summon: true
+millers:
+    graph: true
+minio:
+    address: oss.geocodes-dev.earthcube.org
+    port: 443
+    ssl: true
+    accesskey: worldsbestaccesskey
+    secretkey: worldsbestsecretkey
+    bucket: opencore
+sources:
+    - sourcetype: sitemap
+      name: opencoredata
+      logo: https://opencoredata.org/img/logo22small.png
+      url: http://opencoredata.org/sitemap.xml
+      headless: false
+      pid: https://www.re3data.org/repository/r3d100012874
+      propername: opencoredata
+      domain: https://opencoredata.org/
+      active: true
+      credentialsfile: ""
+      other: {}
+      headlesswait: 0
+      delay: 1
+      identifierpath: ""
+      apipagelimit: 0
+      identifiertype: identifiersha
+      fixcontextoption: 0
+      acceptcontenttype: "application/ld+json"
+summoner:
+    after: ""
+    delay: null
+    headless: http://127.0.0.1:9222
+    mode: full
+    threads: 15
