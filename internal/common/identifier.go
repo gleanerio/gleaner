@@ -113,10 +113,12 @@ func GetIdentiferByPaths(jsonpaths []string, jsonld string) ([]string, string, e
 
 func url2Path(idstring string) string {
 	u, err := url.Parse(idstring)
-	if err != nil {
+	if err != nil || u.Path == "" {
 		return idstring
 	}
+
 	return u.Path[1:]
+
 }
 func encodeark(arkid string) string {
 	arkid = strings.Replace(arkid, ":/", "_", 1)

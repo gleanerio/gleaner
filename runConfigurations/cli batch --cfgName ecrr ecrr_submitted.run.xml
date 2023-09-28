@@ -18,6 +18,7 @@
       </ENTRIES>
     </EXTENSION>
     <kind value="FILE" />
+    <package value="github.com/gleanerio/gleaner" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$/cmd/glcon/main.go" />
     <method v="2" />
