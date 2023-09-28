@@ -7,6 +7,7 @@ import (
 	"github.com/gleanerio/gleaner/internal/common"
 	configTypes "github.com/gleanerio/gleaner/internal/config"
 	"github.com/gleanerio/gleaner/internal/millers/graph"
+	"github.com/schollz/progressbar/v3"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"google.golang.org/api/googleapi"
@@ -280,6 +281,16 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 	//var results []*drive.File
 	var results []string
 	for _, s := range domains {
+		//runStats := common.NewRunStats()
+		//c := make(chan os.Signal)
+		//signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+		//go func() {
+		//	<-c
+		//	runStats.StopReason = "User Interrupt or Fatal Error"
+		//	summoner.RunStatsOutput(runStats)
+		//	os.Exit(1)
+		//}()
+
 		//serviceJson := os.Getenv(s.CredentialsFile) // just use separate files for all credentials
 		serviceJson := s.CredentialsFile
 		srv, err := GetDriveCredentials(serviceJson)
@@ -291,18 +302,27 @@ func GetFromGDrive(mc *minio.Client, v1 *viper.Viper) (string, error) {
 		fn := filepath.Base(u.Path)
 		log.Info("reading google folder id:", fn)
 		l, err := GetFileList(srv, fn, false, "")
-
-		for _, f := range l {
+		count := len(l)
+		bar := progressbar.Default(int64(count))
+		for i, f := range l {
+			bar.Add(1)
 			//results = append(results,f)
+			log.Infof("uploading %i of %i %s\n", i, len(l), f.Name)
 			o, err := gfileProcessing(mc, v1, srv, f, s.Name, bucketName)
 			if err != nil {
 				continue
 			}
 			results = append(results, o)
+			//if i >= len(l)-i {
+			//	break
+			//}
 		}
+		log.Info(" googledrive source %s complete", s.Name)
+		fmt.Printf(" googledrive source %s complete", s.Name)
 	}
 	var count = len(results)
 	m := fmt.Sprintf("GoogleDrives %d files processed", count)
+	log.Info("GoogleDrives %d files processed", count)
 	return m, err
 }
 
@@ -316,15 +336,18 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 
 	// TODO, how do we quickly validate the JSON-LD files to make sure it is at least formatted well
 
-	sha := common.GetSHA(contents) // Don't normalize big files..
-
-	// Upload the file
+	//sha := common.GetSHA(contents) // Don't normalize big files..
+	//sources, err := configTypes.GetSources(v1)
+	//source, err := configTypes.GetSourceByName(sources,sourceName )
+	//
+	//identifier, err := common.GenerateIdentiferString(v1,*source,contents)
+	//// Upload the file
 	log.Info("  file", f.Name, "downloaded. Uploading to", bucketName, ":", sourceName)
 
-	objectName := fmt.Sprintf("summoned/%s/%s.jsonld", sourceName, sha)
-	_, err = graph.LoadToMinio(contents, bucketName, objectName, mc)
+	//objectName := fmt.Sprintf("summoned/%s/%s.jsonld", sourceName, fileId)
+	sha, err := Upload(v1, mc, bucketName, sourceName, f.Name, contents)
 	if err != nil {
-		return objectName, err
+		return sha, err
 	}
 	log.Info(" file", f.Name, "uploaded to", bucketName, "Uploaded :", sourceName)
 	// mill the json-ld to nq and upload to minio
@@ -342,7 +365,7 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 	milledName := fmt.Sprintf("milled/%s/%s.rdf", sourceName, sha)
 	_, err = graph.LoadToMinio(rdf, bucketName, milledName, mc)
 	if err != nil {
-		return objectName, err
+		return f.Name, err
 	}
 	log.Info("Processed files Upload to", milledName, "complete:", sourceName)
 
@@ -350,9 +373,9 @@ func gfileProcessing(mc *minio.Client, v1 *viper.Viper, srv *drive.Service, f *d
 	log.Debug("Building prov")
 	err = StoreProvNG(v1, mc, sourceName, sha, sourceName, "summoned")
 	if err != nil {
-		return objectName, err
+		return f.Name, err
 	}
 
 	log.Info("Loaded:", len(contents))
-	return objectName, err
+	return f.Name, err
 }

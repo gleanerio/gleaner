@@ -16,6 +16,7 @@ import (
 	"github.com/ohler55/ojg/oj"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"net/url"
 	"sort"
 	"strings"
 )
@@ -35,6 +36,7 @@ func GenerateIdentifier(v1 *viper.Viper, source config.Sources, jsonld string) (
 
 	// Generate calls also do the casecading aka if IdentifierSha is [] it calls JsonSha
 	switch source.IdentifierType {
+
 	case config.IdentifierString:
 		return GenerateIdentiferString(v1, source, jsonld)
 	case config.IdentifierSha:
@@ -48,16 +50,16 @@ func GenerateIdentifier(v1 *viper.Viper, source config.Sources, jsonld string) (
 
 }
 
-func GetIdentifierByPath(jsonPath string, jsonld string) (interface{}, error) {
+func GetIdentifierByPath(jsonPath string, jsonld string) ([]string, error) {
 	obj, err := oj.ParseString(jsonld)
 	if err != nil {
-		return "", err
+		return []string{}, err
 	}
 	x, err := jp.ParseString(jsonPath)
 	ys := x.Get(obj)
 
 	if err != nil {
-		return "", err
+		return []string{}, err
 	}
 	// we need to sort the results
 	aString := make([]string, len(ys))
@@ -90,7 +92,7 @@ has no value:
 https://cburgmer.github.io/json-path-comparison/results/dot_notation_on_object_without_key.html
 https://cburgmer.github.io/json-path-comparison/results/dot_notation_on_null_value.html
 */
-func GetIdentiferByPaths(jsonpaths []string, jsonld string) (interface{}, string, error) {
+func GetIdentiferByPaths(jsonpaths []string, jsonld string) ([]string, string, error) {
 	for _, jsonPath := range jsonpaths {
 		obj, err := GetIdentifierByPath(jsonPath, jsonld)
 		if err == nil {
@@ -106,21 +108,56 @@ func GetIdentiferByPaths(jsonpaths []string, jsonld string) (interface{}, string
 			continue
 		}
 	}
-	return "", "", errors.New("No Match")
+	return []string{}, "", errors.New("No Match")
+}
+
+func url2Path(idstring string) string {
+	u, err := url.Parse(idstring)
+	if err != nil || u.Path == "" {
+		return idstring
+	}
+
+	return u.Path[1:]
+
+}
+func encodeark(arkid string) string {
+	arkid = strings.Replace(arkid, ":/", "_", 1)
+	arkid = strings.Replace(arkid, "/", "_", 1)
+	return arkid
+}
+func safeEncodeString(idstring string) string {
+	// first see it is a url, if so, then take the path part.
+	u := url2Path(idstring)
+	if strings.HasPrefix(u, "ark") {
+		u = encodeark(u)
+	}
+	return u
 }
 
 func GenerateIdentiferString(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
-	uniqueid, err := GenerateIdentifierSha(v1, source, jsonld)
-
+	// generate a file sha, if there is an error, we stop, or use it later
+	filesha, err := GenerateFileSha(v1, jsonld)
 	if err != nil {
-		return uniqueid, err
+		return filesha, err
 	}
-	if uniqueid.MatchedString != "" {
-		uniqueid.UniqueId = uniqueid.MatchedString
-		uniqueid.IdentifierType = config.IdentifierString
 
+	jsonpath := []string{"$['@id']", "$['@graph'][?(@['@type']=='schema:Dataset')]['@id']", "$.url"}
+	uniqueid, foundPath, err := GetIdentiferByPaths(jsonpath, jsonld)
+	if err == nil && fmt.Sprint(uniqueid) != "[]" {
+		safestring := safeEncodeString(uniqueid[0])
+		id := Identifier{UniqueId: fmt.Sprint(safestring),
+			IdentifierType: config.IdentifierString,
+			MatchedPath:    foundPath,
+			MatchedString:  fmt.Sprint(uniqueid),
+			JsonSha:        filesha.JsonSha,
+		}
+		return id, err
+	} else {
+		log.Info(config.IdentifierSha, "Action: Getting normalized sha  Error:", err)
+		// generate a filesha
+		return filesha, err
 	}
-	return uniqueid, err
+
 }
 
 func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
@@ -145,7 +182,7 @@ func GenerateIdentifierSha(v1 *viper.Viper, source config.Sources, jsonld string
 	}
 	uniqueid, foundPath, err := GetIdentiferByPaths(jsonpath, jsonld)
 
-	if err == nil && uniqueid != "[]" {
+	if err == nil && fmt.Sprint(uniqueid) != "[]" {
 		id := Identifier{UniqueId: GetSHA(fmt.Sprint(uniqueid)),
 			IdentifierType: config.IdentifierSha,
 			MatchedPath:    foundPath,
