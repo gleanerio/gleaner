@@ -159,6 +159,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 	defer conn.Close()
 	sessionclient := cdp.NewClient(conn)
+	// headless_agent := emulation.NewSetUserAgentOverrideArgs(EarthCubeAgent)
+	// https://www.zenrows.com/blog/chromedp#user-agent-in-chromedp
+	//https://pkg.go.dev/github.com/mafredri/cdp/devtool#WithClient
 	m, err := session.NewManager(sessionclient)
 	if err != nil {
 		// Handle error.
