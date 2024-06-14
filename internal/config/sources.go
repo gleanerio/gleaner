@@ -77,7 +77,6 @@ type Sources struct {
 	IdentifierType   string
 	FixContextOption ContextOption
 	Description      string
-	Community        string
 }
 
 // add needed for file
@@ -97,7 +96,6 @@ type SourcesConfig struct {
 	IdentifierType   string
 	FixContextOption ContextOption
 	Description      string
-    Community        string
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -117,7 +115,6 @@ var SourcesTemplate = map[string]interface{}{
 		"identifiertype":   JsonSha,
 		"fixcontextoption": "https",
 		"description":      "",
-		"community":        "",
 	},
 }
 

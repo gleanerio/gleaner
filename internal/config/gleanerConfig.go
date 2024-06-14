@@ -28,7 +28,6 @@ var gleanerTemplate = map[string]interface{}{
 		"propername": "",
 		"domain":     "",
 		"description":"",
-		"community":  "",
 	},
 }
 
