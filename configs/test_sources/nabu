@@ -1,0 +1,23 @@
+minio:
+    address: oss.geocodes-aws-dev.earthcube.org
+    port: 443
+    ssl: true
+    bucket: dvtest
+    region: ""
+    accesskey: worldsbestaccesskey
+    secretkey: worldsbestsecretkey
+objects:
+    bucket: dvtest
+    domain: us-east-1
+    prefix:
+        - summoned/headless
+        - summoned/mixed
+        - org
+    prefixoff: []
+sparql:
+    endpoint: https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/earthcube/sparql
+    authenticate: false
+    username: ""
+    password: ""
+txtaipkg:
+    endpoint: http://0.0.0.0:8000

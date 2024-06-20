@@ -1,0 +1,336 @@
+
+{
+    "@context":{"@vocab":"https://schema.org/"},
+    "@type":"Dataset",
+    "name":"Turkana GPS Network",
+    "description":"GPS/GNSS stations: Long-term continuous or semi-continuous occupations at multiple locations",
+    "@id":"https://doi.org/10.7283/WF02-PP16",
+    "url":"https://doi.org/10.7283/WF02-PP16",
+    "identifier":"10.7283/WF02-PP16",
+    "license":"https://creativecommons.org/licenses/by/4.0/",
+    "creator":{
+        "@type":"Organization",
+        "url":"https://www.unavco.org/",
+        "name":"The GAGE Facility",
+        "@id": "https://ror.org/04danrt76",
+        "contactPoint":{
+            "@type":"ContactPoint",
+            "contactType": "support service",
+            "email":"data-help@earthscope.org"
+        }
+    },
+    "includedInDataCatalog":{
+        "@type":"DataCatalog",
+        "name":"unavco.org"
+    },
+    "hasPart":[
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/T5W66J53",
+            "url":"https://doi.org/10.7283/T5W66J53",
+            "name":"Aggregate dataset member 1) 2017-02-22 - 2021-01-25: Turkwel, Kenya - XTBT-Turkwel Turkana P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/4XDR-FW31",
+            "url":"https://doi.org/10.7283/4XDR-FW31",
+            "name":"Aggregate dataset member 2) 2018-02-12 - 2021-01-23: Turkana GPS Network - XTBI-Ileret Turkana P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/CSVF-CN55",
+            "url":"https://doi.org/10.7283/CSVF-CN55",
+            "name":"Aggregate dataset member 3) 2019-01-18 - 2021-01-31: Turkana GPS Network - XTRM-Turmi P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/9RS1-K054",
+            "url":"https://doi.org/10.7283/9RS1-K054",
+            "name":"Aggregate dataset member 4) 2019-01-19 - 2021-02-02: Turkana GPS Network - XJNK-Jinka P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/X7VZ-T682",
+            "url":"https://doi.org/10.7283/X7VZ-T682",
+            "name":"Aggregate dataset member 5) 2019-01-21 - 2021-01-30: Turkana GPS Network - XYAB-Yabelo P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/BCJ8-6988",
+            "url":"https://doi.org/10.7283/BCJ8-6988",
+            "name":"Aggregate dataset member 6) 2019-01-23 - 2021-01-30: Turkana GPS Network - XMOY-Moyale P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/JB3C-0166",
+            "url":"https://doi.org/10.7283/JB3C-0166",
+            "name":"Aggregate dataset member 7) 2019-01-24 - 2021-01-31: Turkana GPS Network - XTEL-Teltele P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/BJ0E-YB91",
+            "url":"https://doi.org/10.7283/BJ0E-YB91",
+            "name":"Aggregate dataset member 8) 2019-02-22 - 2021-01-20: Turkana GPS Network - XSAS-Marsabit Sasura Girls School P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/GWQR-N363",
+            "url":"https://doi.org/10.7283/GWQR-N363",
+            "name":"Aggregate dataset member 9) 2019-02-23 - 2021-01-19: Turkana GPS Network - XHOR-North Horr P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/SVT7-GR73",
+            "url":"https://doi.org/10.7283/SVT7-GR73",
+            "name":"Aggregate dataset member 10) 2019-02-24 - 2021-01-20: Turkana GPS Network - XLOY-El Molo Bay P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        },
+        {
+            "@type":"Dataset",
+            "@id":"https://doi.org/10.7283/9CVK-3A35",
+            "url":"https://doi.org/10.7283/9CVK-3A35",
+            "name":"Aggregate dataset member 11) 2019-02-24 - 2021-01-25: Turkana GPS Network - XLOK-Lokichogio P.S.",
+            "description":"Part of aggregate dataset: Turkana GPS Network.",
+            "license":"https://creativecommons.org/licenses/by/4.0/",
+            "creator":{
+                "@type":"Organization",
+                "url":"https://www.earthscope.org/",
+                "name":"The GAGE Facility",
+                "@id": "https://ror.org/04danrt76",
+                "contactPoint":{
+                    "@type":"ContactPoint",
+                    "contactType": "support service",
+                    "email":"data-help@earthscope.org"
+                }
+            }
+        }
+    ],
+    "distribution":[
+        {
+            "@type":"DataDownload",
+            "encodingFormat":"CSV",
+            "contentUrl":""
+        }
+    ],
+    "citation":"Bendick, Rebecca, Knappe, Ellen, Bastow, Ian, Ebinger, Cynthia J., Mariita, Nicholas, Kianji, Gladys, Nengo, Isaiah, 2017, Turkana GPS Network, The GAGE Facility operated by EarthScope Consortium, GPS/GNSS Observations (Aggregation of Multiple Datasets), https://doi.org/10.7283/WF02-PP16",
+    "temporalCoverage":"2017-02-22/2021-02-02",
+    "spatialCoverage":[
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"2.2865",
+                "longitude":"38.0853"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"2.8587",
+                "longitude":"36.7001"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"3.1393",
+                "longitude":"35.8669"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"3.3124",
+                "longitude":"37.0597"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"3.5450",
+                "longitude":"39.0399"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"4.2070",
+                "longitude":"34.3438"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"4.2858",
+                "longitude":"36.2622"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"4.8823",
+                "longitude":"38.0973"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"4.9749",
+                "longitude":"36.4797"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"5.0306",
+                "longitude":"37.3747"
+            }
+        },
+        {
+            "@type":"Place",
+            "geo":{
+                "@type":"GeoCoordinates",
+                "latitude":"5.7557",
+                "longitude":"36.5950"
+            }
+        }
+    ]
+}

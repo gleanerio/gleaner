@@ -65,6 +65,10 @@ const EmptyDoc string = "SitemapEmptyDoc"
 const Stored string = "SitemapStored"
 const StoreError string = "SitemapStoredError"
 const HeadlessError string = "HeadlessServerError"
+const NotAuthorized string = "NotAuthorized"
+const BadUrl string = "BadURL404"
+const RepoServerError string = "RepoServerError"
+const GenericIssue = "GenericUrlIssue"
 
 // Inc increments the counter for the given key.
 func (c *RepoStats) Inc(key string) {

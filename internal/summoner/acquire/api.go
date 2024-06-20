@@ -56,8 +56,8 @@ func RetrieveAPIData(apiSources []configTypes.Sources, mc *minio.Client, runStat
 }
 
 func getAPISource(v1 *viper.Viper, mc *minio.Client, source configTypes.Sources, wg *sync.WaitGroup, repologger *log.Logger, repoStats *common.RepoStats) {
-
-	bucketName, tc, delay, _, acceptContent, jsonProfile, err := getConfig(v1, source.Name) // _ is headless wait
+	// _ is headless
+	bucketName, tc, delay, _, acceptContent, jsonProfile, err, _ := getConfig(v1, source.Name) // _ is headless wait
 	if err != nil {
 		// trying to read a source, so let's not kill everything with a panic/fatal
 		log.Error("Error reading config file ", err)

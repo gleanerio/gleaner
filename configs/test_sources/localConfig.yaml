@@ -1,0 +1,26 @@
+---
+minio:
+  address: oss.geocodes-aws-dev.earthcube.org
+  port: 443
+  accessKey: worldsbestaccesskey
+  secretKey: worldsbestsecretkey
+  ssl: true
+  bucket: dvtest # can be overridden with MINIO_BUCKET
+sparql:
+  endpoint: https://graph.geocodes-dev.earthcube.org/blazegraph/namespace/earthcube/sparql
+s3:
+  bucket: dvtest # sync with above... can be overridden with MINIO_BUCKET... get's zapped if it's not here.
+  domain: us-east-1
+
+#headless field in gleaner.summoner
+headless: http://127.0.0.1:9222
+sourcesSource:
+  type: csv
+  location: sources.csv
+  #location: https://docs.google.com/spreadsheets/d/e/2PACX-1vTt_45dYd5LMFK9Qm_lCg6P7YxG-ae0GZEtrHMZmNbI-y5tVDd8ZLqnEeIAa-SVTSztejfZeN6xmRZF/pub?gid=1340502269&single=true&output=csv
+# this can be a remote csv
+#  type: csv
+#  location: https://docs.google.com/spreadsheets/d/{key}/gviz/tq?tqx=out:csv&sheet={sheet_name}
+# TBD -- Just use the sources in the gleaner file.
+#  type: yaml
+#  location: gleaner.yaml

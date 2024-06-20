@@ -62,7 +62,7 @@ func main() {
 
 	runStats := common.NewRunStats()
 	repostats := runStats.Add(k)
-	err = acquire.PageRenderAndUpload(v1, mc, 45*time.Second, url, k, rlogginer, repostats)
+	err = acquire.PageRenderAndUpload(v1, mc, 45*time.Second, url, k, rlogginer, repostats, nil, "")
 	if err != nil {
 		panic(fmt.Errorf("error when reading config: %v", err))
 	}

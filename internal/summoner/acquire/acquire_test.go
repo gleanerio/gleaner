@@ -28,7 +28,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err, _ := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 5, tc)
 		assert.Equal(t, int64(0), delay)
@@ -43,7 +43,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err, _ := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 1, tc)
 		assert.Equal(t, int64(1000), delay)
@@ -58,7 +58,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err, _ := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 5, tc)
 		assert.Equal(t, int64(0), delay)
@@ -73,7 +73,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err, _ := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 1, tc)
 		assert.Equal(t, int64(100), delay)
@@ -88,7 +88,7 @@ func TestGetConfig(t *testing.T) {
 		}
 
 		viper := ConfigSetupHelper(conf)
-		bucketName, tc, delay, _, _, _, err := getConfig(viper, "testSource")
+		bucketName, tc, delay, _, _, _, err, _ := getConfig(viper, "testSource")
 		assert.Equal(t, "test", bucketName)
 		assert.Equal(t, 1, tc)
 		assert.Equal(t, int64(50), delay)
