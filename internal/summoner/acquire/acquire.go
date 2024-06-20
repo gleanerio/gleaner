@@ -116,7 +116,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	var client http.Client
 
 	// stuff to setup headless sessions
-	if headlessWait < 0 {
+	if headless && headlessWait < 0 {
 		log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
 		headlessWait = 0 // if someone screws up the config, be good
 	}
