@@ -96,6 +96,7 @@ func TestGetActiveSourceByType(t *testing.T) {
 				ApiPageLimit: 0,
 				IdentifierType: IdentifierSha,
 				FixContextOption: 0,
+				Description: "",
 			},
 		}
 		results := GetActiveSourceByType(sources, "sitemap")
@@ -134,6 +135,7 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 				ApiPageLimit: 0,
 				IdentifierType: IdentifierSha,
 				FixContextOption: 0,
+				Description: "",
 			},
 		}
 		results := GetActiveSourceByHeadless(sources, true)
@@ -158,6 +160,7 @@ func TestGetActiveSourceByHeadless(t *testing.T) {
 				ApiPageLimit: 0,
 				IdentifierType: "",
 				FixContextOption: 0,
+				Description: "",
 			},
 		}
 		results = GetActiveSourceByHeadless(sources, false)
@@ -215,6 +218,7 @@ func TestGetSourceByName(t *testing.T) {
 			ApiPageLimit: 0,
 			IdentifierType: IdentifierSha,
 			FixContextOption: 0,
+			Description: "",
 		}
 
 		results, err := GetSourceByName(sources, "test1")
