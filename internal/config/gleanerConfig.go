@@ -27,6 +27,7 @@ var gleanerTemplate = map[string]interface{}{
 		"pid":        "",
 		"propername": "",
 		"domain":     "",
+		"description":"",
 	},
 }
 

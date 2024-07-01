@@ -76,6 +76,7 @@ type Sources struct {
 	ApiPageLimit     int
 	IdentifierType   string
 	FixContextOption ContextOption
+	Description      string
 }
 
 // add needed for file
@@ -94,6 +95,7 @@ type SourcesConfig struct {
 	IdentifierPath   string // JSON Path to the identifier
 	IdentifierType   string
 	FixContextOption ContextOption
+	Description      string
 }
 
 var SourcesTemplate = map[string]interface{}{
@@ -112,6 +114,7 @@ var SourcesTemplate = map[string]interface{}{
 		"identifierpath":   "",
 		"identifiertype":   JsonSha,
 		"fixcontextoption": "https",
+		"description":      "",
 	},
 }
 
