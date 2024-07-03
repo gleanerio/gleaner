@@ -407,6 +407,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 							log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 							repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
 						}
+					} else {
+						log.WithFields(log.Fields{"url": urlloc, "issue": "No JSON-LD. No headless call"}).Trace("No JSON-LD. No headless call ", urlloc)
+						repologger.WithFields(log.Fields{"url": urlloc, "issue": "No JSON-LD. No headless call"}).Trace()
+
 					}
 
 				} else {
