@@ -204,7 +204,12 @@ func GenerateNormalizedSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
 	if uuid == "" {
 		// error
 		log.Error("ERROR: uuid generator:", "Action: Getting normalized sha  Error:", err)
-		id = Identifier{}
+		id, _ = GenerateFileSha(v1, jsonld)
+		//id = Identifier{
+		//	UniqueId:       uuid,
+		//	IdentifierType: config.FileSha,
+		//	JsonSha:        uuid,
+		//}
 	} else if err != nil {
 		// no error, then normalized triples generated
 		log.Info(" Action: Normalize sha generated sha:", uuid, " Error:", err)
@@ -236,13 +241,13 @@ func GenerateFileSha(v1 *viper.Viper, jsonld string) (Identifier, error) {
 		log.Error("ERROR: uuid generator:", "Action: Getting file sha")
 		id = Identifier{}
 	}
-	log.Debug(" Action: Json sha generated", uuid)
+	log.Debug(" Action: file sha generated", uuid)
 	id = Identifier{UniqueId: uuid,
-		IdentifierType: config.JsonSha,
+		IdentifierType: config.FileSha,
 		JsonSha:        uuid,
 	}
 
-	log.Trace("jsonsha: ", uuid)
+	log.Trace("filesha: ", uuid)
 	//	fmt.Println("\njsonsha:", id)
 	return id, nil
 }

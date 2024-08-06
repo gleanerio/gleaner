@@ -1,0 +1,3 @@
+﻿hack,SourceType,Active,Name,ProperName,URL,Headless,IdentifierType,IdentifierPath,Domain,PID,Logo
+3,sitemap,TRUE,headless,TEST HEADLESS SOURCES,https://earthcube.github.io/GeoCODES-Metadata/site/sitemaps/headless.xml,TRUE,identifiersha," ""$.distribution.contentUrl""",http://wwwearthcube.org/headless/,https://www.re3data.org/repository/r3d100010655,https://opentopography.org/sites/opentopography.org/files/ot_transp_logo_2.png
+4,sitemap,TRUE,mixed,TEST MIXED SOURCES,http://ds.iris.edu/files/sitemap.xml,FALSE,identifiersha,,http://wwwearthcube.org/headless/,https://www.re3data.org/repository/r3d100010268,http://ds.iris.edu/static/img/layout/logos/iris_logo_shadow.png
