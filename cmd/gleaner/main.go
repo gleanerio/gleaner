@@ -4,19 +4,17 @@ import (
 	"flag"
 	"fmt"
 	"github.com/gleanerio/gleaner/internal/check"
+	"github.com/gleanerio/gleaner/internal/common"
 	"github.com/gleanerio/gleaner/internal/config"
+	"github.com/gleanerio/gleaner/internal/objects"
 	"github.com/gleanerio/gleaner/pkg"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"os"
 	"path/filepath"
-
-	"github.com/spf13/viper"
-
-	"github.com/gleanerio/gleaner/internal/common"
-	"github.com/gleanerio/gleaner/internal/objects"
 )
 
-var viperVal, sourceVal, modeVal, logVal string
+var viperVal, viperURL, sourceVal, modeVal, logVal string
 var setupVal, rudeVal bool
 
 // pass -ldflags "-X main.version=testline"
@@ -49,6 +47,7 @@ func init() {
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
+	flag.StringVar(&viperURL, "cfgurl", "configurl", "Configuration URL (can be YAML, JSON)")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
 	flag.StringVar(&logVal, "log", "warn", "The log level to output (trace | debug | info | warn | error | fatal)")
 }
@@ -88,13 +87,17 @@ func main() {
 
 	// Load the config file and set some defaults (config overrides)
 	if isFlagPassed("cfg") {
-		//v1, err = readConfig(viperVal, map[string]interface{}{})
 		v1, err = config.ReadGleanerConfig(filepath.Base(viperVal), filepath.Dir(viperVal))
 		if err != nil {
 			log.Fatal("error when reading config:", err)
 		}
+	} else if isFlagPassed("cfgurl") {
+		v1, err = config.ReadGleanerConfigURL(viperURL)
+		if err != nil {
+			log.Fatal("error when reading config:", err)
+		}
 	} else {
-		log.Error("Gleaner must be run with a config file: -cfg CONFIGFILE")
+		log.Error("Gleaner must be run with a config file or url: -cfg CONFIGFILE  -cfgurl URL")
 		flag.Usage()
 		os.Exit(0)
 	}
