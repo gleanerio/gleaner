@@ -1,7 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="go test gleaner" type="GoTestRunConfiguration" factoryName="Go Test" nameIsGenerated="true">
+  <configuration default="false" name="glcon config gnerate test" type="GoApplicationRunConfiguration" factoryName="Go Application" folderName="TEST_SORUCES">
     <module name="gleaner" />
     <working_directory value="$PROJECT_DIR$" />
+    <go_parameters value="-ldflags &quot;-X main.VERSION=testline&quot;" />
+    <parameters value="config generate  --cfgName test_sources" />
     <EXTENSION ID="net.ashald.envfile">
       <option name="IS_ENABLED" value="false" />
       <option name="IS_SUBST" value="false" />
@@ -12,11 +14,10 @@
         <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
       </ENTRIES>
     </EXTENSION>
-    <kind value="DIRECTORY" />
+    <kind value="FILE" />
     <package value="github.com/gleanerio/gleaner" />
     <directory value="$PROJECT_DIR$" />
-    <filePath value="$PROJECT_DIR$" />
-    <framework value="gotest" />
+    <filePath value="$PROJECT_DIR$/cmd/glcon/main.go" />
     <method v="2" />
   </configuration>
 </component>

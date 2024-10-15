@@ -18,6 +18,10 @@ func GlobalUniqueBNodes(nq string) string {
 	// make a map here to hold our old to new map
 	m := make(map[string]string)
 
+	// need for long lines like in Internet of Water
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
+
 	for scanner.Scan() {
 		//fmt.Println(scanner.Text())
 		// parse the line

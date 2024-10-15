@@ -35,6 +35,7 @@ func InitLogging() {
 
 	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
 	log.SetReportCaller(true)              // include file name and line number
+	log.SetLevel(log.InfoLevel)
 	mw := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(mw)
 	//log.SetOutput(logFile)
