@@ -51,7 +51,6 @@ func initGleanerConfig() {
 	// gleanerViperVal is declared in cli/root.go
 	var err error
 	if cfgFile != "" {
-
 		dir, base := path.Split(cfgFile)
 		gleanerViperVal, err = configTypes.ReadGleanerConfig(base, dir)
 		if err != nil {
@@ -60,8 +59,15 @@ func initGleanerConfig() {
 			log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
 			os.Exit(66)
 		}
+	} else if cfgURL != "" {
+		gleanerViperVal, err = configTypes.ReadGleanerConfigURL(cfgURL)
+		if err != nil {
+			//panic(err)
+			fmt.Println("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+			log.Fatal("cannot find config file. Did you 'glcon generate --cfgName XXX' ")
+			os.Exit(66)
+		}
 	} else {
-
 		gleanerViperVal, err = configTypes.ReadGleanerConfig(gleanerName, path.Join(cfgPath, cfgName))
 		if err != nil {
 			//panic(err)
