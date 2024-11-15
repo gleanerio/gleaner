@@ -47,7 +47,7 @@ func init() {
 	flag.StringVar(&sourceVal, "source", "", "Override config file source(s) to specify an index target")
 	flag.BoolVar(&rudeVal, "rude", false, "Ignore any robots.txt crawl delays or allow / disallow statements")
 	flag.StringVar(&viperVal, "cfg", "config", "Configuration file (can be YAML, JSON) Do NOT provide the extension in the command line. -cfg file not -cfg file.yml")
-	flag.StringVar(&viperURL, "cfgurl", "configurl", "Configuration URL (can be YAML, JSON)")
+	flag.StringVar(&viperURL, "cfgURL", "configurl", "Configuration URL (can be YAML, JSON)")
 	flag.StringVar(&modeVal, "mode", "full", "Set the mode (full | diff) to index all or just diffs")
 	flag.StringVar(&logVal, "log", "warn", "The log level to output (trace | debug | info | warn | error | fatal)")
 }
@@ -91,13 +91,13 @@ func main() {
 		if err != nil {
 			log.Fatal("error when reading config:", err)
 		}
-	} else if isFlagPassed("cfgurl") {
+	} else if isFlagPassed("cfgURL") {
 		v1, err = config.ReadGleanerConfigURL(viperURL)
 		if err != nil {
 			log.Fatal("error when reading config:", err)
 		}
 	} else {
-		log.Error("Gleaner must be run with a config file or url: -cfg CONFIGFILE  -cfgurl URL")
+		log.Error("Gleaner must be run with a config file or url: -cfg CONFIGFILE  -cfgURL URL")
 		flag.Usage()
 		os.Exit(0)
 	}
@@ -192,7 +192,11 @@ func main() {
 	}()
 
 	//cli(mc, v1, db)
-	pkg.Cli(mc, v1) // move to a common call in batch.go
+	err = pkg.Cli(mc, v1)
+	if err != nil {
+		log.Error(err)
+		return
+	} // move to a common call in batch.go
 }
 
 func cleanUp() {
