@@ -223,6 +223,8 @@ github.com/gin-gonic/gin v1.6.3/go.mod h1:75u5sXoLsGZoRN5Sgbi1eraJ4GU3++wFwWzhwv
 github.com/gleanerio/gleaner v0.0.0-20211103190335-f9d8811ee43b/go.mod h1:Xx/8sK0tqQRLSYLsyTR9NeLTGKpwmUOIFat0ilWqguw=
 github.com/gleanerio/nabu v0.0.0-20230706181847-6f70c4ce9069 h1:bROPJbAWZgs5BA9Qxpwzt9x3glPif7ZC7DscAii6S5M=
 github.com/gleanerio/nabu v0.0.0-20230706181847-6f70c4ce9069/go.mod h1:0wdQdUV1gf22ySZhAAqKOQJFoIYk1yW+VKh2BaMtMuY=
+github.com/gleanerio/nabu v0.0.0-20241115202553-f856c422cd3a h1:8zFfLeSZ4Au9pFzDVuCh5s8fzOeQcJhMyqnJORxVXI8=
+github.com/gleanerio/nabu v0.0.0-20241115202553-f856c422cd3a/go.mod h1:3xNF7ZK1iVe5SDYyLrqxxtnbTW+oYsc1teqgfXEAhr0=
 github.com/glycerine/go-unsnap-stream v0.0.0-20181221182339-f9677308dec2/go.mod h1:/20jfyN9Y5QPEAprSgKAUr+glWDY39ZiUEAYOEv5dsE=
 github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31/go.mod h1:Ogl1Tioa0aV7gstGFO7KhffUsb9M4ydbEbbxpcEDc24=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
@@ -589,6 +591,7 @@ github.com/posener/complete v1.1.1/go.mod h1:em0nMJCgc9GFtwrmVmEMR/ZL6WyhyjMBndr
 github.com/posener/complete v1.2.3/go.mod h1:WZIdtGGp+qx0sLrYKtIRAruyNpv6hFCicSgv7Sy7s/s=
 github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 h1:J9b7z+QKAmPf4YLrFg6oQUotqHQeUNWwkvo7jZp1GLU=
 github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35/go.mod h1:prYjPmNq4d1NPVmpShWobRqXY3q7Vp+80DqgxxUrUIA=
+github.com/pquerna/cachecontrol v0.1.0/go.mod h1:NrUG3Z7Rdu85UNR3vm7SOsl1nFIeSiQnrHV5K9mBcUI=
 github.com/prometheus/client_golang v0.9.1/go.mod h1:7SWBe2y4D6OKWSNQJUaRYU/AaXPKyh/dDVn+NZz0KFw=
 github.com/prometheus/client_golang v0.9.3/go.mod h1:/TN21ttK/J9q6uSwhBd54HahCDft0ttaMvbicHlPoso=
 github.com/prometheus/client_golang v1.0.0/go.mod h1:db9x61etRT2tGnBNRi70OPL5FsnadC4Ky3P0J6CfImo=

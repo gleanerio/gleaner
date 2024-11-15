@@ -39,7 +39,6 @@ require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/apache/thrift v0.14.1 // indirect
 	github.com/armon/go-metrics v0.3.10 // indirect
-	github.com/chromedp/cdproto v0.0.0-20230220211738-2b1ec77315c9 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
@@ -91,7 +90,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
+	github.com/pquerna/cachecontrol v0.1.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sagikazarmark/crypt v0.6.0 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
@@ -126,7 +125,7 @@ require (
 )
 
 require (
-	github.com/gleanerio/nabu v0.0.0-20230706181847-6f70c4ce9069
+	github.com/gleanerio/nabu v0.0.0-20241115202553-f856c422cd3a
 	github.com/orandin/lumberjackrus v1.0.1
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/sirupsen/logrus v1.9.0
@@ -141,6 +140,8 @@ require (
 
 // to update the nabu dependency used by glcon
 // go get github.com/gleanerio/nabu@dev
+// or
+// go get github.com/gleanerio/nabu@dev_eco
 
 // local replace. gleaner and nabu at same level
 //replace  github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef  => "../nabu"
