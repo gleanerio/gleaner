@@ -27,7 +27,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
       - name: checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: donwload schema
         run: curl https://schema.org/version/latest/schemaorg-current-https.jsonld --output assets/schemaorg-current-https.jsonld
       - name: donwload schema
@@ -52,13 +52,13 @@ jobs:
       #      - name: Checkout Repo
       #        uses: actions/checkout@v2
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: 'arm64,arm'
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
           echo "VERSION=$VER" >> $GITHUB_ENV
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v5
         with:
           images: nsfearthcube/gleaner
           flavor: |
@@ -80,7 +80,7 @@ jobs:
             type=semver,pattern={{version}}
       - name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v6
         with:
           push: true
           platforms: linux/amd64,linux/arm64

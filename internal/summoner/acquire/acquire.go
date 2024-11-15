@@ -116,7 +116,7 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	var client http.Client
 
 	// stuff to setup headless sessions
-	if headlessWait < 0 {
+	if headless && headlessWait < 0 {
 		log.Info("Headless wait on a headless configured to less that zero. Setting to 0")
 		headlessWait = 0 // if someone screws up the config, be good
 	}
@@ -159,6 +159,9 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 	}
 	defer conn.Close()
 	sessionclient := cdp.NewClient(conn)
+	// headless_agent := emulation.NewSetUserAgentOverrideArgs(EarthCubeAgent)
+	// https://www.zenrows.com/blog/chromedp#user-agent-in-chromedp
+	//https://pkg.go.dev/github.com/mafredri/cdp/devtool#WithClient
 	m, err := session.NewManager(sessionclient)
 	if err != nil {
 		// Handle error.
@@ -404,6 +407,10 @@ func getDomain(v1 *viper.Viper, mc *minio.Client, urls []string, sourceName stri
 							log.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error("PageRenderAndUpload ", urlloc, "::", err)
 							repologger.WithFields(log.Fields{"url": urlloc, "issue": "converting json ld"}).Error(err)
 						}
+					} else {
+						log.WithFields(log.Fields{"url": urlloc, "issue": "No JSON-LD. No headless call"}).Trace("No JSON-LD. No headless call ", urlloc)
+						repologger.WithFields(log.Fields{"url": urlloc, "issue": "No JSON-LD. No headless call"}).Trace()
+
 					}
 
 				} else {
