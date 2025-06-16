@@ -1,0 +1,63 @@
+minio:
+  address: localhost
+  port: 9000
+  ssl: false
+  accesskey: akey
+  secretkey: skey
+  bucket: gleaner
+  region: null
+implementation_network:
+  orgname: iow
+context:
+  cache: true
+  strict: true
+contextmaps:
+  - prefix: "https://schema.org/"
+    file: "./assets/schemaorg-current-https.jsonld"  # wget http://schema.org/docs/jsonldcontext.jsonld
+  - prefix: "http://schema.org/"
+    file: "./assets/schemaorg-current-http.jsonld"  # wget http://schema.org/docs/jsonldcontext.jsonld
+objects:
+  domain: us-east-1
+  prefix:
+    - summoned/providera
+    - prov/providera
+    - org
+endpoints:
+  - service: ec_blazegraph
+    baseurl: http://coreos.lan:9090/blazegraph/namespace/iow
+    type: blaszgraph
+    authenticate: false
+    username: admin
+    password: jfpwd
+    modes:
+      - action: sparql
+        suffix: /sparql
+        accept: application/sparql-results+json
+        method: GET
+      - action: update
+        suffix: /sparql
+        accept: application/sparql-update
+        method: POST
+      - action: bulk
+        suffix: /sparql
+        accept: text/x-nquads
+        method: POST
+  - service: iow_graphdb
+    baseurl: http://coreos.lan:7200/repositories/testing
+    type: graphed
+    authenticate: false
+    username: admin
+    password: jfpw
+    modes:
+      - action: sparql
+        suffix:  # no suffix needed for GraphDB
+        accept: application/sparql-results+json
+        method: GET
+      - action: update
+        suffix: /statements
+        accept: application/sparql-update
+        method: POST
+      - action: bulk
+        suffix: /statements
+        accept: text/x-nquads
+        method: POST

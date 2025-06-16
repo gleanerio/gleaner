@@ -14,7 +14,6 @@ import (
 const Logpath = "logs"
 
 func InitLogging() {
-	//logpath := "logs"
 	logpath := Logpath
 	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(logpath, os.ModePerm)
@@ -25,7 +24,7 @@ func InitLogging() {
 	// name the file with the date and time
 	const layout = "2006-01-02-15-04-05"
 	t := time.Now()
-	lf := fmt.Sprintf("%s/gleaner-%s.log", logpath, t.Format(layout))
+	lf := fmt.Sprintf("%s/nabu-%s.log", logpath, t.Format(layout))
 
 	LogFile := lf // log to custom file
 	logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
@@ -35,7 +34,6 @@ func InitLogging() {
 
 	log.SetFormatter(&log.JSONFormatter{}) // Log as JSON instead of the default ASCII formatter.
 	log.SetReportCaller(true)              // include file name and line number
-	log.SetLevel(log.InfoLevel)
 	mw := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(mw)
 	//log.SetOutput(logFile)
@@ -53,7 +51,7 @@ func SetLogLevel(v1 *viper.Viper) {
 // Debug --- This will give us all the ins and outs of the summoning
 // Trace --- all the details
 func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
-	logpath := "logs"
+	logpath := Logpath
 	if _, err := os.Stat(logpath); errors.Is(err, os.ErrNotExist) {
 		err := os.Mkdir(logpath, os.ModePerm)
 		if err != nil {
@@ -63,19 +61,43 @@ func LogIssues(v1 *viper.Viper, source string) (*log.Logger, error) {
 	// name the file with the date and time
 	const layout = "2006-01-02-15-04-05"
 	t := time.Now()
-
+	//lf := fmt.Sprintf("nabu-%s.log", t.Format(layout))
 	logger := log.New()
 
-	issuefile := fmt.Sprintf("%s/repo-%s-issues-%s.log", logpath, source, t.Format(layout))
-	allfile := fmt.Sprintf("%s/repo-%s-loaded-%s.log", logpath, source, t.Format(layout))
+	issuefile := fmt.Sprintf("%s/graph-%s-issues-%s.log", logpath, source, t.Format(layout))
+	allfile := fmt.Sprintf("%s/graph-%s-loaded-%s.log", logpath, source, t.Format(layout))
+	//LogFile := issuefile // log to custom file
+	//logFile, err := os.OpenFile(LogFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	//if err != nil {
+	//	log.Panic(err)
+	//	return logger, err // could break things if there is an nil value... so...
+	//}
 
 	logger.SetFormatter(&log.TextFormatter{DisableTimestamp: true}) // Log as JSON instead of the default ASCII formatter.
 	logger.SetReportCaller(false)                                   // disable include file name and line number
-	logFile, err := os.OpenFile(os.DevNull, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
-	logger.SetOutput(logFile)
+	//mw := io.MultiWriter(os.Stdout, logFile)
+	//log.SetOutput(mw)
+	//logger.SetOutput(logFile)
 	logger.SetLevel(log.TraceLevel) // this effects the lumberjacks
-
 	// second file for issues
+
+	//IssueFile := issuefile // log to custom file
+	//issueFile, err := os.OpenFile(IssueFile, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	//if err != nil {
+	//	log.Panic(err)
+	//	return
+	//}
+	//
+	//imw := io.MultiWriter(os.Stdout, issueFile)
+	//log.AddHook(&writer.Hook{ // Send logs with level higher than warning to stderr
+	//	Writer: imw,
+	//	LogLevels: []log.Level{
+	//		log.PanicLevel,
+	//		log.FatalLevel,
+	//		log.ErrorLevel,
+	//		log.WarnLevel,
+	//	},
+	//})
 
 	hook, err := lumberjackrus.NewHook(
 		&lumberjackrus.LogFile{

@@ -17,6 +17,7 @@ require (
 	github.com/gosuri/uiprogress v0.0.1
 	github.com/knakk/rdf v0.0.0-20190304171630-8521bf4c5042
 	github.com/mafredri/cdp v0.34.1
+	github.com/meilisearch/meilisearch-go v0.21.1
 	github.com/minio/minio-go/v7 v7.0.52
 	github.com/ohler55/ojg v1.14.5
 	github.com/piprate/json-gold v0.5.0
@@ -78,7 +79,6 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/meilisearch/meilisearch-go v0.21.1 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/sha256-simd v1.0.0 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
@@ -125,7 +125,6 @@ require (
 )
 
 require (
-	github.com/gleanerio/nabu v0.0.0-20241115202553-f856c422cd3a
 	github.com/orandin/lumberjackrus v1.0.1
 	github.com/oxffaa/gopher-parse-sitemap v0.0.0-20191021113419-005d2eb1def4
 	github.com/sirupsen/logrus v1.9.0
@@ -138,10 +137,4 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )
 
-// to update the nabu dependency used by glcon
-// go get github.com/gleanerio/nabu@dev
-// or
-// go get github.com/gleanerio/nabu@dev_eco
-
-// local replace. gleaner and nabu at same level
-//replace  github.com/gleanerio/nabu v0.0.0-20211107193830-958398c3aaef  => "../nabu"
+// nabu code has been integrated directly into gleaner codebase

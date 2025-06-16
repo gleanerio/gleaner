@@ -1,0 +1,12 @@
+
+SELECT (COUNT(DISTINCT ?graph) AS ?namedGraphsCount)
+    (COUNT(*) AS ?triplesCount)
+WHERE {
+    GRAPH ?graph {
+        ?subject ?predicate ?object
+    }
+}
+
+
+
+SELECT (COUNT(DISTINCT ?graph) AS ?namedGraphsCount)(COUNT(*) AS ?triplesCount)WHERE {GRAPH ?graph {?subject ?predicate ?object}}

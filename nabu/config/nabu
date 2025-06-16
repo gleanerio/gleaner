@@ -1,0 +1,46 @@
+minio:
+  address: localhost
+  port: 9000
+  ssl: false
+  accesskey: akey
+  secretkey: skey
+  bucket: gleaner2
+objects:
+  bucket: gleaner2
+  domain: us-east-1
+  prefix:
+  - milled/iris
+  - prov/iris
+  - org
+  prefixoff:
+  - summoned/aquadocs
+  - prov/aquadocs
+  - milled/opentopography
+  - prov/opentopography
+sparql:
+  endpoint: http://localhost/blazegraph/namespace/earthcube/sparql
+  authenticate: false
+  username: ""
+  password: ""
+endpoints:
+  - service: blazegraph_local
+    baseurl: http://localhost/blazegraph/namespace/earthcube/sparql
+    type: blazegraph
+    authenticate: false
+    username: admin
+    password: jfpwd
+    modes:
+      - action: sparql
+        suffix: /sparql
+        accept: application/sparql-results+json
+        method: GET
+      - action: update
+        suffix: /sparql
+        accept: application/sparql-update
+        method: POST
+      - action: bulk
+        suffix: /sparql
+        accept: text/x-nquads
+        method: POST
+txtaipkg:
+  endpoint: http://0.0.0.0:8000
