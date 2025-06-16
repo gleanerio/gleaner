@@ -15,6 +15,7 @@ import (
 )
 
 var nabuConfig *viper.Viper
+var nabuViperVal *viper.Viper
 
 // gleanerCmd represents the run command
 var NabuCmd = &cobra.Command{
@@ -34,7 +35,7 @@ var NabuCmd = &cobra.Command{
 	},
 }
 
-var prefixVal []string
+var nabuPrefixVal []string
 var sparqlEndpointVal string
 
 func init() {
@@ -42,7 +43,7 @@ func init() {
 
 	// Here you will define your flags and configuration settings.
 	//NabuCmd.Flags().StringVar(&nabuVal, "cfg", "nabu", "Configuration file")
-	NabuCmd.PersistentFlags().StringArrayVar(&prefixVal, "prefix", []string{}, "Prefix to override config file setting")
+	NabuCmd.PersistentFlags().StringArrayVar(&nabuPrefixVal, "prefix", []string{}, "Prefix to override config file setting")
 	NabuCmd.PersistentFlags().MarkDeprecated("source", "use --prefix prov/source or milled/source to override loading")
 	NabuCmd.PersistentFlags().MarkShorthandDeprecated("source", "use --prefix prov/source or milled/source to override loading")
 	// sparql
@@ -94,12 +95,12 @@ func initNabuConfig() {
 		log.Fatal("cannot read bucketname from : ", err)
 	}
 
-	if len(prefixVal) > 0 {
+	if len(nabuPrefixVal) > 0 {
 		//out := viperVal.GetStringMapString("objects")
 		//d := out["domain"]
 
 		var p []string
-		for _, pre := range prefixVal {
+		for _, pre := range nabuPrefixVal {
 			p = append(p, pre)
 		}
 

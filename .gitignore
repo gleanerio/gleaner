@@ -14,3 +14,5 @@ configs/local/
 .idea
 
 /configs/wifire/
+/glcon
+/nabu_cmd
