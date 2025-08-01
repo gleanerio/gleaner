@@ -1,4 +1,4 @@
-name: Dockerize Gleaner - Development Branch
+name: Go Binary - Development Branch
 on:
   push:
     branches:
