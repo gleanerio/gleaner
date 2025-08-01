@@ -131,7 +131,22 @@ func safeEncodeString(idstring string) string {
 	if strings.HasPrefix(u, "ark") {
 		u = encodeark(u)
 	}
+
+	// Clean problematic characters by replacing with underscores
+	u = strings.ReplaceAll(u, "/", "_")
+	u = strings.ReplaceAll(u, "{", "_")
+	u = strings.ReplaceAll(u, "}", "_")
+	u = strings.ReplaceAll(u, "[", "_")
+	u = strings.ReplaceAll(u, "]", "_")
+	u = strings.ReplaceAll(u, "(", "_")
+	u = strings.ReplaceAll(u, ")", "_")
+
 	return u
+}
+
+// SafeEncodeStringPublic exposes safeEncodeString for testing purposes
+func SafeEncodeStringPublic(idstring string) string {
+	return safeEncodeString(idstring)
 }
 
 func GenerateIdentiferString(v1 *viper.Viper, source config.Sources, jsonld string) (Identifier, error) {
