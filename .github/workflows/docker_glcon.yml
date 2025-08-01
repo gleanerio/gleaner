@@ -7,6 +7,9 @@ on:
       - master
       - dev_docker_glcon
       - dev
+      - dev_ec
+      - feature/*
+      - fix/*
     tags:
       - v3.*
   release:

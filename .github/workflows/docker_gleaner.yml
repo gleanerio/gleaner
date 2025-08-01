@@ -7,6 +7,8 @@ on:
       - master
       - dev_ec
       - dev
+      - feature/*
+      - fix/*
     tags:
       - v3.*
   release:
