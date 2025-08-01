@@ -146,7 +146,7 @@ jobs:
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          name: digests
+          name: digests-${{ matrix.goarch }}
           path: /tmp/digests
       -
         name: Set up Docker Buildx
