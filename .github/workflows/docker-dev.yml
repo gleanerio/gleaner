@@ -2,7 +2,11 @@ name: Go Binary - Development Branch
 on:
   push:
     branches:
+      - master
       - dev
+      - dev_ec
+      - feature/*
+      - fix/*
   release:
     types: [published]
 
