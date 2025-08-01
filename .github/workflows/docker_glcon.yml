@@ -47,7 +47,7 @@ jobs:
 #            goos: darwin
     steps:
       - name: Install Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
       - name: checkout code
         uses: actions/checkout@v4
       - name: donwload schema
