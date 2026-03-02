@@ -9,8 +9,9 @@ minio:
   ssl: false
   bucket: gleaner
   region:
-  accessKey: worldsbestaccesskey
-  secretKey: worldsbestsecretkey
+  accessKey: 
+  secretKey: 
+  region:  
 
   # can be overridden with MINIO_BUCKET
 sparql:
